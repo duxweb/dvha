@@ -1,0 +1,31 @@
+{
+  "name": "monorepo",
+  "type": "module",
+  "private": true,
+  "author": "DuxWeb",
+  "license": "LGPL-3.0",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "core:build": "bun --filter @dux-vue/core build",
+    "cpre:local": "bun --filter @dux-vue/core local",
+    "core:push": "bun --filter @dux-vue/core push",
+    "core:add": "bun add --cwd ./packages/core",
+    "core:del": "bun del --cwd ./packages/core",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {},
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@antfu/eslint-config": "^4.13.1",
+    "@tanstack/eslint-plugin-query": "^5.74.7",
+    "@unocss/eslint-plugin": "^66.1.2",
+    "eslint": "^9.27.0",
+    "typescript": "^5.8.2",
+    "vitest": "^3.1.4"
+  }
+}
