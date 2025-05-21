@@ -2,10 +2,6 @@
 
 Dux Vue 是一款基于 Vue 3 的无头（Headless）中后台开发框架，通过将业务逻辑与 UI 表现层解耦，专注于多管理端、认证、权限、CRUD、I18n等业务逻辑处理，可以搭配任何 Vue 生态的 UI 框架，使开发者专注于业务实现而不必关注 UI 框架的选择与整合。
 
-## 简介
-
-Dux Vue Headless Admin 是一个基于 Vue 3 的无头（Headless）管理后台开发框架，主要特点是将业务逻辑与 UI 表现层解耦，使开发者可以专注于业务逻辑的实现，而不必担心 UI 的具体实现。
-
 ### 主要特性
 
 - 🎨 **UI 框架无关**：可以与任何 Vue 生态的 UI 框架（如 Element Plus、Ant Design Vue、Naive UI 等）集成
