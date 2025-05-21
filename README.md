@@ -38,8 +38,7 @@ flowchart TD
     end
 
     应用层 --> 核心层
-    核心层 --> 适配层
-    适配层 --> UI框架层
+    核心层 --> UI框架层
 ```
 
 ## 核心包 @dux-vue/core
