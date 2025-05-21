@@ -1,0 +1,25 @@
+{
+  "name": "example",
+  "type": "module",
+  "version": "0.0.0",
+  "author": "DuxWeb",
+  "license": "LGPL-3.0",
+  "files": [
+    "README.md",
+    "dist",
+    "package.json"
+  ],
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@dux-vue/core": "workspace:*",
+    "@vueuse/core": "^13.2.0",
+    "@vueuse/integrations": "^13.2.0",
+    "axios": "^1.9.0"
+  },
+  "devDependencies": {
+  }
+}

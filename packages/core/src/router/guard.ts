@@ -1,15 +1,17 @@
-import { useIsLogin, useManage } from '@/hooks'
 import type { NavigationGuardWithThis } from 'vue-router'
+import { useManage } from '../hooks'
+import { useAuthStore } from '../stores'
 
 /**
  * Auth guard
  * @param path
- * @returns
  */
 export function authGuard(path?: string): NavigationGuardWithThis<any> {
-  return function(_to, _from, next) {
-    const isLogin = useIsLogin()
-    const { getRoutePath } = useManage()
+  return function (to, _from, next) {
+    const manageName = to.meta.manageName as string
+    const authStore = useAuthStore()
+    const isLogin = authStore.isLogin(manageName)
+    const { getRoutePath } = useManage(manageName)
     if (isLogin) {
       return next()
     }

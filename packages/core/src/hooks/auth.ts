@@ -1,6 +1,6 @@
-import type { IAuthActionResponse, IAuthCheckResponse, IAuthErrorResponse, IAuthLoginResponse, IAuthLogoutResponse } from '@/types'
+import type { IAuthActionResponse, IAuthCheckResponse, IAuthErrorResponse, IAuthLoginResponse, IAuthLogoutResponse } from '../types'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '../stores/auth'
 import { useManage } from './manage'
 
 /**
@@ -46,8 +46,8 @@ export function useLogin({ onSuccess, onError }: IAuthLoginParams) {
   const { config: manage, getRoutePath } = useManage()
   const authStore = useAuthStore()
   const router = useRouter()
-  const mutate = (data: Record<string, any>) => {
-    const result = manage.authProvider?.login(data)
+  const mutate = async (data: Record<string, any>) => {
+    const result = await manage.authProvider?.login(data)
     if (result?.success) {
       onSuccess?.(result)
       authStore.login(manage.name, result.data)
@@ -74,8 +74,8 @@ export function useLogout({ onSuccess, onError }: IAuthLogoutParams) {
   const authStore = useAuthStore()
   const router = useRouter()
 
-  const mutate = (params?: any) => {
-    const result = manage.authProvider?.logout(params)
+  const mutate = async (params?: any) => {
+    const result = await manage.authProvider?.logout(params)
     if (result?.success) {
       onSuccess?.(result)
       authStore.logout(manage.name)
@@ -102,8 +102,8 @@ export function useCheck({ onSuccess, onError }: IAuthCheckParams) {
   const authStore = useAuthStore()
   const router = useRouter()
 
-  const mutate = (params?: any) => {
-    const result = manage.authProvider?.check(params)
+  const mutate = async (params?: any) => {
+    const result = await manage.authProvider?.check(params)
     if (result?.success) {
       onSuccess?.(result)
       authStore.update(manage.name, result.data)
@@ -131,8 +131,8 @@ export function useRegister({ onSuccess, onError }: IAuthLoginParams) {
   const { config: manage, getRoutePath } = useManage()
   const authStore = useAuthStore()
   const router = useRouter()
-  const mutate = (data: Record<string, any>) => {
-    const result = manage.authProvider?.register(data)
+  const mutate = async (data: Record<string, any>) => {
+    const result = await manage.authProvider?.register(data)
     if (result?.success) {
       onSuccess?.(result)
       authStore.login(manage.name, result.data)
@@ -156,8 +156,8 @@ export function useForgotPassword({ onSuccess, onError }: IAuthActionParams) {
   const { config: manage, getRoutePath } = useManage()
   const router = useRouter()
 
-  const mutate = (params?: any) => {
-    const result = manage.authProvider?.forgotPassword(params)
+  const mutate = async (params?: any) => {
+    const result = await manage.authProvider?.forgotPassword(params)
     if (result?.success) {
       onSuccess?.(result)
       if (result.redirectTo) {
@@ -183,8 +183,8 @@ export function useUpdatePassword({ onSuccess, onError }: IAuthActionParams) {
   const { config: manage, getRoutePath } = useManage()
   const router = useRouter()
 
-  const mutate = (params?: any) => {
-    const result = manage.authProvider?.updatePassword(params)
+  const mutate = async (params?: any) => {
+    const result = await manage.authProvider?.updatePassword(params)
     if (result?.success) {
       onSuccess?.(result)
       if (result.redirectTo) {
@@ -200,7 +200,6 @@ export function useUpdatePassword({ onSuccess, onError }: IAuthActionParams) {
   }
 }
 
-
 /**
  * Error
  * handle auth error
@@ -211,8 +210,8 @@ export function useError(onCallback?: (data?: IAuthErrorResponse) => void) {
   const { config: manage, getRoutePath } = useManage()
   const router = useRouter()
 
-  const mutate = (error: any) => {
-    const result = manage.authProvider?.onError(error)
+  const mutate = async (error: any) => {
+    const result = await manage.authProvider?.onError(error)
     onCallback?.(result)
     if (result?.logout) {
       router.push(getRoutePath(result.redirectTo || '/login'))
@@ -228,8 +227,8 @@ export function useError(onCallback?: (data?: IAuthErrorResponse) => void) {
  * get user info
  * @returns User info
  */
-export function useGetInfo() {
-  const { config: manage } = useManage()
+export function useGetInfo(manageName?: string) {
+  const { config: manage } = useManage(manageName)
   const authStore = useAuthStore()
   const user = authStore.getUser(manage.name)
   return user.info
@@ -240,8 +239,8 @@ export function useGetInfo() {
  * get user permissions
  * @returns User permissions
  */
-export function useGetPermissions() {
-  const { config: manage } = useManage()
+export function useGetPermissions(manageName?: string) {
+  const { config: manage } = useManage(manageName)
   const authStore = useAuthStore()
   const user = authStore.getUser(manage.name)
   return user.permission
@@ -252,8 +251,8 @@ export function useGetPermissions() {
  * get user id
  * @returns User id
  */
-export function useGetID() {
-  const { config: manage } = useManage()
+export function useGetID(manageName?: string) {
+  const { config: manage } = useManage(manageName)
   const authStore = useAuthStore()
   const user = authStore.getUser(manage.name)
   return user.id
@@ -264,8 +263,8 @@ export function useGetID() {
  * check if user is login
  * @returns Is login
  */
-export function useIsLogin() {
-  const { config: manage } = useManage()
+export function useIsLogin(manageName?: string) {
+  const { config: manage } = useManage(manageName)
   const authStore = useAuthStore()
   return authStore.isLogin(manage.name)
 }

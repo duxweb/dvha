@@ -52,7 +52,7 @@ export interface IDataProviderCreateOptions {
 }
 
 export interface IDataProviderUpdateOptions extends IDataProviderCreateOptions {
-  id: string | number
+  id?: string | number
 }
 
 export interface IDataProviderGetOneOptions {

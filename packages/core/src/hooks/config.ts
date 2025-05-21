@@ -1,4 +1,4 @@
-import type { IConfig } from '@/types'
+import type { IConfig } from '../types'
 import { inject } from 'vue'
 
 /**

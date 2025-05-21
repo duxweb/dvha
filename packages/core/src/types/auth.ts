@@ -1,23 +1,23 @@
-import type { IUserState } from '@/stores/auth'
+import type { IUserState } from '../stores/auth'
 
 /**
  * 认证提供者
  * 为全局或管理端提供自定义认证服务
  */
 export interface IAuthProvider {
-  login: (params: any) => IAuthLoginResponse
-  check: (params?: any) => IAuthCheckResponse
-  logout: (params?: any) => IAuthLogoutResponse
-  onError: (params?: any) => IAuthErrorResponse
+  login: (params: any) => Promise<IAuthLoginResponse>
+  check: (params?: any) => Promise<IAuthCheckResponse>
+  logout: (params?: any) => Promise<IAuthLogoutResponse>
+  onError: (error?: any) => Promise<IAuthErrorResponse>
 
-  register: (params: any) => IAuthLoginResponse
-  forgotPassword: (params: any) => IAuthActionResponse
-  updatePassword: (params: any) => IAuthActionResponse
+  register: (params: any) => Promise<IAuthLoginResponse>
+  forgotPassword: (params: any) => Promise<IAuthActionResponse>
+  updatePassword: (params: any) => Promise<IAuthActionResponse>
 }
 
 export interface IAuthActionResponse {
   success: boolean
-  message: string
+  message?: string
   redirectTo?: string
   [key: string]: unknown
 }
@@ -38,5 +38,5 @@ export interface IAuthLogoutResponse extends IAuthActionResponse {
 export interface IAuthErrorResponse {
   logout?: boolean
   redirectTo?: string
-  error: any
+  error?: any
 }

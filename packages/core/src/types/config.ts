@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
 import type { IAuthProvider } from './auth'
 import type { IDataProvider } from './data'
 import type { IManage } from './manage'
@@ -9,7 +9,7 @@ import type { IConfigTheme } from './theme'
  */
 export interface IConfig {
   // 标题
-  title: string
+  title?: string
   // 版权
   copyright?: string
   // 描述

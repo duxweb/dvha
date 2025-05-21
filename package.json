@@ -13,19 +13,26 @@
     "core:push": "bun --filter @dux-vue/core push",
     "core:add": "bun add --cwd ./packages/core",
     "core:del": "bun del --cwd ./packages/core",
+    "example:add": "bun add --cwd ./apps/example",
+    "example:del": "bun del --cwd ./apps/example",
+    "example:build": "bun --filter example build",
+    "example:dev": "bun --filter example dev",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {},
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "apps/*"
   ],
   "devDependencies": {
     "@antfu/eslint-config": "^4.13.1",
     "@tanstack/eslint-plugin-query": "^5.74.7",
     "@unocss/eslint-plugin": "^66.1.2",
+    "@vitejs/plugin-vue-jsx": "^4.2.0",
     "eslint": "^9.27.0",
     "typescript": "^5.8.2",
+    "vite": "^6.3.5",
     "vitest": "^3.1.4"
   }
 }

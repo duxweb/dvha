@@ -20,7 +20,15 @@ export function useManage(name?: string) {
     throw new Error(`manage ${name} is not defined`)
   }
 
-  manage.title = `${manage.title} - ${config.title}`
+  const title: string[] = []
+  if (manage.title) {
+    title.push(manage.title)
+  }
+  if (config.title) {
+    title.push(config.title)
+  }
+  manage.title = title.join(' - ')
+
   manage.copyright = manage.copyright || config.copyright
   manage.description = manage.description || config.description
 
