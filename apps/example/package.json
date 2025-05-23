@@ -1,9 +1,10 @@
 {
   "name": "example",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "DuxWeb",
   "license": "LGPL-3.0",
+  "private": true,
   "files": [
     "README.md",
     "dist",
@@ -15,9 +16,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@dux-vue/core": "workspace:*",
-    "@dux-vue/elementui": "workspace:*",
-    "@dux-vue/naiveui": "workspace:*",
+    "@duxweb/dvha-core": "workspace:*",
+    "@duxweb/dvha-elementui": "workspace:*",
+    "@duxweb/dvha-naiveui": "workspace:*",
     "@iconify-json/tabler": "^1.2.18",
     "@unocss/preset-icons": "^66.1.2",
     "@vueuse/core": "^13.2.0",

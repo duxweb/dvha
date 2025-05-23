@@ -23,7 +23,7 @@ export interface IConfig {
   // 默认管理端
   defaultManage?: string
   // 管理端提供者
-  manages?: IManage[]
+  manages: IManage[]
   // 全局认证提供者
   authProvider?: IAuthProvider
   // 全局数据提供者

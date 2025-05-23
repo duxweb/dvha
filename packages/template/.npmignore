@@ -1,0 +1,25 @@
+# 开发相关文件
+scripts/
+.git/
+.gitignore
+*.log
+
+# 模板中不应该发布的文件
+template/**/node_modules/
+template/**/.vite/
+template/**/dist/
+template/**/*.log
+template/**/.DS_Store
+template/**/bun.lockb
+template/**/package-lock.json
+template/**/yarn.lock
+
+# IDE 配置
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 系统文件
+.DS_Store
+Thumbs.db

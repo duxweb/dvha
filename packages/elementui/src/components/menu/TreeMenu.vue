@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { IMenu } from '@dux-vue/core'
-import type { PropType } from 'vue'
+import type { IMenu } from '@duxweb/dvha-core'
 
 defineOptions({
   name: 'TreeMenu',

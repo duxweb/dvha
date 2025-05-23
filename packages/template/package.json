@@ -1,0 +1,50 @@
+{
+  "name": "@duxweb/dvha-template",
+  "version": "1.0.1-beta.1",
+  "description": "Create DVHA project from template",
+  "type": "module",
+  "bin": {
+    "duxweb-dvha": "./bin/index.js"
+  },
+  "files": [
+    "bin",
+    "template",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "./scripts/test.sh",
+    "push": "./scripts/publish.sh",
+    "dev": "bun run bin/index.js"
+  },
+  "keywords": [
+    "vue",
+    "template",
+    "scaffold",
+    "dux",
+    "cli",
+    "create",
+    "vite",
+    "vue3",
+    "bun"
+  ],
+  "author": "DuxWeb",
+  "license": "LGPL-3.0",
+  "dependencies": {
+    "fs-extra": "^11.2.0",
+    "@inquirer/prompts": "^7.5.1",
+    "kolorist": "^1.8.0",
+    "commander": "^14.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/dux-vue.git",
+    "directory": "packages/create-dux-vue"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/dux-vue/issues"
+  },
+  "homepage": "https://github.com/your-username/dux-vue#readme"
+}

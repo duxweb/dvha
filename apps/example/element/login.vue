@@ -2,7 +2,7 @@
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
-import { useLogin } from '@dux-vue/core'
+import { useLogin } from '@duxweb/dvha-core'
 import type { FormInstance } from 'element-plus'
 import { User, Lock, Platform } from '@element-plus/icons-vue'
 import 'element-plus/dist/index.css'

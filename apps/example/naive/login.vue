@@ -2,7 +2,7 @@
 import { ref, reactive } from 'vue'
 import { useMessage, type FormInst } from 'naive-ui'
 import { useRouter } from 'vue-router'
-import { useLogin } from '@dux-vue/core'
+import { useLogin } from '@duxweb/dvha-core'
 
 const router = useRouter()
 const message = useMessage()

@@ -29,9 +29,10 @@
     "skipLibCheck": true
   },
   "include": [
-    "src/**/*.*",
-    "src/**/*.vue",
-    "../../typings.d.ts"
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.vue",
+    "**/*.d.ts"
   ],
   "exclude": [
     "node_modules",

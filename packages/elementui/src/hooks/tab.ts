@@ -1,4 +1,4 @@
-import { useTabStore } from '@dux-vue/core'
+import { useTabStore } from '@duxweb/dvha-core'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 

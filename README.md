@@ -1,4 +1,4 @@
-# Dux Vue Headless Admin
+# Dux Vue Headless
 
 Dux Vue 是一款基于 Vue 3 的无头（Headless）中后台前端开发框架，通过将业务逻辑与 UI 表现层解耦，专注于前端的多管理端、认证、权限、CRUD、I18n等业务逻辑处理，可以搭配任何 Vue 生态的 UI 框架，使开发者专注于业务实现而不必关注 UI 框架的选择与整合。
 
@@ -20,7 +20,7 @@ flowchart TD
         其他管理端
     end
 
-    subgraph 核心层["@dux-vue/core 核心层"]
+    subgraph 核心层["@duxweb/dvha-core 核心层"]
         路由
         状态管理
         用户认证
@@ -41,9 +41,9 @@ flowchart TD
     核心层 --> UI框架层
 ```
 
-## 核心包 @dux-vue/core
+## 核心包 @duxweb/dvha-core
 
-`@dux-vue/core` 是 Dux Vue 的核心包，提供了框架的基础功能：
+`@duxweb/dvha-core` 是 Dux Vue 的核心包，提供了框架的基础功能：
 
 ### 核心组件
 
@@ -58,14 +58,14 @@ flowchart TD
 
 ```bash
 # 安装核心包
-npm install @dux-vue/core
+npm install @duxweb/dvha-core
 
 ```
 
 ## 使用示例
 
 ```typescript
-import { createDux } from '@dux-vue/core'
+import { createDux } from '@duxweb/dvha-core'
 import { createApp } from 'vue'
 import App from './App.vue'
 
@@ -85,9 +85,9 @@ app.mount('#app')
 
 ## 相关包
 
-- `@dux-vue/core`: 核心功能包
-- `@dux-vue/naiveui`: Naive UI 增强包
-- `@dux-vue/elmentui`: Elment Plus 增强包
+- `@duxweb/dvha-core`: 核心功能包
+- `@duxweb/dvha-naiveui`: Naive UI 增强包
+- `@duxweb/dvha-elmentui`: Elment Plus 增强包
 
 ## 开源协议
 

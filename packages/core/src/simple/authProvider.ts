@@ -1,7 +1,9 @@
-import type { IAuthActionResponse, IAuthCheckResponse, IAuthErrorResponse, IAuthLoginResponse, IAuthLogoutResponse, IAuthProvider, IManageHook, IUserState } from '@dux-vue/core'
 import axios from 'axios'
+import { IAuthProvider, IAuthLoginResponse, IAuthCheckResponse, IAuthLogoutResponse, IAuthErrorResponse, IAuthActionResponse } from '../types'
+import { IUserState } from '../stores'
+import { IManageHook } from '../hooks'
 
-export const authProvider: IAuthProvider = {
+export const simpleAuthProvider: IAuthProvider = {
   login: async (params: any, manage: IManageHook): Promise<IAuthLoginResponse> => {
     return await axios.post(manage.getApiUrl('/login'), params).then((res) => {
       return {

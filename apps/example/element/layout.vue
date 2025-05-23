@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { DuxLogo, DuxTabRouterView, useMenu } from '@dux-vue/core'
+import { DuxLogo, DuxTabRouterView, useMenu } from '@duxweb/dvha-core'
 
-import { useElmTab, TreeMenu } from '@dux-vue/elementui'
+import { useElmTab, TreeMenu } from '@duxweb/dvha-elementui'
 import 'element-plus/dist/index.css'
 
 const { data, active, crumbs } = useMenu({})

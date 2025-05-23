@@ -1,0 +1,27 @@
+{
+  "name": "elementui",
+  "display": "Vue 3 + Element Plus",
+  "description": "使用 Element Plus 的 Vue 3 项目",
+  "dependencies": {
+    "@duxweb/dvha-core": "latest",
+    "@iconify-json/tabler": "^1.2.18",
+    "@unocss/preset-icons": "^66.1.2",
+    "@vueuse/core": "^13.2.0",
+    "@vueuse/integrations": "^13.2.0",
+    "axios": "^1.9.0",
+    "element-plus": "^2.9.10",
+    "lodash-es": "^4.17.21",
+    "unocss": "^66.1.2",
+    "@unocss/reset": "^66.1.2"
+  },
+  "devDependencies": {},
+  "imports": [
+    "import '@unocss/reset/tailwind.css'",
+    "import 'virtual:uno.css'",
+    "import 'element-plus/dist/index.css'"
+  ],
+  "appUse": [
+    "import ElementPlus from 'element-plus'",
+    "app.use(ElementPlus)"
+  ]
+}

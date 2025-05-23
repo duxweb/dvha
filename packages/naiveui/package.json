@@ -1,14 +1,13 @@
 {
-  "name": "@dux-vue/naiveui",
+  "name": "@duxweb/dvha-naiveui",
   "type": "module",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.3",
   "author": "DuxWeb",
   "license": "LGPL-3.0",
   "main": "src/index.ts",
   "dependencies": {
-    "@dux-vue/core": "workspace:*",
+    "@duxweb/dvha-core": "latest",
     "naive-ui": "^2.41.0"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

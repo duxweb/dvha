@@ -1,6 +1,6 @@
-import type { UseMenuProps } from '@dux-vue/core'
+import type { UseMenuProps } from '@duxweb/dvha-core'
 import type { MenuOption } from 'naive-ui'
-import { arrayToTree, useMenu } from '@dux-vue/core'
+import { arrayToTree, useMenu } from '@duxweb/dvha-core'
 import { computed, h } from 'vue'
 import { RouterLink } from 'vue-router'
 

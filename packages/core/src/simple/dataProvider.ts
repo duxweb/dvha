@@ -1,7 +1,9 @@
-import type { IDataProvider, IDataProviderCreateManyOptions, IDataProviderCreateOptions, IDataProviderCustomOptions, IDataProviderDeleteManyOptions, IDataProviderDeleteOptions, IDataProviderGetManyOptions, IDataProviderGetOneOptions, IDataProviderListOptions, IDataProviderUpdateManyOptions, IDataProviderUpdateOptions, IManageHook, IUserState } from '@dux-vue/core'
 import axios from 'axios'
+import { IDataProvider, IDataProviderCreateManyOptions, IDataProviderCreateOptions, IDataProviderCustomOptions, IDataProviderDeleteManyOptions, IDataProviderDeleteOptions, IDataProviderGetManyOptions, IDataProviderGetOneOptions, IDataProviderListOptions, IDataProviderUpdateManyOptions, IDataProviderUpdateOptions } from '../types'
+import { IManageHook } from '../hooks'
+import { IUserState } from '../stores'
 
-export const dataProvider: IDataProvider = {
+export const simpleDataProvider: IDataProvider = {
 
   getList: (options: IDataProviderListOptions, manage?: IManageHook, auth?: IUserState) => {
     const params: Record<string, any> = {}

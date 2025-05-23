@@ -1,0 +1,38 @@
+{
+  "name": "template",
+  "type": "module",
+  "version": "0.0.0",
+  "author": "DuxWeb",
+  "license": "LGPL-3.0",
+  "files": [
+    "README.md",
+    "dist",
+    "package.json"
+  ],
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@duxweb/dvha-core": "workspace:*",
+    "@iconify-json/tabler": "^1.2.18",
+    "@unocss/preset-icons": "^66.1.2",
+    "@vueuse/core": "^13.2.0",
+    "@vueuse/integrations": "^13.2.0",
+    "axios": "^1.9.0",
+    "lodash-es": "^4.17.21",
+    "unocss": "^66.1.2",
+    "@unocss/reset": "^66.1.2"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^4.13.1",
+    "@tanstack/eslint-plugin-query": "^5.74.7",
+    "@unocss/eslint-plugin": "^66.1.2",
+    "@vitejs/plugin-vue-jsx": "^4.2.0",
+    "eslint": "^9.27.0",
+    "typescript": "^5.8.2",
+    "vite": "^6.3.5",
+    "vitest": "^3.1.4"
+  }
+}

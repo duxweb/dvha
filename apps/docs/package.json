@@ -1,0 +1,15 @@
+{
+  "name": "docs",
+  "private": true,
+  "type": "module",
+  "author": "DuxWeb",
+  "license": "LGPL-3.0",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  }
+}

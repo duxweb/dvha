@@ -1,9 +1,8 @@
-import type { IConfig } from '@dux-vue/core'
-import { createDux } from '@dux-vue/core'
+import type { IConfig } from '@duxweb/dvha-core'
+import { createDux, simpleDataProvider, simpleAuthProvider } from '@duxweb/dvha-core'
 import naive from 'naive-ui'
 import { createApp } from 'vue'
 import App from './App.vue'
-import { authProvider, dataProvider } from './core'
 import ElementPlus from 'element-plus'
 import 'virtual:uno.css'
 
@@ -76,8 +75,8 @@ const config: IConfig = {
       ]
     },
   ],
-  dataProvider,
-  authProvider,
+  simpleDataProvider,
+  simpleAuthProvider,
 
 }
 

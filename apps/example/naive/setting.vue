@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useOverlay } from '@dux-vue/core';
+import { useOverlay } from '@duxweb/dvha-core';
 
 
 

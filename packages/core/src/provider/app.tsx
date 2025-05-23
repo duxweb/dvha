@@ -74,6 +74,7 @@ export const DuxAppProvider = defineComponent({
             label: '404',
             path: ':pathMatch(.*)*',
             component: components.notFound,
+            hidden: true,
           })
         }
 
@@ -83,6 +84,7 @@ export const DuxAppProvider = defineComponent({
             label: '403',
             path: 'notAuthorized',
             component: components.notAuthorized,
+            hidden: true,
           })
         }
 
@@ -92,6 +94,7 @@ export const DuxAppProvider = defineComponent({
             label: '500',
             path: 'error',
             component: components.error,
+            hidden: true,
           })
         }
 

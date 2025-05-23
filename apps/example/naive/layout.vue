@@ -3,8 +3,8 @@ import { h } from 'vue'
 import { useRouter } from 'vue-router'
 import 'element-plus/dist/index.css'
 
-import { DuxLogo, DuxTabRouterView, useOverlay, useTheme } from '@dux-vue/core'
-import { useNaiveMenu, useNaiveTab } from '@dux-vue/naiveui'
+import { DuxLogo, DuxTabRouterView, useOverlay, useTheme } from '@duxweb/dvha-core'
+import { useNaiveMenu, useNaiveTab } from '@duxweb/dvha-naiveui'
 
 import { MenuOption, NIcon, darkTheme, lightTheme } from 'naive-ui'
 
