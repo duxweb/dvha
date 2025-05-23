@@ -1,0 +1,14 @@
+{
+  "name": "@dux-vue/elementui",
+  "type": "module",
+  "version": "0.0.1-alpha.1",
+  "author": "DuxWeb",
+  "license": "LGPL-3.0",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@dux-vue/core": "workspace:*",
+    "element-plus": "^2.9.10"
+  },
+  "devDependencies": {
+  }
+}

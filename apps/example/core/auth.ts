@@ -1,34 +1,35 @@
-import type { IAuthActionResponse, IAuthCheckResponse, IAuthErrorResponse, IAuthLoginResponse, IAuthLogoutResponse, IAuthProvider, IUserState } from '@dux-vue/core'
-import { useCustom, useCustomMutation } from '@dux-vue/core'
+import type { IAuthActionResponse, IAuthCheckResponse, IAuthErrorResponse, IAuthLoginResponse, IAuthLogoutResponse, IAuthProvider, IManageHook, IUserState } from '@dux-vue/core'
+import axios from 'axios'
 
 export const authProvider: IAuthProvider = {
-  login: async (params: any): Promise<IAuthLoginResponse> => {
-    const { mutate, isSuccess, error, data } = await useCustomMutation({
-      path: '/auth/login',
-      method: 'POST',
+  login: async (params: any, manage: IManageHook): Promise<IAuthLoginResponse> => {
+    return await axios.post(manage.getApiUrl('/login'), params).then((res) => {
+      return {
+        success: true,
+        message: res?.data?.message,
+        redirectTo: '/',
+        data: res?.data?.data as IUserState,
+      }
+    }).catch((error) => {
+      return {
+        success: false,
+        message: error?.response?.data?.message || error?.message,
+      }
     })
-
-    await mutate({
-      payload: params,
-    })
-
-    return {
-      success: isSuccess,
-      message: error?.message,
-      redirectTo: '/',
-      data: data?.data as IUserState,
-    }
   },
-  check: async (_params?: any): Promise<IAuthCheckResponse> => {
-    const { data } = await useCustom({
-      path: '/auth/check',
+  check: async (_params?: any, manage?: IManageHook): Promise<IAuthCheckResponse> => {
+    return await axios.get(manage?.getApiUrl('/check') || '').then((res: any) => {
+      return {
+        success: true,
+        message: res?.data?.message,
+        data: res?.data?.data as IUserState,
+      }
+    }).catch((error) => {
+      return {
+        success: false,
+        message: error?.response?.data?.message || error?.message,
+      }
     })
-
-    return {
-      success: true,
-      message: data?.message,
-      data: data?.data as IUserState,
-    }
   },
   onError: async (error?: any): Promise<IAuthErrorResponse> => {
     if (error.status === 403) {
@@ -44,59 +45,53 @@ export const authProvider: IAuthProvider = {
       error,
     }
   },
-  logout: async (_params?: any): Promise<IAuthLogoutResponse> => {
+  logout: async (): Promise<IAuthLogoutResponse> => {
     return {
       success: true,
       redirectTo: '/login',
     }
   },
-  register: async (params: any): Promise<IAuthLoginResponse> => {
-    const { mutate, isSuccess, data } = await useCustomMutation({
-      path: '/auth/register',
-      method: 'POST',
+  register: async (params: any, manage?: IManageHook): Promise<IAuthLoginResponse> => {
+    return await axios.post(manage?.getApiUrl('/auth/register') || '', params).then((res: any) => {
+      return {
+        success: true,
+        message: res?.data?.message,
+        redirectTo: '/',
+        data: res?.data?.data as IUserState,
+      }
+    }).catch((error) => {
+      return {
+        success: false,
+        message: error?.response?.data?.message || error?.message,
+      }
     })
-
-    await mutate({
-      payload: params,
-    })
-
-    return {
-      success: isSuccess,
-      message: data?.message,
-      redirectTo: '/login',
-      data: data?.data as IUserState,
-    }
   },
-  forgotPassword: async (params: any): Promise<IAuthActionResponse> => {
-    const { mutate, isSuccess, data } = await useCustomMutation({
-      path: '/auth/forgot-password',
-      method: 'POST',
+  forgotPassword: async (params: any, manage?: IManageHook): Promise<IAuthActionResponse> => {
+    return await axios.post(manage?.getApiUrl('/auth/forgot-password') || '', params).then((res: any) => {
+      return {
+        success: true,
+        message: res?.data?.message,
+        redirectTo: '/login',
+      }
+    }).catch((error) => {
+      return {
+        success: false,
+        message: error?.response?.data?.message || error?.message,
+      }
     })
-
-    await mutate({
-      payload: params,
-    })
-
-    return {
-      success: isSuccess,
-      message: data?.message,
-      redirectTo: '/login',
-    }
   },
-  updatePassword: async (params: any): Promise<IAuthActionResponse> => {
-    const { mutate, isSuccess, data } = await useCustomMutation({
-      path: '/auth/update-password',
-      method: 'POST',
+  updatePassword: async (params: any, manage?: IManageHook): Promise<IAuthActionResponse> => {
+    return await axios.post(manage?.getApiUrl('/auth/update-password') || '', params).then((res: any) => {
+      return {
+        success: true,
+        message: res?.data?.message,
+        redirectTo: '/login',
+      }
+    }).catch((error) => {
+      return {
+        success: false,
+        message: error?.response?.data?.message || error?.message,
+      }
     })
-
-    await mutate({
-      payload: params,
-    })
-
-    return {
-      success: isSuccess,
-      message: data?.message,
-      redirectTo: '/login',
-    }
   },
 }

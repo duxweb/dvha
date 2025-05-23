@@ -1,3 +1,7 @@
+import { IUserState } from "src/stores"
+import { IManage } from "./manage"
+import { IManageHook } from "src/hooks"
+
 /**
  * 数据提供者
  * 为全局或管理端提供自定义数据源处理服务
@@ -5,25 +9,25 @@
 export interface IDataProvider {
 
   // 获取列表
-  getList: (options: IDataProviderListOptions) => Promise<IDataProviderResponse>
+  getList: (options: IDataProviderListOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
   // 创建数据
-  create: (options: IDataProviderCreateOptions) => Promise<IDataProviderResponse>
+  create: (options: IDataProviderCreateOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
   // 更新数据
-  update: (options: IDataProviderUpdateOptions) => Promise<IDataProviderResponse>
+  update: (options: IDataProviderUpdateOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
   // 删除单个数据
-  deleteOne: (options: IDataProviderDeleteOptions) => Promise<IDataProviderResponse>
+  deleteOne: (options: IDataProviderDeleteOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
   // 获取单个数据
-  getOne: (options: IDataProviderGetOneOptions) => Promise<IDataProviderResponse>
+  getOne: (options: IDataProviderGetOneOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
   // 获取多个数据
-  getMany: (options: IDataProviderGetManyOptions) => Promise<IDataProviderResponse>
+  getMany: (options: IDataProviderGetManyOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
   // 创建多个数据
-  createMany: (options: IDataProviderCreateManyOptions) => Promise<IDataProviderResponse>
+  createMany: (options: IDataProviderCreateManyOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
   // 更新多个数据
-  updateMany: (options: IDataProviderUpdateManyOptions) => Promise<IDataProviderResponse>
+  updateMany: (options: IDataProviderUpdateManyOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
   // 删除多个数据
-  deleteMany: (options: IDataProviderDeleteManyOptions) => Promise<IDataProviderResponse>
+  deleteMany: (options: IDataProviderDeleteManyOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
   // 自定义请求
-  custom: (options: IDataProviderCustomOptions) => Promise<IDataProviderResponse>
+  custom: (options: IDataProviderCustomOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
 }
 
 export interface IDataProviderResponse {

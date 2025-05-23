@@ -5,18 +5,19 @@
   "author": "DuxWeb",
   "license": "LGPL-3.0",
   "main": "src/index.ts",
-  "publishConfig": {
-    "access": "public",
-    "prefix": "dist"
-  },
   "dependencies": {
+    "@overlastic/vue": "^0.8.1",
     "@tanstack/react-query": "^5.76.1",
     "@vueuse/core": "^13.2.0",
     "@vueuse/integrations": "^13.2.0",
+    "axios": "^1.9.0",
+    "lodash-es": "^4.17.21",
     "pinia": "^3.0.2",
     "pinia-plugin-persistedstate": "^4.3.0",
     "vue": "^3.5.14",
     "vue-router": "4"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "clsx": "^2.1.1"
+  }
 }

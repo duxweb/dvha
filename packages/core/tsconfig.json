@@ -31,7 +31,7 @@
   "include": [
     "src/**/*.*",
     "src/**/*.vue",
-    "typings.d.ts"
+    "../../typings.d.ts"
   ],
   "exclude": [
     "node_modules",

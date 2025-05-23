@@ -5,7 +5,7 @@ export interface IUserState {
   token?: string
   id?: number
   info?: Record<string, any>
-  permission?: Record<string, boolean>
+  permission?: any
 }
 
 export const useAuthStore = defineStore('auth', () => {

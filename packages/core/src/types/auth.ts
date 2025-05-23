@@ -1,3 +1,4 @@
+import type { IManageHook } from '../hooks'
 import type { IUserState } from '../stores/auth'
 
 /**
@@ -5,14 +6,15 @@ import type { IUserState } from '../stores/auth'
  * 为全局或管理端提供自定义认证服务
  */
 export interface IAuthProvider {
-  login: (params: any) => Promise<IAuthLoginResponse>
-  check: (params?: any) => Promise<IAuthCheckResponse>
-  logout: (params?: any) => Promise<IAuthLogoutResponse>
-  onError: (error?: any) => Promise<IAuthErrorResponse>
+  login: (params: any, manage: IManageHook) => Promise<IAuthLoginResponse>
+  check: (params?: any, manage?: IManageHook) => Promise<IAuthCheckResponse>
+  logout: (params?: any, manage?: IManageHook) => Promise<IAuthLogoutResponse>
 
-  register: (params: any) => Promise<IAuthLoginResponse>
-  forgotPassword: (params: any) => Promise<IAuthActionResponse>
-  updatePassword: (params: any) => Promise<IAuthActionResponse>
+  register: (params: any, manage?: IManageHook) => Promise<IAuthLoginResponse>
+  forgotPassword: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
+  updatePassword: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
+
+  onError: (error?: any) => Promise<IAuthErrorResponse>
 }
 
 export interface IAuthActionResponse {
@@ -23,11 +25,11 @@ export interface IAuthActionResponse {
 }
 
 export interface IAuthLoginResponse extends IAuthActionResponse {
-  data: IUserState
+  data?: IUserState
 }
 
 export interface IAuthCheckResponse extends IAuthActionResponse {
-  data: IUserState
+  data?: IUserState
   logout?: boolean
 }
 

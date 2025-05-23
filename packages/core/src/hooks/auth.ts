@@ -1,4 +1,5 @@
 import type { IAuthActionResponse, IAuthCheckResponse, IAuthErrorResponse, IAuthLoginResponse, IAuthLogoutResponse } from '../types'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { useManage } from './manage'
@@ -43,15 +44,22 @@ export interface IAuthActionParams {
  * @returns Login method
  */
 export function useLogin({ onSuccess, onError }: IAuthLoginParams) {
-  const { config: manage, getRoutePath } = useManage()
+  const manage = useManage()
   const authStore = useAuthStore()
   const router = useRouter()
+  const loading = ref(false)
+
   const mutate = async (data: Record<string, any>) => {
-    const result = await manage.authProvider?.login(data)
+    loading.value = true
+    const result = await manage.config.authProvider?.login(data, manage)
+    loading.value = false
     if (result?.success) {
+      if (!result?.data) {
+        throw new Error('Login response data is undefined')
+      }
       onSuccess?.(result)
-      authStore.login(manage.name, result.data)
-      router.push(getRoutePath(result.redirectTo || '/'))
+      authStore.login(manage.config.name, result.data)
+      router.push(manage.getRoutePath(result.redirectTo || '/'))
       return
     }
     onError?.(result)
@@ -59,6 +67,7 @@ export function useLogin({ onSuccess, onError }: IAuthLoginParams) {
 
   return {
     mutate,
+    isLoading: loading,
   }
 }
 
@@ -106,6 +115,9 @@ export function useCheck({ onSuccess, onError }: IAuthCheckParams) {
     const result = await manage.authProvider?.check(params)
     if (result?.success) {
       onSuccess?.(result)
+      if (!result?.data) {
+        throw new Error('Check response data is undefined')
+      }
       authStore.update(manage.name, result.data)
       return
     }
@@ -135,6 +147,9 @@ export function useRegister({ onSuccess, onError }: IAuthLoginParams) {
     const result = await manage.authProvider?.register(data)
     if (result?.success) {
       onSuccess?.(result)
+      if (!result?.data) {
+        throw new Error('Register response data is undefined')
+      }
       authStore.login(manage.name, result.data)
       router.push(getRoutePath(result.redirectTo || ''))
       return
@@ -223,39 +238,15 @@ export function useError(onCallback?: (data?: IAuthErrorResponse) => void) {
 }
 
 /**
- * Get info
- * get user info
- * @returns User info
+ * Get auth
+ * get auth info
+ * @returns Auth info
  */
-export function useGetInfo(manageName?: string) {
+export function useGetAuth(manageName?: string) {
   const { config: manage } = useManage(manageName)
   const authStore = useAuthStore()
   const user = authStore.getUser(manage.name)
-  return user.info
-}
-
-/**
- * Get permissions
- * get user permissions
- * @returns User permissions
- */
-export function useGetPermissions(manageName?: string) {
-  const { config: manage } = useManage(manageName)
-  const authStore = useAuthStore()
-  const user = authStore.getUser(manage.name)
-  return user.permission
-}
-
-/**
- * Get ID
- * get user id
- * @returns User id
- */
-export function useGetID(manageName?: string) {
-  const { config: manage } = useManage(manageName)
-  const authStore = useAuthStore()
-  const user = authStore.getUser(manage.name)
-  return user.id
+  return user
 }
 
 /**

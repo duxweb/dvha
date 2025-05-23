@@ -1,0 +1,14 @@
+{
+  "name": "@dux-vue/naiveui",
+  "type": "module",
+  "version": "0.0.1-alpha.1",
+  "author": "DuxWeb",
+  "license": "LGPL-3.0",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@dux-vue/core": "workspace:*",
+    "naive-ui": "^2.41.0"
+  },
+  "devDependencies": {
+  }
+}

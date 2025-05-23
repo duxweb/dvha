@@ -2,8 +2,9 @@ import type { DefaultError, DefinedInitialDataInfiniteOptions, InfiniteData, Que
 import type { IDataProviderCreateManyOptions, IDataProviderCreateOptions, IDataProviderCustomOptions, IDataProviderDeleteManyOptions, IDataProviderDeleteOptions, IDataProviderGetManyOptions, IDataProviderGetOneOptions, IDataProviderListOptions, IDataProviderResponse, IDataProviderUpdateManyOptions, IDataProviderUpdateOptions } from '../types'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { computed, watch } from 'vue'
-import { useError } from './auth'
+import { useError, useGetAuth } from './auth'
 import { useManage } from './manage'
+import { useAuthStore } from 'src/stores'
 
 type IDataQueryOptions = UndefinedInitialDataOptions<IDataProviderResponse | undefined, DefaultError, IDataProviderResponse | undefined, QueryKey>
 type IDataQueryOptionsInfinite = DefinedInitialDataInfiniteOptions<IDataProviderResponse | undefined, DefaultError, InfiniteData<IDataProviderResponse | undefined>, QueryKey, number>
@@ -18,7 +19,9 @@ interface IListParams extends IDataProviderListOptions {
  * @param params
  */
 export function useList(params: IListParams) {
-  const { config: manage } = useManage()
+  const manage = useManage()
+  const auth = useGetAuth()
+
   const { mutate: onAuthError } = useError()
 
   const props = computed((): IDataProviderListOptions => {
@@ -28,7 +31,7 @@ export function useList(params: IListParams) {
 
   const req = useQuery({
     queryKey: [params.path, props],
-    queryFn: () => manage.dataProvider?.getList({ ...props.value }),
+    queryFn: () => manage.config.dataProvider?.getList({ ...props.value }, manage, auth),
     ...params.options,
   })
 
@@ -62,7 +65,8 @@ interface IInfiniteListParams extends IDataProviderListOptions {
  * @param params
  */
 export function useInfiniteList(params: IInfiniteListParams) {
-  const { config: manage } = useManage()
+  const manage = useManage()
+  const auth = useGetAuth()
   const { mutate: onAuthError } = useError()
 
   const props = computed((): IDataProviderListOptions => {
@@ -72,7 +76,7 @@ export function useInfiniteList(params: IInfiniteListParams) {
 
   const req = useInfiniteQuery({
     queryKey: [params.path, props],
-    queryFn: () => manage.dataProvider?.getList({ ...props.value }),
+    queryFn: () => manage.config.dataProvider?.getList({ ...props.value }, manage, auth),
     initialPageParam: 0,
     getNextPageParam: (lastPage, _allPages, lastPageParam) => {
       if (!lastPage?.data || lastPage?.data?.length === 0) {
@@ -121,7 +125,8 @@ interface IOneParams extends IDataProviderGetOneOptions {
  * @param params
  */
 export function useOne(params: IOneParams) {
-  const { config: manage } = useManage()
+  const manage = useManage()
+  const auth = useGetAuth()
   const { mutate: onAuthError } = useError()
 
   const props = computed((): IDataProviderGetOneOptions => {
@@ -131,7 +136,7 @@ export function useOne(params: IOneParams) {
 
   const req = useQuery({
     queryKey: [params.path, props],
-    queryFn: () => manage.dataProvider?.getOne({ ...props.value }),
+    queryFn: () => manage.config.dataProvider?.getOne({ ...props.value }, manage, auth),
     ...params.options,
   })
 
@@ -164,7 +169,8 @@ interface IManyParams extends IDataProviderGetManyOptions {
  * @param params
  */
 export function useMany(params: IManyParams) {
-  const { config: manage } = useManage()
+  const manage = useManage()
+  const auth = useGetAuth()
   const { mutate: onAuthError } = useError()
 
   const props = computed((): IDataProviderGetManyOptions => {
@@ -174,7 +180,7 @@ export function useMany(params: IManyParams) {
 
   const req = useQuery({
     queryKey: [params.path, props],
-    queryFn: () => manage.dataProvider?.getMany({ ...props.value }),
+    queryFn: () => manage.config.dataProvider?.getMany({ ...props.value }, manage, auth),
     ...params.options,
   })
 
@@ -209,7 +215,8 @@ interface ICreateParams extends IDataProviderCreateOptions {
  * @param params
  */
 export function useCreate(params: ICreateParams) {
-  const { config: manage } = useManage()
+  const manage = useManage()
+  const auth = useGetAuth()
   const { mutate: onAuthError } = useError()
   const { invalidate } = useInvalidate()
 
@@ -220,13 +227,13 @@ export function useCreate(params: ICreateParams) {
 
   const req = useMutation({
     mutationFn: (data) => {
-      if (!manage.dataProvider) {
+      if (!manage.config.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
-      return manage.dataProvider.create({
+      return manage.config.dataProvider.create({
         ...props.value,
         ...data,
-      })
+      }, manage, auth)
     },
     onSuccess: (data) => {
       params.onSuccess?.(data)
@@ -261,7 +268,8 @@ interface ICreateManyParams extends IDataProviderCreateManyOptions {
  * @param params
  */
 export function useCreateMany(params: ICreateManyParams) {
-  const { config: manage } = useManage()
+  const manage = useManage()
+  const auth = useGetAuth()
   const { mutate: onAuthError } = useError()
   const { invalidate } = useInvalidate()
   const props = computed((): IDataProviderCreateManyOptions => {
@@ -271,13 +279,13 @@ export function useCreateMany(params: ICreateManyParams) {
 
   const req = useMutation({
     mutationFn: (data) => {
-      if (!manage.dataProvider) {
+      if (!manage.config.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
-      return manage.dataProvider.createMany({
+      return manage.config.dataProvider.createMany({
         ...props.value,
         ...data,
-      })
+      }, manage, auth)
     },
     onSuccess: (data) => {
       params.onSuccess?.(data)
@@ -312,7 +320,8 @@ interface IUpdateParams extends IDataProviderUpdateOptions {
  * @param params
  */
 export function useUpdate(params: IUpdateParams) {
-  const { config: manage } = useManage()
+  const manage = useManage()
+  const auth = useGetAuth()
   const { mutate: onAuthError } = useError()
   const { invalidate } = useInvalidate()
   const props = computed((): IDataProviderUpdateOptions => {
@@ -322,13 +331,13 @@ export function useUpdate(params: IUpdateParams) {
 
   const req = useMutation({
     mutationFn: (data) => {
-      if (!manage.dataProvider) {
+      if (!manage.config.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
-      return manage.dataProvider.update({
+      return manage.config.dataProvider.update({
         ...props.value,
         ...data,
-      })
+      }, manage, auth)
     },
     onSuccess: (data) => {
       params.onSuccess?.(data)
@@ -359,7 +368,8 @@ interface IUpdateManyParams extends IDataProviderUpdateManyOptions {
 }
 
 export function useUpdateMany(params: IUpdateManyParams) {
-  const { config: manage } = useManage()
+  const manage = useManage()
+  const auth = useGetAuth()
   const { mutate: onAuthError } = useError()
   const { invalidate } = useInvalidate()
 
@@ -370,13 +380,13 @@ export function useUpdateMany(params: IUpdateManyParams) {
 
   const req = useMutation({
     mutationFn: (data) => {
-      if (!manage.dataProvider) {
+      if (!manage.config.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
-      return manage.dataProvider.updateMany({
+      return manage.config.dataProvider.updateMany({
         ...props.value,
         ...data,
-      })
+      }, manage, auth)
     },
     onSuccess: (data) => {
       params.onSuccess?.(data)
@@ -411,7 +421,8 @@ interface IDeleteParams extends IDataProviderDeleteOptions {
  * @param params
  */
 export function useDelete(params: IDeleteParams) {
-  const { config: manage } = useManage()
+  const manage = useManage()
+  const auth = useGetAuth()
   const { mutate: onAuthError } = useError()
   const { invalidate } = useInvalidate()
   const props = computed((): IDataProviderDeleteOptions => {
@@ -421,13 +432,13 @@ export function useDelete(params: IDeleteParams) {
 
   const req = useMutation({
     mutationFn: (data) => {
-      if (!manage.dataProvider) {
+      if (!manage.config.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
-      return manage.dataProvider.deleteOne({
+      return manage.config.dataProvider.deleteOne({
         ...props.value,
         ...data,
-      })
+      }, manage, auth)
     },
     onSuccess: (data) => {
       params.onSuccess?.(data)
@@ -462,7 +473,8 @@ interface IDeleteManyParams extends IDataProviderDeleteManyOptions {
  * @param params
  */
 export function useDeleteMany(params: IDeleteManyParams) {
-  const { config: manage } = useManage()
+  const manage = useManage()
+  const auth = useGetAuth()
   const { mutate: onAuthError } = useError()
   const { invalidate } = useInvalidate()
   const props = computed((): IDataProviderDeleteManyOptions => {
@@ -472,13 +484,13 @@ export function useDeleteMany(params: IDeleteManyParams) {
 
   const req = useMutation({
     mutationFn: (data) => {
-      if (!manage.dataProvider) {
+      if (!manage.config.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
-      return manage.dataProvider.deleteMany({
+      return manage.config.dataProvider.deleteMany({
         ...props.value,
         ...data,
-      })
+      }, manage, auth)
     },
     onSuccess: (data) => {
       params.onSuccess?.(data)
@@ -512,7 +524,8 @@ interface ICustomParams extends IDataProviderCustomOptions {
  * @param params
  */
 export function useCustom(params: ICustomParams) {
-  const { config: manage } = useManage()
+  const manage = useManage()
+  const auth = useGetAuth()
   const { mutate: onAuthError } = useError()
 
   const props = computed((): IDataProviderCustomOptions => {
@@ -522,7 +535,7 @@ export function useCustom(params: ICustomParams) {
 
   const req = useQuery({
     queryKey: [params.path, props],
-    queryFn: () => manage.dataProvider?.custom({ ...props.value }),
+    queryFn: () => manage.config.dataProvider?.custom({ ...props.value }, manage, auth),
     ...params.options,
   })
 
@@ -557,7 +570,8 @@ interface ICustomMutationParams extends IDataProviderCustomOptions {
  * @param params
  */
 export function useCustomMutation(params: ICustomMutationParams) {
-  const { config: manage } = useManage()
+  const manage = useManage()
+  const auth = useGetAuth()
   const { mutate: onAuthError } = useError()
 
   const props = computed((): IDataProviderCustomOptions => {
@@ -567,13 +581,13 @@ export function useCustomMutation(params: ICustomMutationParams) {
 
   const req = useMutation({
     mutationFn: (data) => {
-      if (!manage.dataProvider) {
+      if (!manage.config.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
-      return manage.dataProvider.custom({
+      return manage.config.dataProvider.custom({
         ...props.value,
         ...data,
-      })
+      }, manage, auth)
     },
     onSuccess: (data) => {
       params.onSuccess?.(data)
@@ -591,6 +605,26 @@ export function useCustomMutation(params: ICustomMutationParams) {
     ...req,
     isLoading,
     mutate: req.mutate,
+  }
+}
+
+/**
+ * Custom request client
+ */
+export function useClient() {
+  const manage = useManage()
+  const auth = useGetAuth()
+  const request = (params: IDataProviderCustomOptions) => {
+    if (!manage.config.dataProvider) {
+      throw new Error('Data provider is not initialized')
+    }
+    return manage.config.dataProvider?.custom({
+      ...params,
+    }, manage, auth)
+  }
+
+  return {
+    request,
   }
 }
 

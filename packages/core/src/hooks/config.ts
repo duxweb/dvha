@@ -11,5 +11,6 @@ export function useConfig(): IConfig {
   if (!config) {
     throw new Error('config is not defined')
   }
+
   return config
 }

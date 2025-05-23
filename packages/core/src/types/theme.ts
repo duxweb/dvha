@@ -5,3 +5,8 @@ export interface IConfigTheme {
   banner?: string
   darkBanner?: string
 }
+
+export interface ITheme {
+  logo?: string
+  banner?: string
+}
