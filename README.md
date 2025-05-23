@@ -60,8 +60,6 @@ flowchart TD
 # 安装核心包
 npm install @dux-vue/core
 
-# 安装相关依赖
-npm install vue vue-router pinia
 ```
 
 ## 使用示例
@@ -87,8 +85,9 @@ app.mount('#app')
 
 ## 相关包
 
-- ⚙️ `@dux-vue/core`: 核心功能包
-- 📋 `@dux-vue/table`: 表格数据处理工具
+- `@dux-vue/core`: 核心功能包
+- `@dux-vue/naiveui`: Naive UI 增强包
+- `@dux-vue/elmentui`: Elment Plus 增强包
 
 ## 开源协议
 
