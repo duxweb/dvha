@@ -1,20 +1,18 @@
 {
   "name": "@duxweb/dvha-template",
-  "version": "1.0.2",
-  "description": "Create DVHA project from template",
   "type": "module",
-  "bin": {
-    "duxweb-dvha": "./bin/index.js"
+  "version": "1.0.3",
+  "description": "Create DVHA project from template",
+  "author": "DuxWeb",
+  "license": "LGPL-3.0",
+  "homepage": "https://github.com/your-username/dux-vue#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/dux-vue.git",
+    "directory": "packages/create-dux-vue"
   },
-  "files": [
-    "bin",
-    "template",
-    "README.md"
-  ],
-  "scripts": {
-    "test": "./scripts/test.sh",
-    "push": "./scripts/publish.sh",
-    "dev": "bun run bin/index.js"
+  "bugs": {
+    "url": "https://github.com/your-username/dux-vue/issues"
   },
   "keywords": [
     "vue",
@@ -27,24 +25,26 @@
     "vue3",
     "bun"
   ],
-  "author": "DuxWeb",
-  "license": "LGPL-3.0",
-  "dependencies": {
-    "fs-extra": "^11.2.0",
-    "@inquirer/prompts": "^7.5.1",
-    "kolorist": "^1.8.0",
-    "commander": "^14.0.0"
+  "bin": {
+    "duxweb-dvha": "./bin/index.js"
   },
+  "files": [
+    "README.md",
+    "bin",
+    "template"
+  ],
   "engines": {
     "node": ">=20.0.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/your-username/dux-vue.git",
-    "directory": "packages/create-dux-vue"
+  "scripts": {
+    "test": "./scripts/test.sh",
+    "push": "./scripts/publish.sh",
+    "dev": "bun run bin/index.js"
   },
-  "bugs": {
-    "url": "https://github.com/your-username/dux-vue/issues"
-  },
-  "homepage": "https://github.com/your-username/dux-vue#readme"
+  "dependencies": {
+    "@inquirer/prompts": "^7.5.1",
+    "commander": "^14.0.0",
+    "fs-extra": "^11.2.0",
+    "kolorist": "^1.8.0"
+  }
 }

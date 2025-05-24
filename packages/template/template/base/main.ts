@@ -1,5 +1,5 @@
 import type { IConfig } from '@duxweb/dvha-core'
-import { createDux, simpleDataProvider, simpleAuthProvider } from '@duxweb/dvha-core'
+import { createDux, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
 import { createApp } from 'vue'
 import App from './App.vue'
 
@@ -28,7 +28,7 @@ const config: IConfig = {
           component: () => import('./pages/login.vue'),
           meta: {
             authorization: false,
-          }
+          },
         },
       ],
       menus: [
@@ -53,7 +53,7 @@ const config: IConfig = {
           label: '系统设置',
           component: () => import('./pages/home.vue'),
         },
-      ]
+      ],
     },
   ],
   dataProvider: simpleDataProvider,

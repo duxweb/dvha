@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-core",
   "type": "module",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "author": "DuxWeb",
   "license": "LGPL-3.0",
   "repository": {
@@ -29,14 +29,13 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "build": "bun run clean && vue-tsc --noEmit && vite build && bun run build:types",
+    "build": "bun run clean && vite build && bun run build:types",
     "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/types",
     "prepublishOnly": "bun run build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "peerDependencies": {
-  },
+  "peerDependencies": {},
   "dependencies": {
     "@overlastic/vue": "^0.8.1",
     "@tanstack/vue-query": "^5.76.2",
@@ -51,5 +50,7 @@
     "vue-router": "^4.0.0"
   },
   "devDependencies": {
+    "rimraf": "^6.0.1",
+    "vue-tsc": "^2.2.10"
   }
 }

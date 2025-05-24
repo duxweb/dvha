@@ -21,8 +21,6 @@
     "docs:preview": "bun --filter docs preview",
     "tpl:test": "bun --filter @duxweb/dvha-template test",
     "tpl:dev": "bun --filter @duxweb/dvha-template dev",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:push": "changeset publish"

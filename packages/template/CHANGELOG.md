@@ -1,5 +1,11 @@
 # @duxweb/dvha-template
 
+## 1.0.3
+
+### Patch Changes
+
+- chore: 更新依赖和编译
+
 ## 1.0.2
 
 ### Patch Changes

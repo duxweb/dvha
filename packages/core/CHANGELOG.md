@@ -1,5 +1,17 @@
 # @duxweb/dvha-core
 
+## 0.0.8
+
+### Patch Changes
+
+- fix: 修正编译脚本
+
+## 0.0.7
+
+### Patch Changes
+
+- chore: 更新依赖和编译
+
 ## 0.0.6
 
 ### Patch Changes
