@@ -28,53 +28,12 @@ DVHA (Dux Vue Headless Admin) is a Vue 3-based headless admin frontend developme
 
 ## ✨ Key Features
 
-### 🎨 UI Framework Agnostic
-> Seamlessly integrate with any Vue ecosystem UI framework
-
-- ✅ Element Plus
-- ✅ Ant Design Vue
-- ✅ Naive UI
-- ✅ Other Vue UI frameworks
-
-### 🏢 Enterprise Multi-tenant
-> Built-in multiple admin support
-
-- 🎯 Main backend management
-- 📱 Sub-application backend
-- 🏪 Merchant backend
-- 🏗️ Multi-tenant architecture
-
-### 🔑 Unified Authentication
-> Complete authentication process and permission management
-
-- 🔐 Multiple authentication methods
-- 🎛️ Fine-grained permission control
-- 🛡️ Route guards
-- ✅ Permission verification
-
-### 🚀 Out-of-the-box CRUD
-> Rich hooks and utility functions
-
-- ⚡ Automatic data processing
-- 💾 State management
-- 📝 Form validation
-- 🤖 Repetitive work automation
-
-### 🌐 Internationalization
-> Built-in I18n support
-
-- 🌍 Multi-language applications
-- 🌏 Global business
-- 🔄 Language switching
-- 📍 Localization adaptation
-
-### 📘 Full TypeScript
-> 100% TypeScript development
-
-- 💡 Complete type hints
-- 🛡️ Type safety
-- ⚡ Better development experience
-- 📊 Code quality assurance
+- 🎨 **UI Framework Agnostic** - Seamlessly integrate with any Vue ecosystem UI framework (Element Plus, Ant Design Vue, Naive UI, etc.)
+- 🏢 **Enterprise Multi-tenant** - Built-in multiple admin support for main backend, sub-application backend, merchant backend and multi-tenant architecture
+- 🔑 **Unified Authentication** - Complete authentication process and permission management with multiple authentication methods and fine-grained permission control
+- 🚀 **Out-of-the-box CRUD** - Rich hooks and utility functions for automatic data processing and state management
+- 🌐 **Internationalization** - Built-in I18n support for easy multi-language applications and global business
+- 📘 **Full TypeScript** - 100% TypeScript development with complete type hints and better development experience
 
 ## 🏗️ Architecture Design
 
