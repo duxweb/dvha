@@ -149,7 +149,9 @@ export const DuxAppProvider = defineComponent({
               route.component = () => Promise.resolve({ template: '<div></div>' })
               break
             default:
-              route.component = typeof item.component === 'string' ? () => import(item.component as string) : item.component
+              if (item.component) {
+                route.component = item.component
+              }
               break
           }
 

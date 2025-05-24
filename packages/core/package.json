@@ -8,7 +8,18 @@
     "type": "git",
     "url": "https://github.com/duxweb/dvha.git"
   },
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
   "dependencies": {
     "@overlastic/vue": "^0.8.1",
     "@tanstack/vue-query": "^5.76.2",

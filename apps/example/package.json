@@ -17,8 +17,8 @@
   },
   "dependencies": {
     "@duxweb/dvha-core": "workspace:*",
-    "@duxweb/dvha-elementui": "workspace:*",
     "@duxweb/dvha-naiveui": "workspace:*",
+    "@duxweb/dvha-elementui": "workspace:*",
     "@iconify-json/tabler": "^1.2.18",
     "@unocss/preset-icons": "^66.1.2",
     "@vueuse/core": "^13.2.0",
