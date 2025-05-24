@@ -195,9 +195,3 @@ const switchTo = (routePrefix: string) => {
 - 在多管理端应用中，不同管理端的配置是独立的
 - `getApiUrl` 方法会自动处理 API 基础地址和路径拼接
 - 管理端切换时，相关的状态和缓存会自动重置
-
-## 相关 Hooks
-
-- [useConfig](./useConfig.md) - 获取全局配置
-- [useRouter](../router/useRouter.md) - 路由操作
-- [useMenu](./useMenu.md) - 菜单管理

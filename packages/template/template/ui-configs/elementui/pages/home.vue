@@ -57,7 +57,7 @@
       <h3 class="text-xl font-bold text-gray-900 mb-4">开始构建您的管理系统</h3>
       <p class="text-gray-600 mb-6">@duxweb/dvha-core 为您提供了构建现代化管理系统所需的所有工具</p>
       <div class="flex justify-center space-x-4">
-        <a href="https://github.com/duxweb/dux-vue" target="_blank"
+        <a href="https://github.com/duxweb/dvha" target="_blank"
            class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">
           <div class="i-tabler:brand-github mr-2"></div>
           查看源码

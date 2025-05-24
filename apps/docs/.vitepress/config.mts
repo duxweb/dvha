@@ -94,7 +94,7 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/duxweb/dux-vue' }
+      { icon: 'github', link: 'https://github.com/duxweb/dvha' }
     ]
   }
 })

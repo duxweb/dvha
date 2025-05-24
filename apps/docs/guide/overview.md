@@ -160,14 +160,7 @@ DVHA 提供了丰富的 hooks 来简化开发：
 **DVHA** 拥有非常友好的社区，我们随时乐意帮助您入门：
 
 * 🌟 加入我们的 QQ 群或微信群获得社区支持
-* 📖 查看我们的 [GitHub 仓库](https://github.com/duxweb/dux-vue) 了解最新更新
+* 📖 查看我们的 [GitHub 仓库](https://github.com/duxweb/dvha) 了解最新更新
 * 💬 在 GitHub Discussions 中提出任何关于 DVHA 项目的问题或给出反馈
 * 🤝 了解如何为 DVHA 项目做贡献
 
-## 下一步
-
-👉 继续阅读 [快速开始](./started.md) 指南，设置并运行您的第一个 **DVHA** 项目。
-
-👉 探索 [数据处理](../data/overview.md) 了解强大的数据操作功能。
-
-👉 学习 [认证系统](../auth/overview.md) 保护您的应用安全。

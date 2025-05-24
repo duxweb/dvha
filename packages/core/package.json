@@ -6,7 +6,7 @@
   "license": "LGPL-3.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/duxweb/dux-vue.git"
+    "url": "https://github.com/duxweb/dvha.git"
   },
   "main": "src/index.ts",
   "dependencies": {
