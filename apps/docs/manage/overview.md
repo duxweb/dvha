@@ -47,9 +47,9 @@ interface IManage {
 ### 单管理端配置
 
 ```js
-import { createDuxApp } from '@duxweb/dvha-core'
+import { createDux } from '@duxweb/dvha-core'
 
-const app = createDuxApp({
+const app = createDux({
   // 默认管理端
   defaultManage: 'admin',
 
@@ -96,7 +96,7 @@ const app = createDuxApp({
 ### 多管理端配置
 
 ```js
-const app = createDuxApp({
+const app = createDux({
   // 全局配置
   title: 'DVHA 框架',
   copyright: '© 2024 DVHA',
@@ -152,7 +152,7 @@ const app = createDuxApp({
 DVHA 支持全局配置和管理端配置的继承机制：
 
 ```js
-const app = createDuxApp({
+const app = createDux({
   // 全局配置
   title: 'DVHA 系统',
   copyright: '© 2024 DVHA',
@@ -340,7 +340,7 @@ const app = createDuxApp({
 ### 企业级多管理端配置
 
 ```js
-import { createDuxApp } from '@duxweb/dvha-core'
+import { createDux } from '@duxweb/dvha-core'
 
 // 认证提供者
 const createAuthProvider = (baseUrl) => ({
@@ -367,7 +367,7 @@ const createDataProvider = (baseUrl) => ({
   // 其他方法...
 })
 
-const app = createDuxApp({
+const app = createDux({
   // 全局配置
   title: '企业管理平台',
   copyright: '© 2024 Enterprise Corp',

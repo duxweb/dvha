@@ -160,31 +160,66 @@ pnpm add @duxweb/dvha-core
 ### 基础使用
 
 ```typescript
-import { createDux } from '@duxweb/dvha-core'
+import type { IConfig } from '@duxweb/dvha-core'
+import { createDux, simpleDataProvider, simpleAuthProvider } from '@duxweb/dvha-core'
 import { createApp } from 'vue'
 import App from './App.vue'
 
 const app = createApp(App)
 
-// 创建 Dux 实例
-const dux = createDux({
-  // API 基础路径
-  baseUrl: '/api',
-  // 应用配置
-  app: {
-    name: 'My Admin App',
-    version: '1.0.0'
-  },
-  // 认证配置
-  auth: {
-    loginPath: '/login',
-    homePath: '/dashboard'
-  }
-  // 其他配置...
-})
+const config: IConfig = {
+  apiUrl: 'https://api.example.com', // 替换为你的 API 地址
+  defaultManage: 'admin',
+  manages: [
+    {
+      name: 'admin',
+      title: 'DVHA 后台管理系统',
+      routePrefix: '/admin',
+      apiUrl: '/admin',
+      components: {
+        authLayout: () => import('./pages/layout.vue'),
+        notFound: () => import('./pages/404.vue'),
+      },
+      routes: [
+        {
+          name: 'admin.login',
+          path: 'login',
+          component: () => import('./pages/login.vue'),
+          meta: {
+            authorization: false,
+          }
+        },
+      ],
+      menus: [
+        {
+          name: 'home',
+          path: 'index',
+          icon: 'i-tabler:home',
+          label: '首页',
+          component: () => import('./pages/home.vue'),
+        },
+        {
+          name: 'users',
+          path: 'users',
+          icon: 'i-tabler:users',
+          label: '用户管理',
+          component: () => import('./pages/home.vue'),
+        },
+        {
+          name: 'settings',
+          path: 'settings',
+          icon: 'i-tabler:settings',
+          label: '系统设置',
+          component: () => import('./pages/home.vue'),
+        },
+      ]
+    },
+  ],
+  dataProvider: simpleDataProvider,
+  authProvider: simpleAuthProvider,
+}
 
-// 使用 Dux
-app.use(dux)
+app.use(createDux(config))
 app.mount('#app')
 ```
 

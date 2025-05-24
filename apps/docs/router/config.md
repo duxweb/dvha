@@ -16,9 +16,9 @@ DVHA 框架提供了灵活的路由配置系统，支持多管理端路由配置
 ### 基础配置
 
 ```js
-import { createDuxApp } from '@duxweb/dvha-core'
+import { createDux } from '@duxweb/dvha-core'
 
-const app = createDuxApp({
+const app = createDux({
   // 全局路由配置
   routes: [
     {
@@ -281,9 +281,9 @@ manages: [
 ### 单管理端应用
 
 ```js
-import { createDuxApp } from '@duxweb/dvha-core'
+import { createDux } from '@duxweb/dvha-core'
 
-const app = createDuxApp({
+const app = createDux({
   defaultManage: 'admin',
   manages: [
     {
@@ -332,7 +332,7 @@ const app = createDuxApp({
 ### 多管理端应用
 
 ```js
-const app = createDuxApp({
+const app = createDux({
   defaultManage: 'admin',
   manages: [
     // 系统管理端

@@ -255,9 +255,9 @@ const adminManage = {
 ### 单管理端菜单
 
 ```js
-import { createDuxApp } from '@duxweb/dvha-core'
+import { createDux } from '@duxweb/dvha-core'
 
-const app = createDuxApp({
+const app = createDux({
   defaultManage: 'admin',
   manages: [
     {
@@ -336,7 +336,7 @@ const app = createDuxApp({
 ### 多管理端菜单
 
 ```js
-const app = createDuxApp({
+const app = createDux({
   defaultManage: 'admin',
   manages: [
     // 系统管理端

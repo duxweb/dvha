@@ -160,81 +160,210 @@ pnpm add @duxweb/dvha-core
 ### Basic Usage
 
 ```typescript
-import { createDux } from '@duxweb/dvha-core'
+import type { IConfig } from '@duxweb/dvha-core'
+import { createDux, simpleDataProvider, simpleAuthProvider } from '@duxweb/dvha-core'
 import { createApp } from 'vue'
 import App from './App.vue'
 
 const app = createApp(App)
 
-// Create Dux instance
-const dux = createDux({
-  // API base path
-  baseUrl: '/api',
-  // App configuration
-  app: {
-    name: 'My Admin App',
-    version: '1.0.0'
-  },
-  // Auth configuration
-  auth: {
-    loginPath: '/login',
-    homePath: '/dashboard'
-  }
-  // Other configurations...
-})
+const config: IConfig = {
+  apiUrl: 'https://api.example.com', // Replace with your API address
+  defaultManage: 'admin',
+  manages: [
+    {
+      name: 'admin',
+      title: 'DVHA Admin Management System',
+      routePrefix: '/admin',
+      apiUrl: '/admin',
+      components: {
+        authLayout: () => import('./pages/layout.vue'),
+        notFound: () => import('./pages/404.vue'),
+      },
+      routes: [
+        {
+          name: 'admin.login',
+          path: 'login',
+          component: () => import('./pages/login.vue'),
+          meta: {
+            authorization: false,
+          }
+        },
+      ],
+      menus: [
+        {
+          name: 'home',
+          path: 'index',
+          icon: 'i-tabler:home',
+          label: 'Home',
+          component: () => import('./pages/home.vue'),
+        },
+        {
+          name: 'users',
+          path: 'users',
+          icon: 'i-tabler:users',
+          label: 'User Management',
+          component: () => import('./pages/home.vue'),
+        },
+        {
+          name: 'settings',
+          path: 'settings',
+          icon: 'i-tabler:settings',
+          label: 'System Settings',
+          component: () => import('./pages/home.vue'),
+        },
+      ]
+    },
+  ],
+  dataProvider: simpleDataProvider,
+  authProvider: simpleAuthProvider,
+}
 
-// Use Dux
-app.use(dux)
+app.use(createDux(config))
 app.mount('#app')
 ```
 
-### Advanced Example
+### Advanced Example (Multi-tenant)
 
 ```typescript
-import { createDux } from '@duxweb/dvha-core'
+import type { IConfig } from '@duxweb/dvha-core'
+import { createDux, simpleDataProvider, simpleAuthProvider } from '@duxweb/dvha-core'
 import { createApp } from 'vue'
 import App from './App.vue'
 
 const app = createApp(App)
 
-const dux = createDux({
-  baseUrl: process.env.VUE_APP_API_BASE_URL || '/api',
+const config: IConfig = {
+  // Global configuration
+  title: 'Enterprise Admin Platform',
+  copyright: '© 2024 Enterprise Corp',
+  apiUrl: 'https://api.enterprise.com',
 
-  // Multi-tenant configuration
-  tenant: {
-    enabled: true,
-    key: 'tenant_id',
-    storage: 'localStorage'
-  },
+  defaultManage: 'admin',
 
-  // Authentication configuration
-  auth: {
-    loginPath: '/login',
-    homePath: '/dashboard',
-    tokenKey: 'access_token',
-    refreshTokenKey: 'refresh_token',
-    autoRefresh: true
-  },
+  manages: [
+    // System management
+    {
+      name: 'admin',
+      title: 'System Management',
+      routePrefix: '/admin',
+      apiUrl: '/admin',
 
-  // Permission configuration
-  permission: {
-    mode: 'route', // 'route' | 'function' | 'both'
-    cache: true,
-    cacheKey: 'user_permissions'
-  },
+      // Feature toggles
+      register: false,
+      forgotPassword: true,
+      updatePassword: true,
 
-  // Internationalization
-  i18n: {
-    locale: 'en',
-    fallbackLocale: 'en',
-    messages: {
-      en: () => import('./locales/en.json'),
-      zh: () => import('./locales/zh.json')
+      // Remote menu loading
+      apiRoutePath: '/admin/menus',
+
+      // Layout components
+      components: {
+        authLayout: () => import('./layouts/AdminLayout.vue'),
+        noAuthLayout: () => import('./layouts/LoginLayout.vue'),
+        notFound: () => import('./pages/404.vue'),
+        notAuthorized: () => import('./pages/403.vue')
+      },
+
+      // Authentication routes
+      routes: [
+        {
+          name: 'admin.login',
+          path: 'login',
+          component: () => import('./pages/admin/Login.vue'),
+          meta: { authorization: false }
+        },
+        {
+          name: 'admin.register',
+          path: 'register',
+          component: () => import('./pages/admin/Register.vue'),
+          meta: { authorization: false }
+        }
+      ],
+
+      // Local menus
+      menus: [
+        {
+          name: 'dashboard',
+          path: 'dashboard',
+          icon: 'i-tabler:dashboard',
+          label: 'Dashboard',
+          component: () => import('./pages/admin/Dashboard.vue')
+        },
+        {
+          name: 'users',
+          path: 'users',
+          icon: 'i-tabler:users',
+          label: 'User Management',
+          component: () => import('./pages/admin/Users.vue'),
+          meta: { permissions: ['user.read'] }
+        },
+        {
+          name: 'system',
+          path: 'system',
+          icon: 'i-tabler:settings',
+          label: 'System Settings',
+          component: () => import('./pages/admin/System.vue')
+        }
+      ],
+
+      // Theme configuration
+      theme: {
+        logo: '/admin-logo.png',
+        banner: '/admin-banner.jpg'
+      }
+    },
+
+    // User center
+    {
+      name: 'user',
+      title: 'User Center',
+      routePrefix: '/user',
+      apiUrl: '/user',
+
+      // Enable user registration
+      register: true,
+      forgotPassword: true,
+
+      components: {
+        authLayout: () => import('./layouts/UserLayout.vue'),
+        noAuthLayout: () => import('./layouts/UserLoginLayout.vue')
+      },
+
+      routes: [
+        {
+          name: 'user.login',
+          path: 'login',
+          component: () => import('./pages/user/Login.vue'),
+          meta: { authorization: false }
+        }
+      ],
+
+      menus: [
+        {
+          name: 'profile',
+          path: 'profile',
+          icon: 'i-tabler:user',
+          label: 'My Profile',
+          component: () => import('./pages/user/Profile.vue')
+        },
+        {
+          name: 'orders',
+          path: 'orders',
+          icon: 'i-tabler:shopping-cart',
+          label: 'My Orders',
+          component: () => import('./pages/user/Orders.vue')
+        }
+      ]
     }
-  }
-})
+  ],
 
-app.use(dux)
+  // Global providers
+  dataProvider: simpleDataProvider,
+  authProvider: simpleAuthProvider,
+}
+
+app.use(createDux(config))
 app.mount('#app')
 ```
 

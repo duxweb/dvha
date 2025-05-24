@@ -91,7 +91,7 @@ const unifiedDataProvider = {
   // ... 其他方法
 }
 
-const app = createDuxApp({
+const app = createDux({
   // 全局API配置
   apiUrl: unifiedApiUrl,
   dataProvider: unifiedDataProvider, // 全局数据提供者
@@ -163,7 +163,7 @@ const createDataProvider = (baseUrl, serviceName) => ({
   // ... 其他方法
 })
 
-const app = createDuxApp({
+const app = createDux({
   manages: [
     // 系统管理端 - 独立的管理API
     {
@@ -292,7 +292,7 @@ const getServiceByPath = (path) => {
   return 'default-service'
 }
 
-const app = createDuxApp({
+const app = createDux({
   // 共享微服务数据提供者
   dataProvider: microserviceDataProvider,
 
@@ -396,7 +396,7 @@ const isCoreService = (path) => {
   return corePathPrefixes.some(prefix => path.startsWith(prefix))
 }
 
-const app = createDuxApp({
+const app = createDux({
   manages: [
     {
       name: 'admin',
@@ -463,7 +463,7 @@ const gatewayDataProvider = {
   // ... 其他方法
 }
 
-const app = createDuxApp({
+const app = createDux({
   // 所有管理端共享网关数据提供者
   dataProvider: gatewayDataProvider,
 
@@ -499,7 +499,7 @@ const app = createDuxApp({
 ### 企业级应用
 
 ```js
-const app = createDuxApp({
+const app = createDux({
   defaultManage: 'admin',
   manages: [
     // 系统管理端 - 超级管理员使用
@@ -544,7 +544,7 @@ const app = createDuxApp({
 ### 电商平台
 
 ```js
-const app = createDuxApp({
+const app = createDux({
   defaultManage: 'platform',
   manages: [
     // 平台管理端 - 平台运营人员
@@ -617,7 +617,7 @@ const app = createDuxApp({
 ### SaaS平台
 
 ```js
-const app = createDuxApp({
+const app = createDux({
   defaultManage: 'admin',
   manages: [
     // SaaS管理端 - 平台管理员
@@ -731,7 +731,7 @@ const createIsolatedDataProvider = (config) => ({
   }
 })
 
-const app = createDuxApp({
+const app = createDux({
   manages: [
     {
       name: 'admin',
@@ -872,7 +872,7 @@ const createDatabaseProvider = (dbConfig) => ({
   }
 })
 
-const app = createDuxApp({
+const app = createDux({
   manages: [
     {
       name: 'admin',
@@ -1001,7 +1001,7 @@ const getApiPath = (manageName, originalPath) => {
 }
 
 // 应用配置
-const app = createDuxApp({
+const app = createDux({
   manages: [
     {
       name: 'admin',
@@ -1051,7 +1051,7 @@ const createAuthProvider = (authConfig) => ({
   }
 })
 
-const app = createDuxApp({
+const app = createDux({
   manages: [
     {
       name: 'admin',
@@ -1168,7 +1168,7 @@ const secureDataProvider = {
 ### 独立主题配置
 
 ```js
-const app = createDuxApp({
+const app = createDux({
   manages: [
     // 管理端 - 专业深色主题
     {
