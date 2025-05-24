@@ -1,68 +1,163 @@
 # DVHA
 
-DVHA (Dux Vue Headless Admin) 是一款基于 Vue 3 的无头（Headless）中后台前端开发框架，通过将业务逻辑与 UI 表现层解耦，专注于前端的多管理端、认证、权限、CRUD、I18n等业务逻辑处理，可以搭配任何 Vue 生态的 UI 框架，使开发者专注于业务实现而不必关注 UI 框架的选择与整合。
+<div align="center">
 
-### 主要特性
+![DVHA Logo](https://img.shields.io/badge/DVHA-Vue%203-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
 
-- 🎨 **UI 框架无关**：可以与任何 Vue 生态的 UI 框架（如 Element Plus、Ant Design Vue、Naive UI 等）集成
-- 🏢 **多管理端支持**：适用于构建多个管理端应用，如主后台、子应用后台、商户后台等
-- 🔑 **统一认证**：内置完整的认证流程和权限管理
-- 📝 **CRUD 操作简化**：提供丰富的 hooks 和工具函数，简化数据增删改查操作
-- 🌐 **国际化支持**：内置 I18n 支持
-- 📘 **TypeScript 支持**：完全使用 TypeScript 开发，提供良好的类型提示
+**🚀 轻松搭建中后台管理系统的前端解决方案**
 
-### 架构图
+*一个基于 Vue 3 的无头（Headless）中后台框架*
+
+[![npm version](https://img.shields.io/npm/v/@duxweb/dvha-core.svg)](https://www.npmjs.com/package/@duxweb/dvha-core)
+[![License: LGPL-3.0](https://img.shields.io/badge/License-LGPL%203.0-blue.svg)](https://opensource.org/licenses/LGPL-3.0)
+[![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
+
+📖 **[查看完整文档](https://duxweb.github.io/dvha/)** | 🌟 **[在线演示](https://duxweb.github.io/dvha/demo)** | 🎯 **[快速开始](#快速开始)** | 🇺🇸 **[English](./README.en.md)**
+
+</div>
+
+---
+
+## 📖 项目介绍
+
+DVHA (Dux Vue Headless Admin) 是一款基于 Vue 3 的无头（Headless）中后台前端开发框架。通过将业务逻辑与 UI 表现层解耦，专注于前端的多管理端、认证、权限、CRUD、I18n等业务逻辑处理，可以搭配任何 Vue 生态的 UI 框架，使开发者专注于业务实现而不必关注 UI 框架的选择与整合。
+
+## ✨ 主要特性
+
+<table>
+<tr>
+<td>
+
+### 🎨 UI 框架无关
+可以与任何 Vue 生态的 UI 框架集成
+- Element Plus
+- Ant Design Vue
+- Naive UI
+- 其他 Vue UI 框架
+
+</td>
+<td>
+
+### 🏢 企业级多租户
+内置多管理端支持
+- 主后台管理
+- 子应用后台
+- 商户后台
+- 多租户架构
+
+</td>
+</tr>
+<tr>
+<td>
+
+### 🔑 统一身份认证
+完整的认证流程和权限管理
+- 多种认证方式
+- 细粒度权限控制
+- 路由守卫
+- 权限验证
+
+</td>
+<td>
+
+### 🚀 开箱即用的 CRUD
+提供丰富的 hooks 和工具函数
+- 自动数据处理
+- 状态管理
+- 表单验证
+- 重复性工作自动化
+
+</td>
+</tr>
+<tr>
+<td>
+
+### 🌐 国际化支持
+内置 I18n 支持
+- 多语言应用
+- 全球化业务
+- 语言切换
+- 本地化适配
+
+</td>
+<td>
+
+### 📘 完整 TypeScript
+100% TypeScript 开发
+- 完整类型提示
+- 类型安全
+- 更好的开发体验
+- 代码质量保证
+
+</td>
+</tr>
+</table>
+
+## 🏗️ 架构设计
 
 ```mermaid
 flowchart TD
-    subgraph 应用层["应用层(多租户)"]
-        主管理端
-        其他管理端
+    subgraph 应用层["🏢 应用层(多租户)"]
+        主管理端["🎯 主管理端"]
+        其他管理端["🔧 其他管理端"]
     end
 
-    subgraph 核心层["@duxweb/dvha-core 核心层"]
-        路由
-        状态管理
-        用户认证
-        数据处理
-        配置中心
-        通用组件
-        UIHook
+    subgraph 核心层["⚡ @duxweb/dvha-core 核心层"]
+        路由["🧭 路由管理"]
+        状态管理["💾 状态管理"]
+        用户认证["🔐 用户认证"]
+        数据处理["📊 数据处理"]
+        配置中心["⚙️ 配置中心"]
+        通用组件["🧩 通用组件"]
+        UIHook["📺 UI Hook"]
     end
 
-    subgraph UI框架层["UI 框架层 (随意搭配)"]
+    subgraph UI框架层["🎨 UI 框架层 (随意搭配)"]
         Element["Element Plus"]
-        Ant["Antv Design"]
+        Ant["Antd Design"]
         Naive["Naive UI"]
         其他["其他UI框架"]
     end
 
     应用层 --> 核心层
     核心层 --> UI框架层
+
+    style 应用层 fill:#e1f5fe
+    style 核心层 fill:#f3e5f5
+    style UI框架层 fill:#e8f5e8
 ```
 
-## 核心包 @duxweb/dvha-core
+## 📦 核心包 @duxweb/dvha-core
 
-`@duxweb/dvha-core` 是 Dux Vue 的核心包，提供了框架的基础功能：
+`@duxweb/dvha-core` 是 DVHA 的核心包，提供了框架的基础功能：
 
-### 核心组件
+### 🔧 核心组件
 
-- 🧭 **路由管理**：基于 Vue Router 的路由管理，支持权限控制和路由守卫
-- 💾 **状态管理**：基于 Pinia 的状态管理，支持持久化存储
-- 🔐 **认证模块**：完整的用户认证流程，包括登录、注册、权限验证等
-- 📊 **数据处理**：提供数据 CRUD 相关的 hooks 和工具函数
-- ⚙️ **配置中心**：统一的应用配置管理
-- 📺 **UI Hook**：针对部分 UI 库提供 hook 功能来轻松整合数据交互
+| 组件 | 描述 |
+|------|------|
+| 🧭 **路由管理** | 基于 Vue Router 的路由管理，支持权限控制和路由守卫 |
+| 💾 **状态管理** | 基于 Pinia 的状态管理，支持持久化存储 |
+| 🔐 **认证模块** | 完整的用户认证流程，包括登录、注册、权限验证等 |
+| 📊 **数据处理** | 提供数据 CRUD 相关的 hooks 和工具函数 |
+| ⚙️ **配置中心** | 统一的应用配置管理 |
+| 📺 **UI Hook** | 针对部分 UI 库提供 hook 功能来轻松整合数据交互 |
 
-## 快速开始
+## 🚀 快速开始
+
+### 安装
 
 ```bash
-# 安装核心包
+# 使用 npm
 npm install @duxweb/dvha-core
 
+# 使用 yarn
+yarn add @duxweb/dvha-core
+
+# 使用 pnpm
+pnpm add @duxweb/dvha-core
 ```
 
-## 使用示例
+### 基础使用
 
 ```typescript
 import { createDux } from '@duxweb/dvha-core'
@@ -73,8 +168,18 @@ const app = createApp(App)
 
 // 创建 Dux 实例
 const dux = createDux({
-  // 配置项
+  // API 基础路径
   baseUrl: '/api',
+  // 应用配置
+  app: {
+    name: 'My Admin App',
+    version: '1.0.0'
+  },
+  // 认证配置
+  auth: {
+    loginPath: '/login',
+    homePath: '/dashboard'
+  }
   // 其他配置...
 })
 
@@ -83,12 +188,36 @@ app.use(dux)
 app.mount('#app')
 ```
 
-## 相关包
+### 更多示例
 
-- `@duxweb/dvha-core`: 核心功能包
-- `@duxweb/dvha-naiveui`: Naive UI 增强包
-- `@duxweb/dvha-elmentui`: Elment Plus 增强包
+查看 [完整文档](https://duxweb.github.io/dvha/) 获取更多使用示例和高级配置。
 
-## 开源协议
+## 📚 相关包
 
-LGPL-3.0
+| 包名 | 描述 | 版本 |
+|------|------|------|
+| `@duxweb/dvha-core` | 核心功能包 | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-core.svg)](https://www.npmjs.com/package/@duxweb/dvha-core) |
+| `@duxweb/dvha-naiveui` | Naive UI 增强包 | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-naiveui.svg)](https://www.npmjs.com/package/@duxweb/dvha-naiveui) |
+| `@duxweb/dvha-elementui` | Element Plus 增强包 | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-elementui.svg)](https://www.npmjs.com/package/@duxweb/dvha-elementui) |
+
+## 🤝 贡献
+
+我们欢迎所有的贡献！请查看 [贡献指南](https://duxweb.github.io/dvha/contributing) 了解如何开始。
+
+## 📄 开源协议
+
+本项目基于 [LGPL-3.0](https://opensource.org/licenses/LGPL-3.0) 协议开源。
+
+---
+
+<div align="center">
+
+**🎉 感谢使用 DVHA！**
+
+如果这个项目对你有帮助，请给我们一个 ⭐️
+
+[📖 文档](https://duxweb.github.io/dvha/) • [🐛 报告问题](https://github.com/duxweb/dvha/issues) • [💡 功能建议](https://github.com/duxweb/dvha/discussions)
+
+</div>
+
+
