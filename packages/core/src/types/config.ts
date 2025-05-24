@@ -46,4 +46,6 @@ export interface IConfigComponent {
   notFound?: RouteComponent // 未找到布局
   notAuthorized?: RouteComponent // 未授权布局
   error?: RouteComponent // 错误布局
+
+  iframe?: RouteComponent // iframe 组件
 }

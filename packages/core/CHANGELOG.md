@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 0.0.5
+
+### Patch Changes
+
+- 增加 loader 加载器类型
+
 ## 0.0.4
 
 ### Patch Changes

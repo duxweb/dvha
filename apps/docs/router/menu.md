@@ -204,15 +204,17 @@ const adminManage = {
 }
 ```
 
-### 自定义加载器
+### 外联跳转菜单
 
 ```js
 {
-  name: 'custom.tool',
-  label: '自定义工具',
-  loader: 'custom',
+  name: 'custom.link',
+  label: '跳转',
+  loader: 'link',
   path: 'tools/custom',
-  component: () => import('./components/CustomLoader.vue')
+  meta: {
+    url: "https://www.baidu.com"
+  }
 }
 ```
 

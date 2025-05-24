@@ -1,5 +1,5 @@
 import { defineComponent, inject, Ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { RouteRecordRaw, useRouter } from 'vue-router'
 import { useConfig, useManage } from '../hooks'
 import { useAuthStore, useRouteStore } from '../stores'
 import { storeToRefs } from 'pinia'
@@ -127,12 +127,33 @@ export const DuxAppProvider = defineComponent({
             return
           }
 
-          router.addRoute(`${manageName}.auth`, {
+          const route: Partial<RouteRecordRaw>  = {
             name: item.name,
             path: item.path,
-            component: typeof item.component === 'function' ? item.component : () => import('../components/loader/iframe'),
             meta: item.meta,
-          })
+          }
+
+
+          switch (item.loader) {
+            case 'iframe':
+              route.component = manage.config?.components?.iframe
+              break
+            case 'link':
+              route.beforeEnter = () => {
+                const url = item.meta?.url || item.path
+                if (url) {
+                  window.open(url, '_blank')
+                }
+                return false
+              }
+              route.component = () => Promise.resolve({ template: '<div></div>' })
+              break
+            default:
+              route.component = typeof item.component === 'string' ? () => import(item.component as string) : item.component
+              break
+          }
+
+          router.addRoute(`${manageName}.auth`, route as RouteRecordRaw)
         })
 
 
