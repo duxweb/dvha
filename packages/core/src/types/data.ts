@@ -1,6 +1,5 @@
-import { IUserState } from "src/stores"
-import { IManage } from "./manage"
-import { IManageHook } from "src/hooks"
+import type { IManageHook } from 'src/hooks'
+import type { IUserState } from 'src/stores'
 
 /**
  * 数据提供者

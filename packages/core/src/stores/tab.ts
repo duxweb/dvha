@@ -1,7 +1,7 @@
+import type { Ref } from 'vue'
+import type { IMenu } from '../types'
 import { defineStore } from 'pinia'
-import { inject, Ref, ref } from 'vue'
-import { IMenu } from '../types'
-
+import { inject, ref } from 'vue'
 
 export function useTabStore(manageName?: string) {
   const manage = inject<Ref<string>>('dux.manage')

@@ -1,9 +1,7 @@
+import type { Ref } from 'vue'
 import type { IMenu } from '../types'
 import { defineStore } from 'pinia'
-import { inject, Ref, ref } from 'vue'
-
-
-
+import { inject, ref } from 'vue'
 
 /**
  * use route store
@@ -22,7 +20,6 @@ export function useRouteStore(manageName?: string) {
 
   const routeStore = createRouteStore(manageName)
   return routeStore()
-
 }
 
 /**
@@ -32,7 +29,6 @@ export function useRouteStore(manageName?: string) {
  */
 export function createRouteStore(manageName: string) {
   return defineStore(`routes-${manageName}`, () => {
-
     const routes = ref<IMenu[]>([])
 
     /**
@@ -133,7 +129,6 @@ export function createRouteStore(manageName: string) {
 
       return undefined
     }
-
 
     const routeInit = ref<boolean>(false)
 

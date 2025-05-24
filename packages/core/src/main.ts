@@ -1,7 +1,8 @@
-import { ref, type App } from 'vue'
+import type { App } from 'vue'
 import type { IConfig } from './types'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import { ref } from 'vue'
 import { initRouter } from './router/route'
 
 export function createDux(config: IConfig) {
@@ -10,12 +11,12 @@ export function createDux(config: IConfig) {
 
   return {
     install(app: App) {
-
+      // eslint-disable-next-line no-console
       console.log(
         `%c dux-vue %c dux.cn %c`,
         'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
         'background:#41b883 ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
-        'background:transparent'
+        'background:transparent',
       )
 
       const manageRef = ref<string>()

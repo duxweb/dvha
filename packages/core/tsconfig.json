@@ -1,17 +1,17 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ESNext",
     "jsx": "preserve",
     "jsxImportSource": "vue",
     "lib": [
-      "ES2020",
+      "ESNext",
       "DOM"
     ],
     "moduleDetection": "force",
     "useDefineForClassFields": true,
     "baseUrl": ".",
     "rootDir": "src",
-    "module": "ES2020",
+    "module": "ESNext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "allowJs": true,
@@ -21,26 +21,21 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
     "noEmit": false,
     "outDir": "dist",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "skipLibCheck": true
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
+    "src/**/*.*",
     "src/**/*.vue",
-    "src/**/*.d.ts"
+    "typings.d.ts",
+    "uno.config.ts"
   ],
   "exclude": [
     "node_modules",
-    "dist",
-    "**/*.test.ts",
-    "**/*.spec.ts"
+    "dist"
   ]
 }

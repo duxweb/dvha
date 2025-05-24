@@ -13,9 +13,8 @@ export function initRouter(config: IConfig) {
   ]
 
   config.manages?.forEach((manage) => {
-
-    const authRoutes = manage.routes?.filter((route) => route.meta?.authorization === true || route.meta?.authorization === undefined) || []
-    const noAuthRoutes = manage.routes?.filter((route) => route.meta?.authorization === false) || []
+    const authRoutes = manage.routes?.filter(route => route.meta?.authorization === true || route.meta?.authorization === undefined) || []
+    const noAuthRoutes = manage.routes?.filter(route => route.meta?.authorization === false) || []
 
     routes.push({
       name: manage.name,

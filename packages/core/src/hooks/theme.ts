@@ -1,7 +1,8 @@
-import { BasicColorSchema, useColorMode, UseColorModeOptions, useCycleList } from '@vueuse/core'
-import { computed, nextTick, ref, watch, watchEffect } from 'vue'
+import type { UseColorModeOptions } from '@vueuse/core'
+import type { ITheme } from '../types'
+import { useColorMode, useCycleList } from '@vueuse/core'
+import { computed, watchEffect } from 'vue'
 import { useManage } from './manage'
-import { ITheme } from '../types'
 
 // 扩散效果配置接口
 export interface RippleOptions {
@@ -9,7 +10,7 @@ export interface RippleOptions {
   easing?: string
 }
 
-export const useTheme = (options?: UseColorModeOptions) => {
+export function useTheme(options?: UseColorModeOptions) {
   const colorMode = useColorMode(options)
   const manage = useManage()
 

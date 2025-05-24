@@ -1,10 +1,12 @@
-import { defineComponent, inject, Ref } from 'vue'
-import { RouteRecordRaw, useRouter } from 'vue-router'
+import type { Ref } from 'vue'
+import type { RouteRecordRaw } from 'vue-router'
+import type { IMenu } from '../types'
+import { OverlaysProvider } from '@overlastic/vue'
+import { storeToRefs } from 'pinia'
+import { defineComponent, inject } from 'vue'
+import { useRouter } from 'vue-router'
 import { useConfig, useManage } from '../hooks'
 import { useAuthStore, useRouteStore } from '../stores'
-import { storeToRefs } from 'pinia'
-import { IMenu } from '../types'
-import { OverlaysProvider } from '@overlastic/vue'
 
 export const DuxAppProvider = defineComponent({
   name: 'DuxAppProvider',
@@ -17,9 +19,7 @@ export const DuxAppProvider = defineComponent({
     const router = useRouter()
     const authStore = useAuthStore()
 
-
     router.beforeEach(async (to, _from, next) => {
-
       const manageName = to.meta.manageName as string
       const noAuth = to.meta.authorization === false
 
@@ -41,7 +41,6 @@ export const DuxAppProvider = defineComponent({
 
       // unlogin handle
       if (!authStore.isLogin(manageName)) {
-
         if (noAuth) {
           return next()
         }
@@ -63,7 +62,6 @@ export const DuxAppProvider = defineComponent({
 
       // init route
       if (!routeStore.getRouteInit()) {
-
         // components
         const components = manage.config?.components || {}
         const commonRoutes: IMenu[] = []
@@ -98,7 +96,6 @@ export const DuxAppProvider = defineComponent({
           })
         }
 
-
         // init local route
         routeStore.setRoutes(formatMenus(manage.config?.menus || []))
 
@@ -109,11 +106,12 @@ export const DuxAppProvider = defineComponent({
               path: manage.config.apiRoutePath,
               meta: {
                 timeout: 5000,
-              }
+              },
             }, manage, authStore.getUser(manageName)).then((res) => {
               routeStore.appendRoutes(formatMenus(res.data || []))
             })
-          } catch (error) {
+          }
+          catch (error) {
             console.error(error)
           }
         }
@@ -127,12 +125,11 @@ export const DuxAppProvider = defineComponent({
             return
           }
 
-          const route: Partial<RouteRecordRaw>  = {
+          const route: Partial<RouteRecordRaw> = {
             name: item.name,
             path: item.path,
             meta: item.meta,
           }
-
 
           switch (item.loader) {
             case 'iframe':
@@ -158,14 +155,12 @@ export const DuxAppProvider = defineComponent({
           router.addRoute(`${manageName}.auth`, route as RouteRecordRaw)
         })
 
-
         // reload route
         return next({
           path: to.fullPath,
           replace: true,
         })
       }
-
 
       const pathMatch = [
         '',

@@ -8,17 +8,28 @@
     "type": "git",
     "url": "https://github.com/duxweb/dvha.git"
   },
-  "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "workspace:development": {
+        "import": "./src/index.ts"
+      },
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "dist/index.cjs",
   "module": "dist/index.js",
-  "types": "dist/index.d.ts",
   "files": [
+    "LICENSE",
+    "README.md",
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc --watch",
-    "clean": "rm -rf dist",
-    "prepublishOnly": "npm run clean && npm run build"
+    "clean": "rimraf dist",
+    "build": "bun run clean && vue-tsc --noEmit && vite build",
+    "prepublishOnly": "bun run build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@overlastic/vue": "^0.8.1",
@@ -26,12 +37,19 @@
     "@vueuse/core": "^13.2.0",
     "@vueuse/integrations": "^13.2.0",
     "axios": "^1.9.0",
+    "clsx": "^2.1.1",
     "lodash-es": "^4.17.21",
     "pinia": "^3.0.2",
     "pinia-plugin-persistedstate": "^4.3.0",
     "vue": "^3.5.14",
-    "vue-router": "4",
-    "clsx": "^2.1.1"
+    "vue-router": "4"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vitejs/plugin-vue-jsx": "^4.2.0",
+    "rimraf": "^6.0.1",
+    "vite": "^6.3.5",
+    "vite-plugin-build": "^0.10.0",
+    "vue-tsc": "^2.2.10"
+  }
 }

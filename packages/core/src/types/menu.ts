@@ -1,4 +1,4 @@
-import { RouteComponent } from "vue-router"
+import type { RouteComponent } from 'vue-router'
 
 export interface IMenu {
   // 菜单名称

@@ -1,7 +1,7 @@
+import type { IManageHook } from '../hooks'
+import type { IUserState } from '../stores'
+import type { IAuthActionResponse, IAuthCheckResponse, IAuthErrorResponse, IAuthLoginResponse, IAuthLogoutResponse, IAuthProvider } from '../types'
 import axios from 'axios'
-import { IAuthProvider, IAuthLoginResponse, IAuthCheckResponse, IAuthLogoutResponse, IAuthErrorResponse, IAuthActionResponse } from '../types'
-import { IUserState } from '../stores'
-import { IManageHook } from '../hooks'
 
 export const simpleAuthProvider: IAuthProvider = {
   login: async (params: any, manage: IManageHook): Promise<IAuthLoginResponse> => {

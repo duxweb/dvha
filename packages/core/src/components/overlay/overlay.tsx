@@ -41,7 +41,7 @@ export const DuxOverlay = defineComponent({
     }
     return () => (
       <div
-        class='fixed inset-0 flex items-center justify-center overflow-auto'
+        class="fixed inset-0 flex items-center justify-center overflow-auto"
         style={{
           zIndex: props.zIndex,
         }}
@@ -62,7 +62,8 @@ export const DuxOverlay = defineComponent({
               }}
               onClick={handleMaskClick}
               aria-hidden="true"
-            ></div>
+            >
+            </div>
           )}
         </Transition>
 

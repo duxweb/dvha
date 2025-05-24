@@ -2,13 +2,12 @@ import type { IMenu } from '../types'
 import { cloneDeep } from 'lodash-es'
 import { storeToRefs } from 'pinia'
 import { computed, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { useRouteStore } from '../stores'
 import { arrayToTree, searchTree } from '../utils'
-import { useRoute } from 'vue-router'
-
 
 export interface UseMenuProps {
-	doubleMenu?: boolean
+  doubleMenu?: boolean
 }
 
 export function useMenu(props?: UseMenuProps) {
@@ -40,13 +39,11 @@ export function useMenu(props?: UseMenuProps) {
     return data
   })
 
-
   const route = useRoute()
 
   const allKey = ref(route.name)
   const appKey = ref(route.name)
   const subKey = ref(route.name)
-
 
   const mainMenu = computed(() => {
     if (props?.doubleMenu) {
@@ -67,14 +64,14 @@ export function useMenu(props?: UseMenuProps) {
     return subList || []
   })
 
-	const crumbs = computed(() => {
+  const crumbs = computed(() => {
     const data = searchTree(originalList.value, (item) => {
       return item?.name === route.name
     })
     return data
   })
 
-	watch(() => props?.doubleMenu, () => {
+  watch(() => props?.doubleMenu, () => {
     if (!props?.doubleMenu) {
       const paths = searchTree(list.value, (item) => {
         return item?.name === subKey.value
@@ -91,7 +88,6 @@ export function useMenu(props?: UseMenuProps) {
       subKey.value = paths?.[paths.length - 1]?.name
     }
   }, { immediate: true })
-
 
   const isSubMenu = computed(() => {
     if (!props?.doubleMenu) {
@@ -129,7 +125,6 @@ export function useMenu(props?: UseMenuProps) {
       subKey.value = paths?.[subIndex]?.name
     }
   }, { immediate: true })
-
 
   return {
     data: list,

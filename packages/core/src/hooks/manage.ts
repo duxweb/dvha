@@ -1,7 +1,8 @@
+import type { Ref } from 'vue'
 import type { IManage } from '../types'
 import { cloneDeep, trim, trimStart } from 'lodash-es'
+import { inject } from 'vue'
 import { useConfig } from './config'
-import { inject, Ref } from 'vue'
 
 export interface IManageHook {
   config: IManage

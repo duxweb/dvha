@@ -1,10 +1,9 @@
 import type { RouteRecordRaw } from 'vue-router'
 import type { IAuthProvider } from './auth'
+import type { IConfigComponent } from './config'
 import type { IDataProvider } from './data'
 import type { IMenu } from './menu'
 import type { IConfigTheme } from './theme'
-import { IConfigComponent } from './config'
-
 
 /**
  * 管理配置

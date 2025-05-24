@@ -38,7 +38,6 @@ export interface IConfig {
   [key: string]: any
 }
 
-
 export interface IConfigComponent {
   authLayout?: RouteComponent // 认证布局
   noAuthLayout?: RouteComponent // 未认证布局

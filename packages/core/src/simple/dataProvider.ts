@@ -1,7 +1,7 @@
+import type { IManageHook } from '../hooks'
+import type { IUserState } from '../stores'
+import type { IDataProvider, IDataProviderCreateManyOptions, IDataProviderCreateOptions, IDataProviderCustomOptions, IDataProviderDeleteManyOptions, IDataProviderDeleteOptions, IDataProviderGetManyOptions, IDataProviderGetOneOptions, IDataProviderListOptions, IDataProviderUpdateManyOptions, IDataProviderUpdateOptions } from '../types'
 import axios from 'axios'
-import { IDataProvider, IDataProviderCreateManyOptions, IDataProviderCreateOptions, IDataProviderCustomOptions, IDataProviderDeleteManyOptions, IDataProviderDeleteOptions, IDataProviderGetManyOptions, IDataProviderGetOneOptions, IDataProviderListOptions, IDataProviderUpdateManyOptions, IDataProviderUpdateOptions } from '../types'
-import { IManageHook } from '../hooks'
-import { IUserState } from '../stores'
 
 export const simpleDataProvider: IDataProvider = {
 

@@ -1,4 +1,4 @@
-import { defineComponent, Transition, KeepAlive, watch } from 'vue'
+import { defineComponent, KeepAlive, Transition, watch } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import { useRouteStore, useTabStore } from '../stores'
 
@@ -43,7 +43,7 @@ export const DuxTabRouterView = defineComponent({
     // add index route
     const indexRoute = routeStore.getIndexRoute()
     if (indexRoute) {
-      tabStore.addTab({...indexRoute, meta: { ...indexRoute.meta, lock: true } })
+      tabStore.addTab({ ...indexRoute, meta: { ...indexRoute.meta, lock: true } })
     }
 
     // watch route and routeStore.routes
@@ -56,11 +56,10 @@ export const DuxTabRouterView = defineComponent({
       tabStore.addTab(item)
     }, { immediate: true })
 
-
     return () => (
       <RouterView>
         {{
-          default: ({Component}) => {
+          default: ({ Component }) => {
             return (
               <Transition name="tab-fade" mode="out-in" appear>
                 <KeepAlive include={tabStore.tabs.map(t => t.path || '')}>
@@ -68,7 +67,7 @@ export const DuxTabRouterView = defineComponent({
                 </KeepAlive>
               </Transition>
             )
-          }
+          },
         }}
       </RouterView>
     )

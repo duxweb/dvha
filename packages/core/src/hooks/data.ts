@@ -1,4 +1,5 @@
-import type { DefaultError, DefinedInitialDataInfiniteOptions, DefinedInitialQueryOptions, InfiniteData, QueryKey, UseMutationOptions } from '@tanstack/vue-query'
+/* eslint-disable @tanstack/query/exhaustive-deps */
+import type { DefaultError, DefinedInitialDataInfiniteOptions, DefinedInitialQueryOptions, InfiniteData, UseMutationOptions } from '@tanstack/vue-query'
 import type { IDataProviderCreateManyOptions, IDataProviderCreateOptions, IDataProviderCustomOptions, IDataProviderDeleteManyOptions, IDataProviderDeleteOptions, IDataProviderGetManyOptions, IDataProviderGetOneOptions, IDataProviderListOptions, IDataProviderResponse, IDataProviderUpdateManyOptions, IDataProviderUpdateOptions } from '../types'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { computed, watch } from 'vue'
@@ -30,7 +31,7 @@ export function useList(params: IListParams) {
 
   const req = useQuery({
     queryKey: [params.path, props],
-    queryFn: () => manage.config.dataProvider?.getList({ ...props.value }, manage, auth),
+    queryFn: () => manage.config.dataProvider?.getList(props.value, manage, auth),
     ...params.options,
   })
 
@@ -75,7 +76,7 @@ export function useInfiniteList(params: IInfiniteListParams) {
 
   const req = useInfiniteQuery({
     queryKey: [params.path, props],
-    queryFn: () => manage.config.dataProvider?.getList({ ...props.value }, manage, auth),
+    queryFn: () => manage.config.dataProvider?.getList(props.value, manage, auth),
     initialPageParam: 0,
     getNextPageParam: (lastPage, _allPages, lastPageParam) => {
       if (!lastPage?.data || lastPage?.data?.length === 0) {
@@ -135,7 +136,7 @@ export function useOne(params: IOneParams) {
 
   const req = useQuery({
     queryKey: [params.path, props],
-    queryFn: () => manage.config.dataProvider?.getOne({ ...props.value }, manage, auth),
+    queryFn: () => manage.config.dataProvider?.getOne(props.value, manage, auth),
     ...params.options,
   })
 
@@ -179,7 +180,7 @@ export function useMany(params: IManyParams) {
 
   const req = useQuery({
     queryKey: [params.path, props],
-    queryFn: () => manage.config.dataProvider?.getMany({ ...props.value }, manage, auth),
+    queryFn: () => manage.config.dataProvider?.getMany(props.value, manage, auth),
     ...params.options,
   })
 
@@ -534,7 +535,7 @@ export function useCustom(params: ICustomParams) {
 
   const req = useQuery({
     queryKey: [params.path, props],
-    queryFn: () => manage.config.dataProvider?.custom({ ...props.value }, manage, auth),
+    queryFn: () => manage.config.dataProvider?.custom(props.value, manage, auth),
     ...params.options,
   })
 
