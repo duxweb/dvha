@@ -19,19 +19,19 @@ DVHA 提供了官方脚手架工具 `@duxweb/dvha-template`，可以快速创建
 ::: code-group
 
 ```bash [bun (推荐)]
-bunx @duxweb/dvha-template init
+bunx @duxweb/dvha-template@latest init
 ```
 
 ```bash [npx]
-npx @duxweb/dvha-template init
+npx @duxweb/dvha-template@latest init
 ```
 
 ```bash [yarn]
-yarn dlx @duxweb/dvha-template init
+yarn dlx @duxweb/dvha-template@latest init
 ```
 
 ```bash [pnpm]
-pnpm dlx @duxweb/dvha-template init
+pnpm dlx @duxweb/dvha-template@latest init
 ```
 
 :::
