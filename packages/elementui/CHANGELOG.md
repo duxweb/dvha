@@ -1,5 +1,20 @@
 # @duxweb/dvha-elementui
 
+## 1.0.1
+
+### Patch Changes
+
+- fix: 修正简单授权的方法获取
+- Updated dependencies
+  - @duxweb/dvha-core@0.1.1
+
+## 1.0.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @duxweb/dvha-core@0.1.0
+
 ## 0.0.6
 
 ### Patch Changes

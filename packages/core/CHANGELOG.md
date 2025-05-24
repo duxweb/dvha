@@ -1,5 +1,17 @@
 # @duxweb/dvha-core
 
+## 0.1.1
+
+### Patch Changes
+
+- fix: 修正简单授权的方法获取
+
+## 0.1.0
+
+### Minor Changes
+
+- 增加默认授权 API 路径
+
 ## 0.0.9
 
 ### Patch Changes

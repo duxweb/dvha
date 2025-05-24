@@ -79,16 +79,16 @@ export function useLogin({ onSuccess, onError }: IAuthLoginParams) {
  * @returns Logout method
  */
 export function useLogout({ onSuccess, onError }: IAuthLogoutParams) {
-  const { config: manage, getRoutePath } = useManage()
+  const manage = useManage()
   const authStore = useAuthStore()
   const router = useRouter()
 
   const mutate = async (params?: any) => {
-    const result = await manage.config.authProvider?.logout(params)
+    const result = await manage.config.authProvider?.logout(params, manage)
     if (result?.success) {
       onSuccess?.(result)
       authStore.logout()
-      router.push(getRoutePath(result.redirectTo || '/login'))
+      router.push(manage.getRoutePath(result.redirectTo || '/login'))
       return
     }
     onError?.(result)
@@ -107,12 +107,12 @@ export function useLogout({ onSuccess, onError }: IAuthLogoutParams) {
  * @returns Check method
  */
 export function useCheck({ onSuccess, onError }: IAuthCheckParams) {
-  const { config: manage, getRoutePath } = useManage()
+  const manage = useManage()
   const authStore = useAuthStore()
   const router = useRouter()
 
   const mutate = async (params?: any) => {
-    const result = await manage.config.authProvider?.check(params)
+    const result = await manage.config.authProvider?.check(params, manage)
     if (result?.success) {
       onSuccess?.(result)
       if (!result?.data) {
@@ -123,7 +123,7 @@ export function useCheck({ onSuccess, onError }: IAuthCheckParams) {
     }
     onError?.(result)
     if (result?.logout) {
-      router.push(getRoutePath(result.redirectTo || '/login'))
+      router.push(manage.getRoutePath(result.redirectTo || '/login'))
     }
   }
 
@@ -140,18 +140,18 @@ export function useCheck({ onSuccess, onError }: IAuthCheckParams) {
  * @returns Register method
  */
 export function useRegister({ onSuccess, onError }: IAuthLoginParams) {
-  const { config: manage, getRoutePath } = useManage()
+  const manage = useManage()
   const authStore = useAuthStore()
   const router = useRouter()
   const mutate = async (data: Record<string, any>) => {
-    const result = await manage.config.authProvider?.register(data)
+    const result = await manage.config.authProvider?.register(data, manage)
     if (result?.success) {
       onSuccess?.(result)
       if (!result?.data) {
         throw new Error('Register response data is undefined')
       }
       authStore.login(result.data)
-      router.push(getRoutePath(result.redirectTo || ''))
+      router.push(manage.getRoutePath(result.redirectTo || ''))
       return
     }
     onError?.(result)
@@ -168,15 +168,15 @@ export function useRegister({ onSuccess, onError }: IAuthLoginParams) {
  * @returns Forgot password method
  */
 export function useForgotPassword({ onSuccess, onError }: IAuthActionParams) {
-  const { config: manage, getRoutePath } = useManage()
+  const manage = useManage()
   const router = useRouter()
 
   const mutate = async (params?: any) => {
-    const result = await manage.config.authProvider?.forgotPassword(params)
+    const result = await manage.config.authProvider?.forgotPassword(params, manage)
     if (result?.success) {
       onSuccess?.(result)
       if (result.redirectTo) {
-        router.push(getRoutePath(result.redirectTo))
+        router.push(manage.getRoutePath(result.redirectTo))
       }
       return
     }
@@ -195,15 +195,15 @@ export function useForgotPassword({ onSuccess, onError }: IAuthActionParams) {
  * @returns Update password method
  */
 export function useUpdatePassword({ onSuccess, onError }: IAuthActionParams) {
-  const { config: manage, getRoutePath } = useManage()
+  const manage = useManage()
   const router = useRouter()
 
   const mutate = async (params?: any) => {
-    const result = await manage.config.authProvider?.updatePassword(params)
+    const result = await manage.config.authProvider?.updatePassword(params, manage)
     if (result?.success) {
       onSuccess?.(result)
       if (result.redirectTo) {
-        router.push(getRoutePath(result.redirectTo))
+        router.push(manage.getRoutePath(result.redirectTo))
       }
       return
     }
@@ -226,7 +226,7 @@ export function useError(onCallback?: (data?: IAuthErrorResponse) => void) {
   const router = useRouter()
 
   const mutate = async (error: any) => {
-    const result = await manage.config.authProvider?.onError(error)
+    const result = await manage.authProvider?.onError(error)
     onCallback?.(result)
     if (result?.logout) {
       router.push(getRoutePath(result.redirectTo || '/login'))

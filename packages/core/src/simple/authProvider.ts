@@ -22,7 +22,7 @@ export interface ISimpleAuthProviderProps {
 export function simpleAuthProvider(props?: ISimpleAuthProviderProps): IAuthProvider {
   return {
     login: async (params: any, manage: IManageHook): Promise<IAuthLoginResponse> => {
-      return await axios.post(manage.getApiUrl(props?.apiPath?.login, props?.dataProviderName), params).then((res) => {
+      return await axios.post(manage.getApiUrl(props?.apiPath?.login || '/login', props?.dataProviderName), params).then((res) => {
         return {
           success: true,
           message: res?.data?.message,
@@ -37,7 +37,7 @@ export function simpleAuthProvider(props?: ISimpleAuthProviderProps): IAuthProvi
       })
     },
     check: async (_params?: any, manage?: IManageHook): Promise<IAuthCheckResponse> => {
-      return await axios.get(manage?.getApiUrl(props?.apiPath?.check, props?.dataProviderName) || '').then((res: any) => {
+      return await axios.get(manage?.getApiUrl(props?.apiPath?.check || '/check', props?.dataProviderName) || '').then((res: any) => {
         return {
           success: true,
           message: res?.data?.message,
@@ -71,7 +71,7 @@ export function simpleAuthProvider(props?: ISimpleAuthProviderProps): IAuthProvi
       }
     },
     register: async (params: any, manage?: IManageHook): Promise<IAuthLoginResponse> => {
-      return await axios.post(manage?.getApiUrl(props?.apiPath?.register, props?.dataProviderName) || '', params).then((res: any) => {
+      return await axios.post(manage?.getApiUrl(props?.apiPath?.register || '/register', props?.dataProviderName) || '', params).then((res: any) => {
         return {
           success: true,
           message: res?.data?.message,
@@ -86,7 +86,7 @@ export function simpleAuthProvider(props?: ISimpleAuthProviderProps): IAuthProvi
       })
     },
     forgotPassword: async (params: any, manage?: IManageHook): Promise<IAuthActionResponse> => {
-      return await axios.post(manage?.getApiUrl(props?.apiPath?.forgotPassword, props?.dataProviderName) || '', params).then((res: any) => {
+      return await axios.post(manage?.getApiUrl(props?.apiPath?.forgotPassword || '/forgot-password', props?.dataProviderName) || '', params).then((res: any) => {
         return {
           success: true,
           message: res?.data?.message,
@@ -100,7 +100,7 @@ export function simpleAuthProvider(props?: ISimpleAuthProviderProps): IAuthProvi
       })
     },
     updatePassword: async (params: any, manage?: IManageHook): Promise<IAuthActionResponse> => {
-      return await axios.post(manage?.getApiUrl(props?.apiPath?.updatePassword, props?.dataProviderName) || '', params).then((res: any) => {
+      return await axios.post(manage?.getApiUrl(props?.apiPath?.updatePassword || '/update-password', props?.dataProviderName) || '', params).then((res: any) => {
         return {
           success: true,
           message: res?.data?.message,

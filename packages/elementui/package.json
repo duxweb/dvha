@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-elementui",
   "type": "module",
-  "version": "0.0.6",
+  "version": "1.0.1",
   "author": "DuxWeb",
   "license": "LGPL-3.0",
   "exports": {
@@ -35,6 +35,5 @@
     "@duxweb/dvha-core": "*",
     "element-plus": "^2.9.10"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
