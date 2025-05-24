@@ -235,6 +235,19 @@ app.mount('#app')
 | `@duxweb/dvha-naiveui` | Naive UI 增强包 | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-naiveui.svg)](https://www.npmjs.com/package/@duxweb/dvha-naiveui) |
 | `@duxweb/dvha-elementui` | Element Plus 增强包 | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-elementui.svg)](https://www.npmjs.com/package/@duxweb/dvha-elementui) |
 
+## 💬 加入社区
+
+### 微信交流群
+
+扫描下方二维码加入 DVHA 微信交流群，与更多开发者一起交流技术、分享经验：
+
+<div align="center">
+  <img src="./docs/images/wechat-qrcode.png" alt="DVHA 微信交流群" width="200" />
+  <p><em>微信扫码加入交流群</em></p>
+</div>
+
+> 如果二维码过期，请添加微信号：`dvha-assistant` 备注「DVHA」拉你入群
+
 ## 🤝 贡献
 
 我们欢迎所有的贡献！请查看 [贡献指南](https://duxweb.github.io/dvha/contributing) 了解如何开始。

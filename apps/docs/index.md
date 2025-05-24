@@ -13,6 +13,9 @@ hero:
     - theme: alt
       text: 产品概况
       link: /guide/overview
+    - theme: alt
+      text: 加入社区
+      link: /community
 
 features:
   - title: 🎨 UI 框架无关
