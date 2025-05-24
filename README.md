@@ -1,4 +1,8 @@
+<div align="center">
+
 # DVHA
+
+</div>
 
 <div align="center">
 
@@ -24,74 +28,53 @@ DVHA (Dux Vue Headless Admin) 是一款基于 Vue 3 的无头（Headless）中�
 
 ## ✨ 主要特性
 
-<table>
-<tr>
-<td>
-
 ### 🎨 UI 框架无关
-可以与任何 Vue 生态的 UI 框架集成
-- Element Plus
-- Ant Design Vue
-- Naive UI
-- 其他 Vue UI 框架
+> 可以与任何 Vue 生态的 UI 框架集成
 
-</td>
-<td>
+- ✅ Element Plus
+- ✅ Ant Design Vue
+- ✅ Naive UI
+- ✅ 其他 Vue UI 框架
 
 ### 🏢 企业级多租户
-内置多管理端支持
-- 主后台管理
-- 子应用后台
-- 商户后台
-- 多租户架构
+> 内置多管理端支持
 
-</td>
-</tr>
-<tr>
-<td>
+- 🎯 主后台管理
+- 📱 子应用后台
+- 🏪 商户后台
+- 🏗️ 多租户架构
 
 ### 🔑 统一身份认证
-完整的认证流程和权限管理
-- 多种认证方式
-- 细粒度权限控制
-- 路由守卫
-- 权限验证
+> 完整的认证流程和权限管理
 
-</td>
-<td>
+- 🔐 多种认证方式
+- 🎛️ 细粒度权限控制
+- 🛡️ 路由守卫
+- ✅ 权限验证
 
 ### 🚀 开箱即用的 CRUD
-提供丰富的 hooks 和工具函数
-- 自动数据处理
-- 状态管理
-- 表单验证
-- 重复性工作自动化
+> 提供丰富的 hooks 和工具函数
 
-</td>
-</tr>
-<tr>
-<td>
+- ⚡ 自动数据处理
+- 💾 状态管理
+- 📝 表单验证
+- 🤖 重复性工作自动化
 
 ### 🌐 国际化支持
-内置 I18n 支持
-- 多语言应用
-- 全球化业务
-- 语言切换
-- 本地化适配
+> 内置 I18n 支持
 
-</td>
-<td>
+- 🌍 多语言应用
+- 🌏 全球化业务
+- 🔄 语言切换
+- 📍 本地化适配
 
 ### 📘 完整 TypeScript
-100% TypeScript 开发
-- 完整类型提示
-- 类型安全
-- 更好的开发体验
-- 代码质量保证
+> 100% TypeScript 开发
 
-</td>
-</tr>
-</table>
+- 💡 完整类型提示
+- 🛡️ 类型安全
+- ⚡ 更好的开发体验
+- 📊 代码质量保证
 
 ## 🏗️ 架构设计
 
@@ -133,8 +116,8 @@ flowchart TD
 
 ### 🔧 核心组件
 
-| 组件 | 描述 |
-|------|------|
+| 组件模块 | 功能描述 |
+|:---:|:---|
 | 🧭 **路由管理** | 基于 Vue Router 的路由管理，支持权限控制和路由守卫 |
 | 💾 **状态管理** | 基于 Pinia 的状态管理，支持持久化存储 |
 | 🔐 **认证模块** | 完整的用户认证流程，包括登录、注册、权限验证等 |
@@ -229,11 +212,11 @@ app.mount('#app')
 
 ## 📚 相关包
 
-| 包名 | 描述 | 版本 |
-|------|------|------|
-| `@duxweb/dvha-core` | 核心功能包 | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-core.svg)](https://www.npmjs.com/package/@duxweb/dvha-core) |
-| `@duxweb/dvha-naiveui` | Naive UI 增强包 | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-naiveui.svg)](https://www.npmjs.com/package/@duxweb/dvha-naiveui) |
-| `@duxweb/dvha-elementui` | Element Plus 增强包 | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-elementui.svg)](https://www.npmjs.com/package/@duxweb/dvha-elementui) |
+| 包名 | 包描述 | 最新版本 |
+|:---|:---|:---:|
+| `@duxweb/dvha-core` | 🎯 核心功能包 - 提供框架基础能力 | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-core.svg)](https://www.npmjs.com/package/@duxweb/dvha-core) |
+| `@duxweb/dvha-naiveui` | 🎨 Naive UI 增强包 - 集成 Naive UI | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-naiveui.svg)](https://www.npmjs.com/package/@duxweb/dvha-naiveui) |
+| `@duxweb/dvha-elementui` | 🎨 Element Plus 增强包 - 集成 Element Plus | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-elementui.svg)](https://www.npmjs.com/package/@duxweb/dvha-elementui) |
 
 ## 💬 加入社区
 

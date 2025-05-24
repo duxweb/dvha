@@ -1,4 +1,8 @@
+<div align="center">
+
 # DVHA
+
+</div>
 
 <div align="center">
 
@@ -24,74 +28,53 @@ DVHA (Dux Vue Headless Admin) is a Vue 3-based headless admin frontend developme
 
 ## ✨ Key Features
 
-<table>
-<tr>
-<td>
-
 ### 🎨 UI Framework Agnostic
-Seamlessly integrate with any Vue ecosystem UI framework
-- Element Plus
-- Ant Design Vue
-- Naive UI
-- Other Vue UI frameworks
+> Seamlessly integrate with any Vue ecosystem UI framework
 
-</td>
-<td>
+- ✅ Element Plus
+- ✅ Ant Design Vue
+- ✅ Naive UI
+- ✅ Other Vue UI frameworks
 
 ### 🏢 Enterprise Multi-tenant
-Built-in multiple admin support
-- Main backend management
-- Sub-application backend
-- Merchant backend
-- Multi-tenant architecture
+> Built-in multiple admin support
 
-</td>
-</tr>
-<tr>
-<td>
+- 🎯 Main backend management
+- 📱 Sub-application backend
+- 🏪 Merchant backend
+- 🏗️ Multi-tenant architecture
 
 ### 🔑 Unified Authentication
-Complete authentication process and permission management
-- Multiple authentication methods
-- Fine-grained permission control
-- Route guards
-- Permission verification
+> Complete authentication process and permission management
 
-</td>
-<td>
+- 🔐 Multiple authentication methods
+- 🎛️ Fine-grained permission control
+- 🛡️ Route guards
+- ✅ Permission verification
 
 ### 🚀 Out-of-the-box CRUD
-Rich hooks and utility functions
-- Automatic data processing
-- State management
-- Form validation
-- Repetitive work automation
+> Rich hooks and utility functions
 
-</td>
-</tr>
-<tr>
-<td>
+- ⚡ Automatic data processing
+- 💾 State management
+- 📝 Form validation
+- 🤖 Repetitive work automation
 
 ### 🌐 Internationalization
-Built-in I18n support
-- Multi-language applications
-- Global business
-- Language switching
-- Localization adaptation
+> Built-in I18n support
 
-</td>
-<td>
+- 🌍 Multi-language applications
+- 🌏 Global business
+- 🔄 Language switching
+- 📍 Localization adaptation
 
 ### 📘 Full TypeScript
-100% TypeScript development
-- Complete type hints
-- Type safety
-- Better development experience
-- Code quality assurance
+> 100% TypeScript development
 
-</td>
-</tr>
-</table>
+- 💡 Complete type hints
+- 🛡️ Type safety
+- ⚡ Better development experience
+- 📊 Code quality assurance
 
 ## 🏗️ Architecture Design
 
@@ -133,8 +116,8 @@ flowchart TD
 
 ### 🔧 Core Components
 
-| Component | Description |
-|-----------|-------------|
+| Component Module | Feature Description |
+|:---:|:---|
 | 🧭 **Router Management** | Vue Router-based routing management with permission control and route guards |
 | 💾 **State Management** | Pinia-based state management with persistent storage support |
 | 🔐 **Authentication Module** | Complete user authentication process including login, registration, permission verification, etc. |
@@ -373,11 +356,11 @@ Check out the [Full Documentation](https://duxweb.github.io/dvha/) for more usag
 
 ## 📚 Related Packages
 
-| Package | Description | Version |
-|---------|-------------|---------|
-| `@duxweb/dvha-core` | Core functionality package | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-core.svg)](https://www.npmjs.com/package/@duxweb/dvha-core) |
-| `@duxweb/dvha-naiveui` | Naive UI enhancement package | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-naiveui.svg)](https://www.npmjs.com/package/@duxweb/dvha-naiveui) |
-| `@duxweb/dvha-elementui` | Element Plus enhancement package | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-elementui.svg)](https://www.npmjs.com/package/@duxweb/dvha-elementui) |
+| Package Name | Package Description | Latest Version |
+|:---|:---|:---:|
+| `@duxweb/dvha-core` | 🎯 Core functionality package - Provides framework basic capabilities | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-core.svg)](https://www.npmjs.com/package/@duxweb/dvha-core) |
+| `@duxweb/dvha-naiveui` | 🎨 Naive UI enhancement package - Integrates Naive UI | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-naiveui.svg)](https://www.npmjs.com/package/@duxweb/dvha-naiveui) |
+| `@duxweb/dvha-elementui` | 🎨 Element Plus enhancement package - Integrates Element Plus | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-elementui.svg)](https://www.npmjs.com/package/@duxweb/dvha-elementui) |
 
 ## 🤝 Contributing
 
