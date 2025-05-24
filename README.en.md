@@ -327,10 +327,6 @@ Check out the [Full Documentation](https://duxweb.github.io/dvha/) for more usag
 
 [![Star History Chart](https://api.star-history.com/svg?repos=duxweb/dvha&type=Date)](https://star-history.com/#duxweb/dvha&Date)
 
-### 📈 Activity Graph
-
-![Activity Graph](https://github-readme-activity-graph.vercel.app/graph?username=duxweb&repo=dvha&theme=react-dark&hide_border=true)
-
 ### 💻 Contributors
 
 Thanks to all the developers who contributed to DVHA!

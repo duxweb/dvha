@@ -196,10 +196,6 @@ app.mount('#app')
 
 [![Star History Chart](https://api.star-history.com/svg?repos=duxweb/dvha&type=Date)](https://star-history.com/#duxweb/dvha&Date)
 
-### 📈 代码活跃度
-
-![Activity Graph](https://github-readme-activity-graph.vercel.app/graph?username=duxweb&repo=dvha&theme=react-dark&hide_border=true)
-
 ### 💻 贡献者
 
 感谢所有为 DVHA 做出贡献的开发者们！
