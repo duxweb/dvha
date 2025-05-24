@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-core",
   "type": "module",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "DuxWeb",
   "license": "LGPL-3.0",
   "repository": {
@@ -11,7 +11,7 @@
   "main": "src/index.ts",
   "dependencies": {
     "@overlastic/vue": "^0.8.1",
-    "@tanstack/react-query": "^5.76.1",
+    "@tanstack/vue-query": "^5.76.2",
     "@vueuse/core": "^13.2.0",
     "@vueuse/integrations": "^13.2.0",
     "axios": "^1.9.0",
@@ -19,9 +19,8 @@
     "pinia": "^3.0.2",
     "pinia-plugin-persistedstate": "^4.3.0",
     "vue": "^3.5.14",
-    "vue-router": "4"
-  },
-  "devDependencies": {
+    "vue-router": "4",
     "clsx": "^2.1.1"
-  }
+  },
+  "devDependencies": {}
 }

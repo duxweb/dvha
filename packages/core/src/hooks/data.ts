@@ -1,13 +1,12 @@
-import type { DefaultError, DefinedInitialDataInfiniteOptions, InfiniteData, QueryKey, UndefinedInitialDataOptions, UseMutationOptions } from '@tanstack/react-query'
+import type { DefaultError, DefinedInitialDataInfiniteOptions, DefinedInitialQueryOptions, InfiniteData, QueryKey, UseMutationOptions } from '@tanstack/vue-query'
 import type { IDataProviderCreateManyOptions, IDataProviderCreateOptions, IDataProviderCustomOptions, IDataProviderDeleteManyOptions, IDataProviderDeleteOptions, IDataProviderGetManyOptions, IDataProviderGetOneOptions, IDataProviderListOptions, IDataProviderResponse, IDataProviderUpdateManyOptions, IDataProviderUpdateOptions } from '../types'
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { computed, watch } from 'vue'
 import { useError, useGetAuth } from './auth'
 import { useManage } from './manage'
-import { useAuthStore } from 'src/stores'
 
-type IDataQueryOptions = UndefinedInitialDataOptions<IDataProviderResponse | undefined, DefaultError, IDataProviderResponse | undefined, QueryKey>
-type IDataQueryOptionsInfinite = DefinedInitialDataInfiniteOptions<IDataProviderResponse | undefined, DefaultError, InfiniteData<IDataProviderResponse | undefined>, QueryKey, number>
+type IDataQueryOptions = DefinedInitialQueryOptions<IDataProviderResponse | undefined, DefaultError, IDataProviderResponse | undefined, any>
+type IDataQueryOptionsInfinite = DefinedInitialDataInfiniteOptions<IDataProviderResponse | undefined, DefaultError, InfiniteData<IDataProviderResponse | undefined>, any, number>
 
 interface IListParams extends IDataProviderListOptions {
   options?: IDataQueryOptions

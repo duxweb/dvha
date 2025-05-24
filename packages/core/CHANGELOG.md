@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 0.0.6
+
+### Patch Changes
+
+- fix: dependencie @tanstack/vue-query
+
 ## 0.0.5
 
 ### Patch Changes

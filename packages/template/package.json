@@ -1,6 +1,6 @@
 {
   "name": "@duxweb/dvha-template",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Create DVHA project from template",
   "type": "module",
   "bin": {
