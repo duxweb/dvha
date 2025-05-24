@@ -4,6 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "DVHA",
   description: "一个基于 Vue 且不含 UI 的中后台框架",
+  base: '/dvha/',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
