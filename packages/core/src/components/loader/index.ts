@@ -1,1 +1,1 @@
-export * from './iframe'
+export { default as DuxLoaderIframe } from './iframe'

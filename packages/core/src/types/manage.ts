@@ -20,11 +20,10 @@ export interface IManage {
   forgotPassword?: boolean // 忘记密码
   updatePassword?: boolean // 更新密码
 
-  apiUrl?: string // 接口地址，不为 http(s):// 开头的则拼接全局接口地址
   apiRoutePath?: string // 接口路由地址
 
-  authProvider?: IAuthProvider // 全局认证提供者
-  dataProvider?: IDataProvider // 全局数据提供者
+  authProvider?: IAuthProvider // 认证提供者
+  dataProvider?: IDataProvider | Record<string, IDataProvider> // 数据提供者
 
   routePrefix?: string // 路由前缀
 

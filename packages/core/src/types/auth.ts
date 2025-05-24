@@ -6,6 +6,7 @@ import type { IUserState } from '../stores/auth'
  * 为全局或管理端提供自定义认证服务
  */
 export interface IAuthProvider {
+
   login: (params: any, manage: IManageHook) => Promise<IAuthLoginResponse>
   check: (params?: any, manage?: IManageHook) => Promise<IAuthCheckResponse>
   logout: (params?: any, manage?: IManageHook) => Promise<IAuthLogoutResponse>

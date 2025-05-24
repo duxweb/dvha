@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 0.0.9
+
+### Patch Changes
+
+- 增加多数据源配置,移除全局 ApiUrl 等参数
+
 ## 0.0.8
 
 ### Patch Changes

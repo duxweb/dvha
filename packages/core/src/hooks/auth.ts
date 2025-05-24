@@ -58,7 +58,7 @@ export function useLogin({ onSuccess, onError }: IAuthLoginParams) {
         throw new Error('Login response data is undefined')
       }
       onSuccess?.(result)
-      authStore.login(manage.config.name, result.data)
+      authStore.login(result.data)
       router.push(manage.getRoutePath(result.redirectTo || '/'))
       return
     }
@@ -84,10 +84,10 @@ export function useLogout({ onSuccess, onError }: IAuthLogoutParams) {
   const router = useRouter()
 
   const mutate = async (params?: any) => {
-    const result = await manage.authProvider?.logout(params)
+    const result = await manage.config.authProvider?.logout(params)
     if (result?.success) {
       onSuccess?.(result)
-      authStore.logout(manage.name)
+      authStore.logout()
       router.push(getRoutePath(result.redirectTo || '/login'))
       return
     }
@@ -112,13 +112,13 @@ export function useCheck({ onSuccess, onError }: IAuthCheckParams) {
   const router = useRouter()
 
   const mutate = async (params?: any) => {
-    const result = await manage.authProvider?.check(params)
+    const result = await manage.config.authProvider?.check(params)
     if (result?.success) {
       onSuccess?.(result)
       if (!result?.data) {
         throw new Error('Check response data is undefined')
       }
-      authStore.update(manage.name, result.data)
+      authStore.update(result.data)
       return
     }
     onError?.(result)
@@ -144,13 +144,13 @@ export function useRegister({ onSuccess, onError }: IAuthLoginParams) {
   const authStore = useAuthStore()
   const router = useRouter()
   const mutate = async (data: Record<string, any>) => {
-    const result = await manage.authProvider?.register(data)
+    const result = await manage.config.authProvider?.register(data)
     if (result?.success) {
       onSuccess?.(result)
       if (!result?.data) {
         throw new Error('Register response data is undefined')
       }
-      authStore.login(manage.name, result.data)
+      authStore.login(result.data)
       router.push(getRoutePath(result.redirectTo || ''))
       return
     }
@@ -172,7 +172,7 @@ export function useForgotPassword({ onSuccess, onError }: IAuthActionParams) {
   const router = useRouter()
 
   const mutate = async (params?: any) => {
-    const result = await manage.authProvider?.forgotPassword(params)
+    const result = await manage.config.authProvider?.forgotPassword(params)
     if (result?.success) {
       onSuccess?.(result)
       if (result.redirectTo) {
@@ -199,7 +199,7 @@ export function useUpdatePassword({ onSuccess, onError }: IAuthActionParams) {
   const router = useRouter()
 
   const mutate = async (params?: any) => {
-    const result = await manage.authProvider?.updatePassword(params)
+    const result = await manage.config.authProvider?.updatePassword(params)
     if (result?.success) {
       onSuccess?.(result)
       if (result.redirectTo) {
@@ -226,7 +226,7 @@ export function useError(onCallback?: (data?: IAuthErrorResponse) => void) {
   const router = useRouter()
 
   const mutate = async (error: any) => {
-    const result = await manage.authProvider?.onError(error)
+    const result = await manage.config.authProvider?.onError(error)
     onCallback?.(result)
     if (result?.logout) {
       router.push(getRoutePath(result.redirectTo || '/login'))
@@ -243,9 +243,8 @@ export function useError(onCallback?: (data?: IAuthErrorResponse) => void) {
  * @returns Auth info
  */
 export function useGetAuth(manageName?: string) {
-  const { config: manage } = useManage(manageName)
-  const authStore = useAuthStore()
-  const user = authStore.getUser(manage.name)
+  const authStore = useAuthStore(manageName)
+  const user = authStore.getUser()
   return user
 }
 
@@ -255,7 +254,6 @@ export function useGetAuth(manageName?: string) {
  * @returns Is login
  */
 export function useIsLogin(manageName?: string) {
-  const { config: manage } = useManage(manageName)
-  const authStore = useAuthStore()
-  return authStore.isLogin(manage.name)
+  const authStore = useAuthStore(manageName)
+  return authStore.isLogin()
 }

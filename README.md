@@ -110,14 +110,12 @@ import App from './App.vue'
 const app = createApp(App)
 
 const config: IConfig = {
-  apiUrl: 'https://api.example.com', // 替换为你的 API 地址
   defaultManage: 'admin',
   manages: [
     {
       name: 'admin',
       title: 'DVHA 后台管理系统',
       routePrefix: '/admin',
-      apiUrl: '/admin',
       components: {
         authLayout: () => import('./pages/layout.vue'),
         notFound: () => import('./pages/404.vue'),
@@ -157,12 +155,91 @@ const config: IConfig = {
       ]
     },
   ],
-  dataProvider: simpleDataProvider,
-  authProvider: simpleAuthProvider,
+  dataProvider: simpleDataProvider({
+    apiUrl: 'https://api.example.com' // 替换为你的 API 地址
+  }),
+  authProvider: simpleAuthProvider(),
 }
 
 app.use(createDux(config))
 app.mount('#app')
+```
+
+### 多数据源配置
+
+```typescript
+import type { IConfig } from '@duxweb/dvha-core'
+import { createDux, simpleDataProvider, simpleAuthProvider } from '@duxweb/dvha-core'
+
+const config: IConfig = {
+  title: '企业管理平台',
+  defaultManage: 'admin',
+
+  // 全局多数据源配置
+  dataProvider: {
+    default: simpleDataProvider({
+      apiUrl: 'https://api.example.com'
+    }),
+    analytics: simpleDataProvider({
+      apiUrl: 'https://analytics-api.example.com'
+    }),
+    payment: simpleDataProvider({
+      apiUrl: 'https://payment-api.example.com'
+    }),
+    logistics: simpleDataProvider({
+      apiUrl: 'https://logistics-api.example.com'
+    })
+  },
+
+  manages: [
+    {
+      name: 'admin',
+      title: '后台管理',
+      routePrefix: '/admin',
+
+      // 管理端可以覆盖特定数据源
+      dataProvider: {
+        default: simpleDataProvider({
+          apiUrl: 'https://admin-api.example.com'
+        }),
+        // 其他数据源从全局继承
+      },
+
+      // 自定义认证配置
+      authProvider: simpleAuthProvider({
+        apiPath: {
+          login: '/admin/login',
+          check: '/admin/check'
+        },
+        routePath: {
+          login: '/admin/login',
+          index: '/admin'
+        }
+      }),
+
+      routes: [
+        {
+          name: 'admin.login',
+          path: 'login',
+          component: () => import('./pages/admin/Login.vue'),
+          meta: { authorization: false }
+        }
+      ],
+
+      menus: [
+        {
+          name: 'dashboard',
+          path: 'dashboard',
+          icon: 'i-tabler:dashboard',
+          label: '仪表板',
+          component: () => import('./pages/Dashboard.vue')
+        }
+      ]
+    }
+  ],
+
+  authProvider: simpleAuthProvider(),
+}
 ```
 
 ### 更多示例

@@ -31,13 +31,13 @@ export function useTheme(options?: UseColorModeOptions) {
   const theme = computed<ITheme>(() => {
     if (isDark.value) {
       return {
-        logo: manage.config.theme?.darkLogo,
-        banner: manage.config.theme?.darkBanner,
+        logo: manage.config?.theme?.darkLogo,
+        banner: manage.config?.theme?.darkBanner,
       }
     }
     return {
-      logo: manage.config.theme?.logo,
-      banner: manage.config.theme?.banner,
+      logo: manage.config?.theme?.logo,
+      banner: manage.config?.theme?.banner,
     }
   })
 

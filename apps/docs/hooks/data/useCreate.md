@@ -10,23 +10,35 @@
 - 🛡️ **错误处理** - 自动处理创建失败情况
 - 🎯 **表单集成** - 完美集成表单提交流程
 - 🔄 **缓存失效** - 自动失效相关列表查询缓存
+- 🎯 **多数据源** - 支持指定不同的数据提供者
 
 ## 接口关系
 
-该hook调用数据提供者的 `create(resource, params)` 方法创建新数据。
+该hook调用数据提供者的 `create(options, manage, auth)` 方法创建新数据。
 
-```js
+```typescript
 // 数据提供者接口
 interface IDataProvider {
   create(
-    resource: string,
-    params: {
-      data: Record<string, any>
-      meta?: Record<string, any>
-    }
-  ): Promise<{
-    data: any
-  }>
+    options: IDataProviderCreateOptions,
+    manage?: IManageHook,
+    auth?: IUserState
+  ): Promise<IDataProviderResponse>
+}
+
+// 请求选项接口
+interface IDataProviderCreateOptions {
+  path: string                                          // API 路径
+  data: Record<string, any>                            // 要创建的数据
+  meta?: Record<string, any>                           // 额外参数
+}
+
+// 响应数据接口
+interface IDataProviderResponse {
+  message?: string                          // 响应消息
+  data?: any                                // 响应数据
+  meta?: Record<string, any>                // 元数据信息
+  [key: string]: any                        // 其他自定义字段
 }
 ```
 
@@ -56,6 +68,7 @@ const { mutate, isLoading, isError, error } = useCreate({
   meta: {                  // 额外参数
     include: 'profile'
   },
+  providerName: 'default', // 数据提供者名称，默认为 'default'
   onSuccess: (data) => {   // 成功回调
     console.log('创建成功:', data)
     // 可以进行页面跳转、清空表单等
@@ -83,8 +96,10 @@ const handleCreate = () => {
 |------|------|------|------|
 | `path` | `string` | ✅ | API 资源路径 |
 | `meta` | `Record<string, any>` | ❌ | 传递给 API 的额外参数 |
+| `providerName` | `string` | ❌ | 数据提供者名称，默认为 'default' |
 | `onSuccess` | `(data: any) => void` | ❌ | 成功回调 |
 | `onError` | `(error: any) => void` | ❌ | 错误处理回调 |
+| `options` | `UseMutationOptions` | ❌ | TanStack Query Mutation 选项 |
 
 ## 返回值
 
@@ -137,6 +152,48 @@ const handleSubmit = () => {
 }
 ```
 
+## 多数据提供者示例
+
+```js
+import { useCreate } from '@duxweb/dvha-core'
+
+// 使用默认数据提供者创建用户
+const { mutate: createUser } = useCreate({
+  path: 'users'
+})
+
+// 使用分析服务创建报告
+const { mutate: createReport } = useCreate({
+  path: 'reports',
+  providerName: 'analytics'
+})
+
+// 使用支付服务创建订单
+const { mutate: createOrder } = useCreate({
+  path: 'orders',
+  providerName: 'payment'
+})
+
+// 执行不同的创建操作
+const handleCreateUser = () => {
+  createUser({
+    data: { name: '张三', email: 'zhangsan@example.com' }
+  })
+}
+
+const handleCreateReport = () => {
+  createReport({
+    data: { type: 'monthly', period: '2024-01' }
+  })
+}
+
+const handleCreateOrder = () => {
+  createOrder({
+    data: { amount: 100, currency: 'CNY' }
+  })
+}
+```
+
 ## 文件上传创建
 
 ```js
@@ -164,18 +221,66 @@ const handleUpload = () => {
 }
 ```
 
+## 高级配置示例
+
+```js
+import { useCreate } from '@duxweb/dvha-core'
+
+const { mutate: createUser, isLoading, error } = useCreate({
+  path: 'users',
+  meta: {
+    include: 'profile,permissions',
+    notification: true
+  },
+  providerName: 'userService',
+  options: {
+    onMutate: () => {
+      console.log('开始创建用户...')
+    },
+    onSettled: () => {
+      console.log('创建操作完成')
+    }
+  },
+  onSuccess: (data) => {
+    console.log('用户创建成功:', data)
+    // 可以在这里进行页面跳转、显示成功提示等
+  },
+  onError: (error) => {
+    console.error('创建用户失败:', error)
+    // 可以在这里显示错误提示
+  }
+})
+
+const handleCreate = () => {
+  createUser({
+    data: {
+      name: '新用户',
+      email: 'newuser@example.com',
+      role: 'admin',
+      profile: {
+        phone: '13800138000',
+        address: '北京市朝阳区'
+      }
+    },
+    meta: {
+      sendWelcomeEmail: true
+    }
+  })
+}
+```
+
 ## 响应格式
 
 ```json
 {
+  "message": "创建成功",
   "data": {
     "id": 1,
     "name": "张三",
     "email": "zhangsan@example.com",
     "status": "active",
     "created_at": "2024-01-20T10:30:00Z"
-  },
-  "message": "创建成功"
+  }
 }
 ```
 

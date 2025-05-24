@@ -1,5 +1,11 @@
 # @duxweb/dvha-template
 
+## 1.0.5
+
+### Patch Changes
+
+- 增加多数据源配置,移除全局 ApiUrl 等参数
+
 ## 1.0.4
 
 ### Patch Changes

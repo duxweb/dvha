@@ -17,8 +17,8 @@ export function useTabStore(manageName?: string) {
   return tabStore()
 }
 
-export function createTabStore(manageName: string) {
-  return defineStore(`tab-${manageName}`, () => {
+function createTabStore(manageName: string) {
+  return defineStore(`tabs-${manageName}`, () => {
     const current = ref<string>()
     const tabs = ref<IMenu[]>([])
 

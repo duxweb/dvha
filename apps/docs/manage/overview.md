@@ -6,7 +6,7 @@ DVHA 框架的核心特性之一是支持多管理端系统，每个管理端可
 
 - 🏗️ **多管理端支持** - 支持在同一应用中运行多个管理端
 - 🔐 **独立认证** - 每个管理端可配置独立的认证提供者
-- 📊 **独立数据源** - 每个管理端可配置独立的数据提供者
+- 📊 **独立数据源** - 每个管理端可配置独立的数据提供者或多重数据提供者
 - 🎨 **独立主题** - 每个管理端可配置独立的主题样式
 - 🚀 **独立路由** - 每个管理端拥有独立的路由配置
 - 📱 **独立菜单** - 每个管理端可配置独立的菜单结构
@@ -16,29 +16,28 @@ DVHA 框架的核心特性之一是支持多管理端系统，每个管理端可
 
 ```typescript
 interface IManage {
-  name: string                    // 管理端唯一标识
-  title: string                   // 管理端标题
-  copyright?: string              // 版权信息
-  description?: string            // 描述信息
+  name: string                                              // 管理端唯一标识
+  title: string                                             // 管理端标题
+  copyright?: string                                        // 版权信息
+  description?: string                                      // 描述信息
 
-  register?: boolean              // 是否支持注册
-  forgotPassword?: boolean        // 是否支持忘记密码
-  updatePassword?: boolean        // 是否支持修改密码
+  register?: boolean                                        // 是否支持注册
+  forgotPassword?: boolean                                  // 是否支持忘记密码
+  updatePassword?: boolean                                  // 是否支持修改密码
 
-  apiUrl?: string                 // API 基础地址
-  apiRoutePath?: string           // 远程菜单 API 路径
+  apiRoutePath?: string                                     // 远程菜单 API 路径
 
-  authProvider?: IAuthProvider    // 认证提供者
-  dataProvider?: IDataProvider    // 数据提供者
+  authProvider?: IAuthProvider                              // 认证提供者
+  dataProvider?: IDataProvider | Record<string, IDataProvider>  // 数据提供者
 
-  routePrefix?: string            // 路由前缀
-  routes?: RouteRecordRaw[]       // 路由配置
-  menus?: IMenu[]                 // 菜单配置
+  routePrefix?: string                                      // 路由前缀
+  routes?: RouteRecordRaw[]                                 // 路由配置
+  menus?: IMenu[]                                          // 菜单配置
 
-  components?: IConfigComponent   // 组件配置
-  theme?: IConfigTheme           // 主题配置
+  components?: IConfigComponent                             // 组件配置
+  theme?: IConfigTheme                                     // 主题配置
 
-  [key: string]: any             // 扩展字段
+  [key: string]: any                                       // 扩展字段
 }
 ```
 
@@ -47,7 +46,12 @@ interface IManage {
 ### 单管理端配置
 
 ```js
-import { createDux } from '@duxweb/dvha-core'
+import { createDux, simpleDataProvider } from '@duxweb/dvha-core'
+
+// 创建数据提供者
+const dataProvider = simpleDataProvider({
+  apiUrl: 'https://api.example.com'
+})
 
 const app = createDux({
   // 默认管理端
@@ -66,9 +70,6 @@ const app = createDux({
       forgotPassword: true,
       updatePassword: true,
 
-      // API 配置
-      apiUrl: '/api/admin',
-
       // 路由配置
       routePrefix: '/admin',
 
@@ -76,7 +77,7 @@ const app = createDux({
       authProvider: adminAuthProvider,
 
       // 数据提供者
-      dataProvider: adminDataProvider,
+      dataProvider,
 
       // 菜单配置
       menus: [
@@ -96,11 +97,23 @@ const app = createDux({
 ### 多管理端配置
 
 ```js
+// 创建不同的数据提供者
+const adminDataProvider = simpleDataProvider({
+  apiUrl: 'https://admin-api.example.com'
+})
+
+const userDataProvider = simpleDataProvider({
+  apiUrl: 'https://user-api.example.com'
+})
+
+const merchantDataProvider = simpleDataProvider({
+  apiUrl: 'https://merchant-api.example.com'
+})
+
 const app = createDux({
   // 全局配置
   title: 'DVHA 框架',
   copyright: '© 2024 DVHA',
-  apiUrl: 'https://api.example.com',
 
   // 默认管理端
   defaultManage: 'admin',
@@ -131,13 +144,21 @@ const app = createDux({
       }
     },
 
-    // 商家后台
+    // 商家后台 - 使用多数据提供者
     {
       name: 'merchant',
       title: '商家后台',
       routePrefix: '/merchant',
       authProvider: merchantAuthProvider,
-      dataProvider: merchantDataProvider,
+      dataProvider: {
+        default: merchantDataProvider,
+        analytics: simpleDataProvider({
+          apiUrl: 'https://analytics-api.example.com'
+        }),
+        payment: simpleDataProvider({
+          apiUrl: 'https://payment-api.example.com'
+        })
+      },
       register: true,
       forgotPassword: true
     }
@@ -156,7 +177,6 @@ const app = createDux({
   // 全局配置
   title: 'DVHA 系统',
   copyright: '© 2024 DVHA',
-  apiUrl: 'https://api.example.com',
 
   // 全局认证提供者
   authProvider: globalAuthProvider,
@@ -193,7 +213,7 @@ const app = createDux({
 1. **字符串字段**: 管理端配置覆盖全局配置
 2. **对象字段**: 深度合并，管理端配置优先
 3. **标题字段**: 特殊处理，格式为 "管理端标题 - 全局标题"
-4. **API地址**: 拼接处理，格式为 "全局API/管理端API"
+4. **数据提供者**: 管理端配置覆盖全局配置
 
 ## 管理端功能配置
 
@@ -237,29 +257,25 @@ const app = createDux({
   name: 'admin',
   title: '管理后台',
 
-  // API 配置
-  apiUrl: '/api/admin',
+  // 单一数据提供者
+  dataProvider: simpleDataProvider({
+    apiUrl: 'https://api.example.com'
+  }),
 
-  // 数据提供者
+  // 或者多重数据提供者
   dataProvider: {
-    getList: async (options, manage, auth) => {
-      // 获取列表数据
-    },
-    getOne: async (options, manage, auth) => {
-      // 获取单条数据
-    },
-    create: async (options, manage, auth) => {
-      // 创建数据
-    },
-    update: async (options, manage, auth) => {
-      // 更新数据
-    },
-    deleteOne: async (options, manage, auth) => {
-      // 删除数据
-    },
-    custom: async (options, manage, auth) => {
-      // 自定义请求
-    }
+    default: simpleDataProvider({
+      apiUrl: 'https://api.example.com'
+    }),
+    user: simpleDataProvider({
+      apiUrl: 'https://user-api.example.com'
+    }),
+    order: simpleDataProvider({
+      apiUrl: 'https://order-api.example.com'
+    }),
+    product: simpleDataProvider({
+      apiUrl: 'https://product-api.example.com'
+    })
   }
 }
 ```
@@ -340,7 +356,7 @@ const app = createDux({
 ### 企业级多管理端配置
 
 ```js
-import { createDux } from '@duxweb/dvha-core'
+import { createDux, simpleDataProvider } from '@duxweb/dvha-core'
 
 // 认证提供者
 const createAuthProvider = (baseUrl) => ({
@@ -358,20 +374,10 @@ const createAuthProvider = (baseUrl) => ({
   }
 })
 
-// 数据提供者
-const createDataProvider = (baseUrl) => ({
-  getList: async (options) => {
-    const response = await fetch(`${baseUrl}${options.path}`)
-    return await response.json()
-  },
-  // 其他方法...
-})
-
 const app = createDux({
   // 全局配置
   title: '企业管理平台',
   copyright: '© 2024 Enterprise Corp',
-  apiUrl: 'https://api.enterprise.com',
 
   defaultManage: 'admin',
 
@@ -383,8 +389,10 @@ const app = createDux({
       description: '企业系统管理后台',
       routePrefix: '/admin',
 
-      authProvider: createAuthProvider('/api/admin'),
-      dataProvider: createDataProvider('/api/admin'),
+      authProvider: createAuthProvider('https://admin-api.example.com'),
+      dataProvider: simpleDataProvider({
+        apiUrl: 'https://admin-api.example.com'
+      }),
 
       register: false,
       forgotPassword: true,
@@ -424,8 +432,10 @@ const app = createDux({
       description: '用户个人管理中心',
       routePrefix: '/user',
 
-      authProvider: createAuthProvider('/api/user'),
-      dataProvider: createDataProvider('/api/user'),
+      authProvider: createAuthProvider('https://user-api.example.com'),
+      dataProvider: simpleDataProvider({
+        apiUrl: 'https://user-api.example.com'
+      }),
 
       register: true,
       forgotPassword: true,
@@ -466,8 +476,10 @@ const app = createDux({
       description: '商家店铺管理后台',
       routePrefix: '/merchant',
 
-      authProvider: createAuthProvider('/api/merchant'),
-      dataProvider: createDataProvider('/api/merchant'),
+      authProvider: createAuthProvider('https://merchant-api.example.com'),
+      dataProvider: simpleDataProvider({
+        apiUrl: 'https://merchant-api.example.com'
+      }),
 
       register: true,
       forgotPassword: true,
@@ -510,15 +522,18 @@ const manage = useManage()
 
 console.log('管理端名称:', manage.config.name)
 console.log('管理端标题:', manage.config.title)
-console.log('API地址:', manage.config.apiUrl)
 
 // 生成路由路径
 const dashboardPath = manage.getRoutePath('dashboard')
 console.log('仪表盘路径:', dashboardPath)
 
-// 生成API地址
+// 生成API地址 - 使用默认数据提供者
 const usersApiUrl = manage.getApiUrl('users')
 console.log('用户API地址:', usersApiUrl)
+
+// 生成API地址 - 使用指定的数据提供者
+const analyticsApiUrl = manage.getApiUrl('stats', 'analytics')
+console.log('分析API地址:', analyticsApiUrl)
 </script>
 ```
 

@@ -22,9 +22,26 @@ DVHA 内置了 `simpleAuthProvider`，适用于开发和测试：
 import { simpleAuthProvider } from '@duxweb/dvha-core'
 
 const config: IConfig = {
-  authProvider: simpleAuthProvider,
+  authProvider: simpleAuthProvider(),
   // ... 其他配置
 }
+
+// 或者使用自定义配置
+const authProvider = simpleAuthProvider({
+  apiPath: {
+    login: '/auth/login',        // 自定义登录接口路径
+    check: '/auth/check',        // 自定义认证检查路径
+    logout: '/auth/logout',      // 自定义登出接口路径
+    register: '/auth/register',  // 自定义注册接口路径
+    forgotPassword: '/auth/forgot',  // 自定义忘记密码路径
+    updatePassword: '/auth/reset'    // 自定义重置密码路径
+  },
+  routePath: {
+    login: '/login',             // 登录页面路径
+    index: '/dashboard'          // 登录成功后跳转路径
+  },
+  dataProviderName: 'default'    // 指定使用的数据提供者名称
+})
 ```
 
 ::: tip
@@ -44,19 +61,23 @@ interface IAuthProvider {
   // 用户登出 (必需)
   logout: (params?: any, manage?: IManageHook) => Promise<IAuthLogoutResponse>
 
-  // 用户注册 (可选)
-  register?: (params: any, manage?: IManageHook) => Promise<IAuthLoginResponse>
+  // 用户注册 (必需)
+  register: (params: any, manage?: IManageHook) => Promise<IAuthLoginResponse>
 
-  // 忘记密码 (可选)
-  forgotPassword?: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
+  // 忘记密码 (必需)
+  forgotPassword: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
 
-  // 重置密码 (可选)
-  updatePassword?: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
+  // 重置密码 (必需)
+  updatePassword: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
 
   // 错误处理 (必需)
   onError: (error?: any) => Promise<IAuthErrorResponse>
 }
 ```
+
+::: warning 重要变更
+在最新版本中，认证提供者的所有方法都是必需的。如果某个功能不需要实现，可以返回适当的错误响应而不是省略该方法。
+:::
 
 ## 参数说明
 
@@ -247,17 +268,15 @@ import type { IConfig } from '@duxweb/dvha-core'
 import { createDux, simpleAuthProvider } from '@duxweb/dvha-core'
 
 const config: IConfig = {
-  apiUrl: 'https://api.example.com',
   manages: [
     {
       name: 'admin',
       title: '管理后台',
       routePrefix: '/admin',
-      apiUrl: '/admin',
       // ... 其他配置
     }
   ],
-  authProvider: simpleAuthProvider,  // 使用简单认证提供者
+  authProvider: simpleAuthProvider(),  // 使用简单认证提供者
 }
 ```
 
@@ -298,6 +317,36 @@ const customAuthProvider: IAuthProvider = {
     }
   },
 
+  register: async (params, manage) => {
+    // 您的注册逻辑
+    return {
+      success: true,
+      message: '注册成功',
+      redirectTo: '/admin',
+      data: {
+        token: 'new-user-token',
+        info: { /* 新用户信息 */ }
+      }
+    }
+  },
+
+  forgotPassword: async (params, manage) => {
+    // 您的忘记密码逻辑
+    return {
+      success: true,
+      message: '重置邮件已发送'
+    }
+  },
+
+  updatePassword: async (params, manage) => {
+    // 您的重置密码逻辑
+    return {
+      success: true,
+      message: '密码重置成功',
+      redirectTo: '/login'
+    }
+  },
+
   onError: async (error) => {
     // 您的错误处理逻辑
     if (error.status === 401) {
@@ -309,8 +358,6 @@ const customAuthProvider: IAuthProvider = {
     }
     return { logout: false, error }
   }
-
-  // ... 实现其他可选方法
 }
 
 const config: IConfig = {
@@ -328,16 +375,34 @@ const config: IConfig = {
   manages: [
     {
       name: 'admin',
-      authProvider: adminAuthProvider,      // 管理端专用
+      authProvider: simpleAuthProvider({
+        apiPath: {
+          login: '/admin/login',
+          check: '/admin/check'
+        },
+        routePath: {
+          login: '/admin/login',
+          index: '/admin'
+        }
+      }),      // 管理端专用
       // ... 其他配置
     },
     {
       name: 'merchant',
-      authProvider: merchantAuthProvider,   // 商户端专用
+      authProvider: simpleAuthProvider({
+        apiPath: {
+          login: '/merchant/login',
+          check: '/merchant/check'
+        },
+        routePath: {
+          login: '/merchant/login',
+          index: '/merchant'
+        }
+      }),   // 商户端专用
       // ... 其他配置
     }
   ],
-  authProvider: globalAuthProvider,         // 全局后备
+  authProvider: simpleAuthProvider(),         // 全局后备
 }
 ```
 

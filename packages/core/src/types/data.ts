@@ -7,6 +7,9 @@ import type { IUserState } from '../stores'
  */
 export interface IDataProvider {
 
+  // 获取接口地址
+  apiUrl?: (path?: string) => string
+
   // 获取列表
   getList: (options: IDataProviderListOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
   // 创建数据

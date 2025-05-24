@@ -1,153 +1,166 @@
+import { trimStart } from 'lodash-es'
 import type { IManageHook } from '../hooks'
 import type { IUserState } from '../stores'
 import type { IDataProvider, IDataProviderCreateManyOptions, IDataProviderCreateOptions, IDataProviderCustomOptions, IDataProviderDeleteManyOptions, IDataProviderDeleteOptions, IDataProviderGetManyOptions, IDataProviderGetOneOptions, IDataProviderListOptions, IDataProviderUpdateManyOptions, IDataProviderUpdateOptions } from '../types'
 import axios from 'axios'
 
-export const simpleDataProvider: IDataProvider = {
+export interface ISimpleDataProviderProps {
+  apiUrl: string
+}
 
-  getList: (options: IDataProviderListOptions, manage?: IManageHook, auth?: IUserState) => {
-    const params: Record<string, any> = {}
+export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvider {
+  const apiUrl = (path?: string): string => {
+    return path ? `${props.apiUrl}/${trimStart(path || '', '/')}` : props.apiUrl
+  }
 
-    if (options.pagination && typeof options.pagination === 'object') {
-      params.page = options.pagination.page
-      params.limit = options.pagination.limit
-      params.pageSize = options.pagination.pageSize
-    }
+  return {
 
-    return axios.get(manage?.getApiUrl(options.path) || '', {
-      params: {
-        ...params,
-        ...options.filters,
-        ...options.sorters,
-      },
-      headers: {
-        Authorization: auth?.token,
-      },
-      ...options.meta,
-    }).then((res) => {
-      return res.data
-    })
-  },
-  create: (options: IDataProviderCreateOptions, manage?: IManageHook, auth?: IUserState) => {
-    return axios.post(manage?.getApiUrl(options.path) || '', options.data, {
-      headers: {
-        Authorization: auth?.token,
-      },
-      ...options.meta,
-    }).then((res) => {
-      return res.data
-    })
-  },
-  update: (options: IDataProviderUpdateOptions, manage?: IManageHook, auth?: IUserState) => {
-    return axios.put(manage?.getApiUrl(options.id ? `${options.path}/${options.id}` : options.path) || '', options.data, {
-      headers: {
-        Authorization: auth?.token,
-      },
-      ...options.meta,
-    }).then((res) => {
-      return res.data
-    })
-  },
-  deleteOne: (options: IDataProviderDeleteOptions, manage?: IManageHook, auth?: IUserState) => {
-    return axios.delete(manage?.getApiUrl(options.id ? `${options.path}/${options.id}` : options.path) || '', {
-      headers: {
-        Authorization: auth?.token,
-      },
-      ...options.meta,
-    }).then((res) => {
-      return res.data
-    })
-  },
-  getOne: (options: IDataProviderGetOneOptions, manage?: IManageHook, auth?: IUserState) => {
-    return axios.get(manage?.getApiUrl(options.id ? `${options.path}/${options.id}` : options.path) || '', {
-      headers: {
-        Authorization: auth?.token,
-      },
-      ...options.meta,
-    }).then((res) => {
-      return res.data
-    })
-  },
-  getMany: (options: IDataProviderGetManyOptions, manage?: IManageHook, auth?: IUserState) => {
-    return axios.get(manage?.getApiUrl(options.path) || '', {
-      params: {
-        ids: options.ids,
-      },
-      headers: {
-        Authorization: auth?.token,
-      },
-      ...options.meta,
-    }).then((res) => {
-      return res.data
-    })
-  },
-  createMany: (options: IDataProviderCreateManyOptions, manage?: IManageHook, auth?: IUserState) => {
-    return axios.post(manage?.getApiUrl(options.path) || '', options.data, {
-      headers: {
-        Authorization: auth?.token,
-      },
-      ...options.meta,
-    }).then((res) => {
-      return res.data
-    })
-  },
-  updateMany: (options: IDataProviderUpdateManyOptions, manage?: IManageHook, auth?: IUserState) => {
-    return axios.put(manage?.getApiUrl(options.path) || '', {
-      ids: options.ids,
-      data: options.data,
-    }, {
-      headers: {
-        Authorization: auth?.token,
-      },
-      ...options.meta,
-    }).then((res) => {
-      return res.data
-    })
-  },
-  deleteMany: (options: IDataProviderDeleteManyOptions, manage?: IManageHook, auth?: IUserState) => {
-    return axios.delete(manage?.getApiUrl(options.path) || '', {
-      params: {
-        ids: options.ids,
-      },
-      headers: {
-        Authorization: auth?.token,
-      },
-      ...options.meta,
-    }).then((res) => {
-      return res.data
-    })
-  },
-  custom: (options: IDataProviderCustomOptions, manage?: IManageHook, auth?: IUserState) => {
-    let params: Record<string, any> = {
-      ...options.query,
-    }
+    apiUrl,
 
-    if (options.sorters && typeof options.sorters === 'object') {
-      params = {
-        ...params,
-        ...options.sorters,
+    getList: (options: IDataProviderListOptions, _manage?: IManageHook, auth?: IUserState) => {
+      const params: Record<string, any> = {}
+
+      if (options.pagination && typeof options.pagination === 'object') {
+        params.page = options.pagination.page
+        params.limit = options.pagination.limit
+        params.pageSize = options.pagination.pageSize
       }
-    }
 
-    if (options.filters && typeof options.filters === 'object') {
-      params = {
-        ...params,
-        ...options.filters,
+      return axios.get(apiUrl(options.path) || '', {
+        params: {
+          ...params,
+          ...options.filters,
+          ...options.sorters,
+        },
+        headers: {
+          Authorization: auth?.token,
+        },
+        ...options.meta,
+      }).then((res) => {
+        return res.data
+      })
+    },
+    create: (options: IDataProviderCreateOptions, _manage?: IManageHook, auth?: IUserState) => {
+      return axios.post(apiUrl(options.path) || '', options.data, {
+        headers: {
+          Authorization: auth?.token,
+        },
+        ...options.meta,
+      }).then((res) => {
+        return res.data
+      })
+    },
+    update: (options: IDataProviderUpdateOptions, _manage?: IManageHook, auth?: IUserState) => {
+      return axios.put(apiUrl(options.id ? `${options.path}/${options.id}` : options.path) || '', options.data, {
+        headers: {
+          Authorization: auth?.token,
+        },
+        ...options.meta,
+      }).then((res) => {
+        return res.data
+      })
+    },
+    deleteOne: (options: IDataProviderDeleteOptions, _manage?: IManageHook, auth?: IUserState) => {
+      return axios.delete(apiUrl(options.id ? `${options.path}/${options.id}` : options.path) || '', {
+        headers: {
+          Authorization: auth?.token,
+        },
+        ...options.meta,
+      }).then((res) => {
+        return res.data
+      })
+    },
+    getOne: (options: IDataProviderGetOneOptions, _manage?: IManageHook, auth?: IUserState) => {
+      return axios.get(apiUrl(options.id ? `${options.path}/${options.id}` : options.path) || '', {
+        headers: {
+          Authorization: auth?.token,
+        },
+        ...options.meta,
+      }).then((res) => {
+        return res.data
+      })
+    },
+    getMany: (options: IDataProviderGetManyOptions, _manage?: IManageHook, auth?: IUserState) => {
+      return axios.get(apiUrl(options.path) || '', {
+        params: {
+          ids: options.ids,
+        },
+        headers: {
+          Authorization: auth?.token,
+        },
+        ...options.meta,
+      }).then((res) => {
+        return res.data
+      })
+    },
+    createMany: (options: IDataProviderCreateManyOptions, _manage?: IManageHook, auth?: IUserState) => {
+      return axios.post(apiUrl(options.path) || '', options.data, {
+        headers: {
+          Authorization: auth?.token,
+        },
+        ...options.meta,
+      }).then((res) => {
+        return res.data
+      })
+    },
+    updateMany: (options: IDataProviderUpdateManyOptions, _manage?: IManageHook, auth?: IUserState) => {
+      return axios.put(apiUrl(options.path) || '', {
+        ids: options.ids,
+        data: options.data,
+      }, {
+        headers: {
+          Authorization: auth?.token,
+        },
+        ...options.meta,
+      }).then((res) => {
+        return res.data
+      })
+    },
+    deleteMany: (options: IDataProviderDeleteManyOptions, _manage?: IManageHook, auth?: IUserState) => {
+      return axios.delete(apiUrl(options.path) || '', {
+        params: {
+          ids: options.ids,
+        },
+        headers: {
+          Authorization: auth?.token,
+        },
+        ...options.meta,
+      }).then((res) => {
+        return res.data
+      })
+    },
+    custom: (options: IDataProviderCustomOptions, _manage?: IManageHook, auth?: IUserState) => {
+      let params: Record<string, any> = {
+        ...options.query,
       }
-    }
 
-    return axios.request({
-      url: manage?.getApiUrl(options.path || ''),
-      method: options.method || 'GET',
-      data: options.payload,
-      params,
-      headers: {
-        Authorization: auth?.token,
-        ...options.headers,
-      },
-      ...options.meta,
-    }).then((res) => {
-      return res.data
-    })
-  },
+      if (options.sorters && typeof options.sorters === 'object') {
+        params = {
+          ...params,
+          ...options.sorters,
+        }
+      }
+
+      if (options.filters && typeof options.filters === 'object') {
+        params = {
+          ...params,
+          ...options.filters,
+        }
+      }
+
+      return axios.request({
+        url: apiUrl(options.path || ''),
+        method: options.method || 'GET',
+        data: options.payload,
+        params,
+        headers: {
+          Authorization: auth?.token,
+          ...options.headers,
+        },
+        ...options.meta,
+      }).then((res) => {
+        return res.data
+      })
+    },
+  }
 }

@@ -8,8 +8,12 @@ DVHA 提供了丰富的配置选项来满足不同项目的需求。配置主要
 import type { IConfig } from '@duxweb/dvha-core'
 import { createDux, simpleDataProvider, simpleAuthProvider } from '@duxweb/dvha-core'
 
+// 创建数据提供者
+const dataProvider = simpleDataProvider({
+  apiUrl: 'https://api.example.com'
+})
+
 const config: IConfig = {
-  apiUrl: 'https://api.example.com',
   title: '我的管理系统',
   defaultManage: 'admin',
   manages: [
@@ -17,12 +21,11 @@ const config: IConfig = {
       name: 'admin',
       title: '管理后台',
       routePrefix: '/admin',
-      apiUrl: '/admin',
       // ... 其他配置
     }
   ],
-  dataProvider: simpleDataProvider,
-  authProvider: simpleAuthProvider,
+  dataProvider,
+  authProvider: simpleAuthProvider(),
 }
 ```
 
@@ -43,11 +46,9 @@ const config: IConfig = {
 
 ### API 配置
 
-**用途说明**: 🔗 框架内部使用，用于构建完整的 API 请求地址。数据提供者和认证提供者会自动使用此配置。
+**用途说明**: 🔗 API URL 现在通过数据提供者的 `apiUrl` 方法提供，不再在全局配置中直接配置。
 
-| 字段 | 类型 | 必需 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `apiUrl` | `string` | ❌ | - | 全局 API 基础地址 |
+> ⚠️ **重要变更**: 在最新版本中，`apiUrl` 字段已从全局配置中移除，所有 API 地址配置都通过数据提供者实现。
 
 ### 管理端配置
 
@@ -60,12 +61,12 @@ const config: IConfig = {
 
 ### 提供者配置
 
-**用途说明**: ⚙️ 框架内部使用，为所有 Hooks 提供底层的数据操作和认证功能。管理端配置中的提供者会覆盖全局提供者。
+**用途说明**: ⚙️ 框架内部使用，为所有 Hooks 提供底层的数据操作和认证功能。管理端配置中的提供者会覆盖全局提供者。数据提供者支持单一提供者或多重提供者配置。
 
 | 字段 | 类型 | 必需 | 默认值 | 说明 |
 |------|------|------|--------|------|
 | `authProvider` | `IAuthProvider` | ❌ | - | 全局认证提供者 |
-| `dataProvider` | `IDataProvider` | ❌ | - | 全局数据提供者 |
+| `dataProvider` | `IDataProvider \| Record<string, IDataProvider>` | ❌ | - | 全局数据提供者 |
 
 ### 全局组件配置
 
@@ -112,16 +113,17 @@ const config: IConfig = {
 
 ### API 配置
 
-**用途说明**: 🔗 框架内部使用，用于构建管理端专用的 API 地址。会与全局 `apiUrl` 拼接生成完整请求地址。
+**用途说明**: 🔗 API URL 现在通过数据提供者的 `apiUrl` 方法提供，不再在管理端配置中直接配置。
 
 | 字段 | 类型 | 必需 | 默认值 | 说明 |
 |------|------|------|--------|------|
-| `apiUrl` | `string` | ❌ | - | 管理端 API 地址 |
-| `apiRoutePath` | `string` | ❌ | - | API 路由地址 |
+| `apiRoutePath` | `string` | ❌ | - | 远程菜单 API 路径 |
+
+> ⚠️ **重要变更**: 在最新版本中，`apiUrl` 字段已从管理端配置中移除，所有 API 地址配置都通过数据提供者实现。
 
 ### 路由配置
 
-**用途说明**: 🛣️ 框架内部使用，用于生成管理端的路由结构和页面访问路径。
+**用途说明**: 🔗 框架内部使用，用于生成管理端的路由结构和页面访问路径。
 
 | 字段 | 类型 | 必需 | 默认值 | 说明 |
 |------|------|------|--------|------|
@@ -138,12 +140,12 @@ const config: IConfig = {
 
 ### 提供者配置
 
-**用途说明**: ⚙️ 框架内部使用，为当前管理端提供专用的认证和数据操作功能，会覆盖全局提供者配置。
+**用途说明**: ⚙️ 框架内部使用，为当前管理端提供专用的认证和数据操作功能，会覆盖全局提供者配置。数据提供者支持单一提供者或多重提供者配置。
 
 | 字段 | 类型 | 必需 | 默认值 | 说明 |
 |------|------|------|--------|------|
 | `authProvider` | `IAuthProvider` | ❌ | - | 管理端专用认证提供者 |
-| `dataProvider` | `IDataProvider` | ❌ | - | 管理端专用数据提供者 |
+| `dataProvider` | `IDataProvider \| Record<string, IDataProvider>` | ❌ | - | 管理端专用数据提供者 |
 
 ### 组件配置
 
@@ -256,16 +258,19 @@ console.log(theme.logo) // '/images/logo.png'
 ### 基础单管理端配置
 
 ```typescript
+// 创建数据提供者
+const dataProvider = simpleDataProvider({
+  apiUrl: 'https://api.example.com'
+})
+
 const config: IConfig = {
   title: '企业管理系统',
-  apiUrl: 'https://api.example.com',
   defaultManage: 'admin',
   manages: [
     {
       name: 'admin',
       title: '管理后台',
       routePrefix: '/admin',
-      apiUrl: '/admin',
 
       // 功能开关 - 供组件调用
       forgotPassword: true,
@@ -302,17 +307,73 @@ const config: IConfig = {
     },
   },
 
-  dataProvider: simpleDataProvider,
-  authProvider: simpleAuthProvider,
+  dataProvider,
+  authProvider: simpleAuthProvider(),
+}
+```
+
+### 多数据提供者配置
+
+DVHA 支持为不同的资源配置不同的数据提供者，这在微服务架构或多数据源场景下非常有用：
+
+```typescript
+// 创建不同的数据提供者
+const userDataProvider = simpleDataProvider({
+  apiUrl: 'https://user-api.example.com'
+})
+
+const orderDataProvider = simpleDataProvider({
+  apiUrl: 'https://order-api.example.com'
+})
+
+const productDataProvider = simpleDataProvider({
+  apiUrl: 'https://product-api.example.com'
+})
+
+const config: IConfig = {
+  title: '多服务管理系统',
+  defaultManage: 'admin',
+
+  // 全局多数据提供者配置
+  dataProvider: {
+    default: userDataProvider,    // 默认数据提供者
+    user: userDataProvider,       // 用户服务
+    order: orderDataProvider,     // 订单服务
+    product: productDataProvider, // 商品服务
+  },
+
+  manages: [
+    {
+      name: 'admin',
+      title: '管理后台',
+      routePrefix: '/admin',
+
+      // 管理端可以覆盖特定的数据提供者
+      dataProvider: {
+        default: userDataProvider,
+        analytics: simpleDataProvider({
+          apiUrl: 'https://analytics-api.example.com'
+        })
+      }
+    }
+  ]
 }
 ```
 
 ### 多管理端配置
 
 ```typescript
+// 创建数据提供者
+const adminDataProvider = simpleDataProvider({
+  apiUrl: 'https://admin-api.example.com'
+})
+
+const merchantDataProvider = simpleDataProvider({
+  apiUrl: 'https://merchant-api.example.com'
+})
+
 const config: IConfig = {
   title: '多端管理系统',
-  apiUrl: 'https://api.example.com',
   defaultManage: 'admin',
   manages: [
     // 管理员端
@@ -320,7 +381,7 @@ const config: IConfig = {
       name: 'admin',
       title: '管理后台',
       routePrefix: '/admin',
-      apiUrl: '/admin',
+      dataProvider: adminDataProvider,
       authProvider: adminAuthProvider,
       theme: {
         logo: '/logos/admin-logo.png',
@@ -353,7 +414,18 @@ const config: IConfig = {
       name: 'merchant',
       title: '商户中心',
       routePrefix: '/merchant',
-      apiUrl: '/merchant',
+
+      // 商户端使用多数据提供者
+      dataProvider: {
+        default: merchantDataProvider,
+        analytics: simpleDataProvider({
+          apiUrl: 'https://analytics-api.example.com'
+        }),
+        payment: simpleDataProvider({
+          apiUrl: 'https://payment-api.example.com'
+        })
+      },
+
       authProvider: merchantAuthProvider,
 
       // 不同的功能开关
@@ -382,8 +454,7 @@ const config: IConfig = {
       ]
     }
   ],
-  dataProvider: simpleDataProvider,
-  authProvider: simpleAuthProvider,
+  authProvider: simpleAuthProvider(),
 }
 ```
 
@@ -416,9 +487,14 @@ config.title = '新标题'
 建议将敏感信息通过环境变量配置：
 
 ```typescript
+// 创建环境配置的数据提供者
+const dataProvider = simpleDataProvider({
+  apiUrl: import.meta.env.VITE_API_URL || 'http://localhost:3000'
+})
+
 const config: IConfig = {
-  apiUrl: import.meta.env.VITE_API_URL || 'http://localhost:3000',
   title: import.meta.env.VITE_APP_TITLE || '管理系统',
-  // ...
+  dataProvider,
+  // ... 其他配置
 }
 ```

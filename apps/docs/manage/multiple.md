@@ -10,489 +10,96 @@ DVHA 框架支持在同一应用中运行多个独立的管理端，每个管理
 - 🛠️ **可扩展性** - 可以轻松添加新的管理端
 - 🎨 **差异化** - 每个管理端可以有独特的界面和体验
 
-## 架构选择指南
-
-根据不同的业务需求和技术背景，选择最适合的API架构模式：
-
-| 架构模式 | 适用场景 | 优势 | 劣势 | 推荐指数 |
-|---------|---------|------|------|----------|
-| **统一API** | • 中小型项目<br>• 业务关联度高<br>• 团队规模较小 | • 简单易维护<br>• 统一版本管理<br>• 成本较低 | • 性能瓶颈<br>• 部署耦合 | ⭐⭐⭐ |
-| **分布式API** | • 大型企业应用<br>• 业务域独立<br>• 多团队协作 | • 完全隔离<br>• 独立优化<br>• 技术栈灵活 | • 运维复杂<br>• 数据一致性 | ⭐⭐⭐⭐ |
-| **微服务架构** | • 复杂企业系统<br>• 高并发场景<br>• 多语言栈 | • 最佳扩展性<br>• 故障隔离<br>• 独立部署 | • 复杂度最高<br>• 服务治理 | ⭐⭐⭐⭐⭐ |
-| **混合架构** | • 渐进式演进<br>• 部分独立需求<br>• 平衡型项目 | • 平衡复杂度<br>• 渐进演进<br>• 灵活配置 | • 设计复杂<br>• 需要规划 | ⭐⭐⭐⭐ |
-| **API网关** | • 统一入口需求<br>• 安全要求高<br>• 流量控制 | • 统一管理<br>• 安全控制<br>• 负载均衡 | • 单点风险<br>• 网关复杂 | ⭐⭐⭐⭐ |
-
-### 快速决策树
-
-```
-开始
-  ↓
-业务是否高度相关？
-  ├─ 是 → 团队规模小于10人？
-  │     ├─ 是 → 【统一API架构】
-  │     └─ 否 → 【API网关模式】
-  │
-  └─ 否 → 是否需要独立部署？
-        ├─ 是 → 团队技术能力强？
-        │     ├─ 是 → 【微服务架构】
-        │     └─ 否 → 【分布式API架构】
-        │
-        └─ 否 → 是否为现有系统升级？
-              ├─ 是 → 【混合架构】
-              └─ 否 → 【统一API架构】
-```
-
-### 数据隔离级别选择
-
-| 隔离级别 | 安全性 | 复杂度 | 成本 | 适用行业 |
-|---------|--------|--------|------|----------|
-| **逻辑隔离** | ⭐⭐⭐ | ⭐⭐ | ⭐⭐ | 一般企业应用 |
-| **API级隔离** | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ | 电商、教育 |
-| **服务级隔离** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | 大型互联网 |
-| **数据库级隔离** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | 金融、医疗 |
-
 ## API架构策略
 
-DVHA 框架支持多种API架构模式，可以根据业务需求和技术架构选择最合适的方案。
+DVHA 框架支持多种API架构模式，可以根据业务需求选择合适的方案。
 
 ### 统一API架构
 
 所有管理端共享一个统一的API服务，适合小型到中型应用。
 
 ```js
-// 统一API配置 - 所有管理端使用相同的API基础地址
-const unifiedApiUrl = 'https://api.example.com'
-
-// 统一数据提供者
-const unifiedDataProvider = {
-  getList: async (options, manage, auth) => {
-    const response = await fetch(`${unifiedApiUrl}${options.path}`, {
-      headers: {
-        'Authorization': `Bearer ${auth.token}`,
-        'X-Manage-Type': manage.config.name, // 通过Header标识管理端类型
-        'Content-Type': 'application/json'
-      }
-    })
-    return await response.json()
-  },
-
-  create: async (options, manage, auth) => {
-    const response = await fetch(`${unifiedApiUrl}${options.path}`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${auth.token}`,
-        'X-Manage-Type': manage.config.name,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(options.data)
-    })
-    return await response.json()
-  }
-  // ... 其他方法
-}
+// 创建统一的数据提供者
+const dataProvider = simpleDataProvider({
+  apiUrl: 'https://api.example.com'
+})
 
 const app = createDux({
-  // 全局API配置
-  apiUrl: unifiedApiUrl,
-  dataProvider: unifiedDataProvider, // 全局数据提供者
-
+  dataProvider, // 全局数据提供者
   manages: [
     {
       name: 'admin',
       title: '系统管理',
       routePrefix: '/admin'
-      // 继承全局API配置
     },
     {
       name: 'merchant',
       title: '商家中心',
       routePrefix: '/merchant'
-      // 继承全局API配置
-    },
-    {
-      name: 'user',
-      title: '用户中心',
-      routePrefix: '/user'
-      // 继承全局API配置
     }
   ]
 })
 ```
 
-**优势：**
-- 简化架构，易于维护
-- 统一的API版本管理
-- 降低部署和运维成本
-- 便于数据共享和一致性保证
-
-**适用场景：**
-- 业务关联度较高的管理端
-- 团队规模较小的项目
-- 对性能要求不是特别高的应用
+**适用场景**: 业务关联度高、团队规模小、对性能要求不高的应用
 
 ### 分布式API架构
 
 每个管理端使用独立的API服务，适合大型企业级应用。
 
 ```js
-// 为每个管理端创建独立的数据提供者
-const createDataProvider = (baseUrl, serviceName) => ({
-  getList: async (options, manage, auth) => {
-    const response = await fetch(`${baseUrl}${options.path}`, {
-      headers: {
-        'Authorization': `Bearer ${auth.token}`,
-        'X-Service': serviceName,
-        'Content-Type': 'application/json'
-      }
-    })
-    return await response.json()
-  },
+const app = createDux({
+  manages: [
+    {
+      name: 'admin',
+      title: '系统管理',
+      dataProvider: simpleDataProvider({
+        apiUrl: 'https://admin-api.example.com'
+      }),
+      routePrefix: '/admin'
+    },
+    {
+      name: 'merchant',
+      title: '商家中心',
+      dataProvider: simpleDataProvider({
+        apiUrl: 'https://merchant-api.example.com'
+      }),
+      routePrefix: '/merchant'
+    }
+  ]
+})
+```
 
-  create: async (options, manage, auth) => {
-    const response = await fetch(`${baseUrl}${options.path}`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${auth.token}`,
-        'X-Service': serviceName,
-        'Content-Type': 'application/json'
+**适用场景**: 大型企业应用、业务域独立、多团队协作开发
+
+### 多数据源架构
+
+单个管理端连接多个API服务，适合微服务场景。
+
+```js
+const app = createDux({
+  manages: [
+    {
+      name: 'merchant',
+      title: '商家中心',
+      dataProvider: {
+        default: simpleDataProvider({
+          apiUrl: 'https://merchant-api.example.com'
+        }),
+        analytics: simpleDataProvider({
+          apiUrl: 'https://analytics-api.example.com'
+        }),
+        payment: simpleDataProvider({
+          apiUrl: 'https://payment-api.example.com'
+        })
       },
-      body: JSON.stringify(options.data)
-    })
-    return await response.json()
-  }
-  // ... 其他方法
-})
-
-const app = createDux({
-  manages: [
-    // 系统管理端 - 独立的管理API
-    {
-      name: 'admin',
-      title: '系统管理',
-      apiUrl: 'https://admin-api.example.com',
-      dataProvider: createDataProvider(
-        'https://admin-api.example.com',
-        'admin-service'
-      ),
-      routePrefix: '/admin'
-    },
-
-    // 商家管理端 - 独立的商家API
-    {
-      name: 'merchant',
-      title: '商家中心',
-      apiUrl: 'https://merchant-api.example.com',
-      dataProvider: createDataProvider(
-        'https://merchant-api.example.com',
-        'merchant-service'
-      ),
-      routePrefix: '/merchant'
-    },
-
-    // 用户中心 - 独立的用户API
-    {
-      name: 'user',
-      title: '用户中心',
-      apiUrl: 'https://user-api.example.com',
-      dataProvider: createDataProvider(
-        'https://user-api.example.com',
-        'user-service'
-      ),
-      routePrefix: '/user'
-    }
-  ]
-})
-```
-
-**优势：**
-- 完全的业务隔离
-- 独立的性能优化
-- 技术栈多样性
-- 团队并行开发
-
-**适用场景：**
-- 大型企业级应用
-- 业务域相对独立
-- 多团队协作开发
-- 对性能和可扩展性要求较高
-
-### 微服务架构
-
-基于业务域的API分离，结合服务发现和负载均衡。
-
-```js
-// 服务发现配置
-const serviceRegistry = {
-  'user-service': 'https://user-service.example.com',
-  'product-service': 'https://product-service.example.com',
-  'order-service': 'https://order-service.example.com',
-  'payment-service': 'https://payment-service.example.com',
-  'notification-service': 'https://notification-service.example.com'
-}
-
-// 微服务数据提供者
-const microserviceDataProvider = {
-  getList: async (options, manage, auth) => {
-    // 根据路径确定目标服务
-    const serviceName = getServiceByPath(options.path)
-    const serviceUrl = serviceRegistry[serviceName]
-
-    if (!serviceUrl) {
-      throw new Error(`Service not found: ${serviceName}`)
-    }
-
-    const response = await fetch(`${serviceUrl}${options.path}`, {
-      headers: {
-        'Authorization': `Bearer ${auth.token}`,
-        'X-Manage-Type': manage.config.name,
-        'X-Request-ID': generateRequestId(),
-        'Content-Type': 'application/json'
-      }
-    })
-
-    return await response.json()
-  },
-
-  create: async (options, manage, auth) => {
-    const serviceName = getServiceByPath(options.path)
-    const serviceUrl = serviceRegistry[serviceName]
-
-    const response = await fetch(`${serviceUrl}${options.path}`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${auth.token}`,
-        'X-Manage-Type': manage.config.name,
-        'X-Request-ID': generateRequestId(),
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(options.data)
-    })
-
-    return await response.json()
-  }
-  // ... 其他方法
-}
-
-// 路径到服务的映射
-const getServiceByPath = (path) => {
-  const pathMappings = {
-    '/users': 'user-service',
-    '/products': 'product-service',
-    '/orders': 'order-service',
-    '/payments': 'payment-service',
-    '/notifications': 'notification-service'
-  }
-
-  for (const [pathPrefix, service] of Object.entries(pathMappings)) {
-    if (path.startsWith(pathPrefix)) {
-      return service
-    }
-  }
-
-  return 'default-service'
-}
-
-const app = createDux({
-  // 共享微服务数据提供者
-  dataProvider: microserviceDataProvider,
-
-  manages: [
-    {
-      name: 'admin',
-      title: '系统管理',
-      routePrefix: '/admin',
-      // 管理端可以访问所有服务
-      allowedServices: ['*']
-    },
-    {
-      name: 'merchant',
-      title: '商家中心',
-      routePrefix: '/merchant',
-      // 商家端只能访问特定服务
-      allowedServices: [
-        'product-service',
-        'order-service',
-        'notification-service'
-      ]
-    },
-    {
-      name: 'user',
-      title: '用户中心',
-      routePrefix: '/user',
-      // 用户端只能访问用户相关服务
-      allowedServices: [
-        'user-service',
-        'order-service',
-        'payment-service'
-      ]
-    }
-  ]
-})
-```
-
-**优势：**
-- 业务域清晰分离
-- 独立部署和扩展
-- 技术栈灵活选择
-- 故障隔离能力强
-
-**适用场景：**
-- 复杂的企业级系统
-- 高并发和高可用要求
-- 多语言技术栈
-- 微服务架构体系
-
-### 混合架构
-
-核心服务统一，业务服务分离的混合模式。
-
-```js
-// 混合架构配置
-const hybridConfig = {
-  // 核心统一服务
-  coreServices: {
-    auth: 'https://auth.example.com',
-    user: 'https://user.example.com',
-    system: 'https://system.example.com'
-  },
-
-  // 业务独立服务
-  businessServices: {
-    admin: 'https://admin-business.example.com',
-    merchant: 'https://merchant-business.example.com',
-    delivery: 'https://delivery-business.example.com'
-  }
-}
-
-// 混合数据提供者
-const createHybridDataProvider = (manageName) => ({
-  getList: async (options, manage, auth) => {
-    let serviceUrl
-
-    // 判断是核心服务还是业务服务
-    if (isCoreService(options.path)) {
-      const serviceName = getCoreService(options.path)
-      serviceUrl = hybridConfig.coreServices[serviceName]
-    } else {
-      serviceUrl = hybridConfig.businessServices[manageName]
-    }
-
-    const response = await fetch(`${serviceUrl}${options.path}`, {
-      headers: {
-        'Authorization': `Bearer ${auth.token}`,
-        'X-Manage-Type': manage.config.name,
-        'Content-Type': 'application/json'
-      }
-    })
-
-    return await response.json()
-  }
-  // ... 其他方法
-})
-
-// 核心服务判断
-const isCoreService = (path) => {
-  const corePathPrefixes = ['/auth', '/users', '/system', '/settings']
-  return corePathPrefixes.some(prefix => path.startsWith(prefix))
-}
-
-const app = createDux({
-  manages: [
-    {
-      name: 'admin',
-      title: '系统管理',
-      dataProvider: createHybridDataProvider('admin'),
-      routePrefix: '/admin'
-    },
-    {
-      name: 'merchant',
-      title: '商家中心',
-      dataProvider: createHybridDataProvider('merchant'),
       routePrefix: '/merchant'
     }
   ]
 })
 ```
 
-**优势：**
-- 核心功能统一管理
-- 业务功能独立发展
-- 平衡了复杂度和灵活性
-- 便于渐进式架构演进
-
-**适用场景：**
-- 从单体向微服务演进
-- 部分业务需要独立部署
-- 核心功能相对稳定
-- 业务功能快速迭代
-
-### API网关模式
-
-通过API网关统一入口，内部路由到不同服务。
-
-```js
-// API网关配置
-const gatewayConfig = {
-  gatewayUrl: 'https://gateway.example.com',
-  routes: {
-    admin: '/admin-service',
-    merchant: '/merchant-service',
-    user: '/user-service',
-    common: '/common-service'
-  }
-}
-
-// 网关数据提供者
-const gatewayDataProvider = {
-  getList: async (options, manage, auth) => {
-    // 通过网关路由到具体服务
-    const servicePath = gatewayConfig.routes[manage.config.name] || gatewayConfig.routes.common
-    const fullUrl = `${gatewayConfig.gatewayUrl}${servicePath}${options.path}`
-
-    const response = await fetch(fullUrl, {
-      headers: {
-        'Authorization': `Bearer ${auth.token}`,
-        'X-Manage-Type': manage.config.name,
-        'X-Client-Version': '1.0.0',
-        'Content-Type': 'application/json'
-      }
-    })
-
-    return await response.json()
-  }
-  // ... 其他方法
-}
-
-const app = createDux({
-  // 所有管理端共享网关数据提供者
-  dataProvider: gatewayDataProvider,
-
-  manages: [
-    {
-      name: 'admin',
-      title: '系统管理',
-      routePrefix: '/admin'
-    },
-    {
-      name: 'merchant',
-      title: '商家中心',
-      routePrefix: '/merchant'
-    }
-  ]
-})
-```
-
-**优势：**
-- 统一的访问入口
-- 集中的安全控制
-- 负载均衡和限流
-- 服务发现和路由
-
-**适用场景：**
-- 需要统一的API管理
-- 安全要求较高
-- 需要流量控制
-- 多服务协调场景
+**适用场景**: 微服务架构、复杂业务系统、需要连接多个后端服务
 
 ## 典型应用场景
 
@@ -1449,3 +1056,203 @@ const { data: notifications } = useCustom({
 - **数据迁移**: 架构升级时的数据迁移和业务连续性保证
 - **业务隔离**: 确保不同管理端的业务逻辑完全独立
 - **审计合规**: 满足不同业务域的审计和合规要求
+
+### 企业级多管理端配置
+
+```js
+import { createDux, simpleDataProvider } from '@duxweb/dvha-core'
+
+// 认证提供者
+const createAuthProvider = (baseUrl) => ({
+  login: async (params) => {
+    const response = await fetch(`${baseUrl}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params)
+    })
+    return await response.json()
+  },
+  logout: async () => {
+    await fetch(`${baseUrl}/auth/logout`, { method: 'POST' })
+    return { success: true }
+  }
+})
+
+const app = createDux({
+  // 全局配置
+  title: '企业管理平台',
+  copyright: '© 2024 Enterprise Corp',
+
+  defaultManage: 'admin',
+
+  manages: [
+    // 系统管理端
+    {
+      name: 'admin',
+      title: '系统管理',
+      description: '企业系统管理后台',
+      routePrefix: '/admin',
+
+      authProvider: createAuthProvider('https://admin-api.example.com'),
+      dataProvider: simpleDataProvider({
+        apiUrl: 'https://admin-api.example.com'
+      }),
+
+      register: false,
+      forgotPassword: true,
+
+      menus: [
+        {
+          name: 'dashboard',
+          label: '系统概览',
+          path: 'dashboard',
+          icon: 'dashboard',
+          component: () => import('./admin/Dashboard.vue')
+        },
+        {
+          name: 'users',
+          label: '用户管理',
+          path: 'users',
+          icon: 'users',
+          component: () => import('./admin/Users.vue')
+        }
+      ],
+
+      theme: {
+        logo: '/logos/admin-logo.png',
+        banner: '/banners/admin-banner.jpg'
+      },
+
+      components: {
+        authLayout: () => import('./layouts/AdminLayout.vue'),
+        noAuthLayout: () => import('./layouts/AdminLogin.vue')
+      }
+    },
+
+    // 用户中心
+    {
+      name: 'user',
+      title: '用户中心',
+      description: '用户个人管理中心',
+      routePrefix: '/user',
+
+      authProvider: createAuthProvider('https://user-api.example.com'),
+      dataProvider: simpleDataProvider({
+        apiUrl: 'https://user-api.example.com'
+      }),
+
+      register: true,
+      forgotPassword: true,
+      updatePassword: true,
+
+      menus: [
+        {
+          name: 'profile',
+          label: '个人资料',
+          path: 'profile',
+          icon: 'user',
+          component: () => import('./user/Profile.vue')
+        },
+        {
+          name: 'settings',
+          label: '账户设置',
+          path: 'settings',
+          icon: 'settings',
+          component: () => import('./user/Settings.vue')
+        }
+      ],
+
+      theme: {
+        logo: '/logos/user-logo.png',
+        banner: '/banners/user-banner.jpg'
+      },
+
+      components: {
+        authLayout: () => import('./layouts/UserLayout.vue'),
+        noAuthLayout: () => import('./layouts/UserLogin.vue')
+      }
+    },
+
+    // 商家后台 - 使用多数据提供者
+    {
+      name: 'merchant',
+      title: '商家后台',
+      description: '商家店铺管理后台',
+      routePrefix: '/merchant',
+
+      authProvider: createAuthProvider('https://merchant-api.example.com'),
+
+      // 多数据提供者配置
+      dataProvider: {
+        default: simpleDataProvider({
+          apiUrl: 'https://merchant-api.example.com'
+        }),
+        analytics: simpleDataProvider({
+          apiUrl: 'https://analytics-api.example.com'
+        }),
+        payment: simpleDataProvider({
+          apiUrl: 'https://payment-api.example.com'
+        }),
+        logistics: simpleDataProvider({
+          apiUrl: 'https://logistics-api.example.com'
+        })
+      },
+
+      register: true,
+      forgotPassword: true,
+      updatePassword: true,
+
+      apiRoutePath: '/api/merchant/menus', // 动态菜单
+
+      menus: [
+        {
+          name: 'dashboard',
+          label: '店铺概览',
+          path: 'dashboard',
+          icon: 'dashboard',
+          component: () => import('./merchant/Dashboard.vue')
+        }
+      ],
+
+      theme: {
+        logo: '/logos/merchant-logo.png',
+        banner: '/banners/merchant-banner.jpg'
+      },
+
+      components: {
+        authLayout: () => import('./layouts/MerchantLayout.vue'),
+        noAuthLayout: () => import('./layouts/MerchantLogin.vue')
+      }
+    }
+  ]
+})
+```
+
+### 使用管理端配置
+
+```vue
+<script setup>
+import { useManage } from '@duxweb/dvha-core'
+
+// 获取当前管理端配置
+const manage = useManage()
+
+console.log('管理端名称:', manage.config.name)
+console.log('管理端标题:', manage.config.title)
+
+// 生成路由路径
+const dashboardPath = manage.getRoutePath('dashboard')
+console.log('仪表盘路径:', dashboardPath)
+
+// 生成API地址 - 使用默认数据提供者
+const usersApiUrl = manage.getApiUrl('users')
+console.log('用户API地址:', usersApiUrl)
+
+// 生成API地址 - 使用指定的数据提供者
+const analyticsApiUrl = manage.getApiUrl('stats', 'analytics')
+console.log('分析API地址:', analyticsApiUrl)
+
+const paymentApiUrl = manage.getApiUrl('transactions', 'payment')
+console.log('支付API地址:', paymentApiUrl)
+</script>
+```

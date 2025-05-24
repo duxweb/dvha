@@ -1,18 +1,15 @@
 import type { IConfig } from '@duxweb/dvha-core'
-import { createDux, simpleDataProvider, simpleAuthProvider } from '@duxweb/dvha-core'
+import { createDux, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
+import ElementPlus from 'element-plus'
 import naive from 'naive-ui'
 import { createApp } from 'vue'
 import App from './App.vue'
-import ElementPlus from 'element-plus'
 import 'virtual:uno.css'
 
 const app = createApp(App)
 
 const config: IConfig = {
-  apiUrl: 'https://m1.apifoxmock.com/m1/4407506-4052338-default',
-
   defaultManage: 'naive',
-
   manages: [
     {
       name: 'naive',
@@ -31,7 +28,7 @@ const config: IConfig = {
           component: () => import('./naive/login.vue'),
           meta: {
             authorization: false,
-          }
+          },
         },
       ],
       menus: [
@@ -42,7 +39,7 @@ const config: IConfig = {
           label: '首页',
           component: () => import('./naive/home.vue'),
         },
-      ]
+      ],
     },
     {
       name: 'elm',
@@ -61,7 +58,7 @@ const config: IConfig = {
           component: () => import('./element/login.vue'),
           meta: {
             authorization: false,
-          }
+          },
         },
       ],
       menus: [
@@ -72,11 +69,13 @@ const config: IConfig = {
           label: '首页',
           component: () => import('./naive/home.vue'),
         },
-      ]
+      ],
     },
   ],
-  simpleDataProvider,
-  simpleAuthProvider,
+  dataProvider: simpleDataProvider({
+    apiUrl: 'https://m1.apifoxmock.com/m1/4407506-4052338-default/admin',
+  }),
+  authProvider: simpleAuthProvider(),
 
 }
 

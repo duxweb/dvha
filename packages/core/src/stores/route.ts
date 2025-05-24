@@ -27,7 +27,7 @@ export function useRouteStore(manageName?: string) {
  * @param manageName manage name
  * @returns route store
  */
-export function createRouteStore(manageName: string) {
+function createRouteStore(manageName: string) {
   return defineStore(`routes-${manageName}`, () => {
     const routes = ref<IMenu[]>([])
 

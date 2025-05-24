@@ -243,14 +243,12 @@ import 'virtual:uno.css'
 const app = createApp(App)
 
 const config: IConfig = {
-  apiUrl: 'https://api.example.com', // 替换为你的 API 地址
   defaultManage: 'admin',
   manages: [
     {
       name: 'admin',
       title: 'DVHA 后台管理系统',
       routePrefix: '/admin',
-      apiUrl: '/admin',
       components: {
         authLayout: () => import('./pages/layout.vue'),
         notFound: () => import('./pages/404.vue'),
@@ -290,8 +288,11 @@ const config: IConfig = {
       ]
     },
   ],
-  dataProvider: simpleDataProvider,
-  authProvider: simpleAuthProvider,
+  dataProvider: simpleDataProvider({
+    // 替换为你的 API
+    apiUrl: 'https://m1.apifoxmock.com/m1/4407506-4052338-default/admin',
+  }),
+  authProvider: simpleAuthProvider(),
 }
 
 app.use(createDux(config))

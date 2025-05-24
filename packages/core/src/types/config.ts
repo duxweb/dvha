@@ -14,8 +14,6 @@ export interface IConfig {
   copyright?: string
   // 描述
   description?: string
-  // 全局接口地址
-  apiUrl?: string
   // 默认语言
   lang?: string
   // 扩展配置
@@ -27,7 +25,7 @@ export interface IConfig {
   // 全局认证提供者
   authProvider?: IAuthProvider
   // 全局数据提供者
-  dataProvider?: IDataProvider
+  dataProvider?: IDataProvider | Record<string, IDataProvider>
   // 全局布局配置
   components?: IConfigComponent
   // 全局路由配置

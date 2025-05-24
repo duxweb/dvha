@@ -1,12 +1,12 @@
 import type { Ref } from 'vue'
 import type { RouteRecordRaw } from 'vue-router'
-import type { IMenu } from '../types'
+import type { IDataProvider, IManage, IMenu } from '../types'
 import { OverlaysProvider } from '@overlastic/vue'
-import { storeToRefs } from 'pinia'
 import { defineComponent, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import { useConfig, useManage } from '../hooks'
 import { useAuthStore, useRouteStore } from '../stores'
+import { useManageStore } from '../stores/manage'
 
 export const DuxAppProvider = defineComponent({
   name: 'DuxAppProvider',
@@ -17,7 +17,6 @@ export const DuxAppProvider = defineComponent({
 
     const config = useConfig()
     const router = useRouter()
-    const authStore = useAuthStore()
 
     router.beforeEach(async (to, _from, next) => {
       const manageName = to.meta.manageName as string
@@ -35,12 +34,17 @@ export const DuxAppProvider = defineComponent({
         manageRef.value = manageName
       }
 
+      const manageStore = useManageStore(manageName)
+      if (!manageStore.isInit()) {
+        manageStore.setConfig(config.manages?.find(manage => manage.name === manageName) as IManage, config)
+      }
+
       const routeStore = useRouteStore(manageName)
-      const { routes } = storeToRefs(routeStore)
       const manage = useManage(manageName)
+      const authStore = useAuthStore(manageName)
 
       // unlogin handle
-      if (!authStore.isLogin(manageName)) {
+      if (!authStore.isLogin()) {
         if (noAuth) {
           return next()
         }
@@ -101,13 +105,14 @@ export const DuxAppProvider = defineComponent({
 
         // init remote route
         if (manage.config?.apiRoutePath) {
+          console.log('config', manage.config.default)
           try {
-            await manage.config.dataProvider?.custom({
+            await (manage.config?.dataProvider as Record<string, IDataProvider>)?.default?.custom({
               path: manage.config.apiRoutePath,
               meta: {
                 timeout: 5000,
               },
-            }, manage, authStore.getUser(manageName)).then((res) => {
+            }, manage, authStore.getUser()).then((res) => {
               routeStore.appendRoutes(formatMenus(res.data || []))
             })
           }
@@ -120,7 +125,7 @@ export const DuxAppProvider = defineComponent({
         routeStore.appendRoutes(commonRoutes)
 
         // register route
-        routes.value.forEach((item: IMenu) => {
+        routeStore.getRoutes().forEach((item: IMenu) => {
           if (!item.path) {
             return
           }
@@ -133,7 +138,7 @@ export const DuxAppProvider = defineComponent({
 
           switch (item.loader) {
             case 'iframe':
-              route.component = manage.config?.components?.iframe
+              route.component = manage.config?.components?.iframe || (() => import('../components/loader/iframe'))
               break
             case 'link':
               route.beforeEnter = () => {

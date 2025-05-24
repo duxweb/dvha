@@ -9,14 +9,12 @@ import 'virtual:uno.css'
 const app = createApp(App)
 
 const config: IConfig = {
-  apiUrl: 'https://m1.apifoxmock.com/m1/4407506-4052338-default',
   defaultManage: 'admin',
   manages: [
     {
       name: 'admin',
       title: 'DVHA 后台管理系统',
       routePrefix: '/admin',
-      apiUrl: '/admin',
       components: {
         authLayout: () => import('./pages/layout.vue'),
         notFound: () => import('./pages/404.vue'),
@@ -46,18 +44,13 @@ const config: IConfig = {
           label: '用户管理',
           component: () => import('./pages/home.vue'),
         },
-        {
-          name: 'settings',
-          path: 'settings',
-          icon: 'i-tabler:settings',
-          label: '系统设置',
-          component: () => import('./pages/home.vue'),
-        },
       ],
     },
   ],
-  dataProvider: simpleDataProvider,
-  authProvider: simpleAuthProvider,
+  dataProvider: simpleDataProvider({
+    apiUrl: 'https://m1.apifoxmock.com/m1/4407506-4052338-default/admin',
+  }),
+  authProvider: simpleAuthProvider(),
 }
 
 app.use(createDux(config))

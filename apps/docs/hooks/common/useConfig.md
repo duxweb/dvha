@@ -20,7 +20,6 @@ interface IConfig {
   title?: string
   description?: string
   copyright?: string
-  apiUrl?: string
   theme?: ITheme
   authProvider?: IAuthProvider
   dataProvider?: IDataProvider
@@ -58,7 +57,6 @@ console.log('全局配置:', {
   title: config.title,                    // 应用标题
   description: config.description,        // 应用描述
   copyright: config.copyright,            // 版权信息
-  apiUrl: config.apiUrl,                 // API 基础地址
   theme: config.theme,                   // 全局主题配置
   authProvider: config.authProvider,     // 全局认证提供者
   dataProvider: config.dataProvider,     // 全局数据提供者
@@ -136,24 +134,6 @@ if (globalAuth) {
     console.error('认证检查失败:', error)
   }
 }
-```
-
-## API 配置使用
-
-```js
-import { useConfig } from '@duxweb/dvha-core'
-
-const config = useConfig()
-
-// 构建完整的 API 地址
-const buildApiUrl = (path: string) => {
-  const baseUrl = config.apiUrl || ''
-  return `${baseUrl}/${path.replace(/^\//, '')}`
-}
-
-// 使用示例
-const userApiUrl = buildApiUrl('users')        // 'https://api.example.com/users'
-const postsApiUrl = buildApiUrl('/posts')      // 'https://api.example.com/posts'
 ```
 
 ## 完整示例

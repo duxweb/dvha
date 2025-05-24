@@ -110,14 +110,12 @@ import App from './App.vue'
 const app = createApp(App)
 
 const config: IConfig = {
-  apiUrl: 'https://api.example.com', // Replace with your API address
   defaultManage: 'admin',
   manages: [
     {
       name: 'admin',
       title: 'DVHA Admin Management System',
       routePrefix: '/admin',
-      apiUrl: '/admin',
       components: {
         authLayout: () => import('./pages/layout.vue'),
         notFound: () => import('./pages/404.vue'),
@@ -157,8 +155,10 @@ const config: IConfig = {
       ]
     },
   ],
-  dataProvider: simpleDataProvider,
-  authProvider: simpleAuthProvider,
+  dataProvider: simpleDataProvider({
+    apiUrl: 'https://api.example.com' // Replace with your API address
+  }),
+  authProvider: simpleAuthProvider(),
 }
 
 app.use(createDux(config))
@@ -179,7 +179,6 @@ const config: IConfig = {
   // Global configuration
   title: 'Enterprise Admin Platform',
   copyright: '© 2024 Enterprise Corp',
-  apiUrl: 'https://api.enterprise.com',
 
   defaultManage: 'admin',
 
@@ -189,7 +188,6 @@ const config: IConfig = {
       name: 'admin',
       title: 'System Management',
       routePrefix: '/admin',
-      apiUrl: '/admin',
 
       // Feature toggles
       register: false,
@@ -261,7 +259,6 @@ const config: IConfig = {
       name: 'user',
       title: 'User Center',
       routePrefix: '/user',
-      apiUrl: '/user',
 
       // Enable user registration
       register: true,
@@ -301,12 +298,91 @@ const config: IConfig = {
   ],
 
   // Global providers
-  dataProvider: simpleDataProvider,
-  authProvider: simpleAuthProvider,
+  dataProvider: simpleDataProvider({
+    apiUrl: 'https://api.enterprise.com'
+  }),
+  authProvider: simpleAuthProvider(),
 }
 
 app.use(createDux(config))
 app.mount('#app')
+```
+
+### Multi-Data Source Configuration
+
+```typescript
+import type { IConfig } from '@duxweb/dvha-core'
+import { createDux, simpleDataProvider, simpleAuthProvider } from '@duxweb/dvha-core'
+
+const config: IConfig = {
+  title: 'Enterprise Management Platform',
+  defaultManage: 'admin',
+
+  // Global multi-data source configuration
+  dataProvider: {
+    default: simpleDataProvider({
+      apiUrl: 'https://api.example.com'
+    }),
+    analytics: simpleDataProvider({
+      apiUrl: 'https://analytics-api.example.com'
+    }),
+    payment: simpleDataProvider({
+      apiUrl: 'https://payment-api.example.com'
+    }),
+    logistics: simpleDataProvider({
+      apiUrl: 'https://logistics-api.example.com'
+    })
+  },
+
+  manages: [
+    {
+      name: 'admin',
+      title: 'Admin Management',
+      routePrefix: '/admin',
+
+      // Admin can override specific data sources
+      dataProvider: {
+        default: simpleDataProvider({
+          apiUrl: 'https://admin-api.example.com'
+        }),
+        // Other data sources inherit from global
+      },
+
+      // Custom authentication configuration
+      authProvider: simpleAuthProvider({
+        apiPath: {
+          login: '/admin/login',
+          check: '/admin/check'
+        },
+        routePath: {
+          login: '/admin/login',
+          index: '/admin'
+        }
+      }),
+
+      routes: [
+        {
+          name: 'admin.login',
+          path: 'login',
+          component: () => import('./pages/admin/Login.vue'),
+          meta: { authorization: false }
+        }
+      ],
+
+      menus: [
+        {
+          name: 'dashboard',
+          path: 'dashboard',
+          icon: 'i-tabler:dashboard',
+          label: 'Dashboard',
+          component: () => import('./pages/Dashboard.vue')
+        }
+      ]
+    }
+  ],
+
+  authProvider: simpleAuthProvider(),
+}
 ```
 
 ### More Examples

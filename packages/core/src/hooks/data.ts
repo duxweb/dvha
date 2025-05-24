@@ -10,6 +10,7 @@ type IDataQueryOptions = DefinedInitialQueryOptions<IDataProviderResponse | unde
 type IDataQueryOptionsInfinite = DefinedInitialDataInfiniteOptions<IDataProviderResponse | undefined, DefaultError, InfiniteData<IDataProviderResponse | undefined>, any, number>
 
 interface IListParams extends IDataProviderListOptions {
+  providerName?: string
   options?: IDataQueryOptions
   onError?: (error: any) => void
 }
@@ -21,6 +22,7 @@ interface IListParams extends IDataProviderListOptions {
 export function useList(params: IListParams) {
   const manage = useManage()
   const auth = useGetAuth()
+  const providerName = params.providerName || 'default'
 
   const { mutate: onAuthError } = useError()
 
@@ -30,8 +32,8 @@ export function useList(params: IListParams) {
   })
 
   const req = useQuery({
-    queryKey: [params.path, props],
-    queryFn: () => manage.config.dataProvider?.getList(props.value, manage, auth),
+    queryKey: [`${manage.config?.name}:${providerName}:${params.path}`, props],
+    queryFn: () => manage.config?.dataProvider?.[providerName]?.getList(props.value, manage, auth),
     ...params.options,
   })
 
@@ -56,6 +58,7 @@ export function useList(params: IListParams) {
 }
 
 interface IInfiniteListParams extends IDataProviderListOptions {
+  providerName?: string
   options?: IDataQueryOptionsInfinite
   onError?: (error: any) => void
 }
@@ -67,6 +70,7 @@ interface IInfiniteListParams extends IDataProviderListOptions {
 export function useInfiniteList(params: IInfiniteListParams) {
   const manage = useManage()
   const auth = useGetAuth()
+  const providerName = params.providerName || 'default'
   const { mutate: onAuthError } = useError()
 
   const props = computed((): IDataProviderListOptions => {
@@ -75,8 +79,8 @@ export function useInfiniteList(params: IInfiniteListParams) {
   })
 
   const req = useInfiniteQuery({
-    queryKey: [params.path, props],
-    queryFn: () => manage.config.dataProvider?.getList(props.value, manage, auth),
+    queryKey: [`${manage.config?.name}:${providerName}:${params.path}`, props],
+    queryFn: () => manage.config?.dataProvider?.[providerName]?.getList(props.value, manage, auth),
     initialPageParam: 0,
     getNextPageParam: (lastPage, _allPages, lastPageParam) => {
       if (!lastPage?.data || lastPage?.data?.length === 0) {
@@ -116,6 +120,7 @@ export function useInfiniteList(params: IInfiniteListParams) {
 }
 
 interface IOneParams extends IDataProviderGetOneOptions {
+  providerName?: string
   options?: IDataQueryOptions
   onError?: (error: any) => void
 }
@@ -127,6 +132,7 @@ interface IOneParams extends IDataProviderGetOneOptions {
 export function useOne(params: IOneParams) {
   const manage = useManage()
   const auth = useGetAuth()
+  const providerName = params.providerName || 'default'
   const { mutate: onAuthError } = useError()
 
   const props = computed((): IDataProviderGetOneOptions => {
@@ -135,8 +141,8 @@ export function useOne(params: IOneParams) {
   })
 
   const req = useQuery({
-    queryKey: [params.path, props],
-    queryFn: () => manage.config.dataProvider?.getOne(props.value, manage, auth),
+    queryKey: [`${manage.config?.name}:${providerName}:${params.path}`, props],
+    queryFn: () => manage.config?.dataProvider?.[providerName]?.getOne(props.value, manage, auth),
     ...params.options,
   })
 
@@ -161,6 +167,7 @@ export function useOne(params: IOneParams) {
 }
 
 interface IManyParams extends IDataProviderGetManyOptions {
+  providerName?: string
   options?: IDataQueryOptions
   onError?: (error: any) => void
 }
@@ -171,6 +178,7 @@ interface IManyParams extends IDataProviderGetManyOptions {
 export function useMany(params: IManyParams) {
   const manage = useManage()
   const auth = useGetAuth()
+  const providerName = params.providerName || 'default'
   const { mutate: onAuthError } = useError()
 
   const props = computed((): IDataProviderGetManyOptions => {
@@ -179,8 +187,8 @@ export function useMany(params: IManyParams) {
   })
 
   const req = useQuery({
-    queryKey: [params.path, props],
-    queryFn: () => manage.config.dataProvider?.getMany(props.value, manage, auth),
+    queryKey: [`${manage.config?.name}:${providerName}:${params.path}`, props],
+    queryFn: () => manage.config?.dataProvider?.[providerName]?.getMany(props.value, manage, auth),
     ...params.options,
   })
 
@@ -205,6 +213,7 @@ export function useMany(params: IManyParams) {
 }
 
 interface ICreateParams extends IDataProviderCreateOptions {
+  providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderCreateOptions>
   onSuccess?: (data: any) => void
   onError?: (error: any) => void
@@ -217,6 +226,7 @@ interface ICreateParams extends IDataProviderCreateOptions {
 export function useCreate(params: ICreateParams) {
   const manage = useManage()
   const auth = useGetAuth()
+  const providerName = params.providerName || 'default'
   const { mutate: onAuthError } = useError()
   const { invalidate } = useInvalidate()
 
@@ -227,10 +237,10 @@ export function useCreate(params: ICreateParams) {
 
   const req = useMutation({
     mutationFn: (data) => {
-      if (!manage.config.dataProvider) {
+      if (!manage.config?.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
-      return manage.config.dataProvider.create({
+      return manage.config?.dataProvider?.[providerName]?.create({
         ...props.value,
         ...data,
       }, manage, auth)
@@ -258,6 +268,7 @@ export function useCreate(params: ICreateParams) {
 }
 
 interface ICreateManyParams extends IDataProviderCreateManyOptions {
+  providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderCreateManyOptions>
   onSuccess?: (data: any) => void
   onError?: (error: any) => void
@@ -270,6 +281,7 @@ interface ICreateManyParams extends IDataProviderCreateManyOptions {
 export function useCreateMany(params: ICreateManyParams) {
   const manage = useManage()
   const auth = useGetAuth()
+  const providerName = params.providerName || 'default'
   const { mutate: onAuthError } = useError()
   const { invalidate } = useInvalidate()
   const props = computed((): IDataProviderCreateManyOptions => {
@@ -279,10 +291,10 @@ export function useCreateMany(params: ICreateManyParams) {
 
   const req = useMutation({
     mutationFn: (data) => {
-      if (!manage.config.dataProvider) {
+      if (!manage.config?.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
-      return manage.config.dataProvider.createMany({
+      return manage.config?.dataProvider?.[providerName]?.createMany({
         ...props.value,
         ...data,
       }, manage, auth)
@@ -310,6 +322,7 @@ export function useCreateMany(params: ICreateManyParams) {
 }
 
 interface IUpdateParams extends IDataProviderUpdateOptions {
+  providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderUpdateOptions>
   onSuccess?: (data: any) => void
   onError?: (error: any) => void
@@ -322,6 +335,7 @@ interface IUpdateParams extends IDataProviderUpdateOptions {
 export function useUpdate(params: IUpdateParams) {
   const manage = useManage()
   const auth = useGetAuth()
+  const providerName = params.providerName || 'default'
   const { mutate: onAuthError } = useError()
   const { invalidate } = useInvalidate()
   const props = computed((): IDataProviderUpdateOptions => {
@@ -331,10 +345,10 @@ export function useUpdate(params: IUpdateParams) {
 
   const req = useMutation({
     mutationFn: (data) => {
-      if (!manage.config.dataProvider) {
+      if (!manage.config?.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
-      return manage.config.dataProvider.update({
+      return manage.config?.dataProvider?.[providerName]?.update({
         ...props.value,
         ...data,
       }, manage, auth)
@@ -362,6 +376,7 @@ export function useUpdate(params: IUpdateParams) {
 }
 
 interface IUpdateManyParams extends IDataProviderUpdateManyOptions {
+  providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderUpdateManyOptions>
   onSuccess?: (data: any) => void
   onError?: (error: any) => void
@@ -370,6 +385,7 @@ interface IUpdateManyParams extends IDataProviderUpdateManyOptions {
 export function useUpdateMany(params: IUpdateManyParams) {
   const manage = useManage()
   const auth = useGetAuth()
+  const providerName = params.providerName || 'default'
   const { mutate: onAuthError } = useError()
   const { invalidate } = useInvalidate()
 
@@ -380,10 +396,10 @@ export function useUpdateMany(params: IUpdateManyParams) {
 
   const req = useMutation({
     mutationFn: (data) => {
-      if (!manage.config.dataProvider) {
+      if (!manage.config?.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
-      return manage.config.dataProvider.updateMany({
+      return manage.config?.dataProvider?.[providerName]?.updateMany({
         ...props.value,
         ...data,
       }, manage, auth)
@@ -411,6 +427,7 @@ export function useUpdateMany(params: IUpdateManyParams) {
 }
 
 interface IDeleteParams extends IDataProviderDeleteOptions {
+  providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderDeleteOptions>
   onSuccess?: (data: any) => void
   onError?: (error: any) => void
@@ -423,6 +440,7 @@ interface IDeleteParams extends IDataProviderDeleteOptions {
 export function useDelete(params: IDeleteParams) {
   const manage = useManage()
   const auth = useGetAuth()
+  const providerName = params.providerName || 'default'
   const { mutate: onAuthError } = useError()
   const { invalidate } = useInvalidate()
   const props = computed((): IDataProviderDeleteOptions => {
@@ -432,10 +450,10 @@ export function useDelete(params: IDeleteParams) {
 
   const req = useMutation({
     mutationFn: (data) => {
-      if (!manage.config.dataProvider) {
+      if (!manage.config?.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
-      return manage.config.dataProvider.deleteOne({
+      return manage.config?.dataProvider?.[providerName]?.deleteOne({
         ...props.value,
         ...data,
       }, manage, auth)
@@ -463,6 +481,7 @@ export function useDelete(params: IDeleteParams) {
 }
 
 interface IDeleteManyParams extends IDataProviderDeleteManyOptions {
+  providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderDeleteManyOptions>
   onSuccess?: (data: any) => void
   onError?: (error: any) => void
@@ -475,6 +494,7 @@ interface IDeleteManyParams extends IDataProviderDeleteManyOptions {
 export function useDeleteMany(params: IDeleteManyParams) {
   const manage = useManage()
   const auth = useGetAuth()
+  const providerName = params.providerName || 'default'
   const { mutate: onAuthError } = useError()
   const { invalidate } = useInvalidate()
   const props = computed((): IDataProviderDeleteManyOptions => {
@@ -484,10 +504,10 @@ export function useDeleteMany(params: IDeleteManyParams) {
 
   const req = useMutation({
     mutationFn: (data) => {
-      if (!manage.config.dataProvider) {
+      if (!manage.config?.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
-      return manage.config.dataProvider.deleteMany({
+      return manage.config?.dataProvider?.[providerName]?.deleteMany({
         ...props.value,
         ...data,
       }, manage, auth)
@@ -515,6 +535,7 @@ export function useDeleteMany(params: IDeleteManyParams) {
 }
 
 interface ICustomParams extends IDataProviderCustomOptions {
+  providerName?: string
   options?: IDataQueryOptions
   onError?: (error: any) => void
 }
@@ -526,6 +547,7 @@ interface ICustomParams extends IDataProviderCustomOptions {
 export function useCustom(params: ICustomParams) {
   const manage = useManage()
   const auth = useGetAuth()
+  const providerName = params.providerName || 'default'
   const { mutate: onAuthError } = useError()
 
   const props = computed((): IDataProviderCustomOptions => {
@@ -534,8 +556,8 @@ export function useCustom(params: ICustomParams) {
   })
 
   const req = useQuery({
-    queryKey: [params.path, props],
-    queryFn: () => manage.config.dataProvider?.custom(props.value, manage, auth),
+    queryKey: [`${manage.config?.name}:${providerName}:${params.path}`, props],
+    queryFn: () => manage.config?.dataProvider?.[providerName]?.custom(props.value, manage, auth),
     ...params.options,
   })
 
@@ -560,6 +582,7 @@ export function useCustom(params: ICustomParams) {
 }
 
 interface ICustomMutationParams extends IDataProviderCustomOptions {
+  providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderCustomOptions>
   onSuccess?: (data: any) => void
   onError?: (error: any) => void
@@ -572,6 +595,7 @@ interface ICustomMutationParams extends IDataProviderCustomOptions {
 export function useCustomMutation(params: ICustomMutationParams) {
   const manage = useManage()
   const auth = useGetAuth()
+  const providerName = params.providerName || 'default'
   const { mutate: onAuthError } = useError()
 
   const props = computed((): IDataProviderCustomOptions => {
@@ -581,10 +605,10 @@ export function useCustomMutation(params: ICustomMutationParams) {
 
   const req = useMutation({
     mutationFn: (data) => {
-      if (!manage.config.dataProvider) {
+      if (!manage.config?.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
-      return manage.config.dataProvider.custom({
+      return manage.config?.dataProvider?.[providerName]?.custom({
         ...props.value,
         ...data,
       }, manage, auth)
@@ -608,17 +632,22 @@ export function useCustomMutation(params: ICustomMutationParams) {
   }
 }
 
+interface IClientParams extends IDataProviderCustomOptions {
+  providerName?: string
+}
+
 /**
  * Custom request client
  */
 export function useClient() {
   const manage = useManage()
   const auth = useGetAuth()
-  const request = (params: IDataProviderCustomOptions) => {
-    if (!manage.config.dataProvider) {
+  const request = (params: IClientParams) => {
+    if (!manage.config?.dataProvider) {
       throw new Error('Data provider is not initialized')
     }
-    return manage.config.dataProvider?.custom({
+    const providerName = params.providerName || 'default'
+    return manage.config?.dataProvider?.[providerName]?.custom({
       ...params,
     }, manage, auth)
   }
@@ -630,16 +659,20 @@ export function useClient() {
 
 export function useInvalidate() {
   const queryClient = useQueryClient()
+  const manage = useManage()
 
-  const invalidate = (path: string) => {
+  const invalidate = (path: string, providerName?: string) => {
     let marks: any = path
     if (!Array.isArray(path)) {
       marks = [path]
     }
 
-    queryClient.invalidateQueries({
-      queryKey: marks,
-    })
+    for (const mark of marks) {
+      const key = `${manage.config?.name}:${providerName || 'default'}:${mark}`
+      queryClient.invalidateQueries({
+        queryKey: [key],
+      })
+    }
   }
 
   return {
