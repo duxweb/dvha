@@ -4,8 +4,8 @@ layout: home
 
 hero:
   name: "DVHA"
-  text: "轻松搭建中后台管理系统的前端解决方案"
-  tagline: 一个基于 Vue 且不含 UI 的中后台框架
+  text: 无头中后台前端框架
+  tagline: Dux Vue Headless Admin
   actions:
     - theme: brand
       text: 快速开始
