@@ -321,6 +321,26 @@ Check out the [Full Documentation](https://duxweb.github.io/dvha/) for more usag
 | `@duxweb/dvha-naiveui` | 🎨 Naive UI enhancement package - Integrates Naive UI | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-naiveui.svg)](https://www.npmjs.com/package/@duxweb/dvha-naiveui) |
 | `@duxweb/dvha-elementui` | 🎨 Element Plus enhancement package - Integrates Element Plus | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-elementui.svg)](https://www.npmjs.com/package/@duxweb/dvha-elementui) |
 
+## 📊 Project Statistics
+
+### 🌟 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=duxweb/dvha&type=Date)](https://star-history.com/#duxweb/dvha&Date)
+
+### 📈 Activity Graph
+
+![Activity Graph](https://github-readme-activity-graph.vercel.app/graph?username=duxweb&repo=dvha&theme=react-dark&hide_border=true)
+
+### 💻 Contributors
+
+Thanks to all the developers who contributed to DVHA!
+
+<div align="center">
+
+[![Contributors](https://contrib.rocks/image?repo=duxweb/dvha)](https://github.com/duxweb/dvha/graphs/contributors)
+
+</div>
+
 ## 🤝 Contributing
 
 We welcome all contributions! Please check out the [Contributing Guide](https://duxweb.github.io/dvha/contributing) to learn how to get started.

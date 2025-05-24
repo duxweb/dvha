@@ -190,6 +190,26 @@ app.mount('#app')
 
 > 如果二维码过期，请添加微信号：`dvha-assistant` 备注「DVHA」拉你入群
 
+## 📊 项目数据
+
+### 🌟 项目趋势
+
+[![Star History Chart](https://api.star-history.com/svg?repos=duxweb/dvha&type=Date)](https://star-history.com/#duxweb/dvha&Date)
+
+### 📈 代码活跃度
+
+![Activity Graph](https://github-readme-activity-graph.vercel.app/graph?username=duxweb&repo=dvha&theme=react-dark&hide_border=true)
+
+### 💻 贡献者
+
+感谢所有为 DVHA 做出贡献的开发者们！
+
+<div align="center">
+
+[![Contributors](https://contrib.rocks/image?repo=duxweb/dvha)](https://github.com/duxweb/dvha/graphs/contributors)
+
+</div>
+
 ## 🤝 贡献
 
 我们欢迎所有的贡献！请查看 [贡献指南](https://duxweb.github.io/dvha/contributing) 了解如何开始。
