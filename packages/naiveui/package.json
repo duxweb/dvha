@@ -25,14 +25,14 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "build": "bun run clean && vite build && bun run build:types",
+    "build": "bun run clean && vue-tsc --noEmit && vite build && bun run build:types",
     "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/types",
     "prepublishOnly": "bun run build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "dependencies": {
-    "@duxweb/dvha-core": "latest",
+  "peerDependencies": {
+    "@duxweb/dvha-core": "*",
     "naive-ui": "^2.41.0"
   },
   "devDependencies": {}
