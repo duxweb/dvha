@@ -5,7 +5,7 @@ import { OverlaysProvider } from '@overlastic/vue'
 import { defineComponent, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import { useConfig, useManage } from '../hooks'
-import { useAuthStore, useRouteStore } from '../stores'
+import { useAuthStore, useI18nStore, useRouteStore } from '../stores'
 import { useManageStore } from '../stores/manage'
 
 export const DuxAppProvider = defineComponent({
@@ -42,6 +42,15 @@ export const DuxAppProvider = defineComponent({
       const routeStore = useRouteStore(manageName)
       const manage = useManage(manageName)
       const authStore = useAuthStore(manageName)
+      const i18nStore = useI18nStore(manageName)
+
+      // init i18n
+      if (manage.config?.i18nProvider && !i18nStore.isInit()) {
+        const locale = i18nStore.getLocale()
+        if (locale) {
+          manage.config?.i18nProvider.changeLocale(locale)
+        }
+      }
 
       // unlogin handle
       if (!authStore.isLogin()) {
@@ -105,7 +114,6 @@ export const DuxAppProvider = defineComponent({
 
         // init remote route
         if (manage.config?.apiRoutePath) {
-          console.log('config', manage.config.default)
           try {
             await (manage.config?.dataProvider as Record<string, IDataProvider>)?.default?.custom({
               path: manage.config.apiRoutePath,

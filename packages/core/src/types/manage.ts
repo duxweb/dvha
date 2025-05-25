@@ -2,6 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import type { IAuthProvider } from './auth'
 import type { IConfigComponent } from './config'
 import type { IDataProvider } from './data'
+import type { I18nProvider } from './i18n'
 import type { IMenu } from './menu'
 import type { IConfigTheme } from './theme'
 
@@ -24,9 +25,9 @@ export interface IManage {
 
   authProvider?: IAuthProvider // 认证提供者
   dataProvider?: IDataProvider | Record<string, IDataProvider> // 数据提供者
+  i18nProvider?: I18nProvider // 国际化提供者
 
   routePrefix?: string // 路由前缀
-
   routes?: RouteRecordRaw[] // 路由配置
   menus?: IMenu[] // 菜单配置
 

@@ -1,6 +1,7 @@
 import type { RouteComponent, RouteRecordRaw } from 'vue-router'
 import type { IAuthProvider } from './auth'
 import type { IDataProvider } from './data'
+import type { I18nProvider } from './i18n'
 import type { IManage } from './manage'
 import type { IConfigTheme } from './theme'
 
@@ -26,6 +27,8 @@ export interface IConfig {
   authProvider?: IAuthProvider
   // 全局数据提供者
   dataProvider?: IDataProvider | Record<string, IDataProvider>
+  // 全局国际化提供者
+  i18nProvider?: I18nProvider
   // 全局布局配置
   components?: IConfigComponent
   // 全局路由配置

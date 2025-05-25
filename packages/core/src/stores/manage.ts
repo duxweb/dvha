@@ -95,6 +95,7 @@ function createManageStore(manageName: string) {
 
       manage.authProvider = globalConfig?.authProvider || manage?.authProvider
       manage.dataProvider = dataProvider
+      manage.i18nProvider = globalConfig?.i18nProvider || manage?.i18nProvider
 
       manage.layoutComponent = {
         ...globalConfig.layoutComponent,

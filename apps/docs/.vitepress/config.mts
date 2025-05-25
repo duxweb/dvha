@@ -2,15 +2,15 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "DVHA",
-  description: "一个基于 Vue 且不含 UI 的中后台框架",
+  title: 'DVHA',
+  description: '一个基于 Vue 且不含 UI 的中后台框架',
   base: '/dvha/',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: '首页', link: '/' },
       { text: '文档', link: '/guide/started' },
-      { text: '社区', link: '/community' }
+      { text: '社区', link: '/community' },
     ],
 
     sidebar: [
@@ -21,14 +21,15 @@ export default defineConfig({
           { text: '快速开始', link: '/guide/started' },
           { text: '初始化项目', link: '/guide/init' },
           { text: '项目配置', link: '/guide/config' },
-        ]
+        ],
       },
       {
         text: '提供者',
         items: [
           { text: '数据提供者', link: '/providers/data' },
           { text: '认证提供者', link: '/providers/auth' },
-        ]
+          { text: '国际化提供者', link: '/providers/i18n' },
+        ],
       },
       {
         text: '数据操作',
@@ -43,7 +44,7 @@ export default defineConfig({
           { text: '自定义查询 (useCustom)', link: '/hooks/data/useCustom' },
           { text: '自定义操作 (useCustomMutation)', link: '/hooks/data/useCustomMutation' },
           { text: '缓存失效 (useInvalidate)', link: '/hooks/data/useInvalidate' },
-        ]
+        ],
       },
       {
         text: '认证操作',
@@ -57,7 +58,7 @@ export default defineConfig({
           { text: '错误处理 (useError)', link: '/hooks/auth/useError' },
           { text: '获取认证信息 (useGetAuth)', link: '/hooks/auth/useGetAuth' },
           { text: '判断登录状态 (useIsLogin)', link: '/hooks/auth/useIsLogin' },
-        ]
+        ],
       },
       {
         text: '常用操作',
@@ -66,7 +67,8 @@ export default defineConfig({
           { text: '主题管理 (useTheme)', link: '/hooks/common/useTheme' },
           { text: '数据客户端 (useClient)', link: '/hooks/common/useClient' },
           { text: '弹窗 (useOverlay)', link: '/hooks/common/useOverlay' },
-        ]
+          { text: '国际化 (useI18n)', link: '/hooks/common/useI18n' },
+        ],
       },
       {
         text: '菜单路由',
@@ -76,7 +78,7 @@ export default defineConfig({
           { text: '路由跳转', link: '/router/redirect' },
           { text: '异步(远程)菜单', link: '/router/async' },
           { text: '菜单方法 (useMenu)', link: '/hooks/common/useMenu' },
-        ]
+        ],
       },
       {
         text: '管理端',
@@ -84,19 +86,19 @@ export default defineConfig({
           { text: '管理端配置', link: '/manage/overview' },
           { text: '多管理端', link: '/manage/multiple' },
           { text: '管理端方法 (useManage)', link: '/hooks/common/useManage' },
-        ]
+        ],
       },
       {
         text: '标签页',
         items: [
           { text: '标签组件', link: '/tabs/component' },
           { text: '标签页方法 (useTabs)', link: '/tabs/useTabs' },
-        ]
+        ],
       },
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/duxweb/dvha' }
-    ]
-  }
+      { icon: 'github', link: 'https://github.com/duxweb/dvha' },
+    ],
+  },
 })

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { h } from 'vue'
-import { useRouter } from 'vue-router'
-import 'element-plus/dist/index.css'
-
-import { DuxLogo, DuxTabRouterView, useOverlay, useTheme } from '@duxweb/dvha-core'
+import type { MenuOption } from 'naive-ui'
+import { DuxLogo, DuxTabRouterView, useI18n, useOverlay, useTheme } from '@duxweb/dvha-core'
 import { useNaiveMenu, useNaiveTab } from '@duxweb/dvha-naiveui'
+import { darkTheme, lightTheme, NIcon } from 'naive-ui'
 
-import { MenuOption, NIcon, darkTheme, lightTheme } from 'naive-ui'
+import { h } from 'vue'
+
+import 'element-plus/dist/index.css'
 
 const { options, active } = useNaiveMenu({})
 const { props: tabsProps, tabs } = useNaiveTab()
@@ -16,14 +16,30 @@ function renderIcon(icon: string) {
   return h(NIcon, null, { default: () => h('div', { class: `${icon} size-4` }) })
 }
 
-
 const toolsOptions: MenuOption[] = [
   {
-    label: "设置",
+    label: '设置',
     key: 'setting',
-    icon: () =>renderIcon('i-tabler:settings'),
+    icon: () => renderIcon('i-tabler:settings'),
   },
 
+  {
+    label: '语言',
+    key: 'locale',
+    icon: () => renderIcon('i-tabler:language'),
+    children: [
+      {
+        group: 'locale',
+        label: '中文',
+        key: 'zh-CN',
+      },
+      {
+        group: 'locale',
+        label: 'English',
+        key: 'en-US',
+      },
+    ],
+  },
   {
     label: () => {
       switch (mode.value) {
@@ -51,19 +67,23 @@ const toolsOptions: MenuOption[] = [
 ]
 
 const overlay = useOverlay()
+const i18n = useI18n()
 
-function handleTools(key: string) {
+function handleTools(key: string, option: MenuOption) {
   if (key === 'theme') {
     toggle()
   }
 
   if (key === 'setting') {
     overlay.show({
-      component: () => import('./setting.vue')
+      component: () => import('./setting.vue'),
     })
   }
-}
 
+  if (option.group === 'locale') {
+    i18n.changeLocale(option.key as string)
+  }
+}
 </script>
 
 <template>
@@ -91,17 +111,19 @@ function handleTools(key: string) {
       </div>
       <div class="flex-1 w-auto m-4 flex flex-col gap-2">
         <div class="flex justify-between items-center">
-
           <div class="flex flex-col">
-            <div class="text-sm text-gray-500">Overview</div>
-            <div class="text-2xl font-bold">Welcome to DuxVue</div>
+            <div class="text-sm text-gray-500">
+              {{ i18n.t('overview') }}
+            </div>
+            <div class="text-2xl font-bold">
+              {{ i18n.t('hello') }}
+            </div>
           </div>
           <div class="flex items-center gap-2">
             <n-button @click="toggle()">
               主题 {{ mode }}
             </n-button>
           </div>
-
         </div>
 
         <n-tabs

@@ -1,8 +1,8 @@
-import { trimStart } from 'lodash-es'
 import type { IManageHook } from '../hooks'
 import type { IUserState } from '../stores'
 import type { IDataProvider, IDataProviderCreateManyOptions, IDataProviderCreateOptions, IDataProviderCustomOptions, IDataProviderDeleteManyOptions, IDataProviderDeleteOptions, IDataProviderGetManyOptions, IDataProviderGetOneOptions, IDataProviderListOptions, IDataProviderUpdateManyOptions, IDataProviderUpdateOptions } from '../types'
 import axios from 'axios'
+import { trimStart } from 'lodash-es'
 
 export interface ISimpleDataProviderProps {
   apiUrl: string

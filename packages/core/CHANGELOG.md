@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 0.1.2
+
+### Patch Changes
+
+- feat: 增加国家化相关接口
+
 ## 0.1.1
 
 ### Patch Changes

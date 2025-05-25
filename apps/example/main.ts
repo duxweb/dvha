@@ -1,9 +1,14 @@
 import type { IConfig } from '@duxweb/dvha-core'
-import { createDux, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
+import { createDux, i18nProvider, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
 import ElementPlus from 'element-plus'
 import naive from 'naive-ui'
 import { createApp } from 'vue'
 import App from './App.vue'
+
+// 同步导入语言文件
+import enUS from './lang/en-US.json'
+
+import zhCN from './lang/zh-CN.json'
 import 'virtual:uno.css'
 
 const app = createApp(App)
@@ -76,7 +81,14 @@ const config: IConfig = {
     apiUrl: 'https://m1.apifoxmock.com/m1/4407506-4052338-default/admin',
   }),
   authProvider: simpleAuthProvider(),
-
+  i18nProvider: i18nProvider({
+    locale: 'zh-CN',
+    fallbackLocale: 'en-US',
+    messages: {
+      'zh-CN': zhCN,
+      'en-US': enUS,
+    },
+  }),
 }
 
 app.use(createDux(config))

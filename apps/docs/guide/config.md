@@ -6,7 +6,7 @@ DVHA 提供了丰富的配置选项来满足不同项目的需求。配置主要
 
 ```typescript
 import type { IConfig } from '@duxweb/dvha-core'
-import { createDux, simpleDataProvider, simpleAuthProvider } from '@duxweb/dvha-core'
+import { createDux, i18nProvider, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
 
 // 创建数据提供者
 const dataProvider = simpleDataProvider({
@@ -26,6 +26,14 @@ const config: IConfig = {
   ],
   dataProvider,
   authProvider: simpleAuthProvider(),
+  i18nProvider: i18nProvider({
+    locale: 'zh-CN',
+    fallbackLocale: 'en-US',
+    messages: {
+      'zh-CN': { welcome: '欢迎' },
+      'en-US': { welcome: 'Welcome' }
+    }
+  }),
 }
 ```
 
@@ -37,12 +45,12 @@ const config: IConfig = {
 
 **用途说明**: 📝 这些配置主要供开发者在组件中调用，通过 `useConfig()` 获取后显示在界面上，如页面标题、页脚版权信息等。
 
-| 字段 | 类型 | 必需 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `title` | `string` | ❌ | - | 应用标题 |
-| `copyright` | `string` | ❌ | - | 版权信息 |
-| `description` | `string` | ❌ | - | 应用描述 |
-| `lang` | `string` | ❌ | - | 默认语言 |
+| 字段          | 类型     | 必需 | 默认值 | 说明     |
+| ------------- | -------- | ---- | ------ | -------- |
+| `title`       | `string` | ❌   | -      | 应用标题 |
+| `copyright`   | `string` | ❌   | -      | 版权信息 |
+| `description` | `string` | ❌   | -      | 应用描述 |
+| `lang`        | `string` | ❌   | -      | 默认语言 |
 
 ### API 配置
 
@@ -54,37 +62,38 @@ const config: IConfig = {
 
 **用途说明**: 🏗️ 框架内部使用，用于多管理端架构的路由管理、管理端切换和默认管理端选择。
 
-| 字段 | 类型 | 必需 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `defaultManage` | `string` | ❌ | - | 默认管理端名称 |
-| `manages` | `IManage[]` | ❌ | `[]` | 管理端配置列表 |
+| 字段            | 类型        | 必需 | 默认值 | 说明           |
+| --------------- | ----------- | ---- | ------ | -------------- |
+| `defaultManage` | `string`    | ❌   | -      | 默认管理端名称 |
+| `manages`       | `IManage[]` | ❌   | `[]`   | 管理端配置列表 |
 
 ### 提供者配置
 
-**用途说明**: ⚙️ 框架内部使用，为所有 Hooks 提供底层的数据操作和认证功能。管理端配置中的提供者会覆盖全局提供者。数据提供者支持单一提供者或多重提供者配置。
+**用途说明**: ⚙️ 框架内部使用，为所有 Hooks 提供底层的数据操作、认证和国际化功能。管理端配置中的提供者会覆盖全局提供者。数据提供者支持单一提供者或多重提供者配置。
 
-| 字段 | 类型 | 必需 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `authProvider` | `IAuthProvider` | ❌ | - | 全局认证提供者 |
-| `dataProvider` | `IDataProvider \| Record<string, IDataProvider>` | ❌ | - | 全局数据提供者 |
+| 字段           | 类型                                             | 必需 | 默认值 | 说明             |
+| -------------- | ------------------------------------------------ | ---- | ------ | ---------------- |
+| `authProvider` | `IAuthProvider`                                  | ❌   | -      | 全局认证提供者   |
+| `dataProvider` | `IDataProvider \| Record<string, IDataProvider>` | ❌   | -      | 全局数据提供者   |
+| `i18nProvider` | `I18nProvider`                                   | ❌   | -      | 全局国际化提供者 |
 
 ### 全局组件配置
 
 **用途说明**: 🎨 框架内部使用，用于路由渲染时自动选择对应的布局组件和错误页面。
 
-| 字段 | 类型 | 必需 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `components` | `IConfigComponent` | ❌ | - | 全局布局组件配置 |
-| `routes` | `RouteRecordRaw[]` | ❌ | `[]` | 全局路由配置 |
-| `theme` | `IConfigTheme` | ❌ | - | 全局主题配置 |
+| 字段         | 类型               | 必需 | 默认值 | 说明             |
+| ------------ | ------------------ | ---- | ------ | ---------------- |
+| `components` | `IConfigComponent` | ❌   | -      | 全局布局组件配置 |
+| `routes`     | `RouteRecordRaw[]` | ❌   | `[]`   | 全局路由配置     |
+| `theme`      | `IConfigTheme`     | ❌   | -      | 全局主题配置     |
 
 ### 扩展配置
 
 **用途说明**: 🔧 完全供开发者自定义使用，可以存储任意项目特定的配置，通过 `useConfig()` 在组件中获取。
 
-| 字段 | 类型 | 必需 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `extends` | `Record<string, any>` | ❌ | - | 扩展配置对象 |
+| 字段      | 类型                  | 必需 | 默认值 | 说明         |
+| --------- | --------------------- | ---- | ------ | ------------ |
+| `extends` | `Record<string, any>` | ❌   | -      | 扩展配置对象 |
 
 ## 管理端配置 (IManage)
 
@@ -94,30 +103,30 @@ const config: IConfig = {
 
 **用途说明**: 📝 `name` 为框架内部使用的唯一标识；其他字段主要供开发者在组件中调用，用于显示管理端标题、描述等信息。
 
-| 字段 | 类型 | 必需 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `name` | `string` | ✅ | - | 管理端唯一标识 |
-| `title` | `string` | ✅ | - | 管理端标题 |
-| `copyright` | `string` | ❌ | - | 版权信息 |
-| `description` | `string` | ❌ | - | 管理端描述 |
+| 字段          | 类型     | 必需 | 默认值 | 说明           |
+| ------------- | -------- | ---- | ------ | -------------- |
+| `name`        | `string` | ✅   | -      | 管理端唯一标识 |
+| `title`       | `string` | ✅   | -      | 管理端标题     |
+| `copyright`   | `string` | ❌   | -      | 版权信息       |
+| `description` | `string` | ❌   | -      | 管理端描述     |
 
 ### 功能开关配置
 
 **用途说明**: 🎛️ 供开发者在组件中调用，通过 `useManage()` 获取后判断是否显示注册按钮、忘记密码链接等功能。
 
-| 字段 | 类型 | 必需 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `register` | `boolean` | ❌ | `false` | 是否启用注册功能 |
-| `forgotPassword` | `boolean` | ❌ | `false` | 是否启用忘记密码功能 |
-| `updatePassword` | `boolean` | ❌ | `false` | 是否启用更新密码功能 |
+| 字段             | 类型      | 必需 | 默认值  | 说明                 |
+| ---------------- | --------- | ---- | ------- | -------------------- |
+| `register`       | `boolean` | ❌   | `false` | 是否启用注册功能     |
+| `forgotPassword` | `boolean` | ❌   | `false` | 是否启用忘记密码功能 |
+| `updatePassword` | `boolean` | ❌   | `false` | 是否启用更新密码功能 |
 
 ### API 配置
 
 **用途说明**: 🔗 API URL 现在通过数据提供者的 `apiUrl` 方法提供，不再在管理端配置中直接配置。
 
-| 字段 | 类型 | 必需 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `apiRoutePath` | `string` | ❌ | - | 远程菜单 API 路径 |
+| 字段           | 类型     | 必需 | 默认值 | 说明              |
+| -------------- | -------- | ---- | ------ | ----------------- |
+| `apiRoutePath` | `string` | ❌   | -      | 远程菜单 API 路径 |
 
 > ⚠️ **重要变更**: 在最新版本中，`apiUrl` 字段已从管理端配置中移除，所有 API 地址配置都通过数据提供者实现。
 
@@ -125,36 +134,37 @@ const config: IConfig = {
 
 **用途说明**: 🔗 框架内部使用，用于生成管理端的路由结构和页面访问路径。
 
-| 字段 | 类型 | 必需 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `routePrefix` | `string` | ❌ | - | 路由前缀 (如 `/admin`) |
-| `routes` | `RouteRecordRaw[]` | ❌ | `[]` | 自定义路由配置 |
+| 字段          | 类型               | 必需 | 默认值 | 说明                   |
+| ------------- | ------------------ | ---- | ------ | ---------------------- |
+| `routePrefix` | `string`           | ❌   | -      | 路由前缀 (如 `/admin`) |
+| `routes`      | `RouteRecordRaw[]` | ❌   | `[]`   | 自定义路由配置         |
 
 ### 菜单配置
 
 **用途说明**: 🧭 框架内部使用，用于自动生成侧边栏菜单结构，包括菜单层级、权限控制等。
 
-| 字段 | 类型 | 必需 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `menus` | `IMenu[]` | ❌ | `[]` | 菜单配置列表 |
+| 字段    | 类型      | 必需 | 默认值 | 说明         |
+| ------- | --------- | ---- | ------ | ------------ |
+| `menus` | `IMenu[]` | ❌   | `[]`   | 菜单配置列表 |
 
 ### 提供者配置
 
-**用途说明**: ⚙️ 框架内部使用，为当前管理端提供专用的认证和数据操作功能，会覆盖全局提供者配置。数据提供者支持单一提供者或多重提供者配置。
+**用途说明**: ⚙️ 框架内部使用，为当前管理端提供专用的认证、数据操作和国际化功能，会覆盖全局提供者配置。数据提供者支持单一提供者或多重提供者配置。
 
-| 字段 | 类型 | 必需 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `authProvider` | `IAuthProvider` | ❌ | - | 管理端专用认证提供者 |
-| `dataProvider` | `IDataProvider \| Record<string, IDataProvider>` | ❌ | - | 管理端专用数据提供者 |
+| 字段           | 类型                                             | 必需 | 默认值 | 说明                   |
+| -------------- | ------------------------------------------------ | ---- | ------ | ---------------------- |
+| `authProvider` | `IAuthProvider`                                  | ❌   | -      | 管理端专用认证提供者   |
+| `dataProvider` | `IDataProvider \| Record<string, IDataProvider>` | ❌   | -      | 管理端专用数据提供者   |
+| `i18nProvider` | `I18nProvider`                                   | ❌   | -      | 管理端专用国际化提供者 |
 
 ### 组件配置
 
 **用途说明**: 🎨 框架内部使用，用于当前管理端的布局渲染和主题显示，会与全局配置合并。
 
-| 字段 | 类型 | 必需 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `components` | `IConfigComponent` | ❌ | - | 布局组件配置 |
-| `theme` | `IConfigTheme` | ❌ | - | 主题配置 |
+| 字段         | 类型               | 必需 | 默认值 | 说明         |
+| ------------ | ------------------ | ---- | ------ | ------------ |
+| `components` | `IConfigComponent` | ❌   | -      | 布局组件配置 |
+| `theme`      | `IConfigTheme`     | ❌   | -      | 主题配置     |
 
 ## 组件配置 (IConfigComponent)
 
@@ -162,13 +172,13 @@ const config: IConfig = {
 
 用于配置各种布局组件。
 
-| 字段 | 类型 | 必需 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `authLayout` | `RouteComponent` | ❌ | - | 认证后的主布局组件 |
-| `noAuthLayout` | `RouteComponent` | ❌ | - | 未认证时的布局组件 |
-| `notFound` | `RouteComponent` | ❌ | - | 404 页面组件 |
-| `notAuthorized` | `RouteComponent` | ❌ | - | 无权限页面组件 |
-| `error` | `RouteComponent` | ❌ | - | 错误页面组件 |
+| 字段            | 类型             | 必需 | 默认值 | 说明               |
+| --------------- | ---------------- | ---- | ------ | ------------------ |
+| `authLayout`    | `RouteComponent` | ❌   | -      | 认证后的主布局组件 |
+| `noAuthLayout`  | `RouteComponent` | ❌   | -      | 未认证时的布局组件 |
+| `notFound`      | `RouteComponent` | ❌   | -      | 404 页面组件       |
+| `notAuthorized` | `RouteComponent` | ❌   | -      | 无权限页面组件     |
+| `error`         | `RouteComponent` | ❌   | -      | 错误页面组件       |
 
 ## 主题配置 (IConfigTheme)
 
@@ -176,12 +186,12 @@ const config: IConfig = {
 
 用于配置应用的视觉主题。
 
-| 字段 | 类型 | 必需 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `logo` | `string` | ❌ | - | 亮色主题 Logo URL |
-| `darkLogo` | `string` | ❌ | - | 暗色主题 Logo URL |
-| `banner` | `string` | ❌ | - | 亮色主题横幅 URL |
-| `darkBanner` | `string` | ❌ | - | 暗色主题横幅 URL |
+| 字段         | 类型     | 必需 | 默认值 | 说明              |
+| ------------ | -------- | ---- | ------ | ----------------- |
+| `logo`       | `string` | ❌   | -      | 亮色主题 Logo URL |
+| `darkLogo`   | `string` | ❌   | -      | 暗色主题 Logo URL |
+| `banner`     | `string` | ❌   | -      | 亮色主题横幅 URL  |
+| `darkBanner` | `string` | ❌   | -      | 暗色主题横幅 URL  |
 
 ## 菜单配置 (IMenu)
 
@@ -189,18 +199,18 @@ const config: IConfig = {
 
 用于配置侧边栏菜单。
 
-| 字段 | 类型 | 必需 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `name` | `string` | ✅ | - | 菜单唯一标识 |
-| `label` | `string` | ❌ | - | 菜单显示名称 |
-| `path` | `string` | ❌ | - | 菜单路径 |
-| `icon` | `string` | ❌ | - | 菜单图标 (支持 iconify) |
-| `sort` | `number` | ❌ | `0` | 菜单排序 |
-| `parent` | `string` | ❌ | - | 父级菜单标识 |
-| `hidden` | `boolean` | ❌ | `false` | 是否隐藏菜单 |
-| `loader` | `string` | ❌ | - | 菜单加载器 |
-| `component` | `RouteComponent` | ❌ | - | 菜单对应的组件 |
-| `meta` | `Record<string, any>` | ❌ | - | 菜单元数据 |
+| 字段        | 类型                  | 必需 | 默认值  | 说明                    |
+| ----------- | --------------------- | ---- | ------- | ----------------------- |
+| `name`      | `string`              | ✅   | -       | 菜单唯一标识            |
+| `label`     | `string`              | ❌   | -       | 菜单显示名称            |
+| `path`      | `string`              | ❌   | -       | 菜单路径                |
+| `icon`      | `string`              | ❌   | -       | 菜单图标 (支持 iconify) |
+| `sort`      | `number`              | ❌   | `0`     | 菜单排序                |
+| `parent`    | `string`              | ❌   | -       | 父级菜单标识            |
+| `hidden`    | `boolean`             | ❌   | `false` | 是否隐藏菜单            |
+| `loader`    | `string`              | ❌   | -       | 菜单加载器              |
+| `component` | `RouteComponent`      | ❌   | -       | 菜单对应的组件          |
+| `meta`      | `Record<string, any>` | ❌   | -       | 菜单元数据              |
 
 ## 配置调用方式
 
@@ -258,6 +268,10 @@ console.log(theme.logo) // '/images/logo.png'
 ### 基础单管理端配置
 
 ```typescript
+import { i18nProvider } from '@duxweb/dvha-core'
+import enUS from './locales/en-US.json'
+import zhCN from './locales/zh-CN.json'
+
 // 创建数据提供者
 const dataProvider = simpleDataProvider({
   apiUrl: 'https://api.example.com'
@@ -309,6 +323,16 @@ const config: IConfig = {
 
   dataProvider,
   authProvider: simpleAuthProvider(),
+
+  // 全局国际化配置
+  i18nProvider: i18nProvider({
+    locale: 'zh-CN',
+    fallbackLocale: 'en-US',
+    messages: {
+      'zh-CN': zhCN,
+      'en-US': enUS
+    }
+  }),
 }
 ```
 
@@ -336,9 +360,9 @@ const config: IConfig = {
 
   // 全局多数据提供者配置
   dataProvider: {
-    default: userDataProvider,    // 默认数据提供者
-    user: userDataProvider,       // 用户服务
-    order: orderDataProvider,     // 订单服务
+    default: userDataProvider, // 默认数据提供者
+    user: userDataProvider, // 用户服务
+    order: orderDataProvider, // 订单服务
     product: productDataProvider, // 商品服务
   },
 
@@ -363,6 +387,12 @@ const config: IConfig = {
 ### 多管理端配置
 
 ```typescript
+import { i18nProvider } from '@duxweb/dvha-core'
+import adminEnUS from './locales/admin/en-US.json'
+import adminZhCN from './locales/admin/zh-CN.json'
+import merchantEnUS from './locales/merchant/en-US.json'
+import merchantZhCN from './locales/merchant/zh-CN.json'
+
 // 创建数据提供者
 const adminDataProvider = simpleDataProvider({
   apiUrl: 'https://admin-api.example.com'
@@ -375,6 +405,17 @@ const merchantDataProvider = simpleDataProvider({
 const config: IConfig = {
   title: '多端管理系统',
   defaultManage: 'admin',
+
+  // 全局国际化提供者
+  i18nProvider: i18nProvider({
+    locale: 'zh-CN',
+    fallbackLocale: 'en-US',
+    messages: {
+      'zh-CN': { common: { title: '多端管理系统' } },
+      'en-US': { common: { title: 'Multi-Platform Management' } }
+    }
+  }),
+
   manages: [
     // 管理员端
     {
@@ -383,6 +424,17 @@ const config: IConfig = {
       routePrefix: '/admin',
       dataProvider: adminDataProvider,
       authProvider: adminAuthProvider,
+
+      // 管理端专用国际化配置
+      i18nProvider: i18nProvider({
+        locale: 'zh-CN',
+        fallbackLocale: 'en-US',
+        messages: {
+          'zh-CN': adminZhCN,
+          'en-US': adminEnUS
+        }
+      }),
+
       theme: {
         logo: '/logos/admin-logo.png',
         banner: '/banners/admin-banner.png',
@@ -427,6 +479,16 @@ const config: IConfig = {
       },
 
       authProvider: merchantAuthProvider,
+
+      // 商户端专用国际化配置（支持英文优先）
+      i18nProvider: i18nProvider({
+        locale: 'en-US',
+        fallbackLocale: 'zh-CN',
+        messages: {
+          'zh-CN': merchantZhCN,
+          'en-US': merchantEnUS
+        }
+      }),
 
       // 不同的功能开关
       register: true,
@@ -496,5 +558,93 @@ const config: IConfig = {
   title: import.meta.env.VITE_APP_TITLE || '管理系统',
   dataProvider,
   // ... 其他配置
+}
+```
+
+## 国际化配置详解
+
+### 全局国际化配置
+
+全局国际化配置为所有管理端提供基础的多语言支持：
+
+```typescript
+import { i18nProvider } from '@duxweb/dvha-core'
+import globalEnUS from './locales/global/en-US.json'
+import globalZhCN from './locales/global/zh-CN.json'
+
+const config: IConfig = {
+  // 全局国际化提供者
+  i18nProvider: i18nProvider({
+    locale: 'zh-CN', // 默认语言
+    fallbackLocale: 'en-US', // 回退语言
+    messages: {
+      'zh-CN': globalZhCN,
+      'en-US': globalEnUS
+    }
+  }),
+  // ... 其他配置
+}
+```
+
+### 管理端专用国际化配置
+
+每个管理端可以有独立的国际化配置，会覆盖全局配置：
+
+```typescript
+const config: IConfig = {
+  manages: [
+    {
+      name: 'admin',
+      title: '管理后台',
+
+      // 管理端专用国际化配置
+      i18nProvider: i18nProvider({
+        locale: 'zh-CN',
+        fallbackLocale: 'en-US',
+        messages: {
+          'zh-CN': {
+            nav: { dashboard: '仪表板', users: '用户管理' },
+            form: { save: '保存', cancel: '取消' }
+          },
+          'en-US': {
+            nav: { dashboard: 'Dashboard', users: 'User Management' },
+            form: { save: 'Save', cancel: 'Cancel' }
+          }
+        }
+      }),
+      // ... 其他配置
+    }
+  ]
+}
+```
+
+### 动态语言包加载配置
+
+支持动态加载语言包，适用于大型应用：
+
+```typescript
+const config: IConfig = {
+  i18nProvider: i18nProvider({
+    locale: 'zh-CN',
+    fallbackLocale: 'en-US',
+    messages: {
+      'zh-CN': {}, // 初始为空，动态加载
+      'en-US': {}
+    }
+  }),
+  // ... 其他配置
+}
+
+// 在应用启动后动态加载
+async function loadLanguagePacks() {
+  const { i18nProvider: provider } = useConfig()
+
+  // 加载中文语言包
+  const zhCN = await import('./locales/zh-CN.json')
+  await provider.loadLocale('zh-CN', zhCN.default)
+
+  // 加载英文语言包
+  const enUS = await import('./locales/en-US.json')
+  await provider.loadLocale('en-US', enUS.default)
 }
 ```

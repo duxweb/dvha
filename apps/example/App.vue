@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
 import { DuxAppProvider } from '@duxweb/dvha-core'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
