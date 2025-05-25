@@ -36,7 +36,7 @@ const app = createDux({
     {
       name: 'admin',
       title: '管理后台',
-      routePrefix: '/admin',  // 路由前缀
+      routePrefix: '/admin', // 路由前缀
       routes: [
         // 管理端专属路由
       ]
@@ -61,7 +61,7 @@ const adminManage = {
       name: 'admin.dashboard',
       component: () => import('./pages/Dashboard.vue'),
       meta: {
-        authorization: true  // 需要认证（默认值）
+        authorization: true // 需要认证（默认值）
       }
     },
 
@@ -71,18 +71,18 @@ const adminManage = {
       name: 'admin.login',
       component: () => import('./pages/Login.vue'),
       meta: {
-        authorization: false  // 无需认证
+        authorization: false // 无需认证
       }
     }
   ],
 
   // 布局组件配置
   components: {
-    authLayout: () => import('./layouts/AuthLayout.vue'),      // 认证布局
-    noAuthLayout: () => import('./layouts/NoAuthLayout.vue'),  // 非认证布局
-    notFound: () => import('./pages/404.vue'),                 // 404页面
-    notAuthorized: () => import('./pages/403.vue'),            // 403页面
-    error: () => import('./pages/500.vue')                     // 错误页面
+    authLayout: () => import('./layouts/AuthLayout.vue'), // 认证布局
+    noAuthLayout: () => import('./layouts/NoAuthLayout.vue'), // 非认证布局
+    notFound: () => import('./pages/404.vue'), // 404页面
+    notAuthorized: () => import('./pages/403.vue'), // 403页面
+    error: () => import('./pages/500.vue') // 错误页面
   }
 }
 ```
@@ -153,7 +153,6 @@ meta: {
     authorization: true,
     title: '用户管理',
     icon: 'users',
-    permissions: ['user.read'],
     breadcrumb: ['首页', '用户管理']
   }
 }
@@ -313,8 +312,7 @@ const app = createDux({
           name: 'admin.users',
           component: () => import('./pages/Users.vue'),
           meta: {
-            title: '用户管理',
-            permissions: ['user.read']
+            title: '用户管理'
           }
         }
       ],

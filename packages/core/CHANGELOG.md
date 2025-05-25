@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 0.1.3
+
+### Patch Changes
+
+- chore: 增加认证提供者的权限配置与相关 hook
+
 ## 0.1.2
 
 ### Patch Changes

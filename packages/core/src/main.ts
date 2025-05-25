@@ -3,6 +3,7 @@ import type { IConfig } from './types'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { ref } from 'vue'
+import { permissionDirective } from './directive'
 import { initRouter } from './router/route'
 
 export function createDux(config: IConfig) {
@@ -22,6 +23,7 @@ export function createDux(config: IConfig) {
       const manageRef = ref<string>()
       app.provide('dux.config', config)
       app.provide('dux.manage', manageRef)
+      app.directive('can', permissionDirective)
       app.use(initRouter(config))
       app.use(pinia)
     },

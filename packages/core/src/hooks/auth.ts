@@ -257,3 +257,24 @@ export function useIsLogin(manageName?: string) {
   const authStore = useAuthStore(manageName)
   return authStore.isLogin()
 }
+
+/**
+ * Can
+ * check if user can access the route
+ * @param manageName Manage name
+ * @returns Can method
+ */
+export function useCan(manageName?: string) {
+  const manage = useManage(manageName)
+  const authStore = useAuthStore(manageName)
+  const user = authStore.getUser()
+
+  const can = (name: string, params?: any) => {
+    if (manage.config.authProvider?.can) {
+      return manage.config.authProvider.can(name, params, manage, user) || false
+    }
+    return true
+  }
+
+  return can
+}

@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-core",
   "type": "module",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "author": "DuxWeb",
   "license": "LGPL-3.0",
   "repository": {

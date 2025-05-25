@@ -4,7 +4,7 @@ import type { IDataProvider, IManage, IMenu } from '../types'
 import { OverlaysProvider } from '@overlastic/vue'
 import { defineComponent, inject } from 'vue'
 import { useRouter } from 'vue-router'
-import { useConfig, useManage } from '../hooks'
+import { useCan, useConfig, useManage } from '../hooks'
 import { useAuthStore, useI18nStore, useRouteStore } from '../stores'
 import { useManageStore } from '../stores/manage'
 
@@ -86,6 +86,9 @@ export const DuxAppProvider = defineComponent({
             path: ':pathMatch(.*)*',
             component: components.notFound,
             hidden: true,
+            meta: {
+              can: false,
+            },
           })
         }
 
@@ -96,6 +99,9 @@ export const DuxAppProvider = defineComponent({
             path: 'notAuthorized',
             component: components.notAuthorized,
             hidden: true,
+            meta: {
+              can: false,
+            },
           })
         }
 
@@ -106,6 +112,9 @@ export const DuxAppProvider = defineComponent({
             path: 'error',
             component: components.error,
             hidden: true,
+            meta: {
+              can: false,
+            },
           })
         }
 
@@ -195,6 +204,13 @@ export const DuxAppProvider = defineComponent({
         return next({
           path: indexRoute?.path || '/',
           replace: true,
+        })
+      }
+
+      const can = useCan(manageName)
+      if ((to.meta?.can === undefined || to.meta?.can === true) && !can(to.name as string)) {
+        return next({
+          name: `${manageName}.notAuthorized`,
         })
       }
 

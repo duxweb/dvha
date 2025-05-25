@@ -58,6 +58,7 @@ export default defineConfig({
           { text: '错误处理 (useError)', link: '/hooks/auth/useError' },
           { text: '获取认证信息 (useGetAuth)', link: '/hooks/auth/useGetAuth' },
           { text: '判断登录状态 (useIsLogin)', link: '/hooks/auth/useIsLogin' },
+          { text: '权限检查 (useCan)', link: '/hooks/auth/useCan' },
         ],
       },
       {

@@ -13,6 +13,7 @@
 - **忘记密码** (forgotPassword)
 - **重置密码** (updatePassword)
 - **错误处理** (onError)
+- **权限验证** (can)
 
 ## 简单认证提供者
 
@@ -29,18 +30,18 @@ const config: IConfig = {
 // 或者使用自定义配置
 const authProvider = simpleAuthProvider({
   apiPath: {
-    login: '/auth/login',        // 自定义登录接口路径
-    check: '/auth/check',        // 自定义认证检查路径
-    logout: '/auth/logout',      // 自定义登出接口路径
-    register: '/auth/register',  // 自定义注册接口路径
-    forgotPassword: '/auth/forgot',  // 自定义忘记密码路径
-    updatePassword: '/auth/reset'    // 自定义重置密码路径
+    login: '/auth/login', // 自定义登录接口路径
+    check: '/auth/check', // 自定义认证检查路径
+    logout: '/auth/logout', // 自定义登出接口路径
+    register: '/auth/register', // 自定义注册接口路径
+    forgotPassword: '/auth/forgot', // 自定义忘记密码路径
+    updatePassword: '/auth/reset' // 自定义重置密码路径
   },
   routePath: {
-    login: '/login',             // 登录页面路径
-    index: '/dashboard'          // 登录成功后跳转路径
+    login: '/login', // 登录页面路径
+    index: '/dashboard' // 登录成功后跳转路径
   },
-  dataProviderName: 'default'    // 指定使用的数据提供者名称
+  dataProviderName: 'default' // 指定使用的数据提供者名称
 })
 ```
 
@@ -70,6 +71,9 @@ interface IAuthProvider {
   // 重置密码 (必需)
   updatePassword: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
 
+  // 权限检查 (可选)
+  can?: (name: string, params?: any, manage?: IManageHook, auth?: IUserState) => boolean
+
   // 错误处理 (必需)
   onError: (error?: any) => Promise<IAuthErrorResponse>
 }
@@ -93,11 +97,11 @@ interface IAuthProvider {
 ```typescript
 // 登录参数示例
 interface LoginParams {
-  username: string           // 用户名
-  password: string           // 密码
-  captcha?: string          // 验证码（可选）
-  rememberMe?: boolean      // 记住登录状态（可选）
-  [key: string]: any        // 其他自定义字段
+  username: string // 用户名
+  password: string // 密码
+  captcha?: string // 验证码（可选）
+  rememberMe?: boolean // 记住登录状态（可选）
+  [key: string]: any // 其他自定义字段
 }
 ```
 
@@ -106,11 +110,11 @@ interface LoginParams {
 ```typescript
 // 注册参数示例
 interface RegisterParams {
-  username: string           // 用户名
-  email: string             // 邮箱
-  password: string          // 密码
-  confirmPassword: string   // 确认密码
-  [key: string]: any        // 其他自定义字段
+  username: string // 用户名
+  email: string // 邮箱
+  password: string // 密码
+  confirmPassword: string // 确认密码
+  [key: string]: any // 其他自定义字段
 }
 ```
 
@@ -119,14 +123,14 @@ interface RegisterParams {
 ```typescript
 // 忘记密码参数示例
 interface ForgotPasswordParams {
-  email: string             // 邮箱地址
+  email: string // 邮箱地址
 }
 
 // 重置密码参数示例
 interface UpdatePasswordParams {
-  token: string             // 重置令牌
-  password: string          // 新密码
-  confirmPassword: string   // 确认新密码
+  token: string // 重置令牌
+  password: string // 新密码
+  confirmPassword: string // 确认新密码
 }
 ```
 
@@ -136,10 +140,10 @@ interface UpdatePasswordParams {
 
 ```typescript
 interface IAuthActionResponse {
-  success: boolean          // 操作是否成功
-  message?: string          // 响应消息
-  redirectTo?: string       // 重定向地址
-  [key: string]: unknown    // 其他自定义字段
+  success: boolean // 操作是否成功
+  message?: string // 响应消息
+  redirectTo?: string // 重定向地址
+  [key: string]: unknown // 其他自定义字段
 }
 ```
 
@@ -147,7 +151,7 @@ interface IAuthActionResponse {
 
 ```typescript
 interface IAuthLoginResponse extends IAuthActionResponse {
-  data?: IUserState         // 用户状态数据
+  data?: IUserState // 用户状态数据
 }
 ```
 
@@ -155,8 +159,8 @@ interface IAuthLoginResponse extends IAuthActionResponse {
 
 ```typescript
 interface IAuthCheckResponse extends IAuthActionResponse {
-  data?: IUserState         // 用户状态数据
-  logout?: boolean          // 是否需要登出
+  data?: IUserState // 用户状态数据
+  logout?: boolean // 是否需要登出
 }
 ```
 
@@ -164,7 +168,7 @@ interface IAuthCheckResponse extends IAuthActionResponse {
 
 ```typescript
 interface IAuthLogoutResponse extends IAuthActionResponse {
-  logout?: boolean          // 是否需要清除状态
+  logout?: boolean // 是否需要清除状态
 }
 ```
 
@@ -172,9 +176,9 @@ interface IAuthLogoutResponse extends IAuthActionResponse {
 
 ```typescript
 interface IAuthErrorResponse {
-  logout?: boolean          // 是否需要登出
-  redirectTo?: string       // 重定向地址
-  error?: any               // 错误信息
+  logout?: boolean // 是否需要登出
+  redirectTo?: string // 重定向地址
+  error?: any // 错误信息
 }
 ```
 
@@ -182,10 +186,10 @@ interface IAuthErrorResponse {
 
 ```typescript
 interface IUserState {
-  token?: string             // 认证令牌
-  permissions?: string[]     // 用户权限列表
+  token?: string // 认证令牌
+  permission?: string[] | Record<string, any> // 用户权限列表或权限对象
   info?: Record<string, any> // 用户信息
-  [key: string]: any         // 其他自定义字段
+  [key: string]: any // 其他自定义字段
 }
 ```
 
@@ -193,19 +197,19 @@ interface IUserState {
 
 ### 登录成功响应
 
-```typescript
+```json
 {
-  success: true,
-  message: "登录成功",
-  redirectTo: "/admin",
-  data: {
-    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    permissions: ["user.read", "user.write"],
-    info: {
-      id: 1,
-      name: "John Doe",
-      email: "john@example.com",
-      avatar: "https://example.com/avatar.jpg"
+  "success": true,
+  "message": "登录成功",
+  "redirectTo": "/admin",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "permission": ["user.read", "user.write"],
+    "info": {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "avatar": "https://example.com/avatar.jpg"
     }
   }
 }
@@ -213,25 +217,25 @@ interface IUserState {
 
 ### 登录失败响应
 
-```typescript
+```json
 {
-  success: false,
-  message: "用户名或密码错误"
+  "success": false,
+  "message": "用户名或密码错误"
 }
 ```
 
 ### 认证检查成功响应
 
-```typescript
+```json
 {
-  success: true,
-  message: "认证有效",
-  data: {
-    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    info: {
-      id: 1,
-      name: "John Doe",
-      email: "john@example.com"
+  "success": true,
+  "message": "认证有效",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "info": {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john@example.com"
     }
   }
 }
@@ -239,23 +243,23 @@ interface IUserState {
 
 ### 认证检查失败响应
 
-```typescript
+```json
 {
-  success: false,
-  message: "认证已过期",
-  logout: true,
-  redirectTo: "/login"
+  "success": false,
+  "message": "认证已过期",
+  "logout": true,
+  "redirectTo": "/login"
 }
 ```
 
 ### 登出响应
 
-```typescript
+```json
 {
-  success: true,
-  message: "登出成功",
-  redirectTo: "/login",
-  logout: true
+  "success": true,
+  "message": "登出成功",
+  "redirectTo": "/login",
+  "logout": true
 }
 ```
 
@@ -276,7 +280,7 @@ const config: IConfig = {
       // ... 其他配置
     }
   ],
-  authProvider: simpleAuthProvider(),  // 使用简单认证提供者
+  authProvider: simpleAuthProvider(), // 使用简单认证提供者
 }
 ```
 
@@ -347,6 +351,25 @@ const customAuthProvider: IAuthProvider = {
     }
   },
 
+  can: (name, params, manage, auth) => {
+    // 您的权限检查逻辑
+    if (!auth?.permission) {
+      return false
+    }
+
+    // 数组形式的权限检查
+    if (Array.isArray(auth.permission)) {
+      return auth.permission.includes(name)
+    }
+
+    // 对象形式的权限检查
+    if (typeof auth.permission === 'object') {
+      return auth.permission[name] === true
+    }
+
+    return false
+  },
+
   onError: async (error) => {
     // 您的错误处理逻辑
     if (error.status === 401) {
@@ -384,7 +407,7 @@ const config: IConfig = {
           login: '/admin/login',
           index: '/admin'
         }
-      }),      // 管理端专用
+      }), // 管理端专用
       // ... 其他配置
     },
     {
@@ -398,11 +421,11 @@ const config: IConfig = {
           login: '/merchant/login',
           index: '/merchant'
         }
-      }),   // 商户端专用
+      }), // 商户端专用
       // ... 其他配置
     }
   ],
-  authProvider: simpleAuthProvider(),         // 全局后备
+  authProvider: simpleAuthProvider(), // 全局后备
 }
 ```
 
@@ -431,7 +454,7 @@ const routes = [
     path: 'login',
     component: () => import('./pages/login.vue'),
     meta: {
-      authorization: false,    // 不需要认证
+      authorization: false, // 不需要认证
     }
   },
   {
@@ -461,7 +484,7 @@ onError: async (error) => {
   // 403 权限不足 - 可选择是否登出
   if (error.status === 403) {
     return {
-      logout: false,  // 不登出，显示权限不足提示
+      logout: false, // 不登出，显示权限不足提示
       error
     }
   }
@@ -489,6 +512,131 @@ onError: async (error) => {
 - 自动判断过期时间并返回新的 Token
 - 在 API 请求失败时自动处理认证错误
 
+## 权限检查
+
+DVHA 支持基于权限的访问控制，通过认证提供者的 `can` 方法实现权限检查。
+
+### 权限检查方法
+
+```typescript
+can?: (name: string, params?: any, manage?: IManageHook, auth?: IUserState) => boolean
+```
+
+**参数说明：**
+
+- `name`: 权限名称或路由名称
+- `params`: 可选的权限参数
+- `manage`: 当前管理端实例
+- `auth`: 当前用户认证信息
+
+### 权限数据格式
+
+权限数据可以是数组或对象格式：
+
+```json
+// 数组格式 - 简单权限列表
+{
+  "permission": ["user.read", "user.write", "post.manage"]
+}
+
+// 对象格式 - 复杂权限配置
+{
+  "permission": {
+    "user.read": true,
+    "user.write": true,
+    "user.delete": false,
+    "post.manage": true
+  }
+}
+```
+
+### 权限检查实现示例
+
+```typescript
+// 简单权限检查
+can: (name, params, manage, auth) => {
+  if (!auth?.permission) {
+    return false
+  }
+
+  // 数组形式权限检查
+  if (Array.isArray(auth.permission)) {
+    return auth.permission.includes(name)
+  }
+
+  // 对象形式权限检查
+  if (typeof auth.permission === 'object') {
+    return auth.permission[name] === true
+  }
+
+  return false
+}
+
+// 复杂权限检查（支持通配符）
+can: (name, params, manage, auth) => {
+  if (!auth?.permission || !Array.isArray(auth.permission)) {
+    return false
+  }
+
+  // 检查完全匹配
+  if (auth.permission.includes(name)) {
+    return true
+  }
+
+  // 检查通配符权限
+  return auth.permission.some((permission) => {
+    if (permission.endsWith('.*')) {
+      const prefix = permission.slice(0, -2)
+      return name.startsWith(`${prefix}.`)
+    }
+    return false
+  })
+}
+
+// 基于角色的权限检查
+can: (name, params, manage, auth) => {
+  const userRole = auth?.info?.role
+  const rolePermissions = {
+    admin: ['*'], // 管理员拥有所有权限
+    editor: ['post.*', 'user.read'],
+    viewer: ['*.read']
+  }
+
+  const permissions = rolePermissions[userRole] || []
+
+  return permissions.some((permission) => {
+    if (permission === '*')
+      return true
+    if (permission.endsWith('.*')) {
+      return name.startsWith(`${permission.slice(0, -2)}.`)
+    }
+    if (permission.endsWith('.read')) {
+      return name.endsWith('.read')
+    }
+    return permission === name
+  })
+}
+```
+
+### 路由权限控制
+
+路由可以通过 `meta.can` 字段控制访问权限，不设置默认为 `true`：
+
+```typescript
+const routes = [
+  {
+    name: 'admin.users',
+    path: 'users',
+    component: () => import('./pages/users.vue'),
+    meta: {
+      can: true, // 使用路由名称进行权限检查
+      // 或者指定具体权限名称
+      // can: 'user.manage'
+    }
+  }
+]
+```
+
 ## 下一步
 
 了解如何在组件中使用认证功能：
@@ -498,3 +646,4 @@ onError: async (error) => {
 - ✅ [认证检查 (useCheck)](/hooks/auth/useCheck) - 检查认证状态
 - 📝 [用户注册 (useRegister)](/hooks/auth/useRegister) - 实现注册功能
 - 🔒 [获取认证信息 (useGetAuth)](/hooks/auth/useGetAuth) - 获取当前用户信息
+- 🛡️ [权限检查 (useCan)](/hooks/auth/useCan) - 检查用户权限

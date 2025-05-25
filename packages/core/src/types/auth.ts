@@ -15,6 +15,8 @@ export interface IAuthProvider {
   forgotPassword: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
   updatePassword: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
 
+  can?: (name: string, params?: any, manage?: IManageHook, auth?: IUserState) => boolean
+
   onError: (error?: any) => Promise<IAuthErrorResponse>
 }
 
