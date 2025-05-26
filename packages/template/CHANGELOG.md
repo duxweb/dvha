@@ -1,5 +1,11 @@
 # @duxweb/dvha-template
 
+## 1.0.7
+
+### Patch Changes
+
+- chore: 增加忽略文件
+
 ## 1.0.6
 
 ### Patch Changes
