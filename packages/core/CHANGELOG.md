@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 0.1.5
+
+### Patch Changes
+
+- fix: 修正空权限验证
+
 ## 0.1.4
 
 ### Patch Changes

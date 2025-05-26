@@ -114,8 +114,8 @@ export function simpleAuthProvider(props?: ISimpleAuthProviderProps): IAuthProvi
       })
     },
     can: (name: string, _params?: any, _manage?: IManageHook, auth?: IUserState): boolean => {
-      if (!auth?.permission) {
-        return false
+      if (!auth?.permission || (Array.isArray(auth?.permission) && auth?.permission?.length === 0) || (typeof auth?.permission === 'object' && Object.keys(auth?.permission).length === 0)) {
+        return true
       }
 
       if (Array.isArray(auth?.permission) && !auth?.permission?.includes(name)) {
