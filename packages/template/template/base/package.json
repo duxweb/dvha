@@ -15,15 +15,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@duxweb/dvha-core": "*",
+    "@duxweb/dvha-core": "latest",
     "@iconify-json/tabler": "^1.2.18",
     "@unocss/preset-icons": "^66.1.2",
     "@unocss/reset": "^66.1.2",
     "@vueuse/core": "^13.2.0",
     "@vueuse/integrations": "^13.2.0",
     "axios": "^1.9.0",
+    "clsx": "^2.1.1",
     "lodash-es": "^4.17.21",
-    "unocss": "^66.1.2"
+    "petite-vue-i18n": "^11.1.4",
+    "pinia": "^3.0.0",
+    "pinia-plugin-persistedstate": "^4.0.0",
+    "unocss": "^66.1.2",
+    "vue": "^3.5.0",
+    "vue-router": "^4.0.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.13.1",

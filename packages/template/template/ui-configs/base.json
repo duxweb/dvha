@@ -3,15 +3,6 @@
   "display": "Vue 3 + Vite + UnoCSS",
   "description": "基础的 Vue 3 项目模板",
   "dependencies": {
-    "@duxweb/dvha-core": "latest",
-    "@iconify-json/tabler": "^1.2.18",
-    "@unocss/preset-icons": "^66.1.2",
-    "@vueuse/core": "^13.2.0",
-    "@vueuse/integrations": "^13.2.0",
-    "axios": "^1.9.0",
-    "lodash-es": "^4.17.21",
-    "unocss": "^66.1.2",
-    "@unocss/reset": "^66.1.2"
   },
   "devDependencies": {},
   "imports": [

@@ -1,5 +1,11 @@
 # @duxweb/dvha-naiveui
 
+## 1.0.2
+
+### Patch Changes
+
+- 优化版本依赖为最新版核心,修正 pnpm 下的依赖关系
+
 ## 1.0.1
 
 ### Patch Changes
