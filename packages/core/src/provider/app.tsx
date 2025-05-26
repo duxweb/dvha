@@ -79,44 +79,38 @@ export const DuxAppProvider = defineComponent({
         const components = manage.config?.components || {}
         const commonRoutes: IMenu[] = []
 
-        if (components.notFound) {
-          commonRoutes.push({
-            name: `${manageName}.notFound`,
-            label: '404',
-            path: ':pathMatch(.*)*',
-            component: components.notFound,
-            hidden: true,
-            meta: {
-              can: false,
-            },
-          })
-        }
+        commonRoutes.push({
+          name: `${manageName}.notFound`,
+          label: '404',
+          path: ':pathMatch(.*)*',
+          component: components.notFound || (() => import('../components/status/notFound')),
+          hidden: true,
+          meta: {
+            can: false,
+          },
+        })
 
-        if (components.notAuthorized) {
-          commonRoutes.push({
-            name: `${manageName}.notAuthorized`,
-            label: '403',
-            path: 'notAuthorized',
-            component: components.notAuthorized,
-            hidden: true,
-            meta: {
-              can: false,
-            },
-          })
-        }
+        commonRoutes.push({
+          name: `${manageName}.notAuthorized`,
+          label: '403',
+          path: 'notAuthorized',
+          component: components.notAuthorized || (() => import('../components/status/notAuthorized')),
+          hidden: true,
+          meta: {
+            can: false,
+          },
+        })
 
-        if (components.error) {
-          commonRoutes.push({
-            name: `${manageName}.error`,
-            label: '500',
-            path: 'error',
-            component: components.error,
-            hidden: true,
-            meta: {
-              can: false,
-            },
-          })
-        }
+        commonRoutes.push({
+          name: `${manageName}.error`,
+          label: '500',
+          path: 'error',
+          component: components.error || (() => import('../components/status/error')),
+          hidden: true,
+          meta: {
+            can: false,
+          },
+        })
 
         // init local route
         routeStore.setRoutes(formatMenus(manage.config?.menus || []))

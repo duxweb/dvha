@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 0.1.4
+
+### Patch Changes
+
+- 增加默认状态页面放置告警
+
 ## 0.1.3
 
 ### Patch Changes

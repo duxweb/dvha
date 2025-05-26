@@ -271,7 +271,7 @@ export function useCan(manageName?: string) {
 
   const can = (name: string, params?: any) => {
     if (manage.config.authProvider?.can) {
-      return manage.config.authProvider.can(name, params, manage, user) || false
+      return manage.config.authProvider.can(name, params, manage, user)
     }
     return true
   }
