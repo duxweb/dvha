@@ -10,6 +10,12 @@ DVHA 是一个基于 Vue 的中后台框架，提供了一套完整的数据管�
 - **npm**、**yarn**、**pnpm** 或 **bun** 包管理器
 - 基本的 **Vue 3** 和 **TypeScript** 知识
 
+## 在线体验
+
+如果您想在本地安装之前先体验 DVHA，可以使用我们的在线沙盒环境：
+
+[![Edit dvha](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/devbox/funny-jerry-7xttgl?embed=1)
+
 ## 使用脚手架创建项目 (推荐)
 
 DVHA 提供了官方脚手架工具 `@duxweb/dvha-template`，可以快速创建项目。
@@ -170,7 +176,7 @@ DVHA 支持多管理端架构，在 `main.ts` 中可以看到管理端的配置�
 
 ```typescript
 import type { IConfig } from '@duxweb/dvha-core'
-import { createDux, simpleDataProvider, simpleAuthProvider } from '@duxweb/dvha-core'
+import { createDux, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
 
 const config: IConfig = {
   defaultManage: 'admin',
