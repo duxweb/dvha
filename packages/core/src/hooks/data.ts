@@ -6,8 +6,8 @@ import { computed, watch } from 'vue'
 import { useError, useGetAuth } from './auth'
 import { useManage } from './manage'
 
-type IDataQueryOptions = DefinedInitialQueryOptions<IDataProviderResponse | undefined, DefaultError, IDataProviderResponse | undefined, any>
-type IDataQueryOptionsInfinite = DefinedInitialDataInfiniteOptions<IDataProviderResponse | undefined, DefaultError, InfiniteData<IDataProviderResponse | undefined>, any, number>
+type IDataQueryOptions = Partial<DefinedInitialQueryOptions<IDataProviderResponse | undefined, DefaultError, IDataProviderResponse | undefined, any>>
+type IDataQueryOptionsInfinite = Partial<DefinedInitialDataInfiniteOptions<IDataProviderResponse | undefined, DefaultError, InfiniteData<IDataProviderResponse | undefined>, any, number>>
 
 interface IListParams extends IDataProviderListOptions {
   providerName?: string

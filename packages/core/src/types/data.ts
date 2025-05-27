@@ -42,9 +42,8 @@ export interface IDataProviderResponse {
 export interface IDataProviderListOptions {
   path: string
   pagination?: {
-    page: number
-    limit: number
-    pageSize: number
+    page?: number
+    pageSize?: number
   } | boolean
   sorters?: Record<string, 'asc' | 'desc'>
   filters?: Record<string, any>

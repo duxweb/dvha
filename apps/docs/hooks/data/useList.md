@@ -19,32 +19,31 @@
 ```typescript
 // 数据提供者接口
 interface IDataProvider {
-  getList(
+  getList: (
     options: IDataProviderListOptions,
     manage?: IManageHook,
     auth?: IUserState
-  ): Promise<IDataProviderResponse>
+  ) => Promise<IDataProviderResponse>
 }
 
 // 请求选项接口
 interface IDataProviderListOptions {
-  path: string                                          // API 路径
-  pagination?: {                                        // 分页配置
+  path: string // API 路径
+  pagination?: { // 分页配置
     page?: number
-    limit?: number
     pageSize?: number
   }
-  filters?: Record<string, any>                         // 筛选条件
-  sorters?: Record<string, 'asc' | 'desc'>             // 排序配置
-  meta?: Record<string, any>                           // 额外参数
+  filters?: Record<string, any> // 筛选条件
+  sorters?: Record<string, 'asc' | 'desc'> // 排序配置
+  meta?: Record<string, any> // 额外参数
 }
 
 // 响应数据接口
 interface IDataProviderResponse {
-  message?: string                          // 响应消息
-  data?: any                                // 响应数据
-  meta?: Record<string, any>                // 元数据信息
-  [key: string]: any                        // 其他自定义字段
+  message?: string // 响应消息
+  data?: any // 响应数据
+  meta?: Record<string, any> // 元数据信息
+  [key: string]: any // 其他自定义字段
 }
 ```
 
@@ -63,26 +62,26 @@ const { data, isLoading, isError, error } = useList({
 ```js
 const { data, isLoading, isError, error, refetch } = useList({
   // 必需参数
-  path: 'users',           // API 路径
+  path: 'users', // API 路径
 
   // 可选参数
-  pagination: {            // 分页配置
+  pagination: { // 分页配置
     page: 1,
     limit: 10
   },
-  filters: {               // 筛选条件
+  filters: { // 筛选条件
     name: 'zhang',
     status: 'active'
   },
-  sorters: {               // 排序
+  sorters: { // 排序
     created_at: 'desc',
     name: 'asc'
   },
-  meta: {                  // 额外参数
+  meta: { // 额外参数
     include: 'profile,roles'
   },
   providerName: 'default', // 数据提供者名称，默认为 'default'
-  onError: (err) => {      // 错误回调
+  onError: (err) => { // 错误回调
     console.error('获取失败:', err)
   }
 })
@@ -90,26 +89,26 @@ const { data, isLoading, isError, error, refetch } = useList({
 
 ## 参数说明
 
-| 参数 | 类型 | 必需 | 说明 |
-|------|------|------|------|
-| `path` | `string` | ✅ | API 资源路径 |
-| `pagination` | `object` | ❌ | 分页配置 |
-| `filters` | `Record<string, any>` | ❌ | 筛选条件 |
-| `sorters` | `Record<string, 'asc' \| 'desc'>` | ❌ | 排序条件 |
-| `meta` | `Record<string, any>` | ❌ | 传递给 API 的额外参数 |
-| `providerName` | `string` | ❌ | 数据提供者名称，默认为 'default' |
-| `onError` | `(error: any) => void` | ❌ | 错误处理回调 |
-| `options` | `IDataQueryOptions` | ❌ | TanStack Query 选项 |
+| 参数           | 类型                              | 必需 | 说明                             |
+| -------------- | --------------------------------- | ---- | -------------------------------- |
+| `path`         | `string`                          | ✅   | API 资源路径                     |
+| `pagination`   | `object`                          | ❌   | 分页配置                         |
+| `filters`      | `Record<string, any>`             | ❌   | 筛选条件                         |
+| `sorters`      | `Record<string, 'asc' \| 'desc'>` | ❌   | 排序条件                         |
+| `meta`         | `Record<string, any>`             | ❌   | 传递给 API 的额外参数            |
+| `providerName` | `string`                          | ❌   | 数据提供者名称，默认为 'default' |
+| `onError`      | `(error: any) => void`            | ❌   | 错误处理回调                     |
+| `options`      | `IDataQueryOptions`               | ❌   | TanStack Query 选项              |
 
 ## 返回值
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `data` | `Ref<any>` | 响应数据 |
-| `isLoading` | `Ref<boolean>` | 是否加载中 |
-| `isError` | `Ref<boolean>` | 是否出错 |
-| `error` | `Ref<any>` | 错误信息 |
-| `refetch` | `Function` | 重新获取数据 |
+| 字段        | 类型           | 说明         |
+| ----------- | -------------- | ------------ |
+| `data`      | `Ref<any>`     | 响应数据     |
+| `isLoading` | `Ref<boolean>` | 是否加载中   |
+| `isError`   | `Ref<boolean>` | 是否出错     |
+| `error`     | `Ref<any>`     | 错误信息     |
+| `refetch`   | `Function`     | 重新获取数据 |
 
 ## 动态筛选示例
 
@@ -147,12 +146,12 @@ const { data, isLoading } = useList({
   path: 'users',
   pagination: {
     page: currentPage.value,
-    limit: pageSize.value
+    pageSize: pageSize.value
   }
 })
 
 // 切换页码
-const changePage = (page) => {
+function changePage(page) {
   currentPage.value = page
 }
 ```
@@ -209,9 +208,9 @@ const { data, isLoading, error } = useList({
   },
   providerName: 'userService',
   options: {
-    enabled: true,        // 是否启用查询
-    refetchOnWindowFocus: false,  // 窗口聚焦时不重新获取
-    staleTime: 5 * 60 * 1000     // 5分钟内数据视为新鲜
+    enabled: true, // 是否启用查询
+    refetchOnWindowFocus: false, // 窗口聚焦时不重新获取
+    staleTime: 5 * 60 * 1000 // 5分钟内数据视为新鲜
   },
   onError: (error) => {
     console.error('获取用户列表失败:', error)

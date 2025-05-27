@@ -22,7 +22,6 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
 
       if (options.pagination && typeof options.pagination === 'object') {
         params.page = options.pagination.page
-        params.limit = options.pagination.limit
         params.pageSize = options.pagination.pageSize
       }
 

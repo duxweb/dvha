@@ -130,15 +130,14 @@ interface IDataProvider {
 
 ```typescript
 interface IDataProviderListOptions {
-  path: string                              // 资源路径，如 'users'
-  pagination?: {                            // 分页参数
-    page: number                            // 当前页码
-    limit: number                           // 每页数量
-    pageSize: number                        // 页面大小
+  path: string // 资源路径，如 'users'
+  pagination?: { // 分页参数
+    page: number // 当前页码
+    pageSize: number // 页面大小
   } | boolean
-  sorters?: Record<string, 'asc' | 'desc'>  // 排序条件
-  filters?: Record<string, any>             // 过滤条件
-  meta?: Record<string, any>                // 额外的请求参数
+  sorters?: Record<string, 'asc' | 'desc'> // 排序条件
+  filters?: Record<string, any> // 过滤条件
+  meta?: Record<string, any> // 额外的请求参数
 }
 ```
 
@@ -146,9 +145,9 @@ interface IDataProviderListOptions {
 
 ```typescript
 interface IDataProviderCreateOptions {
-  path?: string                             // 资源路径，如 'users'
-  data: any                                 // 要创建的数据
-  meta?: Record<string, any>                // 额外的请求参数
+  path?: string // 资源路径，如 'users'
+  data: any // 要创建的数据
+  meta?: Record<string, any> // 额外的请求参数
 }
 ```
 
@@ -156,10 +155,10 @@ interface IDataProviderCreateOptions {
 
 ```typescript
 interface IDataProviderUpdateOptions {
-  path?: string                             // 资源路径
-  id?: string | number                      // 要更新的记录 ID
-  data: any                                 // 更新数据
-  meta?: Record<string, any>                // 额外的请求参数
+  path?: string // 资源路径
+  id?: string | number // 要更新的记录 ID
+  data: any // 更新数据
+  meta?: Record<string, any> // 额外的请求参数
 }
 ```
 
@@ -167,9 +166,9 @@ interface IDataProviderUpdateOptions {
 
 ```typescript
 interface IDataProviderDeleteOptions {
-  path?: string                             // 资源路径
-  id: string | number                       // 要删除的记录 ID
-  meta?: Record<string, any>                // 额外的请求参数
+  path?: string // 资源路径
+  id: string | number // 要删除的记录 ID
+  meta?: Record<string, any> // 额外的请求参数
 }
 ```
 
@@ -177,9 +176,9 @@ interface IDataProviderDeleteOptions {
 
 ```typescript
 interface IDataProviderGetOneOptions {
-  path: string                              // 资源路径
-  id: string | number                       // 记录 ID
-  meta?: Record<string, any>                // 额外的请求参数
+  path: string // 资源路径
+  id: string | number // 记录 ID
+  meta?: Record<string, any> // 额外的请求参数
 }
 ```
 
@@ -187,9 +186,9 @@ interface IDataProviderGetOneOptions {
 
 ```typescript
 interface IDataProviderGetManyOptions {
-  path: string                              // 资源路径
-  ids: (string | number)[]                  // 记录 ID 数组
-  meta?: Record<string, any>                // 额外的请求参数
+  path: string // 资源路径
+  ids: (string | number)[] // 记录 ID 数组
+  meta?: Record<string, any> // 额外的请求参数
 }
 ```
 
@@ -197,9 +196,9 @@ interface IDataProviderGetManyOptions {
 
 ```typescript
 interface IDataProviderCreateManyOptions {
-  path?: string                             // 资源路径
-  data?: any[]                              // 要创建的数据数组
-  meta?: Record<string, any>                // 额外的请求参数
+  path?: string // 资源路径
+  data?: any[] // 要创建的数据数组
+  meta?: Record<string, any> // 额外的请求参数
 }
 ```
 
@@ -207,10 +206,10 @@ interface IDataProviderCreateManyOptions {
 
 ```typescript
 interface IDataProviderUpdateManyOptions {
-  path?: string                             // 资源路径
-  data?: any                                // 更新数据
-  ids: (string | number)[]                  // 要更新的记录 ID 数组
-  meta?: Record<string, any>                // 额外的请求参数
+  path?: string // 资源路径
+  data?: any // 更新数据
+  ids: (string | number)[] // 要更新的记录 ID 数组
+  meta?: Record<string, any> // 额外的请求参数
 }
 ```
 
@@ -218,9 +217,9 @@ interface IDataProviderUpdateManyOptions {
 
 ```typescript
 interface IDataProviderDeleteManyOptions {
-  path?: string                             // 资源路径
-  ids: (string | number)[]                  // 要删除的记录 ID 数组
-  meta?: Record<string, any>                // 额外的请求参数
+  path?: string // 资源路径
+  ids: (string | number)[] // 要删除的记录 ID 数组
+  meta?: Record<string, any> // 额外的请求参数
 }
 ```
 
@@ -228,14 +227,14 @@ interface IDataProviderDeleteManyOptions {
 
 ```typescript
 interface IDataProviderCustomOptions {
-  path?: string                             // 请求路径
-  method?: string                           // HTTP 方法
-  query?: Record<string, any>               // 查询参数
-  payload?: any                             // 请求体数据
-  headers?: Record<string, string>          // 自定义请求头
-  filters?: Record<string, any>             // 过滤条件
-  sorters?: Record<string, 'asc' | 'desc'>  // 排序条件
-  meta?: Record<string, any>                // 额外的请求参数
+  path?: string // 请求路径
+  method?: string // HTTP 方法
+  query?: Record<string, any> // 查询参数
+  payload?: any // 请求体数据
+  headers?: Record<string, string> // 自定义请求头
+  filters?: Record<string, any> // 过滤条件
+  sorters?: Record<string, 'asc' | 'desc'> // 排序条件
+  meta?: Record<string, any> // 额外的请求参数
 }
 ```
 
@@ -247,10 +246,10 @@ interface IDataProviderCustomOptions {
 
 ```typescript
 interface IDataProviderResponse {
-  message?: string                          // 响应消息
-  data?: any                                // 响应数据
-  meta?: Record<string, any>                // 元数据信息
-  [key: string]: any                        // 其他自定义字段
+  message?: string // 响应消息
+  data?: any // 响应数据
+  meta?: Record<string, any> // 元数据信息
+  [key: string]: any // 其他自定义字段
 }
 ```
 
@@ -332,7 +331,7 @@ const config: IConfig = {
       // ... 其他配置
     }
   ],
-  dataProvider,  // 使用简单数据提供者
+  dataProvider, // 使用简单数据提供者
 }
 ```
 
@@ -353,7 +352,7 @@ const customDataProvider: IDataProvider = {
     return {
       message: '获取成功',
       data: [], // 您的数据
-      meta: {}  // 元数据
+      meta: {} // 元数据
     }
   },
 
@@ -399,20 +398,20 @@ const config: IConfig = {
   manages: [
     {
       name: 'admin',
-      dataProvider: simpleDataProvider({        // 管理端专用
+      dataProvider: simpleDataProvider({ // 管理端专用
         apiUrl: 'https://admin-api.example.com'
       }),
       // ... 其他配置
     },
     {
       name: 'merchant',
-      dataProvider: simpleDataProvider({        // 商户端专用
+      dataProvider: simpleDataProvider({ // 商户端专用
         apiUrl: 'https://merchant-api.example.com'
       }),
       // ... 其他配置
     }
   ],
-  dataProvider: simpleDataProvider({            // 全局后备
+  dataProvider: simpleDataProvider({ // 全局后备
     apiUrl: 'https://api.example.com'
   }),
 }
@@ -494,7 +493,7 @@ const url = manage?.getApiUrl(`${options.path}/${options.id}`) || ''
 const headers: Record<string, string> = {}
 
 if (auth?.token) {
-  headers['Authorization'] = `Bearer ${auth.token}`
+  headers.Authorization = `Bearer ${auth.token}`
 }
 
 // 在 HTTP 请求中使用
