@@ -25,11 +25,6 @@ export function useSelect(props: UseSelectProps) {
   )
   const selectedOnce = ref(false)
 
-  // 解构默认值
-  const {
-    keywordField = 'keyword',
-  } = props
-
   watch([() => props.path, () => props.params, keyword], () => {
     if (props.pagination) {
       page.value = 1
@@ -48,7 +43,7 @@ export function useSelect(props: UseSelectProps) {
         ? {
             page: page.value,
             pageSize: pageSize.value,
-            ...(keyword.value && { [keywordField]: keyword.value }),
+            ...(keyword.value && { [props.keywordField || 'keyword']: keyword.value }),
           }
         : undefined
     },
