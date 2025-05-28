@@ -37,11 +37,11 @@ export function useList(params: IListParams) {
     ...params.options,
   })
 
-  const isLoading = computed(() => {
-    if (req.isFetched) {
+  const isLoading = computed<boolean>(() => {
+    if (req.isFetched.value) {
       return false
     }
-    return req.isFetching
+    return req.isFetching.value
   })
 
   watch(() => req.isError, () => {

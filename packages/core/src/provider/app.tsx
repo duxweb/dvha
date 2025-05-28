@@ -173,7 +173,7 @@ export const DuxAppProvider = defineComponent({
 
         // reload route
         return next({
-          path: to.fullPath,
+          path: to.redirectedFrom?.path || to.path,
           replace: true,
         })
       }

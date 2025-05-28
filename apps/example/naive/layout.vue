@@ -136,7 +136,9 @@ function handleTools(key: string, option: MenuOption) {
           </n-tab>
         </n-tabs>
 
-        <DuxTabRouterView />
+        <div class="flex-1 h-auto overflow-y-auto">
+          <DuxTabRouterView />
+        </div>
       </div>
     </div>
   </n-config-provider>

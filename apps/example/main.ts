@@ -44,6 +44,13 @@ const config: IConfig = {
           label: '首页',
           component: () => import('./naive/home.vue'),
         },
+        {
+          name: 'table',
+          path: 'table',
+          icon: 'i-tabler:table',
+          label: '表格',
+          component: () => import('./naive/table.vue'),
+        },
       ],
     },
     {

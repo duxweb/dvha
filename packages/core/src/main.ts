@@ -1,5 +1,6 @@
 import type { App } from 'vue'
 import type { IConfig } from './types'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { ref } from 'vue'
@@ -24,6 +25,7 @@ export function createDux(config: IConfig) {
       app.provide('dux.config', config)
       app.provide('dux.manage', manageRef)
       app.directive('can', permissionDirective)
+      app.use(VueQueryPlugin)
       app.use(initRouter(config))
       app.use(pinia)
     },

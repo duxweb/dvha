@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 0.1.6
+
+### Patch Changes
+
+- fix: 修正路由刷新重定向,修正 query-vue 引入
+
 ## 0.1.5
 
 ### Patch Changes
