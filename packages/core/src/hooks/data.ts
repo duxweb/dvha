@@ -1,6 +1,6 @@
 /* eslint-disable @tanstack/query/exhaustive-deps */
 import type { DefaultError, DefinedInitialDataInfiniteOptions, DefinedInitialQueryOptions, InfiniteData, UseMutationOptions } from '@tanstack/vue-query'
-import type { IDataProviderCreateManyOptions, IDataProviderCreateOptions, IDataProviderCustomOptions, IDataProviderDeleteManyOptions, IDataProviderDeleteOptions, IDataProviderGetManyOptions, IDataProviderGetOneOptions, IDataProviderListOptions, IDataProviderResponse, IDataProviderUpdateManyOptions, IDataProviderUpdateOptions } from '../types'
+import type { IDataProviderCreateManyOptions, IDataProviderCreateOptions, IDataProviderCustomOptions, IDataProviderDeleteManyOptions, IDataProviderDeleteOptions, IDataProviderError, IDataProviderGetManyOptions, IDataProviderGetOneOptions, IDataProviderListOptions, IDataProviderResponse, IDataProviderUpdateManyOptions, IDataProviderUpdateOptions } from '../types'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { computed, watch } from 'vue'
 import { useError, useGetAuth } from './auth'
@@ -12,7 +12,7 @@ type IDataQueryOptionsInfinite = Partial<DefinedInitialDataInfiniteOptions<IData
 interface IListParams extends IDataProviderListOptions {
   providerName?: string
   options?: IDataQueryOptions
-  onError?: (error: any) => void
+  onError?: (error: IDataProviderError) => void
 }
 
 /**
@@ -60,7 +60,7 @@ export function useList(params: IListParams) {
 interface IInfiniteListParams extends IDataProviderListOptions {
   providerName?: string
   options?: IDataQueryOptionsInfinite
-  onError?: (error: any) => void
+  onError?: (error: IDataProviderError) => void
 }
 
 /**
@@ -97,11 +97,11 @@ export function useInfiniteList(params: IInfiniteListParams) {
     ...params.options,
   })
 
-  const isLoading = computed(() => {
-    if (req.isFetched) {
+  const isLoading = computed<boolean>(() => {
+    if (req.isFetched.value) {
       return false
     }
-    return req.isFetching
+    return req.isFetching.value
   })
 
   watch(() => req.isError, () => {
@@ -122,7 +122,7 @@ export function useInfiniteList(params: IInfiniteListParams) {
 interface IOneParams extends IDataProviderGetOneOptions {
   providerName?: string
   options?: IDataQueryOptions
-  onError?: (error: any) => void
+  onError?: (error: IDataProviderError) => void
 }
 
 /**
@@ -146,11 +146,11 @@ export function useOne(params: IOneParams) {
     ...params.options,
   })
 
-  const isLoading = computed(() => {
-    if (req.isFetched) {
+  const isLoading = computed<boolean>(() => {
+    if (req.isFetched.value) {
       return false
     }
-    return req.isFetching
+    return req.isFetching.value
   })
 
   watch(() => req.isError, () => {
@@ -169,7 +169,7 @@ export function useOne(params: IOneParams) {
 interface IManyParams extends IDataProviderGetManyOptions {
   providerName?: string
   options?: IDataQueryOptions
-  onError?: (error: any) => void
+  onError?: (error: IDataProviderError) => void
 }
 /**
  * Get many data
@@ -192,11 +192,11 @@ export function useMany(params: IManyParams) {
     ...params.options,
   })
 
-  const isLoading = computed(() => {
-    if (req.isFetched) {
+  const isLoading = computed<boolean>(() => {
+    if (req.isFetched.value) {
       return false
     }
-    return req.isFetching
+    return req.isFetching.value
   })
 
   watch(() => req.isError, () => {
@@ -215,8 +215,8 @@ export function useMany(params: IManyParams) {
 interface ICreateParams extends IDataProviderCreateOptions {
   providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderCreateOptions>
-  onSuccess?: (data: any) => void
-  onError?: (error: any) => void
+  onSuccess?: (data: IDataProviderResponse) => void
+  onError?: (error: IDataProviderError) => void
 }
 
 /**
@@ -258,7 +258,7 @@ export function useCreate(params: ICreateParams) {
     ...params.options,
   })
 
-  const isLoading = computed(() => req.isPending)
+  const isLoading = computed<boolean>(() => req.isPending.value)
 
   return {
     ...req,
@@ -270,8 +270,8 @@ export function useCreate(params: ICreateParams) {
 interface ICreateManyParams extends IDataProviderCreateManyOptions {
   providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderCreateManyOptions>
-  onSuccess?: (data: any) => void
-  onError?: (error: any) => void
+  onSuccess?: (data: IDataProviderResponse) => void
+  onError?: (error: IDataProviderError) => void
 }
 
 /**
@@ -312,7 +312,7 @@ export function useCreateMany(params: ICreateManyParams) {
     ...params.options,
   })
 
-  const isLoading = computed(() => req.isPending)
+  const isLoading = computed<boolean>(() => req.isPending.value)
 
   return {
     ...req,
@@ -324,8 +324,8 @@ export function useCreateMany(params: ICreateManyParams) {
 interface IUpdateParams extends IDataProviderUpdateOptions {
   providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderUpdateOptions>
-  onSuccess?: (data: any) => void
-  onError?: (error: any) => void
+  onSuccess?: (data: IDataProviderResponse) => void
+  onError?: (error: IDataProviderError) => void
 }
 
 /**
@@ -366,7 +366,7 @@ export function useUpdate(params: IUpdateParams) {
     ...params.options,
   })
 
-  const isLoading = computed(() => req.isPending)
+  const isLoading = computed<boolean>(() => req.isPending.value)
 
   return {
     ...req,
@@ -378,8 +378,8 @@ export function useUpdate(params: IUpdateParams) {
 interface IUpdateManyParams extends IDataProviderUpdateManyOptions {
   providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderUpdateManyOptions>
-  onSuccess?: (data: any) => void
-  onError?: (error: any) => void
+  onSuccess?: (data: IDataProviderResponse) => void
+  onError?: (error: IDataProviderError) => void
 }
 
 export function useUpdateMany(params: IUpdateManyParams) {
@@ -417,7 +417,7 @@ export function useUpdateMany(params: IUpdateManyParams) {
     ...params.options,
   })
 
-  const isLoading = computed(() => req.isPending)
+  const isLoading = computed<boolean>(() => req.isPending.value)
 
   return {
     ...req,
@@ -429,8 +429,8 @@ export function useUpdateMany(params: IUpdateManyParams) {
 interface IDeleteParams extends IDataProviderDeleteOptions {
   providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderDeleteOptions>
-  onSuccess?: (data: any) => void
-  onError?: (error: any) => void
+  onSuccess?: (data: IDataProviderResponse) => void
+  onError?: (error: IDataProviderError) => void
 }
 
 /**
@@ -471,7 +471,7 @@ export function useDelete(params: IDeleteParams) {
     ...params.options,
   })
 
-  const isLoading = computed(() => req.isPending)
+  const isLoading = computed<boolean>(() => req.isPending.value)
 
   return {
     ...req,
@@ -483,8 +483,8 @@ export function useDelete(params: IDeleteParams) {
 interface IDeleteManyParams extends IDataProviderDeleteManyOptions {
   providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderDeleteManyOptions>
-  onSuccess?: (data: any) => void
-  onError?: (error: any) => void
+  onSuccess?: (data: IDataProviderResponse) => void
+  onError?: (error: IDataProviderError) => void
 }
 
 /**
@@ -525,7 +525,7 @@ export function useDeleteMany(params: IDeleteManyParams) {
     ...params.options,
   })
 
-  const isLoading = computed(() => req.isPending)
+  const isLoading = computed<boolean>(() => req.isPending.value)
 
   return {
     ...req,
@@ -537,7 +537,7 @@ export function useDeleteMany(params: IDeleteManyParams) {
 interface ICustomParams extends IDataProviderCustomOptions {
   providerName?: string
   options?: IDataQueryOptions
-  onError?: (error: any) => void
+  onError?: (error: IDataProviderError) => void
 }
 
 /**
@@ -561,11 +561,11 @@ export function useCustom(params: ICustomParams) {
     ...params.options,
   })
 
-  const isLoading = computed(() => {
-    if (req.isFetched) {
+  const isLoading = computed<boolean>(() => {
+    if (req.isFetched.value) {
       return false
     }
-    return req.isFetching
+    return req.isFetching.value
   })
 
   watch(() => req.isError, () => {
@@ -584,8 +584,8 @@ export function useCustom(params: ICustomParams) {
 interface ICustomMutationParams extends IDataProviderCustomOptions {
   providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderCustomOptions>
-  onSuccess?: (data: any) => void
-  onError?: (error: any) => void
+  onSuccess?: (data: IDataProviderResponse) => void
+  onError?: (error: IDataProviderError) => void
 }
 
 /**
@@ -623,7 +623,7 @@ export function useCustomMutation(params: ICustomMutationParams) {
     ...params.options,
   })
 
-  const isLoading = computed(() => req.isPending)
+  const isLoading = computed<boolean>(() => req.isPending.value)
 
   return {
     ...req,

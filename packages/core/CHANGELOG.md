@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 0.1.8
+
+### Patch Changes
+
+- feet: 增加 useForm 功能,优化 useSelect
+
 ## 0.1.7
 
 ### Patch Changes

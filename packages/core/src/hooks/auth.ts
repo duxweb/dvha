@@ -1,4 +1,4 @@
-import type { IAuthActionResponse, IAuthCheckResponse, IAuthErrorResponse, IAuthLoginResponse, IAuthLogoutResponse } from '../types'
+import type { IAuthActionResponse, IAuthCheckResponse, IAuthErrorResponse, IAuthLoginResponse, IAuthLogoutResponse, IDataProviderError } from '../types'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
@@ -144,7 +144,7 @@ export function useRegister({ onSuccess, onError }: IAuthLoginParams) {
   const authStore = useAuthStore()
   const router = useRouter()
   const mutate = async (data: Record<string, any>) => {
-    const result = await manage.config.authProvider?.register(data, manage)
+    const result = await manage.config.authProvider?.register?.(data, manage)
     if (result?.success) {
       onSuccess?.(result)
       if (!result?.data) {
@@ -172,7 +172,7 @@ export function useForgotPassword({ onSuccess, onError }: IAuthActionParams) {
   const router = useRouter()
 
   const mutate = async (params?: any) => {
-    const result = await manage.config.authProvider?.forgotPassword(params, manage)
+    const result = await manage.config.authProvider?.forgotPassword?.(params, manage)
     if (result?.success) {
       onSuccess?.(result)
       if (result.redirectTo) {
@@ -199,7 +199,7 @@ export function useUpdatePassword({ onSuccess, onError }: IAuthActionParams) {
   const router = useRouter()
 
   const mutate = async (params?: any) => {
-    const result = await manage.config.authProvider?.updatePassword(params, manage)
+    const result = await manage.config.authProvider?.updatePassword?.(params, manage)
     if (result?.success) {
       onSuccess?.(result)
       if (result.redirectTo) {
@@ -225,7 +225,7 @@ export function useError(onCallback?: (data?: IAuthErrorResponse) => void) {
   const { config: manage, getRoutePath } = useManage()
   const router = useRouter()
 
-  const mutate = async (error: any) => {
+  const mutate = async (error: IDataProviderError) => {
     const result = await manage.authProvider?.onError(error)
     onCallback?.(result)
     if (result?.logout) {

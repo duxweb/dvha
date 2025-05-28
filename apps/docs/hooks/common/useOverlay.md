@@ -42,8 +42,8 @@ const overlayInstance = show({
 
 ## 返回值
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
+| 字段   | 类型       | 说明                         |
+| ------ | ---------- | ---------------------------- |
 | `show` | `Function` | 显示弹窗的方法，返回弹窗实例 |
 
 ## 基础使用示例
@@ -54,7 +54,7 @@ import { useOverlay } from '@duxweb/dvha-core'
 const { show } = useOverlay()
 
 // 最简单的弹窗
-const showSimpleOverlay = () => {
+function showSimpleOverlay() {
   const instance = show({
     component: () => import('./SimpleOverlay.vue'),
     componentProps: {
@@ -69,19 +69,6 @@ const showSimpleOverlay = () => {
 
 ```vue
 <!-- SimpleOverlay.vue -->
-<template>
-  <!-- 完全自定义的弹窗样式 -->
-  <div class="custom-overlay">
-    <div class="overlay-backdrop" @click="handleClose">
-      <div class="overlay-content" @click.stop>
-        <h3>{{ title }}</h3>
-        <p>{{ message }}</p>
-        <button @click="handleClose">关闭</button>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup>
 interface Props {
   title?: string
@@ -91,10 +78,25 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const handleClose = () => {
+function handleClose() {
   props.onClose?.()
 }
 </script>
+
+<template>
+  <!-- 完全自定义的弹窗样式 -->
+  <div class="custom-overlay">
+    <div class="overlay-backdrop" @click="handleClose">
+      <div class="overlay-content" @click.stop>
+        <h3>{{ title }}</h3>
+        <p>{{ message }}</p>
+        <button @click="handleClose">
+          关闭
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 /* 完全自定义的样式 - 可以是任何设计 */
@@ -259,40 +261,8 @@ export function useDrawer() {
 
 ```vue
 <!-- CustomFloating.vue -->
-<template>
-  <Teleport to="body">
-    <div v-if="visible" class="floating-container">
-      <!-- 可以是任何样式：圆形、不规则形状、动画效果等 -->
-      <div
-        class="floating-content"
-        :style="contentStyle"
-        @click.stop
-      >
-        <slot />
-
-        <!-- 自定义关闭按钮 -->
-        <button
-          v-if="closable"
-          @click="handleClose"
-          class="close-btn"
-          :style="closeButtonStyle"
-        >
-          ×
-        </button>
-      </div>
-
-      <!-- 可选的背景蒙层 -->
-      <div
-        v-if="mask"
-        class="floating-mask"
-        @click="maskClosable && handleClose()"
-      />
-    </div>
-  </Teleport>
-</template>
-
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 interface Props {
   position?: 'center' | 'top' | 'bottom' | 'left' | 'right'
@@ -340,7 +310,7 @@ const contentStyle = computed(() => {
   return styles
 })
 
-const handleClose = () => {
+function handleClose() {
   visible.value = false
   props.onClose?.()
 }
@@ -349,6 +319,38 @@ onMounted(() => {
   visible.value = true
 })
 </script>
+
+<template>
+  <Teleport to="body">
+    <div v-if="visible" class="floating-container">
+      <!-- 可以是任何样式：圆形、不规则形状、动画效果等 -->
+      <div
+        class="floating-content"
+        :style="contentStyle"
+        @click.stop
+      >
+        <slot />
+
+        <!-- 自定义关闭按钮 -->
+        <button
+          v-if="closable"
+          class="close-btn"
+          :style="closeButtonStyle"
+          @click="handleClose"
+        >
+          ×
+        </button>
+      </div>
+
+      <!-- 可选的背景蒙层 -->
+      <div
+        v-if="mask"
+        class="floating-mask"
+        @click="maskClosable && handleClose()"
+      />
+    </div>
+  </Teleport>
+</template>
 
 <style scoped>
 .floating-container {
@@ -453,9 +455,26 @@ export function useElementOverlay() {
 }
 ```
 
+## 挂载点说明
+
+DVHA 默认将弹窗挂载在 `AppProvider` 中。如果需要自定义挂载位置（例如挂载在框架的主题内），可以使用 `OverlaysProvider` 组件：
+
+```vue
+<script setup>
+import { OverlaysProvider } from '@overlastic/vue'
+</script>
+
+<template>
+  <OverlaysProvider>
+    <App />
+  </OverlaysProvider>
+</template>
+```
+
 ## 最佳实践
 
 ### 1. 组件结构化
+
 ```js
 // 建议按功能组织弹窗组件
 const overlayComponents = {
@@ -466,7 +485,7 @@ const overlayComponents = {
   notification: () => import('./overlays/Notification.vue')
 }
 
-const showOverlay = (type, props) => {
+function showOverlay(type, props) {
   const { show } = useOverlay()
   return show({
     component: overlayComponents[type],
@@ -476,6 +495,7 @@ const showOverlay = (type, props) => {
 ```
 
 ### 2. 样式约定
+
 ```js
 // 建议定义一套样式约定
 const overlayStyles = {
@@ -493,6 +513,7 @@ const overlayStyles = {
 ```
 
 ### 3. 类型安全
+
 ```typescript
 // TypeScript 支持
 interface OverlayConfig<T = any> {

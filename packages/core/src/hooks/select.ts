@@ -9,6 +9,7 @@ interface UseSelectProps {
   path?: string
   params?: Record<string, any>
   pagination?: boolean | number
+  providerName?: string
   optionLabel?: string | ((item: Record<string, any>) => string)
   optionValue?: string | ((item: Record<string, any>) => string)
   optionField?: string
@@ -61,6 +62,7 @@ export function useSelect(props: UseSelectProps) {
 
       return Object.keys(query).length ? query : undefined
     },
+    providerName: props.providerName,
   })
 
   const selectedItems = ref<Record<string, any>[]>([])
@@ -136,6 +138,7 @@ export function useSelect(props: UseSelectProps) {
     options: {
       enabled: false,
     },
+    providerName: props.providerName,
   })
 
   watch(() => props.defaultValue, async (value) => {

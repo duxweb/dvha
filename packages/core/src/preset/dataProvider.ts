@@ -1,11 +1,13 @@
 import type { IManageHook } from '../hooks'
 import type { IUserState } from '../stores'
-import type { IDataProvider, IDataProviderCreateManyOptions, IDataProviderCreateOptions, IDataProviderCustomOptions, IDataProviderDeleteManyOptions, IDataProviderDeleteOptions, IDataProviderGetManyOptions, IDataProviderGetOneOptions, IDataProviderListOptions, IDataProviderUpdateManyOptions, IDataProviderUpdateOptions } from '../types'
+import type { IDataProvider, IDataProviderCreateManyOptions, IDataProviderCreateOptions, IDataProviderCustomOptions, IDataProviderDeleteManyOptions, IDataProviderDeleteOptions, IDataProviderError, IDataProviderGetManyOptions, IDataProviderGetOneOptions, IDataProviderListOptions, IDataProviderResponse, IDataProviderUpdateManyOptions, IDataProviderUpdateOptions } from '../types'
 import axios from 'axios'
 import { trimStart } from 'lodash-es'
 
 export interface ISimpleDataProviderProps {
   apiUrl: string
+  successCallback?: (res: any) => IDataProviderResponse
+  errorCallback?: (err: any) => IDataProviderError
 }
 
 export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvider {
@@ -14,9 +16,7 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
   }
 
   return {
-
     apiUrl,
-
     getList: (options: IDataProviderListOptions, _manage?: IManageHook, auth?: IUserState) => {
       const params: Record<string, any> = {}
 
@@ -36,7 +36,9 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         },
         ...options.meta,
       }).then((res) => {
-        return res.data
+        return props.successCallback ? props.successCallback(res) : handleResponse(res)
+      }).catch((err) => {
+        throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
     },
     create: (options: IDataProviderCreateOptions, _manage?: IManageHook, auth?: IUserState) => {
@@ -46,7 +48,9 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         },
         ...options.meta,
       }).then((res) => {
-        return res.data
+        return props.successCallback ? props.successCallback(res) : handleResponse(res)
+      }).catch((err) => {
+        throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
     },
     update: (options: IDataProviderUpdateOptions, _manage?: IManageHook, auth?: IUserState) => {
@@ -56,7 +60,9 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         },
         ...options.meta,
       }).then((res) => {
-        return res.data
+        return props.successCallback ? props.successCallback(res) : handleResponse(res)
+      }).catch((err) => {
+        throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
     },
     deleteOne: (options: IDataProviderDeleteOptions, _manage?: IManageHook, auth?: IUserState) => {
@@ -66,7 +72,9 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         },
         ...options.meta,
       }).then((res) => {
-        return res.data
+        return props.successCallback ? props.successCallback(res) : handleResponse(res)
+      }).catch((err) => {
+        throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
     },
     getOne: (options: IDataProviderGetOneOptions, _manage?: IManageHook, auth?: IUserState) => {
@@ -76,7 +84,9 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         },
         ...options.meta,
       }).then((res) => {
-        return res.data
+        return props.successCallback ? props.successCallback(res) : handleResponse(res)
+      }).catch((err) => {
+        throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
     },
     getMany: (options: IDataProviderGetManyOptions, _manage?: IManageHook, auth?: IUserState) => {
@@ -89,7 +99,9 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         },
         ...options.meta,
       }).then((res) => {
-        return res.data
+        return props.successCallback ? props.successCallback(res) : handleResponse(res)
+      }).catch((err) => {
+        throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
     },
     createMany: (options: IDataProviderCreateManyOptions, _manage?: IManageHook, auth?: IUserState) => {
@@ -99,7 +111,9 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         },
         ...options.meta,
       }).then((res) => {
-        return res.data
+        return props.successCallback ? props.successCallback(res) : handleResponse(res)
+      }).catch((err) => {
+        throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
     },
     updateMany: (options: IDataProviderUpdateManyOptions, _manage?: IManageHook, auth?: IUserState) => {
@@ -112,7 +126,9 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         },
         ...options.meta,
       }).then((res) => {
-        return res.data
+        return props.successCallback ? props.successCallback(res) : handleResponse(res)
+      }).catch((err) => {
+        throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
     },
     deleteMany: (options: IDataProviderDeleteManyOptions, _manage?: IManageHook, auth?: IUserState) => {
@@ -125,7 +141,9 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         },
         ...options.meta,
       }).then((res) => {
-        return res.data
+        return props.successCallback ? props.successCallback(res) : handleResponse(res)
+      }).catch((err) => {
+        throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
     },
     custom: (options: IDataProviderCustomOptions, _manage?: IManageHook, auth?: IUserState) => {
@@ -158,8 +176,29 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         },
         ...options.meta,
       }).then((res) => {
-        return res.data
+        return props.successCallback ? props.successCallback(res) : handleResponse(res)
+      }).catch((err) => {
+        throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
     },
+  }
+}
+
+function handleResponse(res: any): IDataProviderResponse {
+  return {
+    message: res.data?.message,
+    data: res.data?.data,
+    meta: res.data?.meta,
+    raw: res.data,
+  }
+}
+
+function handleError(err: any): IDataProviderError {
+  return {
+    message: err.response.data?.message || err.message,
+    data: err.response.data?.data,
+    meta: err.response.data?.meta,
+    status: err.response.data?.code || err.response.status || 500,
+    raw: err.response.data,
   }
 }

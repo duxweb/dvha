@@ -45,74 +45,34 @@ interface IDataProvider {
   apiUrl?: (path?: string) => string
 
   // 获取列表
-  getList: (
-    options: IDataProviderListOptions,
-    manage?: IManageHook,
-    auth?: IUserState
-  ) => Promise<IDataProviderResponse>
+  getList: (options: IDataProviderListOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
 
   // 创建数据
-  create: (
-    options: IDataProviderCreateOptions,
-    manage?: IManageHook,
-    auth?: IUserState
-  ) => Promise<IDataProviderResponse>
+  create: (options: IDataProviderCreateOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
 
   // 更新数据
-  update: (
-    options: IDataProviderUpdateOptions,
-    manage?: IManageHook,
-    auth?: IUserState
-  ) => Promise<IDataProviderResponse>
+  update: (options: IDataProviderUpdateOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
 
   // 删除单个数据
-  deleteOne: (
-    options: IDataProviderDeleteOptions,
-    manage?: IManageHook,
-    auth?: IUserState
-  ) => Promise<IDataProviderResponse>
+  deleteOne: (options: IDataProviderDeleteOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
 
   // 获取单个数据
-  getOne: (
-    options: IDataProviderGetOneOptions,
-    manage?: IManageHook,
-    auth?: IUserState
-  ) => Promise<IDataProviderResponse>
+  getOne: (options: IDataProviderGetOneOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
 
   // 获取多个数据
-  getMany: (
-    options: IDataProviderGetManyOptions,
-    manage?: IManageHook,
-    auth?: IUserState
-  ) => Promise<IDataProviderResponse>
+  getMany: (options: IDataProviderGetManyOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
 
   // 创建多个数据
-  createMany: (
-    options: IDataProviderCreateManyOptions,
-    manage?: IManageHook,
-    auth?: IUserState
-  ) => Promise<IDataProviderResponse>
+  createMany: (options: IDataProviderCreateManyOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
 
   // 更新多个数据
-  updateMany: (
-    options: IDataProviderUpdateManyOptions,
-    manage?: IManageHook,
-    auth?: IUserState
-  ) => Promise<IDataProviderResponse>
+  updateMany: (options: IDataProviderUpdateManyOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
 
   // 删除多个数据
-  deleteMany: (
-    options: IDataProviderDeleteManyOptions,
-    manage?: IManageHook,
-    auth?: IUserState
-  ) => Promise<IDataProviderResponse>
+  deleteMany: (options: IDataProviderDeleteManyOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
 
   // 自定义请求
-  custom: (
-    options: IDataProviderCustomOptions,
-    manage?: IManageHook,
-    auth?: IUserState
-  ) => Promise<IDataProviderResponse>
+  custom: (options: IDataProviderCustomOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
 }
 ```
 
@@ -126,115 +86,86 @@ interface IDataProvider {
 - **manage**: 当前管理端实例，提供 API URL 构建等功能
 - **auth**: 当前用户认证状态，包含 token 等信息
 
-### 列表查询参数
+### 选项接口
 
 ```typescript
+// 列表查询选项
 interface IDataProviderListOptions {
-  path: string // 资源路径，如 'users'
-  pagination?: { // 分页参数
-    page: number // 当前页码
-    pageSize: number // 页面大小
+  path: string
+  pagination?: {
+    page?: number
+    pageSize?: number
   } | boolean
-  sorters?: Record<string, 'asc' | 'desc'> // 排序条件
-  filters?: Record<string, any> // 过滤条件
-  meta?: Record<string, any> // 额外的请求参数
+  sorters?: Record<string, 'asc' | 'desc'>
+  filters?: Record<string, any>
+  meta?: Record<string, any>
 }
-```
 
-### 创建数据参数
-
-```typescript
+// 创建数据选项
 interface IDataProviderCreateOptions {
-  path?: string // 资源路径，如 'users'
-  data: any // 要创建的数据
-  meta?: Record<string, any> // 额外的请求参数
+  path?: string
+  data: any
+  meta?: Record<string, any>
 }
-```
 
-### 更新数据参数
-
-```typescript
-interface IDataProviderUpdateOptions {
-  path?: string // 资源路径
-  id?: string | number // 要更新的记录 ID
-  data: any // 更新数据
-  meta?: Record<string, any> // 额外的请求参数
+// 更新数据选项
+interface IDataProviderUpdateOptions extends IDataProviderCreateOptions {
+  id?: string | number
 }
-```
 
-### 删除数据参数
-
-```typescript
-interface IDataProviderDeleteOptions {
-  path?: string // 资源路径
-  id: string | number // 要删除的记录 ID
-  meta?: Record<string, any> // 额外的请求参数
-}
-```
-
-### 获取单条数据参数
-
-```typescript
+// 获取单个数据选项
 interface IDataProviderGetOneOptions {
-  path: string // 资源路径
-  id: string | number // 记录 ID
-  meta?: Record<string, any> // 额外的请求参数
+  path: string
+  id?: string | number
+  meta?: Record<string, any>
 }
-```
 
-### 获取多条数据参数
-
-```typescript
+// 获取多个数据选项
 interface IDataProviderGetManyOptions {
-  path: string // 资源路径
-  ids: (string | number)[] // 记录 ID 数组
-  meta?: Record<string, any> // 额外的请求参数
+  path: string
+  ids: string[] | number[]
+  meta?: Record<string, any>
 }
-```
 
-### 批量创建参数
-
-```typescript
+// 创建多个数据选项
 interface IDataProviderCreateManyOptions {
-  path?: string // 资源路径
-  data?: any[] // 要创建的数据数组
-  meta?: Record<string, any> // 额外的请求参数
+  path?: string
+  data?: any[]
+  meta?: Record<string, any>
 }
-```
 
-### 批量更新参数
-
-```typescript
+// 更新多个数据选项
 interface IDataProviderUpdateManyOptions {
-  path?: string // 资源路径
-  data?: any // 更新数据
-  ids: (string | number)[] // 要更新的记录 ID 数组
-  meta?: Record<string, any> // 额外的请求参数
+  path?: string
+  data?: any
+  meta?: Record<string, any>
+  ids: string[] | number[]
 }
-```
 
-### 批量删除参数
-
-```typescript
+// 删除多个数据选项
 interface IDataProviderDeleteManyOptions {
-  path?: string // 资源路径
-  ids: (string | number)[] // 要删除的记录 ID 数组
-  meta?: Record<string, any> // 额外的请求参数
+  path?: string
+  meta?: Record<string, any>
+  ids: string[] | number[]
 }
-```
 
-### 自定义请求参数
+// 删除单个数据选项
+interface IDataProviderDeleteOptions {
+  path?: string
+  meta?: Record<string, any>
+  id: string | number
+}
 
-```typescript
+// 自定义请求选项
 interface IDataProviderCustomOptions {
-  path?: string // 请求路径
-  method?: string // HTTP 方法
-  query?: Record<string, any> // 查询参数
-  payload?: any // 请求体数据
-  headers?: Record<string, string> // 自定义请求头
-  filters?: Record<string, any> // 过滤条件
-  sorters?: Record<string, 'asc' | 'desc'> // 排序条件
-  meta?: Record<string, any> // 额外的请求参数
+  path?: string
+  method?: string
+  sorters?: Record<string, 'asc' | 'desc'>
+  filters?: Record<string, any>
+  query?: Record<string, any>
+  headers?: Record<string, string>
+  meta?: Record<string, any>
+  payload?: any
 }
 ```
 
@@ -249,7 +180,71 @@ interface IDataProviderResponse {
   message?: string // 响应消息
   data?: any // 响应数据
   meta?: Record<string, any> // 元数据信息
+  raw?: any // 原始响应数据
   [key: string]: any // 其他自定义字段
+}
+```
+
+### 错误响应格式
+
+当数据请求发生错误时，数据提供者应该抛出符合以下格式的错误对象：
+
+```typescript
+interface IDataProviderError {
+  status?: number // HTTP 状态码（如 400、401、404、500 等）
+  message?: string // 用户友好的错误消息
+  data?: any // 详细的错误数据或验证错误信息
+  meta?: Record<string, any> // 错误相关的元数据
+  raw?: any // 原始的错误响应数据
+  [key: string]: any // 其他自定义错误字段
+}
+```
+
+**错误处理说明：**
+
+- **status**: HTTP 状态码，用于判断错误类型（网络错误、认证错误、服务器错误等）
+- **message**: 面向用户的错误提示信息，应该是可读性强的中文描述
+- **data**: 包含具体的错误详情，如表单验证错误、字段错误等
+- **meta**: 错误相关的附加信息，如错误代码、时间戳等
+- **raw**: 保留原始的服务器响应，便于调试和日志记录
+
+**错误抛出示例：**
+
+```typescript
+// 网络错误
+throw {
+  status: 500,
+  message: '服务器内部错误，请稍后重试',
+  data: null,
+  meta: { timestamp: Date.now() },
+  raw: originalError
+}
+
+// 认证错误
+throw {
+  status: 401,
+  message: '登录已过期，请重新登录',
+  data: null,
+  meta: { redirectTo: '/login' }
+}
+
+// 验证错误
+throw {
+  status: 422,
+  message: '数据验证失败',
+  data: {
+    email: ['邮箱格式不正确'],
+    password: ['密码长度至少6位']
+  },
+  meta: { field_count: 2 }
+}
+
+// 权限错误
+throw {
+  status: 403,
+  message: '权限不足，无法执行此操作',
+  data: { required_permission: 'user.delete' },
+  meta: { action: 'delete_user' }
 }
 ```
 

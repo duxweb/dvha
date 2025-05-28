@@ -1,5 +1,6 @@
 import type { IManageHook } from '../hooks'
 import type { IUserState } from '../stores/auth'
+import type { IDataProviderError } from './data'
 
 /**
  * 认证提供者
@@ -11,13 +12,13 @@ export interface IAuthProvider {
   check: (params?: any, manage?: IManageHook) => Promise<IAuthCheckResponse>
   logout: (params?: any, manage?: IManageHook) => Promise<IAuthLogoutResponse>
 
-  register: (params: any, manage?: IManageHook) => Promise<IAuthLoginResponse>
-  forgotPassword: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
-  updatePassword: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
+  register?: (params: any, manage?: IManageHook) => Promise<IAuthLoginResponse>
+  forgotPassword?: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
+  updatePassword?: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
 
   can?: (name: string, params?: any, manage?: IManageHook, auth?: IUserState) => boolean
 
-  onError: (error?: any) => Promise<IAuthErrorResponse>
+  onError: (error?: IDataProviderError) => Promise<IAuthErrorResponse>
 }
 
 export interface IAuthActionResponse {
@@ -43,5 +44,5 @@ export interface IAuthLogoutResponse extends IAuthActionResponse {
 export interface IAuthErrorResponse {
   logout?: boolean
   redirectTo?: string
-  error?: any
+  error?: IDataProviderError
 }

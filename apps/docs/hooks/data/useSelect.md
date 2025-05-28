@@ -5,6 +5,7 @@
 ## 功能特点
 
 - 🔍 **智能搜索** - 支持关键词搜索，自动重置页码
+- ⏱️ **防抖搜索** - 内置防抖机制，避免频繁请求
 - 📄 **分页支持** - 可选的分页功能，参数变化自动重置页码
 - 🎯 **灵活筛选** - 支持动态筛选条件
 - 🔄 **异步选中** - 自动获取已选中但不在当前列表中的项
@@ -19,14 +20,16 @@
 ```typescript
 // 参数接口
 interface UseSelectProps {
-  defaultValue: SelectValue // 默认选中值
+  defaultValue?: SelectValue // 默认选中值
   path?: string // API 路径
   params?: Record<string, any> // 筛选参数
   pagination?: boolean | number // 是否启用分页，传入数字时作为每页大小
+  providerName?: string // 数据提供者名称
   optionLabel?: string | ((item: Record<string, any>) => string) // 标签字段或函数，默认 'label'
   optionValue?: string | ((item: Record<string, any>) => string) // 值字段或函数，默认 'value'
   optionField?: string // 用于去重的字段名，默认 'value' | 'id'
   keywordField?: string // 搜索关键词的字段名，默认 'keyword'
+  debounce?: number // 搜索防抖延迟时间（毫秒），默认 300
 }
 
 // 选项格式
@@ -35,6 +38,9 @@ interface SelectOption {
   value: string | number // 选项值
   raw: Record<string, any> // 原始数据
 }
+
+// 选中值类型
+type SelectValue = Array<string | number> | string | number | null | undefined
 ```
 
 ## 基础用法
@@ -57,20 +63,16 @@ const { options, loading, onSearch } = useSelect({
 
 | 参数           | 类型                  | 必需 | 默认值      | 说明                                     |
 | -------------- | --------------------- | ---- | ----------- | ---------------------------------------- |
-| `defaultValue` | `SelectValue`         | ✅   | -           | 当前选中的值，支持单选和多选             |
+| `defaultValue` | `SelectValue`         | ❌   | -           | 当前选中的值，支持单选和多选             |
 | `path`         | `string`              | ❌   | -           | API 资源路径                             |
 | `params`       | `Record<string, any>` | ❌   | -           | 筛选参数，变化时自动重置页码             |
-| `pagination`   | `boolean \| number`   | ❌   | `true`      | 是否启用分页功能，传入数字时作为每页大小 |
+| `pagination`   | `boolean \| number`   | ❌   | `false`     | 是否启用分页功能，传入数字时作为每页大小 |
+| `providerName` | `string`              | ❌   | `'default'` | 数据提供者名称                           |
 | `optionLabel`  | `string \| Function`  | ❌   | `'label'`   | 标签字段名或格式化函数                   |
 | `optionValue`  | `string \| Function`  | ❌   | `'value'`   | 值字段名或格式化函数                     |
 | `optionField`  | `string`              | ❌   | `'value'`   | 用于去重和比较的字段名                   |
 | `keywordField` | `string`              | ❌   | `'keyword'` | 搜索关键词的字段名                       |
-
-### SelectValue 类型
-
-```typescript
-type SelectValue = Array<string | number> | string | number | null | undefined
-```
+| `debounce`     | `number`              | ❌   | `300`       | 搜索防抖延迟时间（毫秒）                 |
 
 ## 返回值
 
@@ -194,29 +196,38 @@ const { options, loading, onSearch } = useSelect({
   path: '/api/users',
   pagination: true,
   optionLabel: 'name',
-  optionValue: 'id'
+  optionValue: 'id',
+  keywordField: 'search', // 自定义搜索字段名
+  debounce: 500 // 自定义防抖延迟为 500ms
 })
 
-// 搜索用户，会自动重置页码
-function handleSearch(keyword) {
-  onSearch(keyword)
-}
+// 搜索用户，会自动防抖并重置页码
+onSearch('张三') // 500ms 后发起请求
 ```
 
-### 自定义搜索字段
+**防抖搜索说明：**
+
+- 默认防抖延迟为 300ms，可通过 `debounce` 参数自定义
+- 搜索时会自动重置页码到第一页
+- 连续输入时只有最后一次输入会触发请求
+- 搜索关键词通过 `keywordField` 参数传递给后端，默认为 `'keyword'`
+
+### 自定义防抖延迟
 
 ```js
-// 如果后端接口使用的不是 'keyword' 字段，可以自定义
-const { options, loading, onSearch } = useSelect({
-  defaultValue: selectedProduct.value,
-  path: '/api/products',
-  pagination: true,
-  optionLabel: 'name',
-  optionValue: 'id',
-  keywordField: 'search' // 后端使用 'search' 字段接收搜索关键词
+// 快速响应搜索（适合本地数据或快速API）
+const { onSearch: fastSearch } = useSelect({
+  defaultValue: selectedValue.value,
+  path: '/api/local-data',
+  debounce: 100 // 100ms 防抖
 })
 
-// 调用 onSearch('手机') 会发送: { page: 1, pageSize: 20, search: '手机' }
+// 慢速响应搜索（适合复杂查询或慢速API）
+const { onSearch: slowSearch } = useSelect({
+  defaultValue: selectedValue.value,
+  path: '/api/complex-search',
+  debounce: 800 // 800ms 防抖
+})
 ```
 
 ### 默认字段模式

@@ -1,8 +1,30 @@
 <script setup lang="ts">
-import { useList } from '@duxweb/dvha-core'
+import { useList, useOverlay } from '@duxweb/dvha-core'
 import { ceil } from 'lodash-es'
 import { NButton, NDataTable } from 'naive-ui'
 import { computed, h, ref } from 'vue'
+
+const pagination = ref({
+  page: 1,
+  pageSize: 20,
+})
+
+const { data, isLoading } = useList({
+  path: 'user',
+  pagination: pagination.value,
+})
+
+const pageCount = computed(() => {
+  return ceil(data?.value?.meta?.total / pagination.value.pageSize)
+})
+
+const { show } = useOverlay()
+
+function handleCreate() {
+  show({
+    component: () => import('./modalForm.vue'),
+  })
+}
 
 const columns = [
   {
@@ -35,33 +57,26 @@ const columns = [
           strong: true,
           tertiary: true,
           size: 'small',
-          onClick: () => {},
+          onClick: () => {
+            show({
+              component: () => import('./modalForm.vue'),
+              componentProps: {
+                id: row.id,
+              },
+            })
+          },
         },
         { default: () => '编辑' },
       )
     },
   },
 ]
-
-const pagination = ref({
-  page: 1,
-  pageSize: 20,
-})
-
-const { data, isLoading } = useList({
-  path: 'users',
-  pagination: pagination.value,
-})
-
-const pageCount = computed(() => {
-  return ceil(data?.value?.meta?.total / pagination.value.pageSize)
-})
 </script>
 
 <template>
   <div class="flex flex-col gap-2">
     <div class="flex justify-between items-center">
-      <NButton type="primary">
+      <NButton type="primary" @click="handleCreate">
         新增
       </NButton>
     </div>

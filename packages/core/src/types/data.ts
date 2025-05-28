@@ -36,6 +36,16 @@ export interface IDataProviderResponse {
   message?: string
   data?: any
   meta?: Record<string, any>
+  raw?: any
+  [key: string]: any
+}
+
+export interface IDataProviderError {
+  status?: number
+  message?: string
+  data?: any
+  meta?: Record<string, any>
+  raw?: any
   [key: string]: any
 }
 
@@ -62,7 +72,7 @@ export interface IDataProviderUpdateOptions extends IDataProviderCreateOptions {
 
 export interface IDataProviderGetOneOptions {
   path: string
-  id: string | number
+  id?: string | number
   meta?: Record<string, any>
 }
 

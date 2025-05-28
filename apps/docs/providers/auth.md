@@ -53,34 +53,27 @@ const authProvider = simpleAuthProvider({
 
 ```typescript
 interface IAuthProvider {
-  // 用户登录 (必需)
+  // 用户登录
   login: (params: any, manage: IManageHook) => Promise<IAuthLoginResponse>
-
-  // 认证检查 (必需)
+  // 认证检查
   check: (params?: any, manage?: IManageHook) => Promise<IAuthCheckResponse>
-
-  // 用户登出 (必需)
+  // 用户登出
   logout: (params?: any, manage?: IManageHook) => Promise<IAuthLogoutResponse>
-
-  // 用户注册 (必需)
-  register: (params: any, manage?: IManageHook) => Promise<IAuthLoginResponse>
-
-  // 忘记密码 (必需)
-  forgotPassword: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
-
-  // 重置密码 (必需)
-  updatePassword: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
-
-  // 权限检查 (可选)
+  // 用户注册（可选）
+  register?: (params: any, manage?: IManageHook) => Promise<IAuthLoginResponse>
+  // 忘记密码（可选）
+  forgotPassword?: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
+  // 重置密码（可选）
+  updatePassword?: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
+  // 权限检查（可选）
   can?: (name: string, params?: any, manage?: IManageHook, auth?: IUserState) => boolean
-
-  // 错误处理 (必需)
-  onError: (error?: any) => Promise<IAuthErrorResponse>
+  // 错误处理
+  onError: (error?: IDataProviderError) => Promise<IAuthErrorResponse>
 }
 ```
 
-::: warning 重要变更
-在最新版本中，认证提供者的所有方法都是必需的。如果某个功能不需要实现，可以返回适当的错误响应而不是省略该方法。
+::: tip 接口变更
+在最新版本中，`register`、`forgotPassword` 和 `updatePassword` 方法是可选的。如果不需要这些功能，可以不实现这些方法。
 :::
 
 ## 参数说明
@@ -178,7 +171,7 @@ interface IAuthLogoutResponse extends IAuthActionResponse {
 interface IAuthErrorResponse {
   logout?: boolean // 是否需要登出
   redirectTo?: string // 重定向地址
-  error?: any // 错误信息
+  error?: IDataProviderError // 统一错误信息
 }
 ```
 
@@ -321,6 +314,7 @@ const customAuthProvider: IAuthProvider = {
     }
   },
 
+  // 可选：用户注册功能
   register: async (params, manage) => {
     // 您的注册逻辑
     return {
@@ -334,6 +328,7 @@ const customAuthProvider: IAuthProvider = {
     }
   },
 
+  // 可选：忘记密码功能
   forgotPassword: async (params, manage) => {
     // 您的忘记密码逻辑
     return {
@@ -342,6 +337,7 @@ const customAuthProvider: IAuthProvider = {
     }
   },
 
+  // 可选：重置密码功能
   updatePassword: async (params, manage) => {
     // 您的重置密码逻辑
     return {
@@ -351,6 +347,7 @@ const customAuthProvider: IAuthProvider = {
     }
   },
 
+  // 可选：权限检查功能
   can: (name, params, manage, auth) => {
     // 您的权限检查逻辑
     if (!auth?.permission) {
@@ -372,7 +369,7 @@ const customAuthProvider: IAuthProvider = {
 
   onError: async (error) => {
     // 您的错误处理逻辑
-    if (error.status === 401) {
+    if (error?.status === 401) {
       return {
         logout: true,
         redirectTo: '/login',
@@ -386,6 +383,49 @@ const customAuthProvider: IAuthProvider = {
 const config: IConfig = {
   authProvider: customAuthProvider,
   // ... 其他配置
+}
+```
+
+### 最小化认证提供者
+
+如果只需要基本的登录、登出和认证检查功能：
+
+```typescript
+const minimalAuthProvider: IAuthProvider = {
+  login: async (params, manage) => {
+    // 实现登录逻辑
+    return {
+      success: true,
+      data: { token: 'user-token' }
+    }
+  },
+
+  check: async (params, manage) => {
+    // 实现认证检查逻辑
+    return {
+      success: true,
+      data: { token: 'user-token' }
+    }
+  },
+
+  logout: async (params, manage) => {
+    // 实现登出逻辑
+    return {
+      success: true,
+      logout: true
+    }
+  },
+
+  onError: async (error) => {
+    // 实现错误处理逻辑
+    return {
+      logout: error?.status === 401,
+      error
+    }
+  }
+
+  // 注意：register、forgotPassword、updatePassword 和 can 方法是可选的
+  // 如果不需要这些功能，可以不实现
 }
 ```
 
@@ -471,9 +511,9 @@ const routes = [
 `onError` 方法用于处理全局的认证错误：
 
 ```typescript
-onError: async (error) => {
+onError: async (error?: IDataProviderError) => {
   // 401 未授权 - 需要重新登录
-  if (error.status === 401) {
+  if (error?.status === 401) {
     return {
       logout: true,
       redirectTo: '/login',
@@ -482,7 +522,7 @@ onError: async (error) => {
   }
 
   // 403 权限不足 - 可选择是否登出
-  if (error.status === 403) {
+  if (error?.status === 403) {
     return {
       logout: false, // 不登出，显示权限不足提示
       error

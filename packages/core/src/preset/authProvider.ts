@@ -1,6 +1,6 @@
 import type { IManageHook } from '../hooks'
 import type { IUserState } from '../stores'
-import type { IAuthActionResponse, IAuthCheckResponse, IAuthErrorResponse, IAuthLoginResponse, IAuthLogoutResponse, IAuthProvider } from '../types'
+import type { IAuthActionResponse, IAuthCheckResponse, IAuthErrorResponse, IAuthLoginResponse, IAuthLogoutResponse, IAuthProvider, IDataProviderError } from '../types'
 import axios from 'axios'
 
 export interface ISimpleAuthProviderProps {
@@ -50,8 +50,8 @@ export function simpleAuthProvider(props?: ISimpleAuthProviderProps): IAuthProvi
         }
       })
     },
-    onError: async (error?: any): Promise<IAuthErrorResponse> => {
-      if (error.status === 403) {
+    onError: async (error?: IDataProviderError): Promise<IAuthErrorResponse> => {
+      if (error?.status === 401) {
         return {
           logout: true,
           redirectTo: props?.routePath?.login || '/login',

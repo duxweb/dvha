@@ -45,6 +45,7 @@ export default defineConfig({
           { text: '自定义操作 (useCustomMutation)', link: '/hooks/data/useCustomMutation' },
           { text: '缓存失效 (useInvalidate)', link: '/hooks/data/useInvalidate' },
           { text: '选择器 (useSelect)', link: '/hooks/data/useSelect' },
+          { text: '表单处理 (useForm)', link: '/hooks/data/useForm' },
         ],
       },
       {
