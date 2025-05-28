@@ -1,9 +1,9 @@
 {
   "name": "@duxweb/dvha-naiveui",
   "type": "module",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "DuxWeb",
-  "license": "LGPL-3.0",
+  "license": "MIT",
   "exports": {
     ".": {
       "dvha:development": {

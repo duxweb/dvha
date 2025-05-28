@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 0.1.9
+
+### Patch Changes
+
+- change: 更换许可协议为 MIT
+
 ## 0.1.8
 
 ### Patch Changes

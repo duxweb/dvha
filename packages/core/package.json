@@ -1,9 +1,9 @@
 {
   "name": "@duxweb/dvha-core",
   "type": "module",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "author": "DuxWeb",
-  "license": "LGPL-3.0",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/duxweb/dvha.git"

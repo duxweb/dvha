@@ -10,10 +10,10 @@
 
 **🚀 轻松搭建中后台管理系统的前端解决方案**
 
-*一个基于 Vue 3 的无头（Headless）中后台框架*
+_一个基于 Vue 3 的无头（Headless）中后台框架_
 
 [![npm version](https://img.shields.io/npm/v/@duxweb/dvha-core.svg)](https://www.npmjs.com/package/@duxweb/dvha-core)
-[![License: LGPL-3.0](https://img.shields.io/badge/License-LGPL%203.0-blue.svg)](https://opensource.org/licenses/LGPL-3.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
 
 📖 **[查看完整文档](https://duxweb.github.io/dvha/)** | 🌟 **[在线演示](https://duxweb.github.io/dvha/demo)** | 🎯 **[快速开始](#快速开始)** | 🇺🇸 **[English](./README.en.md)**
@@ -75,14 +75,14 @@ flowchart TD
 
 ### 🔧 核心组件
 
-| 组件模块 | 功能描述 |
-|:---:|:---|
+|    组件模块     | 功能描述                                           |
+| :-------------: | :------------------------------------------------- |
 | 🧭 **路由管理** | 基于 Vue Router 的路由管理，支持权限控制和路由守卫 |
-| 💾 **状态管理** | 基于 Pinia 的状态管理，支持持久化存储 |
-| 🔐 **认证模块** | 完整的用户认证流程，包括登录、注册、权限验证等 |
-| 📊 **数据处理** | 提供数据 CRUD 相关的 hooks 和工具函数 |
-| ⚙️ **配置中心** | 统一的应用配置管理 |
-| 📺 **UI Hook** | 针对部分 UI 库提供 hook 功能来轻松整合数据交互 |
+| 💾 **状态管理** | 基于 Pinia 的状态管理，支持持久化存储              |
+| 🔐 **认证模块** | 完整的用户认证流程，包括登录、注册、权限验证等     |
+| 📊 **数据处理** | 提供数据 CRUD 相关的 hooks 和工具函数              |
+| ⚙️ **配置中心** | 统一的应用配置管理                                 |
+| 📺 **UI Hook**  | 针对部分 UI 库提供 hook 功能来轻松整合数据交互     |
 
 ## 🚀 快速开始
 
@@ -103,7 +103,7 @@ pnpm add @duxweb/dvha-core
 
 ```typescript
 import type { IConfig } from '@duxweb/dvha-core'
-import { createDux, simpleDataProvider, simpleAuthProvider } from '@duxweb/dvha-core'
+import { createDux, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
 import { createApp } from 'vue'
 import App from './App.vue'
 
@@ -169,7 +169,7 @@ app.mount('#app')
 
 ```typescript
 import type { IConfig } from '@duxweb/dvha-core'
-import { createDux, simpleDataProvider, simpleAuthProvider } from '@duxweb/dvha-core'
+import { createDux, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
 
 const config: IConfig = {
   title: '企业管理平台',
@@ -248,10 +248,10 @@ const config: IConfig = {
 
 ## 📚 相关包
 
-| 包名 | 包描述 | 最新版本 |
-|:---|:---|:---:|
-| `@duxweb/dvha-core` | 🎯 核心功能包 - 提供框架基础能力 | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-core.svg)](https://www.npmjs.com/package/@duxweb/dvha-core) |
-| `@duxweb/dvha-naiveui` | 🎨 Naive UI 增强包 - 集成 Naive UI | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-naiveui.svg)](https://www.npmjs.com/package/@duxweb/dvha-naiveui) |
+| 包名                     | 包描述                                     |                                                        最新版本                                                         |
+| :----------------------- | :----------------------------------------- | :---------------------------------------------------------------------------------------------------------------------: |
+| `@duxweb/dvha-core`      | 🎯 核心功能包 - 提供框架基础能力           |      [![npm](https://img.shields.io/npm/v/@duxweb/dvha-core.svg)](https://www.npmjs.com/package/@duxweb/dvha-core)      |
+| `@duxweb/dvha-naiveui`   | 🎨 Naive UI 增强包 - 集成 Naive UI         |   [![npm](https://img.shields.io/npm/v/@duxweb/dvha-naiveui.svg)](https://www.npmjs.com/package/@duxweb/dvha-naiveui)   |
 | `@duxweb/dvha-elementui` | 🎨 Element Plus 增强包 - 集成 Element Plus | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-elementui.svg)](https://www.npmjs.com/package/@duxweb/dvha-elementui) |
 
 ## 💬 加入社区
@@ -289,7 +289,7 @@ const config: IConfig = {
 
 ## 📄 开源协议
 
-本项目基于 [LGPL-3.0](https://opensource.org/licenses/LGPL-3.0) 协议开源。
+本项目基于 [MIT](https://opensource.org/licenses/MIT) 协议开源。
 
 ---
 
@@ -302,5 +302,3 @@ const config: IConfig = {
 [📖 文档](https://duxweb.github.io/dvha/) • [🐛 报告问题](https://github.com/duxweb/dvha/issues) • [💡 功能建议](https://github.com/duxweb/dvha/discussions)
 
 </div>
-
-

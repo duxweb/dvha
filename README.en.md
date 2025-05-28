@@ -10,10 +10,10 @@
 
 **🚀 Frontend solution for easily building admin management systems**
 
-*A Vue 3-based headless admin framework*
+_A Vue 3-based headless admin framework_
 
 [![npm version](https://img.shields.io/npm/v/@duxweb/dvha-core.svg)](https://www.npmjs.com/package/@duxweb/dvha-core)
-[![License: LGPL-3.0](https://img.shields.io/badge/License-LGPL%203.0-blue.svg)](https://opensource.org/licenses/LGPL-3.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
 
 📖 **[Full Documentation](https://duxweb.github.io/dvha/)** | 🌟 **[Live Demo](https://duxweb.github.io/dvha/demo)** | 🎯 **[Quick Start](#quick-start)** | 🇨🇳 **[中文文档](./README.md)**
@@ -75,14 +75,14 @@ flowchart TD
 
 ### 🔧 Core Components
 
-| Component Module | Feature Description |
-|:---:|:---|
-| 🧭 **Router Management** | Vue Router-based routing management with permission control and route guards |
-| 💾 **State Management** | Pinia-based state management with persistent storage support |
+|       Component Module       | Feature Description                                                                               |
+| :--------------------------: | :------------------------------------------------------------------------------------------------ |
+|   🧭 **Router Management**   | Vue Router-based routing management with permission control and route guards                      |
+|   💾 **State Management**    | Pinia-based state management with persistent storage support                                      |
 | 🔐 **Authentication Module** | Complete user authentication process including login, registration, permission verification, etc. |
-| 📊 **Data Processing** | Provides data CRUD related hooks and utility functions |
-| ⚙️ **Config Center** | Unified application configuration management |
-| 📺 **UI Hook** | Hook functions for some UI libraries to easily integrate data interaction |
+|    📊 **Data Processing**    | Provides data CRUD related hooks and utility functions                                            |
+|     ⚙️ **Config Center**     | Unified application configuration management                                                      |
+|        📺 **UI Hook**        | Hook functions for some UI libraries to easily integrate data interaction                         |
 
 ## 🚀 Quick Start
 
@@ -103,7 +103,7 @@ pnpm add @duxweb/dvha-core
 
 ```typescript
 import type { IConfig } from '@duxweb/dvha-core'
-import { createDux, simpleDataProvider, simpleAuthProvider } from '@duxweb/dvha-core'
+import { createDux, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
 import { createApp } from 'vue'
 import App from './App.vue'
 
@@ -169,7 +169,7 @@ app.mount('#app')
 
 ```typescript
 import type { IConfig } from '@duxweb/dvha-core'
-import { createDux, simpleDataProvider, simpleAuthProvider } from '@duxweb/dvha-core'
+import { createDux, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
 import { createApp } from 'vue'
 import App from './App.vue'
 
@@ -312,7 +312,7 @@ app.mount('#app')
 
 ```typescript
 import type { IConfig } from '@duxweb/dvha-core'
-import { createDux, simpleDataProvider, simpleAuthProvider } from '@duxweb/dvha-core'
+import { createDux, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
 
 const config: IConfig = {
   title: 'Enterprise Management Platform',
@@ -391,11 +391,11 @@ Check out the [Full Documentation](https://duxweb.github.io/dvha/) for more usag
 
 ## 📚 Related Packages
 
-| Package Name | Package Description | Latest Version |
-|:---|:---|:---:|
-| `@duxweb/dvha-core` | 🎯 Core functionality package - Provides framework basic capabilities | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-core.svg)](https://www.npmjs.com/package/@duxweb/dvha-core) |
-| `@duxweb/dvha-naiveui` | 🎨 Naive UI enhancement package - Integrates Naive UI | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-naiveui.svg)](https://www.npmjs.com/package/@duxweb/dvha-naiveui) |
-| `@duxweb/dvha-elementui` | 🎨 Element Plus enhancement package - Integrates Element Plus | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-elementui.svg)](https://www.npmjs.com/package/@duxweb/dvha-elementui) |
+| Package Name             | Package Description                                                   |                                                     Latest Version                                                      |
+| :----------------------- | :-------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------: |
+| `@duxweb/dvha-core`      | 🎯 Core functionality package - Provides framework basic capabilities |      [![npm](https://img.shields.io/npm/v/@duxweb/dvha-core.svg)](https://www.npmjs.com/package/@duxweb/dvha-core)      |
+| `@duxweb/dvha-naiveui`   | 🎨 Naive UI enhancement package - Integrates Naive UI                 |   [![npm](https://img.shields.io/npm/v/@duxweb/dvha-naiveui.svg)](https://www.npmjs.com/package/@duxweb/dvha-naiveui)   |
+| `@duxweb/dvha-elementui` | 🎨 Element Plus enhancement package - Integrates Element Plus         | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-elementui.svg)](https://www.npmjs.com/package/@duxweb/dvha-elementui) |
 
 ## 📊 Project Statistics
 
@@ -439,7 +439,7 @@ npm run build
 
 ## 📄 License
 
-This project is licensed under the [LGPL-3.0](https://opensource.org/licenses/LGPL-3.0) License.
+This project is licensed under the [MIT](https://opensource.org/licenses/MIT) License.
 
 ---
 

@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "author": "DuxWeb",
-  "license": "LGPL-3.0",
+  "license": "MIT",
   "engines": {
     "node": ">=20.0.0"
   },

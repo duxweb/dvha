@@ -1,5 +1,11 @@
 # @duxweb/dvha-elementui
 
+## 1.0.3
+
+### Patch Changes
+
+- change: 更换许可协议为 MIT
+
 ## 1.0.2
 
 ### Patch Changes

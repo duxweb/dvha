@@ -1,5 +1,11 @@
 # @duxweb/dvha-template
 
+## 1.0.8
+
+### Patch Changes
+
+- change: 更换许可协议为 MIT
+
 ## 1.0.7
 
 ### Patch Changes
