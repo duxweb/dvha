@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 0.1.7
+
+### Patch Changes
+
+- chore: 优化异步选择器的防抖等功能
+
 ## 0.1.6
 
 ### Patch Changes

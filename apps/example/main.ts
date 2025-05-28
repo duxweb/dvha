@@ -51,6 +51,13 @@ const config: IConfig = {
           label: '表格',
           component: () => import('./naive/table.vue'),
         },
+        {
+          name: 'form',
+          path: 'form',
+          icon: 'i-tabler:forms',
+          label: '表单',
+          component: () => import('./naive/form.vue'),
+        },
       ],
     },
     {

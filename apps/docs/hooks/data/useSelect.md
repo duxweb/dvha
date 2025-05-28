@@ -19,7 +19,7 @@
 ```typescript
 // 参数接口
 interface UseSelectProps {
-  value: SelectValue // 当前选中值
+  defaultValue: SelectValue // 默认选中值
   path?: string // API 路径
   params?: Record<string, any> // 筛选参数
   pagination?: boolean | number // 是否启用分页，传入数字时作为每页大小
@@ -46,7 +46,7 @@ import { ref } from 'vue'
 const selectedValue = ref()
 
 const { options, loading, onSearch } = useSelect({
-  value: selectedValue.value,
+  defaultValue: selectedValue.value,
   path: '/api/users',
   optionLabel: 'name',
   optionValue: 'id'
@@ -57,7 +57,7 @@ const { options, loading, onSearch } = useSelect({
 
 | 参数           | 类型                  | 必需 | 默认值      | 说明                                     |
 | -------------- | --------------------- | ---- | ----------- | ---------------------------------------- |
-| `value`        | `SelectValue`         | ✅   | -           | 当前选中的值，支持单选和多选             |
+| `defaultValue` | `SelectValue`         | ✅   | -           | 当前选中的值，支持单选和多选             |
 | `path`         | `string`              | ❌   | -           | API 资源路径                             |
 | `params`       | `Record<string, any>` | ❌   | -           | 筛选参数，变化时自动重置页码             |
 | `pagination`   | `boolean \| number`   | ❌   | `true`      | 是否启用分页功能，传入数字时作为每页大小 |
@@ -94,7 +94,7 @@ import { ref } from 'vue'
 const selectedUser = ref()
 
 const { options, loading, onSearch } = useSelect({
-  value: selectedUser.value,
+  defaultValue: selectedUser.value,
   path: '/api/users',
   optionLabel: 'name',
   optionValue: 'id'
@@ -105,7 +105,7 @@ const { options, loading, onSearch } = useSelect({
 
 ```js
 const { options, loading, onSearch, page, pageSize, meta } = useSelect({
-  value: selectedUser.value,
+  defaultValue: selectedUser.value,
   path: '/api/users',
   pagination: true, // 启用分页，默认每页 20 条
   optionLabel: 'name',
@@ -121,7 +121,7 @@ console.log('总数:', meta.value.total)
 
 ```js
 const { options, loading, pageSize } = useSelect({
-  value: selectedUser.value,
+  defaultValue: selectedUser.value,
   path: '/api/users',
   pagination: 50, // 启用分页，每页 50 条
   optionLabel: 'name',
@@ -141,7 +141,7 @@ const filters = ref({
 
 // 使用 computed 来实现动态筛选
 const { options, loading } = useSelect({
-  value: selectedUser.value,
+  defaultValue: selectedUser.value,
   path: '/api/users',
   params: computed(() => filters.value), // 使用 computed 实现响应式筛选
   pagination: true
@@ -156,7 +156,7 @@ filters.value.status = 'inactive'
 ```js
 // 使用函数自定义标签
 const { options: productOptions } = useSelect({
-  value: selectedProduct.value,
+  defaultValue: selectedProduct.value,
   path: '/api/products',
   optionLabel: item => `${item.name} - ¥${item.price}`,
   optionValue: 'sku'
@@ -164,7 +164,7 @@ const { options: productOptions } = useSelect({
 
 // 使用字段名
 const { options: categoryOptions } = useSelect({
-  value: selectedCategory.value,
+  defaultValue: selectedCategory.value,
   path: '/api/categories',
   optionLabel: 'title', // 使用 title 字段作为标签
   optionValue: 'slug' // 使用 slug 字段作为值
@@ -177,7 +177,7 @@ const { options: categoryOptions } = useSelect({
 const selectedUsers = ref([1, 2, 3]) // 多选值
 
 const { options: userOptions, loading } = useSelect({
-  value: selectedUsers.value,
+  defaultValue: selectedUsers.value,
   path: '/api/users',
   optionLabel: 'name',
   optionValue: 'id'
@@ -190,7 +190,7 @@ const { options: userOptions, loading } = useSelect({
 
 ```js
 const { options, loading, onSearch } = useSelect({
-  value: selectedUser.value,
+  defaultValue: selectedUser.value,
   path: '/api/users',
   pagination: true,
   optionLabel: 'name',
@@ -208,7 +208,7 @@ function handleSearch(keyword) {
 ```js
 // 如果后端接口使用的不是 'keyword' 字段，可以自定义
 const { options, loading, onSearch } = useSelect({
-  value: selectedProduct.value,
+  defaultValue: selectedProduct.value,
   path: '/api/products',
   pagination: true,
   optionLabel: 'name',
@@ -224,7 +224,7 @@ const { options, loading, onSearch } = useSelect({
 ```js
 // 不指定 optionLabel 和 optionValue，使用默认字段
 const { options: itemOptions } = useSelect({
-  value: selectedItem.value,
+  defaultValue: selectedItem.value,
   path: '/api/items'
 })
 
@@ -250,7 +250,7 @@ const { options: itemOptions } = useSelect({
 
 ```js
 const { options: orderOptions } = useSelect({
-  value: selectedOrder.value,
+  defaultValue: selectedOrder.value,
   path: '/api/orders',
   optionLabel: (item) => {
     const status = item.status === 'paid' ? '✅' : '⏳'
@@ -271,7 +271,7 @@ const searchForm = ref({
 })
 
 const { options, loading, onSearch } = useSelect({
-  value: selectedProduct.value,
+  defaultValue: selectedProduct.value,
   path: '/api/products',
   params: computed(() => ({
     category: searchForm.value.category,
@@ -303,7 +303,7 @@ function handleCategoryChange(category) {
 const selectedUsers = ref([1, 2, 999]) // 999 可能不在第一页
 
 const { options: selectedUserOptions } = useSelect({
-  value: selectedUsers.value,
+  defaultValue: selectedUsers.value,
   path: '/api/users',
   pagination: true,
   optionLabel: 'name',
@@ -320,7 +320,7 @@ const { options: selectedUserOptions } = useSelect({
 ```js
 // 分页默认启用，对于数据量小的接口可以禁用分页
 const { options: smallDataOptions } = useSelect({
-  value: selectedValue.value,
+  defaultValue: selectedValue.value,
   path: '/api/small-dataset',
   pagination: false, // 禁用分页，获取全部数据
   optionLabel: 'name',
@@ -334,7 +334,7 @@ const { options: smallDataOptions } = useSelect({
 import { debounce } from 'lodash-es'
 
 const { onSearch } = useSelect({
-  value: selectedValue.value,
+  defaultValue: selectedValue.value,
   path: '/api/users',
   pagination: true
 })
@@ -347,7 +347,7 @@ const debouncedSearch = debounce(onSearch, 300)
 
 ```js
 const { options: safeOptions, loading } = useSelect({
-  value: selectedValue.value,
+  defaultValue: selectedValue.value,
   path: '/api/users',
   optionLabel: (item) => {
     // 安全的标签格式化
@@ -369,7 +369,7 @@ const filters = computed(() => ({
 }))
 
 const { options: filteredOptions } = useSelect({
-  value: selectedValue.value,
+  defaultValue: selectedValue.value,
   path: '/api/items',
   params: filters,
   pagination: true
@@ -402,7 +402,7 @@ A: 将 `value` 设置为数组：
 ```js
 const selectedIds = ref([1, 2, 3])
 const { options } = useSelect({
-  value: selectedIds.value,
+  defaultValue: selectedIds.value,
   // ...其他配置
 })
 ```
@@ -413,7 +413,7 @@ A: 设置 `pagination` 为 `false`：
 
 ```js
 const { options: noPaginationOptions } = useSelect({
-  value: selectedValue.value,
+  defaultValue: selectedValue.value,
   pagination: false, // 禁用分页
   // ...其他配置
 })
@@ -430,7 +430,7 @@ const form = ref({
 })
 
 const { options } = useSelect({
-  value: selectedValue.value,
+  defaultValue: selectedValue.value,
   path: '/api/items',
   params: computed(() => ({
     status: form.value.status,
@@ -448,7 +448,7 @@ A: 使用 `keywordField` 和 `optionField` 参数：
 
 ```js
 const { options, onSearch } = useSelect({
-  value: selectedValue.value,
+  defaultValue: selectedValue.value,
   path: '/api/products',
   keywordField: 'q', // 搜索参数名改为 'q'
   optionField: 'sku', // 使用 'sku' 字段去重

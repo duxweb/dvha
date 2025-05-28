@@ -1,11 +1,11 @@
-import { isArray } from 'lodash-es'
+import { debounce, isArray } from 'lodash-es'
 import { computed, ref, watch } from 'vue'
 import { useCustom, useMany } from './data'
 
 type SelectValue = Array<string | number> | string | number | null | undefined
 
 interface UseSelectProps {
-  value: SelectValue
+  defaultValue?: SelectValue
   path?: string
   params?: Record<string, any>
   pagination?: boolean | number
@@ -13,6 +13,7 @@ interface UseSelectProps {
   optionValue?: string | ((item: Record<string, any>) => string)
   optionField?: string
   keywordField?: string
+  debounce?: number
 }
 
 export function useSelect(props: UseSelectProps) {
@@ -24,6 +25,14 @@ export function useSelect(props: UseSelectProps) {
       : props.pagination ? 20 : 0,
   )
   const selectedOnce = ref(false)
+
+  const debouncedSearch = debounce((value: string) => {
+    keyword.value = value
+  }, props.debounce || 300)
+
+  const onSearch = (searchValue: string) => {
+    debouncedSearch(searchValue)
+  }
 
   watch([() => props.path, () => props.params, keyword], () => {
     if (props.pagination) {
@@ -39,19 +48,23 @@ export function useSelect(props: UseSelectProps) {
       return props.params
     },
     get query() {
-      return props.pagination
-        ? {
-            page: page.value,
-            pageSize: pageSize.value,
-            ...(keyword.value && { [props.keywordField || 'keyword']: keyword.value }),
-          }
-        : undefined
+      const query: Record<string, any> = {}
+
+      if (props.pagination) {
+        query.page = page.value
+        query.pageSize = pageSize.value
+      }
+
+      if (keyword.value) {
+        query[props.keywordField || 'keyword'] = keyword.value
+      }
+
+      return Object.keys(query).length ? query : undefined
     },
   })
 
   const selectedItems = ref<Record<string, any>[]>([])
 
-  // 获取用于去重的字段值
   const getOptionFieldValue = (item: Record<string, any>) => {
     const { optionField } = props
     if (typeof optionField === 'string') {
@@ -115,22 +128,31 @@ export function useSelect(props: UseSelectProps) {
       return props.path || ''
     },
     get ids() {
-      if (!props.value) {
+      if (!props.defaultValue) {
         return []
       }
-      return isArray(props.value) ? props.value as string[] : [props.value as string]
+      return isArray(props.defaultValue) ? props.defaultValue as string[] : [props.defaultValue as string]
     },
     options: {
       enabled: false,
     },
   })
 
-  watch(() => props.value, async (value) => {
+  watch(() => props.defaultValue, async (value) => {
     if (selectedOnce.value || !value) {
       return
     }
-
     selectedOnce.value = true
+
+    const defaultValues = Array.isArray(value) ? value : [value]
+
+    const allValuesExist = defaultValues.every(val =>
+      options.value.some(option => option.value === val),
+    )
+
+    if (allValuesExist) {
+      return
+    }
 
     try {
       const res = await fetchSelected()
@@ -140,10 +162,6 @@ export function useSelect(props: UseSelectProps) {
       console.warn('Failed to fetch selected items:', error)
     }
   }, { immediate: true })
-
-  const onSearch = (searchValue: string) => {
-    keyword.value = searchValue
-  }
 
   const loading = computed(() => isLoading.value && !data.value)
 
