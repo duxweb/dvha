@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useList, useOverlay } from '@duxweb/dvha-core'
+import { useList, useOverlay, useExport } from '@duxweb/dvha-core'
 import { ceil } from 'lodash-es'
-import { NButton, NDataTable } from 'naive-ui'
+import { NButton, NDataTable, NInput, useMessage } from 'naive-ui'
 import { computed, h, ref } from 'vue'
 
 const pagination = ref({
@@ -9,9 +9,14 @@ const pagination = ref({
   pageSize: 20,
 })
 
+const filters = ref({
+  keyword: '',
+})
+
 const { data, isLoading } = useList({
   path: 'user',
   pagination: pagination.value,
+  filters: filters.value,
 })
 
 const pageCount = computed(() => {
@@ -24,6 +29,22 @@ function handleCreate() {
   show({
     component: () => import('./modalForm.vue'),
   })
+}
+
+const message = useMessage()
+
+const {  trigger, isLoading: isExporting } = useExport({
+  path: 'user',
+  filters: filters.value,
+  maxPage: 2,
+  onSuccess: (data) => {
+    message.success('导出成功，请在控制台查看')
+    console.log('export data', data)
+  },
+})
+
+function handleExport() {
+  trigger()
 }
 
 const columns = [
@@ -75,9 +96,13 @@ const columns = [
 
 <template>
   <div class="flex flex-col gap-2">
-    <div class="flex justify-between items-center">
+    <div class="flex gap-4 items-center">
+      <NInput v-model:value="filters.keyword" placeholder="搜索" />
       <NButton type="primary" @click="handleCreate">
         新增
+      </NButton>
+      <NButton type="primary" :loading="isExporting" @click="handleExport">
+        导出
       </NButton>
     </div>
     <NDataTable

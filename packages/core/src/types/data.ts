@@ -49,12 +49,14 @@ export interface IDataProviderError {
   [key: string]: any
 }
 
+export interface IDataProviderPagination {
+  page?: number
+  pageSize?: number
+}
+
 export interface IDataProviderListOptions {
   path: string
-  pagination?: {
-    page?: number
-    pageSize?: number
-  } | boolean
+  pagination?: IDataProviderPagination | boolean
   sorters?: Record<string, 'asc' | 'desc'>
   filters?: Record<string, any>
   meta?: Record<string, any>

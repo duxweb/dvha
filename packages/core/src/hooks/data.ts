@@ -1,15 +1,15 @@
 /* eslint-disable @tanstack/query/exhaustive-deps */
 import type { DefaultError, DefinedInitialDataInfiniteOptions, DefinedInitialQueryOptions, InfiniteData, UseMutationOptions } from '@tanstack/vue-query'
-import type { IDataProviderCreateManyOptions, IDataProviderCreateOptions, IDataProviderCustomOptions, IDataProviderDeleteManyOptions, IDataProviderDeleteOptions, IDataProviderError, IDataProviderGetManyOptions, IDataProviderGetOneOptions, IDataProviderListOptions, IDataProviderResponse, IDataProviderUpdateManyOptions, IDataProviderUpdateOptions } from '../types'
+import type { IDataProviderCreateManyOptions, IDataProviderCreateOptions, IDataProviderCustomOptions, IDataProviderDeleteManyOptions, IDataProviderDeleteOptions, IDataProviderError, IDataProviderGetManyOptions, IDataProviderGetOneOptions, IDataProviderListOptions, IDataProviderPagination, IDataProviderResponse, IDataProviderUpdateManyOptions, IDataProviderUpdateOptions } from '../types'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import { computed, watch } from 'vue'
+import { computed, toRef, watch } from 'vue'
 import { useError, useGetAuth } from './auth'
 import { useManage } from './manage'
 
 type IDataQueryOptions = Partial<DefinedInitialQueryOptions<IDataProviderResponse | undefined, DefaultError, IDataProviderResponse | undefined, any>>
 type IDataQueryOptionsInfinite = Partial<DefinedInitialDataInfiniteOptions<IDataProviderResponse | undefined, DefaultError, InfiniteData<IDataProviderResponse | undefined>, any, number>>
 
-interface IListParams extends IDataProviderListOptions {
+export interface IListParams extends IDataProviderListOptions {
   providerName?: string
   options?: IDataQueryOptions
   onError?: (error: IDataProviderError) => void
@@ -26,23 +26,39 @@ export function useList(params: IListParams) {
 
   const { mutate: onAuthError } = useError()
 
+  const pagination = toRef<IDataProviderPagination>(params.pagination ? params.pagination as IDataProviderPagination : { page: 1, pageSize: 20 })
+
   const props = computed((): IDataProviderListOptions => {
-    const { onError, options, ...rest } = params
+    const { onError, options, pagination, ...rest } = params
     return rest
   })
 
+  watch(props, () => {
+    if (!params.pagination) {
+      return
+    }
+    pagination.value.page = 1
+  }, {
+    deep: true,
+  })
+
+  const queryProps = computed(() => {
+    return {
+      ...props.value,
+      pagination: params.pagination ? pagination.value : undefined,
+    }
+  })
+
   const req = useQuery({
-    queryKey: [`${manage.config?.name}:${providerName}:${params.path}`, props],
-    queryFn: () => manage.config?.dataProvider?.[providerName]?.getList(props.value, manage, auth),
+    queryKey: [`${manage.config?.name}:${providerName}:${params.path}`, queryProps],
+    queryFn: () => manage.config?.dataProvider?.[providerName]?.getList(queryProps.value, manage, auth),
     ...params.options,
   })
 
   const isLoading = computed<boolean>(() => {
-    if (req.isFetched.value) {
-      return false
-    }
     return req.isFetching.value
   })
+
 
   watch(() => req.isError, () => {
     onAuthError(req.error)
@@ -54,11 +70,13 @@ export function useList(params: IListParams) {
     isLoading,
     data: req.data,
     refetch: req.refetch,
+    pagination
   }
 }
 
-interface IInfiniteListParams extends IDataProviderListOptions {
+export interface IInfiniteListParams extends IDataProviderListOptions {
   providerName?: string
+  pagination?: IDataProviderPagination
   options?: IDataQueryOptionsInfinite
   onError?: (error: IDataProviderError) => void
 }
@@ -73,15 +91,36 @@ export function useInfiniteList(params: IInfiniteListParams) {
   const providerName = params.providerName || 'default'
   const { mutate: onAuthError } = useError()
 
+  const pagination = toRef(params.pagination || { page: 1, pageSize: 20 })
+
   const props = computed((): IDataProviderListOptions => {
-    const { onError, options, ...rest } = params
+    const { onError, options, pagination, ...rest } = params
     return rest
+  })
+
+  watch(props, () => {
+    if (!params.pagination) {
+      return
+    }
+    pagination.value.page = 1
+  }, {
+    deep: true,
   })
 
   const req = useInfiniteQuery({
     queryKey: [`${manage.config?.name}:${providerName}:${params.path}`, props],
-    queryFn: () => manage.config?.dataProvider?.[providerName]?.getList(props.value, manage, auth),
-    initialPageParam: 0,
+    queryFn: ({ pageParam }) => {
+      pagination.value.page = pageParam
+
+      return manage.config?.dataProvider?.[providerName]?.getList({
+        ...props.value,
+        pagination: {
+          ...pagination.value,
+          page: pageParam,
+        },
+      }, manage, auth)
+    },
+    initialPageParam: 1,
     getNextPageParam: (lastPage, _allPages, lastPageParam) => {
       if (!lastPage?.data || lastPage?.data?.length === 0) {
         return undefined
@@ -98,9 +137,6 @@ export function useInfiniteList(params: IInfiniteListParams) {
   })
 
   const isLoading = computed<boolean>(() => {
-    if (req.isFetched.value) {
-      return false
-    }
     return req.isFetching.value
   })
 
@@ -109,17 +145,25 @@ export function useInfiniteList(params: IInfiniteListParams) {
     params.onError?.(req.error)
   })
 
+  const fetchNextPage = () => {
+    if (!req.hasNextPage.value || req.isFetching.value) {
+      return
+    }
+    return req.fetchNextPage()
+  }
+
   return {
     ...req,
     isLoading,
     data: req.data,
-    fetchNextPage: req.fetchNextPage,
+    fetchNextPage,
     hasNextPage: req.hasNextPage,
     refetch: req.refetch,
+    pagination
   }
 }
 
-interface IOneParams extends IDataProviderGetOneOptions {
+export interface IOneParams extends IDataProviderGetOneOptions {
   providerName?: string
   options?: IDataQueryOptions
   onError?: (error: IDataProviderError) => void
@@ -166,7 +210,7 @@ export function useOne(params: IOneParams) {
   }
 }
 
-interface IManyParams extends IDataProviderGetManyOptions {
+export interface IManyParams extends IDataProviderGetManyOptions {
   providerName?: string
   options?: IDataQueryOptions
   onError?: (error: IDataProviderError) => void
@@ -212,7 +256,7 @@ export function useMany(params: IManyParams) {
   }
 }
 
-interface ICreateParams extends IDataProviderCreateOptions {
+export interface ICreateParams extends IDataProviderCreateOptions {
   providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderCreateOptions>
   onSuccess?: (data: IDataProviderResponse) => void
@@ -267,7 +311,7 @@ export function useCreate(params: ICreateParams) {
   }
 }
 
-interface ICreateManyParams extends IDataProviderCreateManyOptions {
+export interface ICreateManyParams extends IDataProviderCreateManyOptions {
   providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderCreateManyOptions>
   onSuccess?: (data: IDataProviderResponse) => void
@@ -321,7 +365,7 @@ export function useCreateMany(params: ICreateManyParams) {
   }
 }
 
-interface IUpdateParams extends IDataProviderUpdateOptions {
+export interface IUpdateParams extends IDataProviderUpdateOptions {
   providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderUpdateOptions>
   onSuccess?: (data: IDataProviderResponse) => void
@@ -375,7 +419,7 @@ export function useUpdate(params: IUpdateParams) {
   }
 }
 
-interface IUpdateManyParams extends IDataProviderUpdateManyOptions {
+export interface IUpdateManyParams extends IDataProviderUpdateManyOptions {
   providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderUpdateManyOptions>
   onSuccess?: (data: IDataProviderResponse) => void
@@ -426,7 +470,7 @@ export function useUpdateMany(params: IUpdateManyParams) {
   }
 }
 
-interface IDeleteParams extends IDataProviderDeleteOptions {
+export interface IDeleteParams extends IDataProviderDeleteOptions {
   providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderDeleteOptions>
   onSuccess?: (data: IDataProviderResponse) => void
@@ -480,7 +524,7 @@ export function useDelete(params: IDeleteParams) {
   }
 }
 
-interface IDeleteManyParams extends IDataProviderDeleteManyOptions {
+export interface IDeleteManyParams extends IDataProviderDeleteManyOptions {
   providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderDeleteManyOptions>
   onSuccess?: (data: IDataProviderResponse) => void
@@ -534,7 +578,7 @@ export function useDeleteMany(params: IDeleteManyParams) {
   }
 }
 
-interface ICustomParams extends IDataProviderCustomOptions {
+export interface ICustomParams extends IDataProviderCustomOptions {
   providerName?: string
   options?: IDataQueryOptions
   onError?: (error: IDataProviderError) => void
@@ -581,7 +625,7 @@ export function useCustom(params: ICustomParams) {
   }
 }
 
-interface ICustomMutationParams extends IDataProviderCustomOptions {
+export interface ICustomMutationParams extends IDataProviderCustomOptions {
   providerName?: string
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderCustomOptions>
   onSuccess?: (data: IDataProviderResponse) => void

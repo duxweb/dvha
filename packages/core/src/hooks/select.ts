@@ -1,10 +1,10 @@
 import { debounce, isArray } from 'lodash-es'
 import { computed, ref, watch } from 'vue'
-import { useCustom, useMany } from './data'
+import { useList, useMany } from './data'
 
 type SelectValue = Array<string | number> | string | number | null | undefined
 
-interface UseSelectProps {
+interface IUseSelectProps {
   defaultValue?: SelectValue
   path?: string
   params?: Record<string, any>
@@ -17,14 +17,14 @@ interface UseSelectProps {
   debounce?: number
 }
 
-export function useSelect(props: UseSelectProps) {
+export function useSelect(props: IUseSelectProps) {
   const keyword = ref<string>()
-  const page = ref(1)
-  const pageSize = ref(
-    typeof props.pagination === 'number'
+  const pagination = ref({
+    page: 1,
+    pageSize: typeof props.pagination === 'number'
       ? props.pagination
       : props.pagination ? 20 : 0,
-  )
+  })
   const selectedOnce = ref(false)
 
   const debouncedSearch = debounce((value: string) => {
@@ -35,34 +35,23 @@ export function useSelect(props: UseSelectProps) {
     debouncedSearch(searchValue)
   }
 
-  watch([() => props.path, () => props.params, keyword], () => {
-    if (props.pagination) {
-      page.value = 1
-    }
-  }, { deep: true })
-
-  const { data, isLoading } = useCustom({
+  const { data, isLoading } = useList({
     get path() {
       return props.path || ''
     },
     get filters() {
-      return props.params
-    },
-    get query() {
-      const query: Record<string, any> = {}
-
-      if (props.pagination) {
-        query.page = page.value
-        query.pageSize = pageSize.value
-      }
-
+      const filters: Record<string, any> = { ...props.params }
       if (keyword.value) {
-        query[props.keywordField || 'keyword'] = keyword.value
+        filters[props.keywordField || 'keyword'] = keyword.value
       }
-
-      return Object.keys(query).length ? query : undefined
+      return filters
     },
-    providerName: props.providerName,
+    get pagination() {
+      return props.pagination ? pagination.value : undefined
+    },
+    get providerName() {
+      return props.providerName
+    },
   })
 
   const selectedItems = ref<Record<string, any>[]>([])
@@ -173,7 +162,6 @@ export function useSelect(props: UseSelectProps) {
     options,
     meta,
     loading,
-    page,
-    pageSize,
+    pagination,
   }
 }

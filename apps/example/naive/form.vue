@@ -8,7 +8,7 @@ const model = ref({
 })
 
 const { options, onSearch } = useSelect({
-  path: '/users',
+  path: '/user',
   optionLabel: 'nickname',
   defaultValue: model.value.asyncSelect,
 })

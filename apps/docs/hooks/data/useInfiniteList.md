@@ -121,6 +121,7 @@ const {
 | `hasNextPage`   | `Ref<boolean>`      | 是否有下一页     |
 | `fetchNextPage` | `Function`          | 加载下一页的方法 |
 | `refetch`       | `Function`          | 重新获取数据     |
+| `pagination`    | `Ref<object>`       | 分页配置对象     |
 
 ## 基本无限滚动示例
 

@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 0.1.10
+
+### Patch Changes
+
+- feat: 增加导出 hook,修正无限滚动分页 bug
+
 ## 0.1.9
 
 ### Patch Changes

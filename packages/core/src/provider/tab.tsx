@@ -60,10 +60,11 @@ export const DuxTabRouterView = defineComponent({
       <RouterView>
         {{
           default: ({ Component }) => {
+            const WrappedComponent = wrap(route.path, Component)
             return (
               <Transition name="tab-fade" mode="out-in" appear>
                 <KeepAlive include={tabStore.tabs.map(t => t.path || '')}>
-                  <Component is={wrap(route.path, Component)} key={route.path} />
+                  <WrappedComponent key={route.path} />
                 </KeepAlive>
               </Transition>
             )

@@ -109,6 +109,7 @@ const { data, isLoading, isError, error, refetch } = useList({
 | `isError`   | `Ref<boolean>` | 是否出错     |
 | `error`     | `Ref<any>`     | 错误信息     |
 | `refetch`   | `Function`     | 重新获取数据 |
+| `pagination`| `Ref<object>`  | 分页配置对象 |
 
 ## 动态筛选示例
 

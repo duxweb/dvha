@@ -52,6 +52,13 @@ const config: IConfig = {
           component: () => import('./naive/table.vue'),
         },
         {
+          name: 'list',
+          path: 'list',
+          icon: 'i-tabler:list',
+          label: '列表',
+          component: () => import('./naive/list.vue'),
+        },
+        {
           name: 'form',
           path: 'form',
           icon: 'i-tabler:forms',
