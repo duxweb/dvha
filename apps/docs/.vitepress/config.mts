@@ -5,8 +5,16 @@ export default defineConfig({
   title: 'DVHA',
   description: '一个基于 Vue 且不含 UI 的中后台框架',
   base: '/dvha/',
+  lastUpdated: true,
   themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
+    search: {
+      provider: 'local',
+    },
+    lastUpdatedText: '最后更新时间',
+    editLink: {
+      pattern: 'https://github.com/duxweb/dvha/edit/main/apps/docs/:path',
+      text: '在 GitHub 上编辑此页',
+    },
     nav: [
       { text: '首页', link: '/' },
       { text: '文档', link: '/guide/started' },
