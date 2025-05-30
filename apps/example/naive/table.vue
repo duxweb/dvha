@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useList, useOverlay, useExport } from '@duxweb/dvha-core'
+import { useExport, useImport, useList, useOverlay } from '@duxweb/dvha-core'
 import { ceil } from 'lodash-es'
 import { NButton, NDataTable, NInput, useMessage } from 'naive-ui'
 import { computed, h, ref } from 'vue'
@@ -33,7 +33,7 @@ function handleCreate() {
 
 const message = useMessage()
 
-const {  trigger, isLoading: isExporting } = useExport({
+const { trigger, isLoading: isExporting } = useExport({
   path: 'user',
   filters: filters.value,
   maxPage: 2,
@@ -45,6 +45,25 @@ const {  trigger, isLoading: isExporting } = useExport({
 
 function handleExport() {
   trigger()
+}
+
+const { trigger: onImport, isLoading: isImporting } = useImport({
+  path: 'user',
+  onComplete: (data) => {
+    message.success('导入成功，请在控制台查看')
+    console.log('import data', data)
+  },
+  onProgress: (data) => {
+    console.log('import progress', data)
+  },
+  onError: (error) => {
+    message.error('导入失败，请在控制台查看')
+    console.log('import error', error)
+  },
+})
+
+function handleImport() {
+  onImport(data?.value?.data || [])
 }
 
 const columns = [
@@ -103,6 +122,9 @@ const columns = [
       </NButton>
       <NButton type="primary" :loading="isExporting" @click="handleExport">
         导出
+      </NButton>
+      <NButton type="primary" :loading="isImporting" @click="handleImport">
+        导入
       </NButton>
     </div>
     <NDataTable

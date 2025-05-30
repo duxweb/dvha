@@ -47,6 +47,7 @@ export default defineConfig({
           { text: '选择器 (useSelect)', link: '/hooks/data/useSelect' },
           { text: '表单处理 (useForm)', link: '/hooks/data/useForm' },
           { text: '导出数据 (useExport)', link: '/hooks/data/useExport' },
+          { text: '导入数据 (useImport)', link: '/hooks/data/useImport' },
         ],
       },
       {
