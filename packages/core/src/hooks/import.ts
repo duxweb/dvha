@@ -11,7 +11,7 @@ interface IImportProgress {
   percentage: number // 百分比
 }
 
-interface IUseImportProps extends IDataProviderCustomOptions {
+export interface IUseImportProps extends IDataProviderCustomOptions {
   options?: UseMutationOptions<IDataProviderResponse, DefaultError, IDataProviderCustomOptions>
   onComplete?: (progress: IImportProgress) => void
   onProgress?: (progress: IImportProgress) => void

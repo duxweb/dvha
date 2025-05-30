@@ -4,7 +4,7 @@ import type { IInfiniteListParams } from './data'
 import { computed, ref } from 'vue'
 import { useInfiniteList } from './data'
 
-interface IUseExportProps extends IInfiniteListParams {
+export interface IUseExportProps extends IInfiniteListParams {
   onSuccess?: (data: InfiniteData<IDataProviderResponse | undefined> | undefined) => void
   interval?: number
   maxPage?: number

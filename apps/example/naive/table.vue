@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useExport, useImport, useList, useOverlay } from '@duxweb/dvha-core'
+import { useExport, useExportCsv, useImport, useImportCsv, useList, useOverlay } from '@duxweb/dvha-core'
 import { ceil } from 'lodash-es'
 import { NButton, NDataTable, NInput, useMessage } from 'naive-ui'
 import { computed, h, ref } from 'vue'
@@ -33,10 +33,11 @@ function handleCreate() {
 
 const message = useMessage()
 
-const { trigger, isLoading: isExporting } = useExport({
+const { trigger, isLoading: isExporting } = useExportCsv({
   path: 'user',
   filters: filters.value,
   maxPage: 2,
+  filename: 'user.csv',
   onSuccess: (data) => {
     message.success('导出成功，请在控制台查看')
     console.log('export data', data)
@@ -47,7 +48,7 @@ function handleExport() {
   trigger()
 }
 
-const { trigger: onImport, isLoading: isImporting } = useImport({
+const { open, isLoading: isImporting } = useImportCsv({
   path: 'user',
   onComplete: (data) => {
     message.success('导入成功，请在控制台查看')
@@ -63,7 +64,7 @@ const { trigger: onImport, isLoading: isImporting } = useImport({
 })
 
 function handleImport() {
-  onImport(data?.value?.data || [])
+  open()
 }
 
 const columns = [
