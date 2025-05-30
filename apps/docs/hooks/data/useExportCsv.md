@@ -48,12 +48,10 @@ const { isLoading, trigger } = useExportCsv({
   path: 'users', // API 路径
   filename: 'users-export.csv', // 下载文件名
 
-  // 表头配置
+  // 表头配置（三种方式任选其一）
   headers: ['id', 'name', 'email', 'status'], // 指定导出字段
-  // 或
-  headers: true, // 导出所有字段（默认）
-  // 或
-  headers: false, // 不包含表头行
+  // headers: true, // 导出所有字段（默认）
+  // headers: false, // 不包含表头行
 
   // CSV 格式配置
   csvOptions: {

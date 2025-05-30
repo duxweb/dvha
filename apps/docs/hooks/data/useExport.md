@@ -104,27 +104,27 @@ const { data, isLoading, trigger } = useExport({
 
 ## 参数说明
 
-| 参数           | 类型                                              | 必需 | 默认值    | 说明                             |
-| -------------- | ------------------------------------------------- | ---- | --------- | -------------------------------- |
-| `path`         | `string`                                          | ✅   | -         | API 资源路径                     |
-| `maxPage`      | `number`                                          | ❌   | `100`     | 最大导出页数                     |
-| `interval`     | `number`                                          | ❌   | `300`     | 请求间隔毫秒数                   |
-| `onSuccess`    | `(data: InfiniteData) => void`                    | ❌   | -         | 导出完成回调函数                 |
-| `pagination`   | `object`                                          | ❌   | -         | 分页配置                         |
-| `filters`      | `Record<string, any>`                             | ❌   | -         | 筛选条件                         |
-| `sorters`      | `Record<string, 'asc' \| 'desc'>`                 | ❌   | -         | 排序条件                         |
-| `meta`         | `Record<string, any>`                             | ❌   | -         | 传递给 API 的额外参数            |
-| `providerName` | `string`                                          | ❌   | `default` | 数据提供者名称                   |
-| `onError`      | `(error: any) => void`                            | ❌   | -         | 错误处理回调                     |
-| `options`      | `IDataQueryOptionsInfinite`                       | ❌   | -         | TanStack Query 无限查询选项      |
+| 参数           | 类型                              | 必需 | 默认值    | 说明                        |
+| -------------- | --------------------------------- | ---- | --------- | --------------------------- |
+| `path`         | `string`                          | ✅   | -         | API 资源路径                |
+| `maxPage`      | `number`                          | ❌   | `100`     | 最大导出页数                |
+| `interval`     | `number`                          | ❌   | `300`     | 请求间隔毫秒数              |
+| `onSuccess`    | `(data: InfiniteData) => void`    | ❌   | -         | 导出完成回调函数            |
+| `pagination`   | `object`                          | ❌   | -         | 分页配置                    |
+| `filters`      | `Record<string, any>`             | ❌   | -         | 筛选条件                    |
+| `sorters`      | `Record<string, 'asc' \| 'desc'>` | ❌   | -         | 排序条件                    |
+| `meta`         | `Record<string, any>`             | ❌   | -         | 传递给 API 的额外参数       |
+| `providerName` | `string`                          | ❌   | `default` | 数据提供者名称              |
+| `onError`      | `(error: any) => void`            | ❌   | -         | 错误处理回调                |
+| `options`      | `IDataQueryOptionsInfinite`       | ❌   | -         | TanStack Query 无限查询选项 |
 
 ## 返回值
 
-| 字段        | 类型                | 说明                 |
-| ----------- | ------------------- | -------------------- |
-| `data`      | `Ref<InfiniteData>` | 导出的数据对象       |
-| `isLoading` | `Ref<boolean>`      | 是否正在导出中       |
-| `trigger`   | `Function`          | 触发导出的方法       |
+| 字段        | 类型                | 说明           |
+| ----------- | ------------------- | -------------- |
+| `data`      | `Ref<InfiniteData>` | 导出的数据对象 |
+| `isLoading` | `Ref<boolean>`      | 是否正在导出中 |
+| `trigger`   | `Function`          | 触发导出的方法 |
 
 ## 基本导出示例
 
@@ -161,8 +161,8 @@ function handleExport() {
 <template>
   <button
     :disabled="isLoading"
-    @click="handleExport"
     class="export-button"
+    @click="handleExport"
   >
     {{ isLoading ? '导出中...' : '导出数据' }}
   </button>
@@ -220,11 +220,11 @@ const { isLoading, trigger } = useExport({
 
     // 转换为 Excel 格式
     const worksheet = XLSX.utils.json_to_sheet(products.map(product => ({
-      '产品名称': product.name,
-      '价格': product.price,
-      '库存': product.stock,
-      '分类': product.category?.name,
-      '创建时间': new Date(product.created_at).toLocaleDateString()
+      产品名称: product.name,
+      价格: product.price,
+      库存: product.stock,
+      分类: product.category?.name,
+      创建时间: new Date(product.created_at).toLocaleDateString()
     })))
 
     const workbook = XLSX.utils.book_new()
@@ -326,10 +326,10 @@ const { isLoading, trigger } = useExport({
 // 推荐配置
 const { trigger } = useExport({
   path: 'data',
-  maxPage: 50,        // 限制最大页数
-  interval: 1000,     // 1秒间隔
+  maxPage: 50, // 限制最大页数
+  interval: 1000, // 1秒间隔
   pagination: {
-    pageSize: 200     // 大页面减少请求次数
+    pageSize: 200 // 大页面减少请求次数
   }
 })
 ```
@@ -346,9 +346,11 @@ const { isLoading, trigger } = useExport({
     // 根据错误类型进行处理
     if (error.status === 403) {
       alert('权限不足，无法导出')
-    } else if (error.status === 429) {
+    }
+    else if (error.status === 429) {
       alert('请求过于频繁，请稍后重试')
-    } else {
+    }
+    else {
       alert('导出失败，请联系管理员')
     }
   }
