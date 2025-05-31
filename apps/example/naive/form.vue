@@ -23,7 +23,7 @@ const message = useMessage()
 const { trigger, uploadFiles, open, removeFiles, cancelFiles, progress, clearFiles, addDataFiles } = useUpload({
   path: 'upload',
   method: 'POST',
-  multiple: true,
+  multiple: false,
   driver: createS3UploadDriver({
     signPath: 'uploadSign',
   }),

@@ -399,7 +399,14 @@ export function useUpload(props: IUseUploadProps) {
   // add files to upload list
   const addFiles = async (files: IUseUploadPayload[], type: IUseUploadType = 'file') => {
     try {
-      // 检查文件数量限制
+      if (!props.multiple) {
+        clearFiles()
+      }
+
+      if (!props.multiple && files.length > 1) {
+        throw new Error('Single file mode: only one file can be selected')
+      }
+
       if (props.maxFileCount && uploadFiles.value.length + files.length > props.maxFileCount) {
         throw new Error(`Adding ${files.length} files would exceed the maximum limit of ${props.maxFileCount}`)
       }
@@ -408,7 +415,6 @@ export function useUpload(props: IUseUploadProps) {
         await addFile(payload, type)
       }
     } catch (error: any) {
-      // 处理文件添加阶段的错误
       props.onError?.({
         status: error?.status || 400,
         message: error?.message || 'Failed to add files',
@@ -416,7 +422,6 @@ export function useUpload(props: IUseUploadProps) {
       throw error
     }
 
-    // 自动上传在添加完成后执行，错误由 trigger 内部处理
     if (props.autoUpload) {
       trigger()
     }
@@ -500,10 +505,7 @@ export function useUpload(props: IUseUploadProps) {
   watch(selectedFiles, async (newFiles) => {
     if (newFiles && newFiles.length > 0) {
       const fileArray = Array.from(newFiles)
-      // 立即重置文件选择，确保相同文件可以重新选择
       resetFiles()
-
-      // 添加文件，错误会通过 onError 回调处理
       await addFiles(fileArray, 'file').catch(error => {
         console.warn('Failed to add selected files:', error)
       })

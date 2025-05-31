@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 0.1.14
+
+### Patch Changes
+
+- fix: useUpload 单文件上传限制
+
 ## 0.1.13
 
 ### Patch Changes
