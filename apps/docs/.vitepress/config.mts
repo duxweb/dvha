@@ -81,8 +81,9 @@ export default defineConfig({
           { text: '配置信息 (useConfig)', link: '/hooks/common/useConfig' },
           { text: '主题管理 (useTheme)', link: '/hooks/common/useTheme' },
           { text: '数据客户端 (useClient)', link: '/hooks/common/useClient' },
-          { text: '弹窗 (useOverlay)', link: '/hooks/common/useOverlay' },
           { text: '国际化 (useI18n)', link: '/hooks/common/useI18n' },
+          { text: '弹窗 (useOverlay)', link: '/hooks/common/useOverlay' },
+          { text: '上传 (useUpload)', link: '/hooks/common/useUpload' },
         ],
       },
       {

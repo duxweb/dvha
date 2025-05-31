@@ -170,9 +170,26 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         method: options.method || 'GET',
         data: options.payload,
         params,
+        signal: options.signal,
         headers: {
           Authorization: auth?.token,
           ...options.headers,
+        },
+        onUploadProgress: (progressEvent) => {
+          const percent = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1))
+          options.onUploadProgress?.({
+            loaded: progressEvent.loaded,
+            total: progressEvent.total,
+            percent,
+          })
+        },
+        onDownloadProgress: (progressEvent) => {
+          const percent = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1))
+          options.onDownloadProgress?.({
+            loaded: progressEvent.loaded,
+            total: progressEvent.total,
+            percent,
+          })
         },
         ...options.meta,
       }).then((res) => {
@@ -195,10 +212,10 @@ function handleResponse(res: any): IDataProviderResponse {
 
 function handleError(err: any): IDataProviderError {
   return {
-    message: err.response.data?.message || err.message,
-    data: err.response.data?.data,
-    meta: err.response.data?.meta,
-    status: err.response.data?.code || err.response.status || 500,
-    raw: err.response.data,
+    message: err.response?.data?.message || err?.message,
+    data: err.response?.data?.data,
+    meta: err.response?.data?.meta,
+    status: err.response?.data?.code || err.response?.status || 500,
+    raw: err.response?.data,
   }
 }

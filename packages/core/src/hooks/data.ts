@@ -59,7 +59,6 @@ export function useList(params: IListParams) {
     return req.isFetching.value
   })
 
-
   watch(() => req.isError, () => {
     onAuthError(req.error)
     params.onError?.(req.error)
@@ -70,7 +69,7 @@ export function useList(params: IListParams) {
     isLoading,
     data: req.data,
     refetch: req.refetch,
-    pagination
+    pagination,
   }
 }
 
@@ -159,7 +158,7 @@ export function useInfiniteList(params: IInfiniteListParams) {
     fetchNextPage,
     hasNextPage: req.hasNextPage,
     refetch: req.refetch,
-    pagination
+    pagination,
   }
 }
 
@@ -693,7 +692,7 @@ export function useClient() {
     const providerName = params.providerName || 'default'
     return manage.config?.dataProvider?.[providerName]?.custom({
       ...params,
-    }, manage, auth)
+    }, manage, auth) as Promise<IDataProviderResponse>
   }
 
   return {

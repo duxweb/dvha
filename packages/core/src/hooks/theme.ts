@@ -4,12 +4,6 @@ import { useColorMode, useCycleList } from '@vueuse/core'
 import { computed, watchEffect } from 'vue'
 import { useManage } from './manage'
 
-// 扩散效果配置接口
-export interface RippleOptions {
-  duration?: number
-  easing?: string
-}
-
 export function useTheme(options?: UseColorModeOptions) {
   const colorMode = useColorMode(options)
   const manage = useManage()

@@ -109,6 +109,12 @@ export interface IDataProviderDeleteOptions {
   id: string | number
 }
 
+export interface IDataProviderProgress {
+  loaded: number
+  total?: number
+  percent?: number
+}
+
 export interface IDataProviderCustomOptions {
   path?: string
   method?: string
@@ -118,4 +124,7 @@ export interface IDataProviderCustomOptions {
   headers?: Record<string, string>
   meta?: Record<string, any>
   payload?: any
+  signal?: AbortSignal
+  onUploadProgress?: (progress: IDataProviderProgress) => void
+  onDownloadProgress?: (progress: IDataProviderProgress) => void
 }
