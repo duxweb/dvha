@@ -155,7 +155,7 @@ export function useSelect(props: IUseSelectProps) {
     }
   }, { immediate: true })
 
-  const loading = computed(() => isLoading.value && !data.value)
+  const loading = computed(() => isLoading.value)
 
   return {
     onSearch,

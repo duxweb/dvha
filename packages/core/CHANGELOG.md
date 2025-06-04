@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 0.1.15
+
+### Patch Changes
+
+- feat: 增加 useTree 异步树形 hook
+
 ## 0.1.14
 
 ### Patch Changes

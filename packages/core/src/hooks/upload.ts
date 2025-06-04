@@ -292,7 +292,6 @@ export function useUpload(props: IUseUploadProps) {
 
     updateFileStatus(uploadFile.id, { status: 'uploading' })
 
-
     await uploadDriver.upload(uploadFile.file, {
       ...params.value,
       method: method.value,
@@ -399,10 +398,6 @@ export function useUpload(props: IUseUploadProps) {
   // add files to upload list
   const addFiles = async (files: IUseUploadPayload[], type: IUseUploadType = 'file') => {
     try {
-      if (!props.multiple) {
-        clearFiles()
-      }
-
       if (!props.multiple && files.length > 1) {
         throw new Error('Single file mode: only one file can be selected')
       }
@@ -414,7 +409,8 @@ export function useUpload(props: IUseUploadProps) {
       for (const payload of files) {
         await addFile(payload, type)
       }
-    } catch (error: any) {
+    }
+    catch (error: any) {
       props.onError?.({
         status: error?.status || 400,
         message: error?.message || 'Failed to add files',
@@ -425,12 +421,6 @@ export function useUpload(props: IUseUploadProps) {
     if (props.autoUpload) {
       trigger()
     }
-  }
-
-  // add data files to upload list
-  const addDataFiles = (dataFiles: IUseUploadFileData[]) => {
-    const newUploadFiles = dataFiles.map(fileData => createFileFromData(fileData))
-      uploadFiles.value.push(...newUploadFiles)
   }
 
   // clear all files from upload list
@@ -506,7 +496,7 @@ export function useUpload(props: IUseUploadProps) {
     if (newFiles && newFiles.length > 0) {
       const fileArray = Array.from(newFiles)
       resetFiles()
-      await addFiles(fileArray, 'file').catch(error => {
+      await addFiles(fileArray, 'file').catch((error) => {
         console.warn('Failed to add selected files:', error)
       })
     }
@@ -522,6 +512,12 @@ export function useUpload(props: IUseUploadProps) {
         filetype: file.filetype,
       }))
   })
+
+  // add data files to upload list
+  const addDataFiles = (dataFiles: IUseUploadFileData[]) => {
+    const newUploadFiles = dataFiles.map(fileData => createFileFromData(fileData))
+    uploadFiles.value.push(...newUploadFiles)
+  }
 
   return {
     isUploading,
