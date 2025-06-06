@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 0.1.16
+
+### Patch Changes
+
+- feat: 增加主题管理器的全局色彩管理
+
 ## 0.1.15
 
 ### Patch Changes

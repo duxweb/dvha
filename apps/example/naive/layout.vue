@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import type { MenuOption } from 'naive-ui'
+import type { GlobalThemeOverrides, MenuOption } from 'naive-ui'
 import { DuxLogo, DuxTabRouterView, useI18n, useOverlay, useTheme } from '@duxweb/dvha-core'
 import { useNaiveMenu, useNaiveTab } from '@duxweb/dvha-naiveui'
 import { OverlaysProvider } from '@overlastic/vue'
 import { darkTheme, lightTheme, NIcon } from 'naive-ui'
-
-import { h } from 'vue'
+import { computed, h, onMounted } from 'vue'
 
 import 'element-plus/dist/index.css'
 
 const { options, active } = useNaiveMenu({})
 const { props: tabsProps, tabs } = useNaiveTab()
-const { mode, isDark, toggle } = useTheme()
+
+const { mode, isDark, toggle, cssInit, setColor, getSceneColor, getSemanticColor } = useTheme()
 
 function renderIcon(icon: string) {
   return h(NIcon, null, { default: () => h('div', { class: `${icon} size-4` }) })
@@ -38,6 +38,181 @@ const toolsOptions: MenuOption[] = [
         group: 'locale',
         label: 'English',
         key: 'en-US',
+      },
+    ],
+  },
+  {
+    label: '色调',
+    key: 'colors',
+    icon: () => renderIcon('i-tabler:palette'),
+    children: [
+      {
+        group: 'colors',
+        label: () => h('div', { class: 'flex items-center gap-2' }, [
+          h('div', { class: 'w-4 h-4 bg-base-red-500' }),
+          h('span', {}, 'Red'),
+        ]),
+        key: 'red',
+      },
+      {
+        group: 'colors',
+        label: () => h('div', { class: 'flex items-center gap-2' }, [
+          h('div', { class: 'w-4 h-4 bg-base-orange-500' }),
+          h('span', {}, 'Orange'),
+        ]),
+        key: 'orange',
+      },
+      {
+        group: 'colors',
+        label: () => h('div', { class: 'flex items-center gap-2' }, [
+          h('div', { class: 'w-4 h-4 bg-base-amber-500' }),
+          h('span', {}, 'Amber'),
+        ]),
+        key: 'amber',
+      },
+      {
+        group: 'colors',
+        label: () => h('div', { class: 'flex items-center gap-2' }, [
+          h('div', { class: 'w-4 h-4 bg-base-yellow-500' }),
+          h('span', {}, 'Yellow'),
+        ]),
+        key: 'yellow',
+      },
+      {
+        group: 'colors',
+        label: () => h('div', { class: 'flex items-center gap-2' }, [
+          h('div', { class: 'w-4 h-4 bg-base-lime-500' }),
+          h('span', {}, 'Lime'),
+        ]),
+        key: 'lime',
+      },
+      {
+        group: 'colors',
+        label: () => h('div', { class: 'flex items-center gap-2' }, [
+          h('div', { class: 'w-4 h-4 bg-base-green-500' }),
+          h('span', {}, 'Green'),
+        ]),
+        key: 'green',
+      },
+      {
+        group: 'colors',
+        label: () => h('div', { class: 'flex items-center gap-2' }, [
+          h('div', { class: 'w-4 h-4 bg-base-emerald-500' }),
+          h('span', {}, 'Emerald'),
+        ]),
+        key: 'emerald',
+      },
+      {
+        group: 'colors',
+        label: () => h('div', { class: 'flex items-center gap-2' }, [
+          h('div', { class: 'w-4 h-4 bg-base-teal-500' }),
+          h('span', {}, 'Teal'),
+        ]),
+        key: 'teal',
+      },
+      {
+        group: 'colors',
+        label: () => h('div', { class: 'flex items-center gap-2' }, [
+          h('div', { class: 'w-4 h-4 bg-base-cyan-500' }),
+          h('span', {}, 'Cyan'),
+        ]),
+        key: 'cyan',
+      },
+      {
+        group: 'colors',
+        label: () => h('div', { class: 'flex items-center gap-2' }, [
+          h('div', { class: 'w-4 h-4 bg-base-sky-500' }),
+          h('span', {}, 'Sky'),
+        ]),
+        key: 'sky',
+      },
+      {
+        group: 'colors',
+        label: () => h('div', { class: 'flex items-center gap-2' }, [
+          h('div', { class: 'w-4 h-4 bg-base-blue-500' }),
+          h('span', {}, 'Blue'),
+        ]),
+        key: 'blue',
+      },
+      {
+        group: 'colors',
+        label: () => h('div', { class: 'flex items-center gap-2' }, [
+          h('div', { class: 'w-4 h-4 bg-base-indigo-500' }),
+          h('span', {}, 'Indigo'),
+        ]),
+        key: 'indigo',
+      },
+      {
+        group: 'colors',
+        label: () => h('div', { class: 'flex items-center gap-2' }, [
+          h('div', { class: 'w-4 h-4 bg-base-violet-500' }),
+          h('span', {}, 'Violet'),
+        ]),
+        key: 'violet',
+      },
+      {
+        group: 'colors',
+        label: () => h('div', { class: 'flex items-center gap-2' }, [
+          h('div', { class: 'w-4 h-4 bg-base-purple-500' }),
+          h('span', {}, 'Purple'),
+        ]),
+        key: 'purple',
+      },
+      {
+        group: 'colors',
+        label: () => h('div', { class: 'flex items-center gap-2' }, [
+          h('div', { class: 'w-4 h-4 bg-base-fuchsia-500' }),
+          h('span', {}, 'Fuchsia'),
+        ]),
+        key: 'fuchsia',
+      },
+      {
+        group: 'colors',
+        label: () => h('div', { class: 'flex items-center gap-2' }, [
+          h('div', { class: 'w-4 h-4 bg-base-pink-500' }),
+          h('span', {}, 'Pink'),
+        ]),
+        key: 'pink',
+      },
+      {
+        group: 'colors',
+        label: () => h('div', { class: 'flex items-center gap-2' }, [
+          h('div', { class: 'w-4 h-4 bg-base-rose-500' }),
+          h('span', {}, 'Rose'),
+        ]),
+        key: 'rose',
+      },
+    ],
+  },
+  {
+    label: '灰阶',
+    key: 'gray',
+    icon: () => renderIcon('i-tabler:palette'),
+    children: [
+      {
+        group: 'gray',
+        label: 'gray',
+        key: 'gray',
+      },
+      {
+        group: 'gray',
+        label: 'slate',
+        key: 'slate',
+      },
+      {
+        group: 'gray',
+        label: 'zinc',
+        key: 'zinc',
+      },
+      {
+        group: 'gray',
+        label: 'neutral',
+        key: 'neutral',
+      },
+      {
+        group: 'gray',
+        label: 'stone',
+        key: 'stone',
       },
     ],
   },
@@ -75,6 +250,14 @@ function handleTools(key: string, option: MenuOption) {
     toggle()
   }
 
+  if (option.group === 'gray') {
+    setColor('gray', option.key as string)
+  }
+
+  if (option.group === 'colors') {
+    setColor('primary', option.key as string)
+  }
+
   if (key === 'setting') {
     overlay.show({
       component: () => import('./setting.vue'),
@@ -85,14 +268,80 @@ function handleTools(key: string, option: MenuOption) {
     i18n.changeLocale(option.key as string)
   }
 }
+
+onMounted(() => {
+  cssInit()
+})
+
+
+const themeOverrides = computed<GlobalThemeOverrides>(() => {
+  return {
+    common: {
+      // UI 色彩变量 - 主题色
+      primaryColor: getSceneColor('primary'),
+      primaryColorHover: getSceneColor('primary', 'hover'),
+      primaryColorPressed: getSceneColor('primary', 'pressed'),
+      primaryColorSuppl: getSceneColor('primary'),
+
+      // UI 色彩变量 - 信息色
+      infoColor: getSceneColor('info'),
+      infoColorHover: getSceneColor('info', 'hover'),
+      infoColorPressed: getSceneColor('info', 'pressed'),
+      infoColorSuppl: getSceneColor('info'),
+
+      // UI 色彩变量 - 成功色
+      successColor: getSceneColor('success'),
+      successColorHover: getSceneColor('success', 'hover'),
+      successColorPressed: getSceneColor('success', 'pressed'),
+      successColorSuppl: getSceneColor('success'),
+
+      // UI 色彩变量 - 警告色
+      warningColor: getSceneColor('warning'),
+      warningColorHover: getSceneColor('warning', 'hover'),
+      warningColorPressed: getSceneColor('warning', 'pressed'),
+      warningColorSuppl: getSceneColor('warning'),
+
+      // UI 色彩变量 - 错误色
+      errorColor: getSceneColor('error'),
+      errorColorHover: getSceneColor('error', 'hover'),
+      errorColorPressed: getSceneColor('error', 'pressed'),
+      errorColorSuppl: getSceneColor('error'),
+
+      // UI 文字色彩 - 使用语义颜色
+      textColorBase: getSemanticColor('text', 'base'),
+      textColor1: getSemanticColor('text', 'highlighted'),
+      textColor2: getSemanticColor('text', 'toned'),
+      textColor3: getSemanticColor('text', 'muted'),
+      textColorDisabled: getSemanticColor('text', 'dimmed'),
+
+      // UI 背景色彩 - 使用语义颜色
+      bodyColor: getSemanticColor('bg', 'base'),
+      cardColor: getSemanticColor('bg', 'elevated'),
+      modalColor: getSemanticColor('bg', 'elevated'),
+      popoverColor: getSemanticColor('bg', 'elevated'),
+      tableColor: getSemanticColor('bg', 'muted'),
+      inputColor: getSemanticColor('bg', 'muted'),
+      actionColor: getSemanticColor('bg', 'muted'),
+      hoverColor: getSemanticColor('bg', 'accented'),
+
+      // UI 边框色彩 - 使用语义颜色
+      borderColor: getSemanticColor('border', 'base'),
+      dividerColor: getSemanticColor('border', 'muted'),
+
+      // 占位符和图标色彩
+      placeholderColor: getSemanticColor('text', 'muted'),
+      iconColor: getSemanticColor('text', 'muted'),
+    },
+  }
+})
 </script>
 
 <template>
-  <n-config-provider :theme="isDark ? darkTheme : lightTheme">
+  <n-config-provider :theme="isDark ? darkTheme : lightTheme" :theme-overrides="themeOverrides">
     <n-message-provider>
       <OverlaysProvider>
-        <div class="h-screen w-screen flex dark:bg-gray-8">
-          <div class="bg-gray-1 dark:bg-gray-9 rounded flex flex-col gap-2 py-3 px-1 flex-none">
+        <div class="h-screen w-screen flex">
+          <div class="bg-gray-100 dark:bg-gray-900 rounded flex flex-col gap-2 py-3 px-1 flex-none">
             <div class="flex items-center justify-center p-2">
               <DuxLogo highlight="fill-green-600" />
             </div>
@@ -150,6 +399,9 @@ function handleTools(key: string, option: MenuOption) {
 </template>
 
 <style>
+html {
+  background-color: var(--ui-bg);
+}
 html.dark {
   color-scheme: dark;
 }

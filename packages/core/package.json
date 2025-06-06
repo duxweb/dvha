@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-core",
   "type": "module",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "author": "DuxWeb",
   "license": "MIT",
   "repository": {
@@ -43,6 +43,7 @@
     "@vueuse/integrations": "^13.0.0",
     "axios": "^1.9.0",
     "clsx": "^2.1.1",
+    "colorizr": "^3.0.8",
     "json-2-csv": "^5.5.9",
     "lodash-es": "^4.17.21",
     "petite-vue-i18n": "^11.1.4",

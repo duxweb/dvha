@@ -1,11 +1,12 @@
-import { defineConfig, presetIcons, presetWind3 } from 'unocss'
 import icons from '@iconify-json/tabler/icons.json'
+import { defineConfig, presetIcons, presetWind3 } from 'unocss'
+import { presetTheme } from './theme/presetTheme'
 
-const generateSafeList = () => {
+function generateSafeList() {
   return Object.keys(icons.icons).flatMap((item) => {
     return `i-tabler:${item}`
   })
-};
+}
 
 const safeList = generateSafeList()
 
@@ -17,6 +18,7 @@ export default defineConfig({
         tabler: () => import('@iconify-json/tabler/icons.json').then(i => i.default),
       },
     }),
+    presetTheme(),
   ],
   safelist: safeList,
 })
