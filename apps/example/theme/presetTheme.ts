@@ -1,5 +1,6 @@
-import { themeColor, themePreset } from '@duxweb/dvha-core'
 import type { Preset, Rule } from 'unocss'
+import { themeColor } from '@duxweb/dvha-core'
+import { themePreset } from './theme'
 
 export function presetTheme(): Preset {
   const { colors, rules } = themePreset(themeColor)
@@ -7,7 +8,7 @@ export function presetTheme(): Preset {
   return {
     name: 'preset-theme',
     theme: {
-      colors: colors,
+      colors,
     },
     rules: rules as Rule<object>[],
   }

@@ -1,12 +1,11 @@
 import type { ITheme } from '../types'
 import { useColorMode, useCycleList, useStyleTag } from '@vueuse/core'
-import { computed, readonly, watch, watchEffect } from 'vue'
-import { useManage } from './manage'
-import { useThemeStore } from '../stores'
-import { themeColor } from './themeColor'
+import { hex2rgb } from 'colorizr'
 import { storeToRefs } from 'pinia'
-import { hex2rgb, formatCSS } from 'colorizr'
-
+import { computed, readonly, watch, watchEffect } from 'vue'
+import { useThemeStore } from '../stores'
+import { useManage } from './manage'
+import { themeColor } from './themeColor'
 
 // 色彩类型定义
 export type ThemeColorType = 'primary' | 'info' | 'success' | 'warning' | 'error' | 'gray'
@@ -18,7 +17,7 @@ export type ThemeSceneType = 'default' | 'hover' | 'pressed' | 'focus' | 'disabl
 
 // 色彩场景配置
 export interface ThemeColorSceneConfig {
-  default: string  // 默认色阶，对应 --ui-primary 不带后缀的变量
+  default: string // 默认色阶，对应 --ui-primary 不带后缀的变量
   hover: string
   pressed: string
   focus: string
@@ -113,7 +112,6 @@ export function useTheme() {
     }
   })
 
-
   const defaultConfig: ThemeConfig = {
     colors: themeColor,
     // 色彩类型
@@ -145,15 +143,12 @@ export function useTheme() {
     colorBase: { white: '#ffffff', black: '#000000' },
   }
 
-
   // 合并配置
   const finalConfig = { ...defaultConfig, ...manage.config?.theme?.config }
   const { colorShades, colorTypes } = finalConfig
 
-
   // 使用store中的色彩映射
   const colorMapping = computed(() => themeStore.theme)
-
 
   // 获取所有可用的色彩名称
   const colors = computed(() => Object.keys(finalConfig.colors) as ThemeColorName[])
@@ -201,6 +196,11 @@ export function useTheme() {
     return `var(--base-color-${grayColor}-${value})`
   }
 
+  const color2rgb = (color: string) => {
+    const rgb = hex2rgb(color)
+    return `${rgb.r} ${rgb.g} ${rgb.b}`
+  }
+
   // 生成CSS变量字符串
   function generateCSSVariables(): string {
     const baseVars: string[] = []
@@ -208,17 +208,16 @@ export function useTheme() {
       if (typeof shades === 'object') {
         Object.entries(shades).forEach(([shade, value]) => {
           try {
-            const rgb = hex2rgb(value)
-            const rgbaValue = formatCSS(rgb, { format: 'rgb' })
-            baseVars.push(`--base-color-${colorName}-${shade}: ${rgbaValue};`)
-          } catch (error) {
+            baseVars.push(`--base-color-${colorName}-${shade}: ${color2rgb(value)};`)
+          }
+          catch {
             baseVars.push(`--base-color-${colorName}-${shade}: ${value};`)
           }
         })
       }
     })
 
-    //生成场景变量
+    // 生成场景变量
     const uiVars: string[] = []
     colorTypes.forEach((type) => {
       const mappedColor = colorMapping.value[type]
@@ -230,7 +229,8 @@ export function useTheme() {
         const sceneLevel = getColorLevel(type, scene)
         if (scene === 'default') {
           uiVars.push(`--ui-color-${type}: var(--base-color-${mappedColor}-${sceneLevel});`)
-        } else {
+        }
+        else {
           uiVars.push(`--ui-color-${type}-${scene}: var(--base-color-${mappedColor}-${sceneLevel});`)
         }
       })
@@ -239,8 +239,8 @@ export function useTheme() {
     // 生成公共变量
     const grayColor = colorMapping.value.gray
     const colorBase: string[] = [
-      `--color-white: ${finalConfig.colorBase?.white || '#ffffff'};`,
-      `--color-black: ${finalConfig.colorBase?.black || '#000000'};`,
+      `--color-white: ${color2rgb(finalConfig.colorBase?.white || '#ffffff')};`,
+      `--color-black: ${color2rgb(finalConfig.colorBase?.black || '#000000')};`,
 
       `--ui-text-dimmed: ${getSemanticValue('text', 'dimmed', grayColor)};`,
       `--ui-text-muted: ${getSemanticValue('text', 'muted', grayColor)};`,
@@ -324,7 +324,7 @@ export function useTheme() {
     const value = currentSemantic[category][key as keyof typeof currentSemantic[typeof category]]
 
     if (value === 'white') {
-      return finalConfig.colorBase?.white || '#ffffff'
+      return '#ffffff'
     }
     if (value === 'black') {
       return finalConfig.colorBase?.black || '#000000'
@@ -332,8 +332,6 @@ export function useTheme() {
 
     return finalConfig.colors[grayColor]?.[value] || ''
   }
-
-
 
   return {
     toggle: next,

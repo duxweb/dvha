@@ -36,47 +36,32 @@ const {
 
 ## 返回值
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `toggle` | `Function` | 循环切换主题模式 (light → dark → auto) |
-| `mode` | `Ref<ColorMode>` | 当前主题模式 |
-| `isDark` | `Ref<boolean>` | 是否为暗色主题 |
-| `resources` | `Ref<ITheme>` | 当前主题资源配置（logo、banner等） |
-| `config` | `Readonly<ThemeConfig>` | 只读的主题配置 |
-| `colorMapping` | `Readonly<Ref>` | 只读的颜色映射关系 |
-| `colors` | `Ref<string[]>` | 所有可用的颜色名称列表 |
-| `colorShades` | `string[]` | 颜色色阶列表 ['50', '100', ..., '950'] |
-| `colorTypes` | `string[]` | 颜色类型列表 ['primary', 'info', 'success', 'warning', 'error', 'gray'] |
-| `colorScenes` | `string[]` | 场景类型列表 ['default', 'hover', 'pressed', 'focus', 'disabled'] |
-| `cssInit` | `Function` | 初始化CSS变量系统 |
-| `cssReset` | `Function` | 重置为默认颜色配置 |
-| `setColor` | `Function` | 设置单个颜色映射 |
-| `setColors` | `Function` | 设置多个颜色映射 |
-| `getSceneColor` | `Function` | 获取场景颜色值 |
-| `getShadeColor` | `Function` | 获取色阶颜色值 |
-| `getSemanticColor` | `Function` | 获取语义颜色值 |
+| 字段               | 类型                    | 说明                                                                    |
+| ------------------ | ----------------------- | ----------------------------------------------------------------------- |
+| `toggle`           | `Function`              | 循环切换主题模式 (light → dark → auto)                                  |
+| `mode`             | `Ref<ColorMode>`        | 当前主题模式                                                            |
+| `isDark`           | `Ref<boolean>`          | 是否为暗色主题                                                          |
+| `resources`        | `Ref<ITheme>`           | 当前主题资源配置（logo、banner等）                                      |
+| `config`           | `Readonly<ThemeConfig>` | 只读的主题配置                                                          |
+| `colorMapping`     | `Readonly<Ref>`         | 只读的颜色映射关系                                                      |
+| `colors`           | `Ref<string[]>`         | 所有可用的颜色名称列表                                                  |
+| `colorShades`      | `string[]`              | 颜色色阶列表 ['50', '100', ..., '950']                                  |
+| `colorTypes`       | `string[]`              | 颜色类型列表 ['primary', 'info', 'success', 'warning', 'error', 'gray'] |
+| `colorScenes`      | `string[]`              | 场景类型列表 ['default', 'hover', 'pressed', 'focus', 'disabled']       |
+| `cssInit`          | `Function`              | 初始化CSS变量系统                                                       |
+| `cssReset`         | `Function`              | 重置为默认颜色配置                                                      |
+| `setColor`         | `Function`              | 设置单个颜色映射                                                        |
+| `setColors`        | `Function`              | 设置多个颜色映射                                                        |
+| `getSceneColor`    | `Function`              | 获取场景颜色值                                                          |
+| `getShadeColor`    | `Function`              | 获取色阶颜色值                                                          |
+| `getSemanticColor` | `Function`              | 获取语义颜色值                                                          |
 
 ## 基本使用
 
 ```vue
-<template>
-  <div>
-    <!-- 主题切换 -->
-    <button @click="toggle">
-      {{ mode === 'light' ? '☀️ 亮色' : mode === 'dark' ? '🌙 暗色' : '🔄 自动' }}
-    </button>
-
-    <!-- 色彩切换 -->
-    <button @click="setColor('primary', 'red')">切换为红色主题</button>
-
-    <!-- 使用CSS变量的按钮 -->
-    <button class="primary-btn">主题按钮</button>
-  </div>
-</template>
-
 <script setup>
-import { onMounted } from 'vue'
 import { useTheme } from '@duxweb/dvha-core'
+import { onMounted } from 'vue'
 
 const { toggle, mode, cssInit, setColor } = useTheme()
 
@@ -86,9 +71,28 @@ onMounted(() => {
 })
 </script>
 
+<template>
+  <div>
+    <!-- 主题切换 -->
+    <button @click="toggle">
+      {{ mode === 'light' ? '☀️ 亮色' : mode === 'dark' ? '🌙 暗色' : '🔄 自动' }}
+    </button>
+
+    <!-- 色彩切换 -->
+    <button @click="setColor('primary', 'red')">
+      切换为红色主题
+    </button>
+
+    <!-- 使用CSS变量的按钮 -->
+    <button class="primary-btn">
+      主题按钮
+    </button>
+  </div>
+</template>
+
 <style scoped>
 .primary-btn {
-  background: var(--ui-color-primary);
+  background: rgb(var(--ui-color-primary));
   color: white;
   padding: 8px 16px;
   border: none;
@@ -97,7 +101,7 @@ onMounted(() => {
 }
 
 .primary-btn:hover {
-  background: var(--ui-color-primary-hover);
+  background: rgb(var(--ui-color-primary-hover));
 }
 </style>
 ```
@@ -108,7 +112,7 @@ onMounted(() => {
 
 ```
 .card {
-  color: var(--ui-text)
+  color: rgb(var(--ui-text))
 }
 ```
 
@@ -181,6 +185,38 @@ onMounted(() => {
 --color-black             /* 黑色 */
 ```
 
+在使用CSS变量时，我们采用了现代CSS的最佳实践。所有颜色变量都存储为RGB数值（不包含`rgb()`包装），使用时需要用`rgb()`函数包装：
+
+```css
+/* ❌ 错误的存储方式 */
+:root {
+  --primary-color: rgb(59, 130, 246);
+}
+
+/* ✅ 正确的存储方式 */
+:root {
+  --primary-color: 59 130 246;
+}
+
+/* ❌ 错误的使用方式 */
+.button {
+  background-color: var(--primary-color);
+}
+
+/* ✅ 正确的使用方式 */
+.button {
+  background-color: rgb(var(--primary-color));
+  /* 支持透明度 */
+  background-color: rgb(var(--primary-color) / 0.5);
+}
+```
+
+这种方式的优势：
+
+- **透明度支持** - 可以通过 `/` 语法添加透明度
+- **动画友好** - 支持颜色过渡动画
+- **工具链兼容** - 与Tailwind CSS、UnoCSS等工具完美配合
+- **性能优化** - 避免重复的颜色计算
 
 ## 色彩架构
 
@@ -195,40 +231,43 @@ onMounted(() => {
 ```
 
 #### 第一层：基础色彩变量（固定值）
+
 ```css
 /* 所有预设颜色的完整色阶 */
 :root {
-  --base-color-blue-50: rgb(239, 246, 255);   /* 具体的RGB值 */
-  --base-color-blue-500: rgb(59, 130, 246);
-  --base-color-blue-900: rgb(30, 58, 138);
+  --base-color-blue-50: 239, 246, 255; /* 具体的RGB值 */
+  --base-color-blue-500: 59, 130, 246;
+  --base-color-blue-900: 30, 58, 138;
   /* ... 所有颜色的所有色阶 */
 }
 ```
 
 #### 第二层：UI色彩变量（智能映射）
+
 ```css
 /* 根据你的设置自动映射到基础色彩 */
 :root {
-  --ui-color-primary: var(--base-color-blue-500);        /* 引用基础变量 */
-  --ui-color-primary-hover: var(--base-color-blue-600);  /* 悬停状态 */
-  --ui-color-primary-pressed: var(--base-color-blue-700);/* 按下状态 */
-  --ui-color-primary-focus: var(--base-color-blue-600);  /* 焦点状态 */
-  --ui-color-primary-disabled: var(--base-color-blue-400);/* 禁用状态 */
+  --ui-color-primary: var(--base-color-blue-500); /* 引用基础变量 */
+  --ui-color-primary-hover: var(--base-color-blue-600); /* 悬停状态 */
+  --ui-color-primary-pressed: var(--base-color-blue-700); /* 按下状态 */
+  --ui-color-primary-focus: var(--base-color-blue-600); /* 焦点状态 */
+  --ui-color-primary-disabled: var(--base-color-blue-400); /* 禁用状态 */
 }
 ```
 
 #### 第三层：语义化变量（主题感知）
+
 ```css
 /* 根据明暗主题自动调整，引用UI颜色或基础颜色 */
 :root {
-  --ui-text: var(--base-color-gray-700);      /* 亮色模式：引用基础变量 */
-  --ui-bg: var(--color-white);                /* 引用固定颜色 */
+  --ui-text: var(--base-color-gray-700); /* 亮色模式：引用基础变量 */
+  --ui-bg: var(--color-white); /* 引用固定颜色 */
   --ui-border: var(--base-color-gray-200);
 }
 
 /* 暗色模式自动切换 */
 html.dark {
-  --ui-text: var(--base-color-gray-300);      /* 暗色模式：切换到不同色阶 */
+  --ui-text: var(--base-color-gray-300); /* 暗色模式：切换到不同色阶 */
   --ui-bg: var(--base-color-gray-950);
   --ui-border: var(--base-color-gray-800);
 }
@@ -256,6 +295,7 @@ html.dark {
 ```
 
 **整个过程是响应式的**：
+
 - 基础色彩值不变（第一层）
 - 只更新映射关系（第二层）
 - 语义化颜色自动跟随主题模式调整（第三层）
@@ -283,7 +323,6 @@ interface ThemeConfig {
   }
 }
 ```
-
 
 ### 全局配置覆盖
 
@@ -338,7 +377,12 @@ const config = {
 }
 ```
 
+::: INFO
+自定义色彩搭配可以参考： https://www.tints.dev/
+:::
+
 **配置优先级说明**：
+
 1. **系统默认配置** - `defaultConfig`（最低优先级）
 2. **全局项目配置** - `manage.config?.theme?.config`（覆盖默认配置）
 3. **运行时动态映射** - `themeStore`（影响色彩映射关系）
@@ -362,15 +406,16 @@ setColor('primary', 'red')
 
 // 批量设置语义色映射
 setColors({
-  primary: 'blue',    // primary 类型 → blue 基础色
-  success: 'green',   // success 类型 → green 基础色
-  warning: 'amber',   // warning 类型 → amber 基础色
-  error: 'red',       // error 类型 → red 基础色
-  gray: 'slate'       // gray 类型 → slate 基础色
+  primary: 'blue', // primary 类型 → blue 基础色
+  success: 'green', // success 类型 → green 基础色
+  warning: 'amber', // warning 类型 → amber 基础色
+  error: 'red', // error 类型 → red 基础色
+  gray: 'slate' // gray 类型 → slate 基础色
 })
 ```
 
 **映射原理**：
+
 ```js
 // 设置前：primary 映射到默认的某个基础色
 --ui-color-primary: var(--base-color-blue-500)
@@ -411,9 +456,9 @@ const borderColor = getSemanticColor('border', 'base') // 基础边框色
 该主题系统提供了 UnoCSS 和 Tailwind CSS 的预设配置，可直接使用工具类：
 
 ```js
+import { themeColor } from '@duxweb/dvha-core'
 // uno.config.ts 或 tailwind.config.js
 import { themePreset } from '@duxweb/dvha-core/utils'
-import { themeColor } from '@duxweb/dvha-core'
 
 const preset = themePreset(themeColor)
 
@@ -428,7 +473,7 @@ export default {
 
   // 或者 Tailwind CSS 配置
   plugins: [
-    function({ addUtilities }) {
+    function ({ addUtilities }) {
       addUtilities(preset.utilities)
     }
   ]
@@ -496,18 +541,19 @@ const preset = themePreset(themeColor)
 <div class="text-highlighted bg-inverted border-inverted">高对比样式</div>
 
 <!-- 所有交互状态 -->
-<button class="bg-primary hover:bg-primary-hover active:bg-primary-pressed focus:bg-primary-focus disabled:bg-primary-disabled">
+<button
+  class="bg-primary hover:bg-primary-hover active:bg-primary-pressed focus:bg-primary-focus disabled:bg-primary-disabled"
+>
   完整交互状态
 </button>
 ```
-
 
 ## 与UI框架集成示例
 
 ```vue
 <script setup>
-import { computed } from 'vue'
 import { useTheme } from '@duxweb/dvha-core'
+import { computed } from 'vue'
 
 const { isDark, getSceneColor, getSemanticColor } = useTheme()
 

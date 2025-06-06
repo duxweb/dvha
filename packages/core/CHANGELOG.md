@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 0.1.17
+
+### Patch Changes
+
+- fix: 修正主题变量针对 tailwind 的透明度处理
+
 ## 0.1.16
 
 ### Patch Changes

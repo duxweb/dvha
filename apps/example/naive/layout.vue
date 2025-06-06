@@ -273,7 +273,6 @@ onMounted(() => {
   cssInit()
 })
 
-
 const themeOverrides = computed<GlobalThemeOverrides>(() => {
   return {
     common: {
@@ -400,7 +399,7 @@ const themeOverrides = computed<GlobalThemeOverrides>(() => {
 
 <style>
 html {
-  background-color: var(--ui-bg);
+  background-color: rgb(var(--ui-bg));
 }
 html.dark {
   color-scheme: dark;
