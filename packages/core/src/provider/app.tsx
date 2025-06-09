@@ -68,7 +68,7 @@ export const DuxAppProvider = defineComponent({
         return menus?.map((item: IMenu) => {
           return {
             ...item,
-            path: manage.getRoutePath(item.path || ''),
+            path: item.path ? manage.getRoutePath(item.path) : undefined,
           }
         })
       }

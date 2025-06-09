@@ -1,0 +1,5 @@
+.n-button--error-type {
+  --n-color: rgba(var(--ui-color-error) / 0.2) !important;
+  --n-color-hover: rgba(var(--ui-color-error) / 0.25) !important;
+  --n-color-pressed: rgba(var(--ui-color-error) / 0.35) !important;
+}

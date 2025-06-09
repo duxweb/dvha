@@ -1,5 +1,14 @@
 # @duxweb/dvha-naiveui
 
+## 1.0.4
+
+### Patch Changes
+
+- feat(theme): 增加手动主题切换
+  chore(data): 优化数据获取抖动
+  feat(export): 增加导出进度监听,增加 maxPage 回调配置
+  feat(naiveui): 增加表格增强 hook
+
 ## 1.0.3
 
 ### Patch Changes

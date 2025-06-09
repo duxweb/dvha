@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useExport, useExportCsv, useImport, useImportCsv, useList, useOverlay } from '@duxweb/dvha-core'
 import { ceil } from 'lodash-es'
-import { NButton, NDataTable, NInput, useMessage } from 'naive-ui'
+import { NButton, NDataTable, NForm, NFormItem, NInput, NPopover, NSelect, useMessage } from 'naive-ui'
 import { computed, h, ref } from 'vue'
+import Page from './page.vue'
 
 const pagination = ref({
   page: 1,
@@ -69,6 +70,9 @@ function handleImport() {
 
 const columns = [
   {
+    type: 'selection',
+  },
+  {
     title: 'ID',
     key: 'id',
   },
@@ -115,38 +119,107 @@ const columns = [
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
-    <div class="flex gap-4 items-center">
-      <NInput v-model:value="filters.keyword" placeholder="搜索" />
+  <Page>
+    <template #actions>
       <NButton type="primary" @click="handleCreate">
+        <template #icon>
+          <div class="i-tabler:plus size-4" />
+        </template>
         新增
       </NButton>
-      <NButton type="primary" :loading="isExporting" @click="handleExport">
-        导出
-      </NButton>
-      <NButton type="primary" :loading="isImporting" @click="handleImport">
-        导入
-      </NButton>
+    </template>
+
+    <div class="flex flex-col gap-3">
+      <div class="flex gap-2 justify-between">
+        <div class="flex gap-2">
+          <NInput v-model:value="filters.keyword" placeholder="请输入关键词搜索">
+            <template #prefix>
+              <div class="i-tabler:search size-4" />
+            </template>
+          </NInput>
+
+          <NSelect
+            class="min-w-30"
+            :options="[
+              {
+                label: '正常',
+                value: 'normal',
+              },
+              {
+                label: '禁用',
+                value: 'disabled',
+              },
+            ]" placeholder="请选择状态"
+          />
+        </div>
+        <div class="flex gap-2">
+          <n-badge :value="5">
+            <NButton :loading="isExporting" ghost type="error" @click="handleExport">
+              <template #icon>
+                <div class="i-tabler:trash size-4" />
+              </template>
+              删除
+            </NButton>
+          </n-badge>
+
+          <NButton icon-placement="right">
+            筛选
+            <template #icon>
+              <div class="i-tabler:settings size-4" />
+            </template>
+          </NButton>
+
+          <NDropdown
+            :options="[
+              {
+                label: '导出',
+                value: 'export',
+              },
+              {
+                label: '导入',
+                value: 'import',
+              },
+            ]"
+            placement="bottom-start"
+            trigger="click"
+          >
+            <NButton icon-placement="right">
+              列配置
+              <template #icon>
+                <div class="i-tabler:settings size-4" />
+              </template>
+            </NButton>
+          </NDropdown>
+
+          <!-- <NButton :loading="isExporting" @click="handleExport">
+            导出
+          </NButton>
+          <NButton :loading="isImporting" @click="handleImport">
+            导入
+          </NButton> -->
+        </div>
+      </div>
+      <NDataTable
+        remote
+        :row-key="(row) => row.id"
+        :loading="isLoading"
+        :columns="columns"
+        :data="data?.data"
+        :pagination="{
+          ...pagination,
+          pageCount,
+          onUpdatePage: (page) => {
+            pagination.page = page
+          },
+          onUpdatePageSize: (pageSize) => {
+            pagination.pageSize = pageSize
+            pagination.page = 1
+          },
+        }"
+        :bordered="false"
+      />
     </div>
-    <NDataTable
-      remote
-      :loading="isLoading"
-      :columns="columns"
-      :data="data?.data"
-      :pagination="{
-        ...pagination,
-        pageCount,
-        onUpdatePage: (page) => {
-          pagination.page = page
-        },
-        onUpdatePageSize: (pageSize) => {
-          pagination.pageSize = pageSize
-          pagination.page = 1
-        },
-      }"
-      :bordered="false"
-    />
-  </div>
+  </Page>
 </template>
 
 <style scoped>

@@ -1,13 +1,14 @@
 import type { InfiniteData } from '@tanstack/vue-query'
-import type { IDataProviderResponse } from '../types'
+import type { IDataProviderPagination, IDataProviderResponse } from '../types'
 import type { IInfiniteListParams } from './data'
 import { computed, ref } from 'vue'
 import { useInfiniteList } from './data'
 
 export interface IUseExportProps extends IInfiniteListParams {
   onSuccess?: (data: InfiniteData<IDataProviderResponse | undefined> | undefined) => void
+  onProgress?: (data: IDataProviderPagination) => void
   interval?: number
-  maxPage?: number
+  maxPage?: number | (() => number)
 }
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
@@ -16,12 +17,8 @@ export function useExport(props: IUseExportProps) {
   const isExporting = ref(false)
 
   const listProps = computed(() => {
-    const { onSuccess, interval, maxPage, ...rest } = props
+    const { onSuccess, onProgress, interval, maxPage, ...rest } = props
     return rest
-  })
-
-  const maxPage = computed(() => {
-    return props.maxPage || 100
   })
 
   const interval = computed(() => {
@@ -45,16 +42,22 @@ export function useExport(props: IUseExportProps) {
       isExporting.value = true
       pagination.value.page = 1
 
+      props.onProgress?.(pagination.value)
+
       await refetch()
 
-      while (hasNextPage.value && pagination.value.page < maxPage.value) {
+      const max = typeof props.maxPage === 'function' ? props.maxPage() : props.maxPage || 100
+
+      while (hasNextPage.value && pagination.value.page < max) {
         if (interval.value > 0) {
           await sleep(interval.value)
         }
 
         await fetchNextPage()
+
+        props.onProgress?.(pagination.value)
       }
-      props.onSuccess?.(data.value)
+      props.onSuccess?.(data.value as any)
     }
     finally {
       isExporting.value = false

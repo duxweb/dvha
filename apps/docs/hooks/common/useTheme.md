@@ -536,13 +536,13 @@ const preset = themePreset(themeColor)
 <div class="bg-green-100 text-purple-900">覆盖原生green-100、purple-900</div>
 
 <!-- 语义颜色工具类（预设提供） -->
-<div class="text bg-elevated border">自动主题适配</div>
+<div class="text-default bg-elevated border-default">自动主题适配</div>
 <div class="text-dimmed bg-muted border-accented">语义化样式</div>
 <div class="text-highlighted bg-inverted border-inverted">高对比样式</div>
 
 <!-- 所有交互状态 -->
 <button
-  class="bg-primary hover:bg-primary-hover active:bg-primary-pressed focus:bg-primary-focus disabled:bg-primary-disabled"
+  class="bg-default hover:bg-primary-hover active:bg-primary-pressed focus:bg-primary-focus disabled:bg-primary-disabled"
 >
   完整交互状态
 </button>

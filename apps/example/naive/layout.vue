@@ -6,10 +6,7 @@ import { OverlaysProvider } from '@overlastic/vue'
 import { darkTheme, lightTheme, NIcon } from 'naive-ui'
 import { computed, h, onMounted } from 'vue'
 
-import 'element-plus/dist/index.css'
-
 const { options, active } = useNaiveMenu({})
-const { props: tabsProps, tabs } = useNaiveTab()
 
 const { mode, isDark, toggle, cssInit, setColor, getSceneColor, getSemanticColor } = useTheme()
 
@@ -324,12 +321,38 @@ const themeOverrides = computed<GlobalThemeOverrides>(() => {
       hoverColor: getSemanticColor('bg', 'accented'),
 
       // UI 边框色彩 - 使用语义颜色
-      borderColor: getSemanticColor('border', 'base'),
-      dividerColor: getSemanticColor('border', 'muted'),
+      borderColor: getSemanticColor('border', 'accented'),
+      dividerColor: getSemanticColor('border', 'accented'),
 
       // 占位符和图标色彩
       placeholderColor: getSemanticColor('text', 'muted'),
       iconColor: getSemanticColor('text', 'muted'),
+
+      borderRadius: '0.25rem',
+      borderRadiusSmall: '0.2rem',
+
+    },
+    DataTable: {
+      borderColor: getSemanticColor('border', 'muted'),
+      tdColor: getSemanticColor('bg', 'muted'),
+      thColor: getSemanticColor('bg', 'elevated'),
+      tdColorHover: getSemanticColor('bg', 'elevated'),
+    },
+
+    Input: {
+      border: '1px solid rgb(var(--ui-border-accented))',
+    },
+
+    Select: {
+      peers: {
+        InternalSelection: {
+          border: '1px solid rgb(var(--ui-border-accented))',
+        },
+      },
+    },
+
+    Button: {
+
     },
   }
 })
@@ -340,9 +363,9 @@ const themeOverrides = computed<GlobalThemeOverrides>(() => {
     <n-message-provider>
       <OverlaysProvider>
         <div class="h-screen w-screen flex">
-          <div class="bg-gray-100 dark:bg-gray-900 rounded flex flex-col gap-2 py-3 px-1 flex-none">
+          <div class="bg-gray-100 dark:bg-gray-800/20 rounded flex flex-col gap-2 py-3 px-1 flex-none border-r border-muted">
             <div class="flex items-center justify-center p-2">
-              <DuxLogo highlight="fill-green-600" />
+              <DuxLogo highlight="fill-primary" />
             </div>
             <div class="flex-1 w-60px">
               <n-menu :options="options" :value="active" :collapsed="true" :collapsed-width="60" :collapsed-icon-size="20" />
@@ -360,48 +383,81 @@ const themeOverrides = computed<GlobalThemeOverrides>(() => {
               />
             </div>
           </div>
-          <div class="flex-1 w-auto m-4 flex flex-col gap-2">
-            <div class="flex justify-between items-center">
-              <div class="flex flex-col">
-                <div class="text-sm text-gray-500">
-                  {{ i18n.t('overview') }}
-                </div>
-                <div class="text-2xl font-bold">
-                  {{ i18n.t('hello') }}
-                </div>
-              </div>
-              <div class="flex items-center gap-2">
-                <n-button @click="toggle()">
-                  主题 {{ mode }}
-                </n-button>
-              </div>
-            </div>
 
-            <n-tabs
-              type="card"
-              tab-style="min-width: 80px;"
-              v-bind="tabsProps"
-            >
-              <n-tab v-for="tab in tabs" :key="tab.path" :name="tab.path" :closable="!tab.meta?.lock">
-                {{ tab.label }}
-              </n-tab>
-            </n-tabs>
-
-            <div class="flex-1 h-auto overflow-y-auto">
-              <DuxTabRouterView />
-            </div>
-          </div>
+          <DuxTabRouterView />
         </div>
       </OverlaysProvider>
     </n-message-provider>
   </n-config-provider>
 </template>
 
-<style>
+<style lang="scss">
 html {
-  background-color: rgb(var(--ui-bg));
+  background-color: rgb(var(--ui-color-white));
 }
 html.dark {
   color-scheme: dark;
+  background-color: rgb(var(--ui-color-gray-900));
+}
+
+.light {
+  .layout-tabs.n-tabs .n-tabs-nav.n-tabs-nav--card-type .n-tabs-tab {
+    --n-tab-color: #fff;
+    border-radius: var(--n-tab-border-radius);
+  }
+}
+
+.dark {
+  .layout-tabs.n-tabs .n-tabs-nav.n-tabs-nav--card-type .n-tabs-tab {
+    --n-tab-color: rgb(24, 24, 28);
+    border-radius: var(--n-tab-border-radius);
+  }
+}
+
+.light {
+  .layout-tabs.n-tabs .n-tabs-nav.n-tabs-nav--top.n-tabs-nav--card-type .n-tabs-tab.n-tabs-tab--active {
+    border: 1px solid rgba(var(--ui-color-primary-200));
+    background-color: rgba(var(--ui-color-primary), 0.1);
+  }
+}
+
+.dark {
+  .layout-tabs.n-tabs .n-tabs-nav.n-tabs-nav--top.n-tabs-nav--card-type .n-tabs-tab.n-tabs-tab--active {
+    border: 1px solid rgba(var(--ui-color-primary-700));
+    background-color: rgb(var(--ui-color-primary) / 0.1);
+  }
+}
+
+.layout-tabs.n-tabs .n-tabs-nav.n-tabs-nav--top.n-tabs-nav--card-type .n-tabs-pad {
+  border: none;
+}
+
+.n-data-table {
+  .n-data-table-thead {
+    border: 1px solid rgb(var(--ui-border-muted));
+    .n-data-table-tr {
+      > .n-data-table-th:first-child {
+        border-top-left-radius: 0.25rem;
+        border-bottom-left-radius: 0.25rem;
+        border-left: 1px solid rgba(var(--ui-border-accented) / 0.5);
+      }
+      > .n-data-table-th--last {
+        border-top-right-radius: 0.25rem;
+        border-bottom-right-radius: 0.25rem;
+        border-right: 1px solid rgba(var(--ui-border-accented) / 0.5);
+      }
+    }
+  }
+
+  .n-data-table-th {
+    border-top: 1px solid rgba(var(--ui-border-accented) / 0.5);
+    border-bottom: 1px solid rgba(var(--ui-border-accented) / 0.5);
+  }
+}
+
+.n-button--error-type {
+  --n-color: rgba(var(--ui-color-error) / 0.2) !important;
+  --n-color-hover: rgba(var(--ui-color-error) / 0.25) !important;
+  --n-color-pressed: rgba(var(--ui-color-error) / 0.35) !important;
 }
 </style>

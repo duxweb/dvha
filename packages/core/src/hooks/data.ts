@@ -2,7 +2,7 @@
 import type { DefaultError, DefinedInitialDataInfiniteOptions, DefinedInitialQueryOptions, InfiniteData, UseMutationOptions } from '@tanstack/vue-query'
 import type { IDataProviderCreateManyOptions, IDataProviderCreateOptions, IDataProviderCustomOptions, IDataProviderDeleteManyOptions, IDataProviderDeleteOptions, IDataProviderError, IDataProviderGetManyOptions, IDataProviderGetOneOptions, IDataProviderListOptions, IDataProviderPagination, IDataProviderResponse, IDataProviderUpdateManyOptions, IDataProviderUpdateOptions } from '../types'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import { computed, toRef, watch } from 'vue'
+import { computed, ref, toRef, watch } from 'vue'
 import { useError, useGetAuth } from './auth'
 import { useManage } from './manage'
 
@@ -64,10 +64,20 @@ export function useList(params: IListParams) {
     params.onError?.(req.error)
   })
 
+  const data = ref<IDataProviderResponse | undefined>(undefined)
+  watch(req.data, (v) => {
+    if (!v) {
+      return
+    }
+    data.value = v
+  }, {
+    immediate: true,
+  })
+
   return {
     ...req,
     isLoading,
-    data: req.data,
+    data,
     refetch: req.refetch,
     pagination,
   }
@@ -151,10 +161,20 @@ export function useInfiniteList(params: IInfiniteListParams) {
     return req.fetchNextPage()
   }
 
+  const data = ref<IDataProviderResponse | undefined>(undefined)
+  watch(req.data, (v) => {
+    if (!v) {
+      return
+    }
+    data.value = v
+  }, {
+    immediate: true,
+  })
+
   return {
     ...req,
     isLoading,
-    data: req.data,
+    data,
     fetchNextPage,
     hasNextPage: req.hasNextPage,
     refetch: req.refetch,
@@ -201,10 +221,20 @@ export function useOne(params: IOneParams) {
     params.onError?.(req.error)
   })
 
+  const data = ref<IDataProviderResponse | undefined>(undefined)
+  watch(req.data, (v) => {
+    if (!v) {
+      return
+    }
+    data.value = v
+  }, {
+    immediate: true,
+  })
+
   return {
     ...req,
     isLoading,
-    data: req.data,
+    data,
     refetch: req.refetch,
   }
 }
@@ -247,10 +277,20 @@ export function useMany(params: IManyParams) {
     params.onError?.(req.error)
   })
 
+  const data = ref<IDataProviderResponse | undefined>(undefined)
+  watch(req.data, (v) => {
+    if (!v) {
+      return
+    }
+    data.value = v
+  }, {
+    immediate: true,
+  })
+
   return {
     ...req,
     isLoading,
-    data: req.data,
+    data,
     refetch: req.refetch,
   }
 }
@@ -616,10 +656,20 @@ export function useCustom(params: ICustomParams) {
     params.onError?.(req.error)
   })
 
+  const data = ref<IDataProviderResponse | undefined>(undefined)
+  watch(req.data, (v) => {
+    if (!v) {
+      return
+    }
+    data.value = v
+  }, {
+    immediate: true,
+  })
+
   return {
     ...req,
     isLoading,
-    data: req.data,
+    data,
     refetch: req.refetch,
   }
 }

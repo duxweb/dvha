@@ -1,0 +1,22 @@
+.n-data-table {
+  .n-data-table-thead {
+    border: 1px solid rgb(var(--ui-border-muted));
+    .n-data-table-tr {
+      > .n-data-table-th:first-child {
+        border-top-left-radius: 0.25rem;
+        border-bottom-left-radius: 0.25rem;
+        border-left: 1px solid rgba(var(--ui-border-accented) / 0.5);
+      }
+      > .n-data-table-th--last {
+        border-top-right-radius: 0.25rem;
+        border-bottom-right-radius: 0.25rem;
+        border-right: 1px solid rgba(var(--ui-border-accented) / 0.5);
+      }
+    }
+  }
+
+  .n-data-table-th {
+    border-top: 1px solid rgba(var(--ui-border-accented) / 0.5);
+    border-bottom: 1px solid rgba(var(--ui-border-accented) / 0.5);
+  }
+}

@@ -1,5 +1,5 @@
 import type { ITheme } from '../types'
-import { useColorMode, useCycleList, useStyleTag } from '@vueuse/core'
+import { useColorMode, useCycleList } from '@vueuse/core'
 import { hex2rgb } from 'colorizr'
 import { storeToRefs } from 'pinia'
 import { computed, readonly, watch, watchEffect } from 'vue'
@@ -83,13 +83,27 @@ export function useTheme() {
   })
   const manage = useManage()
 
-  const { state, next } = useCycleList(['dark', 'light', 'auto'] as const, {
+  const { state, next, go } = useCycleList(['dark', 'light', 'auto'] as const, {
     initialValue: colorMode.store.value,
   })
 
   watchEffect(() => {
     colorMode.value = state.value
   })
+
+  const setMode = (mode: 'dark' | 'light' | 'auto') => {
+    switch (mode) {
+      case 'auto':
+        go(2)
+        break
+      case 'light':
+        go(1)
+        break
+      case 'dark':
+        go(0)
+        break
+    }
+  }
 
   const isDark = computed(() => {
     const { system, store } = colorMode
@@ -135,9 +149,9 @@ export function useTheme() {
         border: { base: '200', muted: '200', accented: '300', inverted: '900' },
       },
       dark: {
-        text: { dimmed: '600', muted: '500', toned: '400', base: '300', highlighted: '100', inverted: 'black' },
+        text: { dimmed: '600', muted: '500', toned: '300', base: '200', highlighted: '100', inverted: 'black' },
         bg: { base: '950', muted: '900', elevated: '800', accented: '700', inverted: '100' },
-        border: { base: '800', muted: '800', accented: '700', inverted: '100' },
+        border: { base: '900', muted: '800', accented: '700', inverted: '100' },
       },
     },
     colorBase: { white: '#ffffff', black: '#000000' },
@@ -191,7 +205,7 @@ export function useTheme() {
     const value = currentSemantic[category][key as keyof typeof currentSemantic[typeof category]]
 
     if (value === 'white' || value === 'black') {
-      return `var(--color-${value})`
+      return `var(--ui-color-${value})`
     }
     return `var(--base-color-${grayColor}-${value})`
   }
@@ -239,8 +253,8 @@ export function useTheme() {
     // 生成公共变量
     const grayColor = colorMapping.value.gray
     const colorBase: string[] = [
-      `--color-white: ${color2rgb(finalConfig.colorBase?.white || '#ffffff')};`,
-      `--color-black: ${color2rgb(finalConfig.colorBase?.black || '#000000')};`,
+      `--ui-color-white: ${color2rgb(finalConfig.colorBase?.white || '#ffffff')};`,
+      `--ui-color-black: ${color2rgb(finalConfig.colorBase?.black || '#000000')};`,
 
       `--ui-text-dimmed: ${getSemanticValue('text', 'dimmed', grayColor)};`,
       `--ui-text-muted: ${getSemanticValue('text', 'muted', grayColor)};`,
@@ -264,7 +278,20 @@ export function useTheme() {
     return `:root {\n  ${baseVars.join('\n  ')}\n  ${uiVars.join('\n  ')}\n  ${colorBase.join('\n  ')}\n}`
   }
 
-  const { css } = useStyleTag(generateCSSVariables(), { id: 'theme-variables' })
+  // 手动维护样式节点
+  let styleElement: HTMLStyleElement | null = null
+
+  function createOrUpdateStyle() {
+    const cssContent = generateCSSVariables()
+
+    if (!styleElement) {
+      styleElement = document.createElement('style')
+      styleElement.id = 'dvha-variables'
+      document.head.appendChild(styleElement)
+    }
+
+    styleElement.textContent = cssContent
+  }
 
   // 初始化CSS变量引用
   function cssInit() {
@@ -272,14 +299,14 @@ export function useTheme() {
       return
     }
     themeStore.setCssInit()
-    css.value = generateCSSVariables()
+    createOrUpdateStyle()
   }
 
   watch([colorMapping, isDark], () => {
     if (!themeStore.cssInit) {
       return
     }
-    css.value = generateCSSVariables()
+    createOrUpdateStyle()
   }, { deep: true, immediate: false })
 
   // 设置单个颜色
@@ -303,28 +330,61 @@ export function useTheme() {
   }
 
   // 获取阶梯颜色值
-  function getShadeColor(type: ThemeColorType, shade: ThemeColorShade): string {
+  function getShadeColor(type: ThemeColorType, shade: ThemeColorShade, asVariable = false): string {
+    if (asVariable) {
+      return `rgb(var(--ui-color-${type}-${shade}))`
+    }
     return getColorValue(type, shade)
   }
 
   // 获取场景颜色值
-  function getSceneColor(type: ThemeColorType, scene?: ThemeSceneType): string {
+  function getSceneColor(type: ThemeColorType, scene?: ThemeSceneType, asVariable = false): string {
     if (!scene) {
       scene = 'default'
     }
 
+    if (asVariable) {
+      if (scene === 'default') {
+        return `rgb(var(--ui-color-${type}))`
+      }
+      return `rgb(var(--ui-color-${type}-${scene}))`
+    }
+
+    // 返回具体颜色值
     const level = getColorLevel(type, scene)
     return getColorValue(type, level)
   }
 
   // 获取公共颜色值
-  function getSemanticColor(category: keyof ThemeColorSemanticConfig, key: string): string {
+  function getSemanticColor(category: keyof ThemeColorSemanticConfig, key: string, asVariable = false): string {
+    if (asVariable) {
+      // 构建语义变量名
+      let varName: string
+
+      switch (category) {
+        case 'text':
+          varName = key === 'base' ? '--ui-text' : `--ui-text-${key}`
+          break
+        case 'bg':
+          varName = key === 'base' ? '--ui-bg' : `--ui-bg-${key}`
+          break
+        case 'border':
+          varName = key === 'base' ? '--ui-border' : `--ui-border-${key}`
+          break
+        default:
+          varName = `--ui-${category}-${key}`
+      }
+
+      return `rgb(var(${varName}))`
+    }
+
+    // 返回具体颜色值
     const grayColor = colorMapping.value.gray
     const currentSemantic = isDark.value ? finalConfig.colorSemantic.dark : finalConfig.colorSemantic.light
     const value = currentSemantic[category][key as keyof typeof currentSemantic[typeof category]]
 
     if (value === 'white') {
-      return '#ffffff'
+      return finalConfig.colorBase?.white || '#ffffff'
     }
     if (value === 'black') {
       return finalConfig.colorBase?.black || '#000000'
@@ -333,15 +393,28 @@ export function useTheme() {
     return finalConfig.colors[grayColor]?.[value] || ''
   }
 
+  const neutralColors = computed(() => {
+    return colors.value?.filter(color => ['slate', 'gray', 'zinc', 'neutral', 'stone'].includes(color))
+  })
+
+  const primaryColors = computed(() => {
+    return colors.value?.filter(color => !['slate', 'gray', 'zinc', 'neutral', 'stone'].includes(color))
+  })
+
   return {
     toggle: next,
     mode: state,
+    setMode,
     isDark,
 
     resources,
     config: readonly(finalConfig),
     colorMapping: readonly(colorMapping),
+
     colors,
+    neutralColors,
+    primaryColors,
+
     colorShades,
     colorTypes,
     colorScenes,

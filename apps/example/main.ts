@@ -1,6 +1,6 @@
 import type { IConfig } from '@duxweb/dvha-core'
 import { createDux, i18nProvider, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
-import ElementPlus from 'element-plus'
+//import ElementPlus from 'element-plus'
 import naive from 'naive-ui'
 import { createApp } from 'vue'
 import App from './App.vue'
@@ -114,5 +114,5 @@ const config: IConfig = {
 
 app.use(createDux(config))
 app.use(naive)
-app.use(ElementPlus)
+//app.use(ElementPlus)
 app.mount('#app')

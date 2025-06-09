@@ -1,0 +1,32 @@
+{
+  "name": "dvha-pro",
+  "type": "module",
+  "version": "0.0.2",
+  "private": true,
+  "author": "DuxWeb",
+  "license": "MIT",
+  "files": [
+    "README.md",
+    "dist",
+    "package.json"
+  ],
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@duxweb/dvha-core": "workspace:*",
+    "@duxweb/dvha-naiveui": "workspace:*",
+    "@iconify-json/tabler": "^1.2.18",
+    "@unocss/preset-icons": "^66.1.2",
+    "@vueuse/core": "^13.3.0",
+    "@vueuse/integrations": "^13.3.0",
+    "axios": "^1.9.0",
+    "lodash-es": "^4.17.21",
+    "naive-ui": "^2.41.0",
+    "sass-embedded": "^1.89.1",
+    "unocss": "^66.1.2",
+    "vue-command-palette": "^0.2.3"
+  }
+}

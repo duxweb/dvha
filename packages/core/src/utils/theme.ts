@@ -8,8 +8,8 @@ export function themePreset(themeColor: Record<string, any>) {
   const colorTypes = ['primary', 'info', 'success', 'warning', 'error', 'gray']
   const scenes = ['hover', 'pressed', 'focus', 'disabled']
 
-  colorsVar.white = { DEFAULT: withRgb('--color-white') }
-  colorsVar.black = { DEFAULT: withRgb('--color-black') }
+  colorsVar.white = { DEFAULT: withRgb('--ui-color-white') }
+  colorsVar.black = { DEFAULT: withRgb('--ui-color-black') }
 
   Object.keys(themeColor).forEach((colorName) => {
     colorsVar[colorName] = {}
@@ -34,7 +34,7 @@ export function themePreset(themeColor: Record<string, any>) {
 
   const classVars = {
     // 文字颜色
-    'text': {
+    'text-default': {
       color: withRgb('--ui-text'),
     },
     'text-dimmed': {
@@ -54,7 +54,7 @@ export function themePreset(themeColor: Record<string, any>) {
     },
 
     // 背景颜色
-    'bg': {
+    'bg-default': {
       'background-color': withRgb('--ui-bg'),
     },
     'bg-muted': {
@@ -71,7 +71,7 @@ export function themePreset(themeColor: Record<string, any>) {
     },
 
     // 边框颜色
-    'border': {
+    'border-default': {
       'border-color': withRgb('--ui-border'),
     },
     'border-muted': {
