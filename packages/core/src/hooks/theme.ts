@@ -149,7 +149,7 @@ export function useTheme() {
         border: { base: '200', muted: '200', accented: '300', inverted: '900' },
       },
       dark: {
-        text: { dimmed: '600', muted: '500', toned: '300', base: '200', highlighted: '100', inverted: 'black' },
+        text: { dimmed: '600', muted: '500', toned: '400', base: '300', highlighted: '100', inverted: 'black' },
         bg: { base: '950', muted: '900', elevated: '800', accented: '700', inverted: '100' },
         border: { base: '900', muted: '800', accented: '700', inverted: '100' },
       },

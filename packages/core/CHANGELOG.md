@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 0.1.19
+
+### Patch Changes
+
+- feat: 增加 JSON 渲染器 hook
+
 ## 0.1.18
 
 ### Patch Changes

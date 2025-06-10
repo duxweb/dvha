@@ -8,7 +8,7 @@ html {
 }
 html.dark {
   color-scheme: dark;
-  background-color: rgb(var(--ui-color-gray-900));
+  background-color: rgba(var(--ui-color-gray-900), 0.5);
 }
 
 .app-menu-button.n-button {

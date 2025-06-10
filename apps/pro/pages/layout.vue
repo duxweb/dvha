@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { GlobalThemeOverrides, MenuOption } from 'naive-ui'
+import type { MenuOption } from 'naive-ui'
 import { DuxLogo, DuxTabRouterView, useI18n, useOverlay, useTheme } from '@duxweb/dvha-core'
-import { useNaiveMenu, useNaiveTab } from '@duxweb/dvha-naiveui'
+import { useNaiveMenu } from '@duxweb/dvha-naiveui'
 import { OverlaysProvider } from '@overlastic/vue'
 import { darkTheme, lightTheme, NIcon } from 'naive-ui'
-import { computed, h, onMounted } from 'vue'
+import { h, onMounted } from 'vue'
 import { themeOverrides } from '../theme'
 
 const { options, active } = useNaiveMenu({})
@@ -284,7 +284,7 @@ const { lightTheme: lightThemeOverrides, darkTheme: darkThemeOverrides } = theme
               <div class="flex items-center justify-center p-2">
                 <DuxLogo highlight="fill-primary" />
               </div>
-              <div class="flex-1 w-60px">
+              <div class="flex-1 w-60px min-h-0">
                 <n-menu :options="options" :value="active" :collapsed="true" :collapsed-width="60" :collapsed-icon-size="20" />
               </div>
 

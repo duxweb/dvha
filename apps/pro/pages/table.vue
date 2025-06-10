@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import type { DataTableColumn } from 'naive-ui'
-import { useExport, useExportCsv, useImport, useImportCsv, useList, useOverlay } from '@duxweb/dvha-core'
-import { ceil } from 'lodash-es'
-import { NButton, NDataTable, NForm, NFormItem, NInput, NPopover, NSelect, useMessage } from 'naive-ui'
-import { computed, h, ref } from 'vue'
+import type { TableColumn } from '@duxweb/dvha-naiveui'
+import { useOverlay } from '@duxweb/dvha-core'
+import { NButton, NInput } from 'naive-ui'
+import { h, ref } from 'vue'
 import Page from '../components/pages/page'
-import DuxTable from '../components/pages/table'
+import { DuxTableFilter, DuxTablePage } from '../components/table'
 
 const pagination = ref({
   page: 1,
@@ -24,9 +23,10 @@ function handleCreate() {
   })
 }
 
-const columns: DataTableColumn[] = [
+const columns: TableColumn[] = [
   {
     type: 'selection',
+    key: 'selection',
   },
   {
     title: 'ID',
@@ -51,6 +51,8 @@ const columns: DataTableColumn[] = [
   {
     title: 'Action',
     key: 'actions',
+    fixed: 'right',
+    width: 100,
     render(row) {
       return h(
         NButton,
@@ -72,6 +74,28 @@ const columns: DataTableColumn[] = [
     },
   },
 ]
+
+const tabs = ref([
+  {
+    label: '全部',
+    value: 'all',
+  },
+  {
+    label: '已启用',
+    value: 'enabled',
+  },
+  {
+    label: '已禁用',
+    value: 'disabled',
+  },
+])
+
+const filterOptions = [
+  {
+    label: '状态',
+    value: 'status',
+  },
+]
 </script>
 
 <template>
@@ -85,15 +109,36 @@ const columns: DataTableColumn[] = [
       </NButton>
     </template>
 
-    <DuxTable
+    <DuxTablePage
       path="user"
       :columns="columns"
       :filters="filters"
+      :tabs="tabs"
     >
       <template #filters>
-        <NInput v-model:value="filters.keyword" placeholder="请输入关键词搜索" />
+        <DuxTableFilter>
+          <NInput v-model:value="filters.keyword" placeholder="请输入关键词搜索" />
+        </DuxTableFilter>
+        <DuxTableFilter>
+          <NInput v-model:value="filters.keyword" placeholder="请输入关键词搜索" />
+        </DuxTableFilter>
+        <DuxTableFilter>
+          <NInput v-model:value="filters.keyword" placeholder="请输入关键词搜索" />
+        </DuxTableFilter>
+        <DuxTableFilter>
+          <NInput v-model:value="filters.keyword" placeholder="请输入关键词搜索" />
+        </DuxTableFilter>
+        <DuxTableFilter>
+          <NInput v-model:value="filters.keyword" placeholder="请输入关键词搜索" />
+        </DuxTableFilter>
+        <DuxTableFilter>
+          <NInput v-model:value="filters.keyword" placeholder="请输入关键词搜索" />
+        </DuxTableFilter>
+        <DuxTableFilter>
+          <NInput v-model:value="filters.keyword" placeholder="请输入关键词搜索" />
+        </DuxTableFilter>
       </template>
-    </DuxTable>
+    </DuxTablePage>
   </Page>
 </template>
 

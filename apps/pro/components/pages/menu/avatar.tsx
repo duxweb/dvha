@@ -1,8 +1,8 @@
 import type { DropdownOption } from 'naive-ui'
 import type { VNodeChild } from 'vue'
 import { useI18n, useTheme } from '@duxweb/dvha-core'
-import { NAvatar, NButton, NDropdown } from 'naive-ui'
-import { computed, defineComponent, watch } from 'vue'
+import { NAvatar, NDropdown } from 'naive-ui'
+import { computed, defineComponent } from 'vue'
 import { useUI } from '../../../hooks/ui'
 import DuxMenuButton from './button'
 
@@ -16,7 +16,7 @@ export default defineComponent({
     const labelCheckRender = (inner: VNodeChild, checked?: boolean) => {
       return (
         <div class="flex gap-2 items-center w-30">
-          <div class="flex-1">{inner}</div>
+          <div class="flex-1 min-w-0">{inner}</div>
           <div>
             {checked && <div class="i-tabler:check"></div>}
           </div>

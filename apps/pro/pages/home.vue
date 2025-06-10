@@ -1,6 +1,5 @@
 <script setup>
-import Page from './page.vue'
-
+import Page from '../components/pages/page'
 </script>
 
 <template>

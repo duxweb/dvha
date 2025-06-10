@@ -60,9 +60,9 @@ onMounted(() => {
       </n-form-item>
 
       <n-form-item label="上传" path="upload">
-        <div class="flex flex-col gap-2 flex-1">
+        <div class="flex flex-col gap-2 flex-1 min-h-0">
           <div class="flex items-center gap-2">
-            <NButton @click="open">
+            <NButton @click="() => open()">
               选择文件
             </NButton>
             <NButton @click="trigger">
@@ -73,7 +73,6 @@ onMounted(() => {
             </NButton>
           </div>
           <div class="flex flex-col gap-2">
-
             <NDataTable
               :bordered="true"
               :columns="[
@@ -154,7 +153,6 @@ onMounted(() => {
               ]"
               :data="uploadFiles"
             />
-
           </div>
         </div>
       </n-form-item>

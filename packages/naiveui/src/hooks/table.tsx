@@ -1,7 +1,7 @@
-import type { DataTableBaseColumn, DataTableExpandColumn, DataTableFilterState, DataTableProps, DataTableRowKey, DataTableSortState, PaginationProps } from 'naive-ui'
+import type { DataTableBaseColumn, DataTableExpandColumn, DataTableFilterState, DataTableProps, DataTableRowKey, DataTableSelectionColumn, DataTableSortState, PaginationProps } from 'naive-ui'
 import type { ComputedRef, Ref } from 'vue'
 import { useList } from '@duxweb/dvha-core'
-import { reactiveComputed } from '@vueuse/core'
+import { reactiveComputed, refDebounced } from '@vueuse/core'
 import { cloneDeep } from 'lodash-es'
 import { computed, ref, toRef, watch } from 'vue'
 
@@ -17,7 +17,8 @@ export interface TablePagination {
 
 export type TableColumnKey = string | number
 
-export type TableColumn = (DataTableBaseColumn | DataTableExpandColumn) & TableColumnExtend
+type DataTableColumn = DataTableBaseColumn | DataTableExpandColumn | DataTableSelectionColumn
+export type TableColumn = DataTableColumn & TableColumnExtend
 
 export interface UseTableProps {
   path: string
@@ -37,18 +38,29 @@ export interface UseNaiveTableReturn {
   columns: Ref<TableColumn[]>
   isLoading: ComputedRef<boolean>
   columnSelected: ComputedRef<string[]>
+  tableCheckeds: Ref<DataTableRowKey[]>
+  tableSorters: Ref<Record<string, 'asc' | 'desc'>>
+  tableFilters: Ref<Record<string, any>>
+  tableExpanded: Ref<DataTableRowKey[]>
   onUpdateColumnSelected: (v: string[]) => void
   onUpdateChecked: (v: DataTableRowKey[]) => void
   onUpdateExpanded: (v: DataTableRowKey[]) => void
   onUpdateSorter: (v: DataTableSortState | DataTableSortState[] | null) => void
   onUpdateFilter: (v: DataTableFilterState) => void
-  refetch: () => void
+  onRefresh: () => void
   dataFilters: Record<string, any>
   dataSorters: Ref<Record<string, 'asc' | 'desc'>>
 }
 
 export function useNaiveTable(props: UseTableProps): UseNaiveTableReturn {
-  const filters = toRef(props.filters)
+  const filters = toRef<Record<string, any>>(props.filters)
+  const filtersDebounced = refDebounced(filters, 1000)
+
+  watch(() => props.filters, (v) => {
+    filters.value = v
+  }, {
+    deep: true,
+  })
 
   const pagination = toRef(typeof props.pagination === 'object'
     ? props.pagination
@@ -62,10 +74,16 @@ export function useNaiveTable(props: UseTableProps): UseNaiveTableReturn {
   const tableFilters = ref<Record<string, any>>({})
   const tableExpanded = ref<DataTableRowKey[]>([])
 
-  const dataFilters = reactiveComputed<Record<string, any>>(() => ({
-    ...filters.value,
-    ...tableFilters.value,
-  }))
+  const dataFilters = reactiveComputed(() => {
+    return {
+      ...filtersDebounced.value,
+      ...tableFilters.value,
+    }
+  })
+
+  watch(dataFilters, () => {
+    tableCheckeds.value = []
+  })
 
   const { data, isLoading, refetch } = useList({
     path: props.path,
@@ -190,6 +208,11 @@ export function useNaiveTable(props: UseTableProps): UseNaiveTableReturn {
   const list = computed<Record<string, any>[]>(() => data.value?.data || [])
   const meta = computed<Record<string, any> | undefined>(() => data.value?.meta || {})
 
+  const onRefresh = () => {
+    tableCheckeds.value = []
+    refetch()
+  }
+
   return {
     list,
     meta,
@@ -199,12 +222,16 @@ export function useNaiveTable(props: UseTableProps): UseNaiveTableReturn {
     isLoading,
     columnSelected,
 
+    tableCheckeds,
+    tableExpanded,
+    tableFilters,
+    tableSorters,
+    onRefresh,
     onUpdateColumnSelected,
     onUpdateChecked,
     onUpdateExpanded,
     onUpdateSorter,
     onUpdateFilter,
-    refetch,
     dataFilters,
     dataSorters: tableSorters,
   }

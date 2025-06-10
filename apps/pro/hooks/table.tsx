@@ -1,23 +1,29 @@
+import type { UseTableProps } from '@duxweb/dvha-naiveui'
 import type { NotificationReactive } from 'naive-ui'
-import type { MaybeRef } from 'vue'
 import { useExportCsv, useImportCsv } from '@duxweb/dvha-core'
-import { useCountdown } from '@vueuse/core'
+import { useNaiveTable } from '@duxweb/dvha-naiveui'
+import { reactiveComputed, useCountdown } from '@vueuse/core'
 import { NProgress, useMessage, useNotification } from 'naive-ui'
 import { computed, ref } from 'vue'
 
-interface UseTableProps {
-  path: string
+interface UseTableExtendProps extends UseTableProps {
   totalField?: string
-  filters?: Record<string, any>
-  pageCount?: number
-  meta?: MaybeRef<Record<string, any>>
-  refetch?: () => void
 }
 
-export function useTableExtend(props: UseTableProps) {
+export function useTable(props: UseTableExtendProps) {
+  const tableProps = computed(() => {
+    const { totalField, ...rest } = props
+    return rest
+  })
+
+  const result = useNaiveTable(tableProps.value)
+
   const autoRefetch = ref(false)
   const message = useMessage()
   const notification = useNotification()
+
+  // const meta = toRef(props.meta || {})
+  // const filters = toRef(props.filters || {})
 
   const nRef = ref<NotificationReactive | null>(null)
 
@@ -29,7 +35,7 @@ export function useTableExtend(props: UseTableProps) {
   })
 
   const total = computed(() => {
-    return props.meta?.[props.totalField || 'total'] || 0
+    return result.meta.value?.[props.totalField || 'total'] || 0
   })
 
   const pageCount = computed(() => {
@@ -38,7 +44,7 @@ export function useTableExtend(props: UseTableProps) {
 
   const { trigger: onExportTrigger, isLoading: isExporting } = useExportCsv({
     path: props.path,
-    filters: props.filters,
+    filters: result.dataFilters.value,
     maxPage: () => {
       return pageCount.value
     },
@@ -47,10 +53,9 @@ export function useTableExtend(props: UseTableProps) {
     onSuccess: (data) => {
       nRef.value?.destroy()
       nRef.value = null
-      const total = data?.pages?.reduce((acc, item) => acc + item?.data.length, 0) || 0
       notification.success({
         title: '导出数据成功',
-        content: `成功导出 ${total} 条数据`,
+        content: `成功导出 ${data?.pages?.reduce((acc, item) => acc + item?.data.length, 0) || 0} 条数据`,
         duration: 6000,
       })
     },
@@ -87,6 +92,25 @@ export function useTableExtend(props: UseTableProps) {
   const onExport = () => {
     onExportTrigger()
   }
+
+  const exportFilter = reactiveComputed(() => {
+    return {
+      ids: result.tableCheckeds.value,
+    }
+  })
+
+  const { trigger: onExportRows, isLoading: isExportingRows } = useExportCsv({
+    path: props.path,
+    filters: exportFilter,
+    maxPage: 1,
+    filename: 'rows.csv',
+    onSuccess: () => {
+      message.success('导出数据成功')
+    },
+    onError: (error) => {
+      message.error(`导出数据失败：${error.message}`)
+    },
+  })
 
   const { open: onImport, isLoading: isImporting } = useImportCsv({
     path: props.path,
@@ -126,14 +150,15 @@ export function useTableExtend(props: UseTableProps) {
 
   const { remaining, start, stop } = useCountdown(10, {
     onComplete: () => {
-      props.refetch?.()
+      result.onRefresh()
       start()
     },
   })
 
-  const onRefresh = () => {
+  const onAutoRefetch = () => {
     autoRefetch.value = !autoRefetch.value
     if (autoRefetch.value) {
+      result.onRefresh()
       start()
     }
     else {
@@ -142,13 +167,17 @@ export function useTableExtend(props: UseTableProps) {
   }
 
   return {
+    ...result,
+
     isExporting,
     isImporting,
+    isExportingRows,
     onImport,
     onExport,
+    onExportRows,
 
     autoRefetch,
-    onRefresh,
+    onAutoRefetch,
     countdown: remaining,
   }
 }

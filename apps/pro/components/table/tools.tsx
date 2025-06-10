@@ -7,10 +7,13 @@ export interface DuxToolOptionItem {
   label?: string
   icon?: string
   onClick?: () => void
+  loading?: boolean
+  disabled?: boolean
+  type?: 'default' | 'error' | 'success' | 'warning'
 }
 
-export const DuxTools = defineComponent({
-  name: 'DuxTools',
+export const DuxTableTools = defineComponent({
+  name: 'DuxTableTools',
   props: {
     number: {
       type: Number,
@@ -51,7 +54,7 @@ export const DuxTools = defineComponent({
         >
           {hasSelectedItems.value
             ? (
-                <div class="flex h-12 justify-center gap-2 pointer-events-auto backdrop-blur">
+                <div class="flex h-12 px-1 justify-between lg:justify-center gap-2 pointer-events-auto backdrop-blur">
                   {group.value?.map((options, index) => (
                     <div class="h-10 mt-1 bg-gray-800 rounded px-4 py-1 shadow-lg flex items-center gap-4">
 
@@ -65,7 +68,7 @@ export const DuxTools = defineComponent({
                       )}
 
                       {options?.map(item => (
-                        <NButton text onClick={item.onClick} class="text-gray-300">
+                        <NButton text onClick={item.onClick} class="text-gray-300" loading={item.loading} disabled={item.disabled} type={item.type}>
                           {{
                             default: () => item.label,
                             icon: () => <div class={item.icon} />,

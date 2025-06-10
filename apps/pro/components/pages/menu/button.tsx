@@ -1,8 +1,7 @@
-import type { ButtonProps, DropdownOption } from 'naive-ui'
-import type { PropType, VNodeChild } from 'vue'
-import { useI18n, useTheme } from '@duxweb/dvha-core'
-import { NAvatar, NButton, NDropdown } from 'naive-ui'
-import { computed, defineComponent, watch } from 'vue'
+import type { ButtonProps } from 'naive-ui'
+import type { PropType } from 'vue'
+import { NButton } from 'naive-ui'
+import { defineComponent } from 'vue'
 import { useUI } from '../../../hooks/ui'
 
 export default defineComponent({
@@ -23,7 +22,7 @@ export default defineComponent({
   },
   extends: NButton,
   setup(props, { slots }) {
-    const { menuCollapsed } = useUI()
+    const { menuCollapsed, menuMobileCollapsed } = useUI()
     return () => (
       <NButton
         {...props}
@@ -42,7 +41,7 @@ export default defineComponent({
           default: () => (
             <div class={[
               'overflow-hidden transition-all duration-300 ease-in-out whitespace-nowrap text-left w-full',
-              menuCollapsed.value ? 'w-0' : 'w-auto',
+              menuCollapsed.value && !menuMobileCollapsed.value ? 'w-0' : 'w-auto',
             ]}
             >
               {slots.default?.()}

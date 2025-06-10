@@ -44,6 +44,13 @@ const config: IConfig = {
           component: () => import('./pages/home.vue'),
         },
         {
+          name: 'render',
+          path: 'render',
+          icon: 'i-tabler:layout-kanban',
+          label: '渲染',
+          component: () => import('./pages/render.vue'),
+        },
+        {
           name: 'example',
           icon: 'i-tabler:layout-kanban',
           label: '示例',

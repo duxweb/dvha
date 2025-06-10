@@ -77,7 +77,7 @@ export default defineConfig({
         ],
       },
       {
-        text: '常用操作',
+        text: '工具函数',
         items: [
           { text: '配置信息 (useConfig)', link: '/hooks/common/useConfig' },
           { text: '主题管理 (useTheme)', link: '/hooks/common/useTheme' },
@@ -85,6 +85,7 @@ export default defineConfig({
           { text: '国际化 (useI18n)', link: '/hooks/common/useI18n' },
           { text: '弹窗 (useOverlay)', link: '/hooks/common/useOverlay' },
           { text: '上传 (useUpload)', link: '/hooks/common/useUpload' },
+          { text: 'JSON 渲染 (useJson)', link: '/hooks/common/useJson' },
         ],
       },
       {

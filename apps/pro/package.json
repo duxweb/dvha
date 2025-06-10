@@ -23,10 +23,17 @@
     "@vueuse/core": "^13.3.0",
     "@vueuse/integrations": "^13.3.0",
     "axios": "^1.9.0",
+    "clsx": "^2.1.1",
+    "jsep": "^1.4.0",
     "lodash-es": "^4.17.21",
     "naive-ui": "^2.41.0",
+    "petite-vue-i18n": "^11.1.4",
+    "pinia": "^3.0.0",
+    "pinia-plugin-persistedstate": "^4.0.0",
     "sass-embedded": "^1.89.1",
     "unocss": "^66.1.2",
-    "vue-command-palette": "^0.2.3"
+    "vue": "^3.5.0",
+    "vue-command-palette": "^0.2.3",
+    "vue-router": "^4.0.0"
   }
 }

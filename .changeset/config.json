@@ -9,7 +9,8 @@
   "updateInternalDependencies": "patch",
   "ignore": [
     "example",
-    "docs"
+    "docs",
+    "dvha-pro"
   ],
   "privatePackages": {
     "version": true,

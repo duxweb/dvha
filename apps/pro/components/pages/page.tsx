@@ -9,14 +9,17 @@ export default defineComponent({
   setup(_, { slots }) {
     const i18n = useI18n()
     const { props: tabsProps, tabs } = useNaiveTab()
-    const { menuCollapsed, setMenuCollapsed } = useUI()
+    const { menuCollapsed, setMenuCollapsed, menuMobileCollapsed, setMenuMobileCollapsed } = useUI()
 
     return () => (
-      <div class="flex-1 w-auto flex flex-col">
+      <div class="flex-1 min-w-0 flex flex-col">
         <div class="flex justify-between items-center border-b-1 border-muted h-15 px-3">
           <div class="flex gap-2 items-center">
-            <NButton text onClick={() => setMenuCollapsed(!menuCollapsed.value)}>
+            <NButton class="hidden lg:block" text onClick={() => setMenuCollapsed(!menuCollapsed.value)}>
               {menuCollapsed.value ? <div class="i-tabler:layout-sidebar-left-expand size-6" /> : <div class="i-tabler:layout-sidebar-left-collapse size-6" />}
+            </NButton>
+            <NButton class="block lg:hidden" text onClick={() => setMenuMobileCollapsed(!menuMobileCollapsed.value)}>
+              <div class="i-tabler:menu-2 size-6" />
             </NButton>
             <div class="text-default text-base">
               { i18n.t('overview') }
@@ -27,7 +30,7 @@ export default defineComponent({
           </div>
         </div>
 
-        <div class="px-3 py-3 border-b border-muted">
+        <div class="p-2 border-b border-muted">
           <NTabs
             size="small"
             type="card"
@@ -43,7 +46,7 @@ export default defineComponent({
           </NTabs>
         </div>
 
-        <div class="flex-1 h-auto overflow-y-auto">
+        <div class="flex-1 min-h-0 overflow-y-auto">
           {slots.default?.()}
         </div>
       </div>

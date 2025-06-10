@@ -89,6 +89,18 @@ export function themeOverrides() {
     Button: {
 
     },
+
+    Drawer: {
+      color: 'rgba(var(--ui-color-gray-900) / 20)',
+    },
+
+    Tabs: {
+      colorSegment: 'rgba(var(--ui-color-gray-800) / 0.5)',
+      tabColorSegment: getSceneColor('primary'),
+      tabTextColorSegment: getSemanticColor('text', 'toned'),
+      tabTextColorActiveSegment: getSemanticColor('text', 'inverted'),
+      tabTextColorHoverSegment: getSemanticColor('text', 'muted'),
+    },
   }))
 
   const lightTheme = computed<GlobalThemeOverrides>(() => {

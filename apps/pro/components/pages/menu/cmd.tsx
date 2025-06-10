@@ -1,4 +1,4 @@
-import { useMenu, useRouteStore, useTheme } from '@duxweb/dvha-core'
+import { useRouteStore, useTheme } from '@duxweb/dvha-core'
 import { useMagicKeys, watchThrottled } from '@vueuse/core'
 import { cloneDeep } from 'lodash-es'
 import { NButton, NTag } from 'naive-ui'

@@ -29,9 +29,14 @@ export function useUIStore(manageName?: string) {
 function createUIStore(manageName: string) {
   return defineStore(`ui-${manageName}`, () => {
     const menuCollapsed = ref(false)
+    const menuMobileCollapsed = ref(false)
 
     const setMenuCollapsed = (collapsed: boolean) => {
       menuCollapsed.value = collapsed
+    }
+
+    const setMenuMobileCollapsed = (collapsed: boolean) => {
+      menuMobileCollapsed.value = collapsed
     }
 
     const cmdVisible = ref(false)
@@ -46,6 +51,9 @@ function createUIStore(manageName: string) {
 
       cmdVisible,
       setCmdVisible,
+
+      menuMobileCollapsed,
+      setMenuMobileCollapsed,
     }
   }, {
     persist: {
