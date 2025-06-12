@@ -2,17 +2,60 @@
 @use './css/table.scss';
 @use './css/button.scss';
 @use './css/command.scss';
+@use './css/dynamic-background.scss';
+@use './css/halo.css';
+@use './css/box.scss';
 
 html {
-  background-color: rgb(var(--ui-color-white));
+  background-color: rgb(var(--ui-color-gray-200) / 0.8);
 }
 html.dark {
   color-scheme: dark;
-  background-color: rgba(var(--ui-color-gray-900), 0.5);
+  background-color: rgb(var(--ui-color-gray-950));
 }
 
 .app-menu-button.n-button {
   .n-button__content {
     flex: 1;
   }
+}
+
+.app-layout {
+  background-color: rgb(var(--ui-color-white));
+  backdrop-filter: blur(10px);
+}
+
+.dark {
+  .app-layout {
+    background-color: rgb(var(--ui-color-gray-950));
+  }
+}
+
+.app-menu {
+  background-color: rgb(var(--ui-bg-muted));
+}
+
+.app-page-body {
+  background-color: rgb(var(--ui-bg-muted));
+}
+
+.dark {
+  .app-page-body {
+    background-color: rgb(var(--ui-bg-muted));
+  }
+}
+
+.n-popselect-menu,
+.n-dropdown-menu,
+.n-notification,
+.n-popover {
+  backdrop-filter: blur(10px);
+}
+
+.n-popover-shared .n-popover-arrow-wrapper .n-popover-arrow {
+  backdrop-filter: blur(10px);
+}
+
+.n-dropdown-menu {
+  min-width: 130px;
 }

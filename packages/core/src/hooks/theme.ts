@@ -149,7 +149,7 @@ export function useTheme() {
         border: { base: '200', muted: '200', accented: '300', inverted: '900' },
       },
       dark: {
-        text: { dimmed: '600', muted: '500', toned: '400', base: '300', highlighted: '100', inverted: 'black' },
+        text: { dimmed: '600', muted: '400', toned: '300', base: '500', highlighted: '100', inverted: 'black' },
         bg: { base: '950', muted: '900', elevated: '800', accented: '700', inverted: '100' },
         border: { base: '900', muted: '800', accented: '700', inverted: '100' },
       },
@@ -332,7 +332,7 @@ export function useTheme() {
   // 获取阶梯颜色值
   function getShadeColor(type: ThemeColorType, shade: ThemeColorShade, asVariable = false): string {
     if (asVariable) {
-      return `rgb(var(--ui-color-${type}-${shade}))`
+      return `--ui-color-${type}-${shade}`
     }
     return getColorValue(type, shade)
   }
@@ -345,9 +345,9 @@ export function useTheme() {
 
     if (asVariable) {
       if (scene === 'default') {
-        return `rgb(var(--ui-color-${type}))`
+        return `--ui-color-${type})`
       }
-      return `rgb(var(--ui-color-${type}-${scene}))`
+      return `--ui-color-${type}-${scene})`
     }
 
     // 返回具体颜色值
@@ -375,7 +375,7 @@ export function useTheme() {
           varName = `--ui-${category}-${key}`
       }
 
-      return `rgb(var(${varName}))`
+      return `${varName}`
     }
 
     // 返回具体颜色值

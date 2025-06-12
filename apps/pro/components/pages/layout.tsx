@@ -34,10 +34,13 @@ export default defineComponent({
         <NNotificationProvider>
           <NMessageProvider>
             <OverlaysProvider>
-              <div class="h-screen w-screen flex">
+              {/* <div class="dynamic-background fixed inset-0 pointer-events-none">
+              </div> */}
+
+              <div class="h-screen w-screen flex relative z-10 ">
                 <div class={[
-                  'bg-gray-100 dark:bg-gray-800/20 rounded flex-none border-r border-muted transition-all',
-                  'hidden lg:block',
+                  'flex-none transition-all',
+                  'hidden lg:block app-menu border-r border-muted',
                   menuCollapsed.value ? 'w-60px' : 'w-200px',
                 ]}
                 >

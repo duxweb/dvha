@@ -19,7 +19,7 @@
     "@duxweb/dvha-core": "workspace:*",
     "@duxweb/dvha-naiveui": "workspace:*",
     "@iconify-json/tabler": "^1.2.18",
-    "@unocss/preset-icons": "^66.1.2",
+    "@unocss/preset-icons": "^66.1.4",
     "@vueuse/core": "^13.3.0",
     "@vueuse/integrations": "^13.3.0",
     "axios": "^1.9.0",
@@ -31,7 +31,8 @@
     "pinia": "^3.0.0",
     "pinia-plugin-persistedstate": "^4.0.0",
     "sass-embedded": "^1.89.1",
-    "unocss": "^66.1.2",
+    "unocss": "^66.1.4",
+    "unocss-preset-easing-gradient": "^1.0.0-beta.37",
     "vue": "^3.5.0",
     "vue-command-palette": "^0.2.3",
     "vue-router": "^4.0.0"

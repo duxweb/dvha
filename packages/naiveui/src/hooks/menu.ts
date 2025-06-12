@@ -15,7 +15,7 @@ export function useNaiveMenu(props?: UseMenuProps) {
         icon: item?.icon
           ? () => {
               return h('div', {
-                class: `${item.icon} size-4`,
+                class: `${item.icon} size-5`,
               })
             }
           : undefined,

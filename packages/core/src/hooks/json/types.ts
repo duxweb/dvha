@@ -5,6 +5,7 @@ export interface JsonSchemaNode {
   attrs?: Record<string, any>
   children?: JsonSchemaNode | JsonSchemaNode[] | string
   slots?: Record<string, SlotContent>
+  [key: string]: any
 }
 
 export type SlotContent =

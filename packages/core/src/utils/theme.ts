@@ -1,5 +1,5 @@
 function withRgb(variableName: string) {
-  return `rgb(var(${variableName}))`
+  return `rgba(var(${variableName}))`
 }
 
 export function themePreset(themeColor: Record<string, any>) {

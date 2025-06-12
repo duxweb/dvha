@@ -1,5 +1,6 @@
 <script setup>
-import { NButton, NCard, NCheckbox, NInput, NSelect, NSpace, NSwitch, NTag, useJsonSchema } from 'naive-ui'
+import { useJsonSchema } from '@duxweb/dvha-core'
+import { NButton, NCard, NCheckbox, NInput, NSelect, NSpace, NSwitch, NTag } from 'naive-ui'
 import { computed, ref } from 'vue'
 import Page from '../components/pages/page'
 

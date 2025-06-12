@@ -542,6 +542,7 @@ export function useDelete(params: IDeleteParams) {
       }, manage, auth)
     },
     onSuccess: (data) => {
+      req.reset()
       params.onSuccess?.(data)
       if (params.path) {
         invalidate(params.path)
@@ -707,6 +708,7 @@ export function useCustomMutation(params: ICustomMutationParams) {
       }, manage, auth)
     },
     onSuccess: (data) => {
+      req.reset()
       params.onSuccess?.(data)
     },
     onError: (error) => {

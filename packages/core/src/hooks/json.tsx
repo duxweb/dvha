@@ -4,7 +4,7 @@ import { computed, defineComponent, h, isRef, unref } from 'vue'
 import { defaultAdaptors } from './json/index'
 import { injectContext } from './json/utils/contextManager'
 
-type JsonSchemaData = JsonSchemaNode[] | Ref<JsonSchemaNode[]>
+export type JsonSchemaData = JsonSchemaNode[] | Ref<JsonSchemaNode[]>
 
 export interface UseJsonSchemaProps extends JsonAdaptorOptions {
   data: JsonSchemaData

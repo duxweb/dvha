@@ -1,19 +1,22 @@
-import { useI18n } from '@duxweb/dvha-core'
+import { useI18n, useTabStore } from '@duxweb/dvha-core'
 import { useNaiveTab } from '@duxweb/dvha-naiveui'
 import { NButton, NTab, NTabs } from 'naive-ui'
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useUI } from '../../hooks/ui'
 
 export default defineComponent({
-  name: 'DuxPage',
+  name: ' ',
   setup(_, { slots }) {
     const i18n = useI18n()
     const { props: tabsProps, tabs } = useNaiveTab()
+    const tab = useTabStore()
     const { menuCollapsed, setMenuCollapsed, menuMobileCollapsed, setMenuMobileCollapsed } = useUI()
+
+    const tabsRef = ref<InstanceType<typeof NTabs>>()
 
     return () => (
       <div class="flex-1 min-w-0 flex flex-col">
-        <div class="flex justify-between items-center border-b-1 border-muted h-15 px-3">
+        <div class="flex justify-between items-center h-15 px-3 ">
           <div class="flex gap-2 items-center">
             <NButton class="hidden lg:block" text onClick={() => setMenuCollapsed(!menuCollapsed.value)}>
               {menuCollapsed.value ? <div class="i-tabler:layout-sidebar-left-expand size-6" /> : <div class="i-tabler:layout-sidebar-left-collapse size-6" />}
@@ -30,24 +33,28 @@ export default defineComponent({
           </div>
         </div>
 
-        <div class="p-2 border-b border-muted">
-          <NTabs
-            size="small"
-            type="card"
-            class="layout-tabs"
-            tab-style="min-width: 80px;"
-            {...tabsProps.value}
-          >
-            {tabs.map(tab => (
-              <NTab key={tab.path} name={tab.path || ''} closable={!tab.meta?.lock}>
-                { tab.label }
-              </NTab>
-            ))}
-          </NTabs>
-        </div>
+        <div class="flex-1 min-h-0 flex flex-col">
+          <div class="mx-2">
+            <NTabs
+              size="small"
+              type="card"
+              class="app-page-tabs"
+              {...tabsProps.value}
+            >
+              {{
+                default: () => tabs.map(tab => (
+                  <NTab key={tab.path} name={tab.path || ''} closable={!tab.meta?.lock}>
+                    { tab.label }
+                  </NTab>
+                )),
+                suffix: () => <div class="i-tabler:chevron-right size-4" />,
+              }}
+            </NTabs>
+          </div>
 
-        <div class="flex-1 min-h-0 overflow-y-auto">
-          {slots.default?.()}
+          <div class="border border-muted rounded flex-1 min-h-0 overflow-y-auto app-page-body m-2">
+            {slots.default?.()}
+          </div>
         </div>
       </div>
     )

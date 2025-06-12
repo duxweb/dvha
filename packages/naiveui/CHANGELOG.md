@@ -1,5 +1,12 @@
 # @duxweb/dvha-naiveui
 
+## 1.0.5
+
+### Patch Changes
+
+- fix: 修正useData 提交重置数据
+  chore: 优化弹出层的无障碍访问,优化 i18n 的异常隐藏
+
 ## 1.0.4
 
 ### Patch Changes

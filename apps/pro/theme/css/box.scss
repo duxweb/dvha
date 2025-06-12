@@ -1,0 +1,18 @@
+.app-box {
+  position: relative;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)) padding-box,
+    linear-gradient(
+        135deg,
+        rgb(var(--ui-border-accented) / 0.7) 0%,
+        rgb(var(--ui-border-accented) / 0.2) 8%,
+        transparent 20%,
+        transparent 80%,
+        rgb(var(--ui-border-accented) / 0.2) 92%,
+        rgb(var(--ui-border-accented) / 0.6) 100%
+      )
+      border-box;
+
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}

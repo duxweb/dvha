@@ -1,5 +1,12 @@
 # @duxweb/dvha-core
 
+## 0.1.20
+
+### Patch Changes
+
+- - fix: 修正useData 提交重置数据
+    chore: 优化弹出层的无障碍访问,优化 i18n 的异常隐藏
+
 ## 0.1.19
 
 ### Patch Changes

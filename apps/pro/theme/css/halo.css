@@ -1,0 +1,44 @@
+/* 图标渐变色彩动画 */
+.icon-gradient {
+  color: rgb(var(--ui-color-primary));
+  animation: icon-color-cycle 12s ease-in-out infinite;
+}
+
+@keyframes icon-color-cycle {
+  0% {
+    color: rgb(var(--ui-color-primary));
+  }
+  20% {
+    color: rgb(var(--ui-color-info));
+  }
+  40% {
+    color: rgb(var(--ui-color-success));
+  }
+  60% {
+    color: rgb(var(--ui-color-warning));
+  }
+  80% {
+    color: rgb(var(--ui-color-error));
+  }
+  100% {
+    color: rgb(var(--ui-color-primary));
+  }
+}
+
+@keyframes icon-gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 50% 0%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  75% {
+    background-position: 50% 100%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

@@ -10,6 +10,7 @@ export function useNaiveTab() {
   const props = computed(() => {
     return {
       value: tab.current,
+      defaultValue: tab.current,
       onClose: (value) => {
         tab.delTab(value, (item) => {
           router.push(item.path || '')

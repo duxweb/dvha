@@ -8,11 +8,22 @@ export function i18nProvider(props?: I18nOptions): I18nProvider {
     locale: props?.locale,
     fallbackLocale: props?.fallbackLocale,
     messages: props?.messages,
+    missingWarn: false,
+    fallbackWarn: false,
   })
 
   return {
     t: (key: string, options?: any, defaultMessage?: string): string => {
-      return i18n.global.t(key, options) || defaultMessage || ''
+      try {
+        const result = i18n.global.t(key, options)
+        if (result === key && defaultMessage) {
+          return defaultMessage
+        }
+        return result
+      }
+      catch {
+        return defaultMessage || key
+      }
     },
     changeLocale: (lang: string, _options?: any): Promise<any> => {
       return new Promise((resolve) => {

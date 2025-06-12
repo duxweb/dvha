@@ -1,27 +1,47 @@
 <script setup lang="ts">
 import type { TableColumn } from '@duxweb/dvha-naiveui'
-import { useOverlay } from '@duxweb/dvha-core'
 import { NButton, NInput } from 'naive-ui'
-import { h, ref } from 'vue'
+import { ref } from 'vue'
 import Page from '../components/pages/page'
-import { DuxTableFilter, DuxTablePage } from '../components/table'
-
-const pagination = ref({
-  page: 1,
-  pageSize: 20,
-})
+import { DuxTablePage } from '../components/table'
+import { useAction, useDialog, useModal } from '../hooks'
 
 const filters = ref({
   keyword: '',
 })
 
-const { show } = useOverlay()
+const { show } = useModal()
+
+const { confirm } = useDialog()
 
 function handleCreate() {
-  show({
-    component: () => import('./modalForm.vue'),
+  confirm({
+    title: '新增',
+    content: 'Are you sure you want to create?',
   })
+
+  // show({
+  //   title: '新增',
+  //   component: () => import('./modalForm.vue'),
+  //   draggable: true,
+  // })
 }
+
+const { render } = useAction({
+  path: 'user',
+  type: 'button',
+  items: [
+    {
+      label: '编辑',
+      type: 'modal',
+      component: () => import('./modalForm.vue'),
+    },
+    {
+      label: '删除',
+      type: 'delete',
+    },
+  ],
+})
 
 const columns: TableColumn[] = [
   {
@@ -53,24 +73,12 @@ const columns: TableColumn[] = [
     key: 'actions',
     fixed: 'right',
     width: 100,
-    render(row) {
-      return h(
-        NButton,
-        {
-          strong: true,
-          tertiary: true,
-          size: 'small',
-          onClick: () => {
-            show({
-              component: () => import('./modalForm.vue'),
-              componentProps: {
-                id: row.id,
-              },
-            })
-          },
-        },
-        { default: () => '编辑' },
-      )
+    render(row, index) {
+      return render({
+        id: row.id,
+        data: row,
+        index,
+      })
     },
   },
 ]
@@ -90,10 +98,13 @@ const tabs = ref([
   },
 ])
 
-const filterOptions = [
+const filterSchema = [
   {
-    label: '状态',
-    value: 'status',
+    tag: NInput,
+    attrs: {
+      'placeholder': '请输入关键词搜索',
+      'v-model:value': [filters.value, 'keyword'],
+    },
   },
 ]
 </script>
@@ -112,11 +123,12 @@ const filterOptions = [
     <DuxTablePage
       path="user"
       :columns="columns"
-      :filters="filters"
+      :filter="filters"
       :tabs="tabs"
+      :filter-schema="filterSchema"
     >
       <template #filters>
-        <DuxTableFilter>
+        <!-- <DuxTableFilter>
           <NInput v-model:value="filters.keyword" placeholder="请输入关键词搜索" />
         </DuxTableFilter>
         <DuxTableFilter>
@@ -136,7 +148,7 @@ const filterOptions = [
         </DuxTableFilter>
         <DuxTableFilter>
           <NInput v-model:value="filters.keyword" placeholder="请输入关键词搜索" />
-        </DuxTableFilter>
+        </DuxTableFilter> -->
       </template>
     </DuxTablePage>
   </Page>

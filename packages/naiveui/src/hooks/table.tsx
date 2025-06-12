@@ -1,7 +1,7 @@
 import type { DataTableBaseColumn, DataTableExpandColumn, DataTableFilterState, DataTableProps, DataTableRowKey, DataTableSelectionColumn, DataTableSortState, PaginationProps } from 'naive-ui'
 import type { ComputedRef, Ref } from 'vue'
 import { useList } from '@duxweb/dvha-core'
-import { reactiveComputed, refDebounced } from '@vueuse/core'
+import { watchDebounced } from '@vueuse/core'
 import { cloneDeep } from 'lodash-es'
 import { computed, ref, toRef, watch } from 'vue'
 
@@ -54,7 +54,6 @@ export interface UseNaiveTableReturn {
 
 export function useNaiveTable(props: UseTableProps): UseNaiveTableReturn {
   const filters = toRef<Record<string, any>>(props.filters)
-  const filtersDebounced = refDebounced(filters, 1000)
 
   watch(() => props.filters, (v) => {
     filters.value = v
@@ -74,11 +73,19 @@ export function useNaiveTable(props: UseTableProps): UseNaiveTableReturn {
   const tableFilters = ref<Record<string, any>>({})
   const tableExpanded = ref<DataTableRowKey[]>([])
 
-  const dataFilters = reactiveComputed(() => {
-    return {
-      ...filtersDebounced.value,
-      ...tableFilters.value,
-    }
+  const dataFilters = ref<Record<string, any>>({
+    ...filters.value,
+    ...tableFilters.value,
+  })
+
+  watchDebounced([filters, tableFilters], ([filtersValue, tableFiltersValue]) => {
+    Object.keys(dataFilters.value).forEach((key) => {
+      delete dataFilters.value[key]
+    })
+    Object.assign(dataFilters.value, filtersValue, tableFiltersValue)
+  }, {
+    debounce: 300,
+    deep: true,
   })
 
   watch(dataFilters, () => {
@@ -88,7 +95,7 @@ export function useNaiveTable(props: UseTableProps): UseNaiveTableReturn {
   const { data, isLoading, refetch } = useList({
     path: props.path,
     pagination: props.pagination ? pagination.value : false,
-    filters: dataFilters,
+    filters: dataFilters.value,
     sorters: tableSorters.value,
   })
 

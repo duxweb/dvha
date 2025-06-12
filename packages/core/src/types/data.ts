@@ -106,7 +106,7 @@ export interface IDataProviderDeleteManyOptions {
 export interface IDataProviderDeleteOptions {
   path?: string
   meta?: Record<string, any>
-  id: string | number
+  id?: string | number
 }
 
 export interface IDataProviderProgress {

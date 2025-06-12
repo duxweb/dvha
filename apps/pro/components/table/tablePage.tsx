@@ -1,10 +1,13 @@
+import type { JsonSchemaNode } from '@duxweb/dvha-core'
 import type { TableColumn, TablePagination } from '@duxweb/dvha-naiveui'
 import type { DataTableBaseColumn, DataTableProps, SelectOption } from 'naive-ui'
 import type { PropType } from 'vue'
+import { useJsonSchema } from '@duxweb/dvha-core'
 import { useElementSize, useWindowSize } from '@vueuse/core'
-import { NButton, NButtonGroup, NDataTable, NPagination, NPopselect, NProgress, NTab, NTabs, NTooltip } from 'naive-ui'
-import { computed, defineComponent, reactive, ref, toRef, watch } from 'vue'
+import { NButton, NDataTable, NInput, NPagination, NPopover, NPopselect, NProgress, NTab, NTabs, NTooltip } from 'naive-ui'
+import { computed, defineComponent, h, reactive, ref, toRef, watch } from 'vue'
 import { useTable } from '../../hooks/table'
+import { DuxTableFilter } from './filter'
 import { DuxTableTools } from './tools'
 
 export const DuxTablePage = defineComponent({
@@ -14,8 +17,11 @@ export const DuxTablePage = defineComponent({
       type: String,
       required: true,
     },
-    filters: {
+    filter: {
       type: Object as PropType<Record<string, any>>,
+    },
+    filterSchema: {
+      type: Array as PropType<JsonSchemaNode[]>,
     },
     columns: {
       type: Array as PropType<TableColumn[]>,
@@ -36,7 +42,7 @@ export const DuxTablePage = defineComponent({
     },
   },
   setup(props, { slots }) {
-    const filters = toRef(props.filters || {})
+    const filters = toRef(props.filter || {})
 
     const { meta, columns, tablePagination, tableProps, onUpdateColumnSelected, onUpdateChecked, columnSelected, autoRefetch, countdown, onAutoRefetch, isExporting, isExportingRows, isImporting, onExport, onExportRows, onImport } = useTable({
       path: props.path,
@@ -80,9 +86,36 @@ export const DuxTablePage = defineComponent({
       }
     }, { immediate: true, deep: true })
 
+    const filterSchema = computed(() => {
+      return (props.filterSchema || []).map((item) => {
+        const { title, ...rest } = item
+        return {
+          tag: DuxTableFilter,
+          attrs: {
+            label: title,
+          },
+          children: rest,
+        }
+      })
+    })
+
+    const { render: filterRender } = useJsonSchema({
+      data: filterSchema.value?.slice(1),
+      components: {
+        NInput,
+      },
+    })
+
+    const { render: filterRenderCollapse } = useJsonSchema({
+      data: filterSchema.value?.slice(0, 1),
+      components: {
+        NInput,
+      },
+    })
+
     return () => (
-      <div class="flex flex-col gap-2 h-full relative px-2 pt-2">
-        <div class="flex gap-2 justify-between flex-col lg:flex-row">
+      <div class="flex flex-col gap-3 h-full relative px-3 pt-3">
+        <div class="flex gap-3 justify-between flex-col lg:flex-row">
           {props.tabs && (
             <div class="flex flex-none">
               <NTabs
@@ -91,6 +124,7 @@ export const DuxTablePage = defineComponent({
                 style={{
                   '--n-tab-padding': '4px 10px',
                 }}
+                default-value={props.tabs?.[0]?.value}
               >
                 {props.tabs?.map(tab => (
                   <NTab name={tab.value} tab={tab.label} />
@@ -106,38 +140,48 @@ export const DuxTablePage = defineComponent({
             <div
               ref={filterEl}
               class={[
-                'lg:flex grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 flex-wrap',
-
+                'lg:flex gap-2 flex-wrap',
                 props.tabs ? 'justify-end' : 'justify-start',
               ]}
             >
-              {slots.filters?.()}
+              {h(filterRenderCollapse)}
             </div>
           </div>
           <div class="flex gap-2 justify-between lg:justify-end">
 
-            {filterOptions.show && (
-              <NButton
-                iconPlacement="right"
-                onClick={() => {
-                  filterOptions.collapse = !filterOptions.collapse
-                }}
-              >
+            {filterSchema.value.length > 1 && (
+
+              <NPopover trigger="click" displayDirective="show">
                 {{
-                  default: () => '筛选',
-                  icon: () => (
-                    <div class={[
-                      'i-tabler:chevrons-down size-4 transition-all',
-                      filterOptions.collapse ? 'rotate-180' : 'rotate-0',
-                    ]}
-                    />
+                  trigger: () => (
+                    <NButton
+                      iconPlacement="right"
+                      onClick={() => {
+                        filterOptions.collapse = !filterOptions.collapse
+                      }}
+                    >
+                      {{
+                        default: () => '筛选',
+                        icon: () => (
+                          <div class={[
+                            'i-tabler:chevrons-down size-4 transition-all',
+                          ]}
+                          />
+                        ),
+                      }}
+                    </NButton>
+                  ),
+                  default: () => (
+                    <div class="flex flex-col gap-2 py-1">
+                      {h(filterRender)}
+                    </div>
                   ),
                 }}
-              </NButton>
+              </NPopover>
+
             )}
 
-            <NButtonGroup>
-
+            <div class="flex gap-2">
               <NPopselect
                 options={columnConfig.value}
                 value={columnSelected.value}
@@ -206,7 +250,7 @@ export const DuxTablePage = defineComponent({
                   default: () => '自动刷新',
                 }}
               </NTooltip>
-            </NButtonGroup>
+            </div>
           </div>
         </div>
         <div class="flex-1 min-h-0">

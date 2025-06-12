@@ -1,10 +1,16 @@
 import type { GlobalThemeOverrides } from 'naive-ui'
 import { useTheme } from '@duxweb/dvha-core'
+import { hex2rgb } from 'colorizr'
 import { merge } from 'lodash-es'
 import { computed } from 'vue'
 
 export function themeOverrides() {
   const { getSceneColor, getSemanticColor } = useTheme()
+
+  const color2rgb = (color: string) => {
+    const rgb = hex2rgb(color)
+    return `${rgb.r}, ${rgb.g},${rgb.b}`
+  }
 
   const commonTheme = computed<GlobalThemeOverrides>(() => ({
     common: {
@@ -40,37 +46,46 @@ export function themeOverrides() {
 
       // UI 文字色彩 - 使用语义颜色
       textColorBase: getSemanticColor('text', 'base'),
-      textColor1: getSemanticColor('text', 'highlighted'),
+      textColor1: getSemanticColor('text', 'muted'),
       textColor2: getSemanticColor('text', 'toned'),
-      textColor3: getSemanticColor('text', 'muted'),
+      textColor3: getSemanticColor('text', 'highlighted'),
       textColorDisabled: getSemanticColor('text', 'dimmed'),
 
       // UI 背景色彩 - 使用语义颜色
       bodyColor: getSemanticColor('bg', 'base'),
-      cardColor: getSemanticColor('bg', 'elevated'),
-      modalColor: getSemanticColor('bg', 'elevated'),
-      popoverColor: getSemanticColor('bg', 'elevated'),
+      cardColor: getSemanticColor('bg', 'muted'),
+      modalColor: getSemanticColor('bg', 'muted'),
+      popoverColor: `rgba(${color2rgb(getSemanticColor('bg', 'muted'))}, 0.6)`,
       tableColor: getSemanticColor('bg', 'muted'),
-      inputColor: getSemanticColor('bg', 'muted'),
+      inputColor: 'transparent',
       actionColor: getSemanticColor('bg', 'muted'),
       hoverColor: getSemanticColor('bg', 'accented'),
 
       // UI 边框色彩 - 使用语义颜色
       borderColor: getSemanticColor('border', 'accented'),
-      dividerColor: getSemanticColor('border', 'accented'),
+      dividerColor: getSemanticColor('border', 'muted'),
 
       // 占位符和图标色彩
       placeholderColor: getSemanticColor('text', 'muted'),
       iconColor: getSemanticColor('text', 'muted'),
 
-      borderRadius: '0.25rem',
-      borderRadiusSmall: '0.2rem',
+      borderRadius: 'var(--radius-md)',
+      borderRadiusSmall: 'var(--radius-sm)',
+
+      // boxShadow1: `var(--un-inset-shadow), var(--un-inset-ring-shadow), var(--un-ring-offset-shadow), var(--un-ring-shadow), var(--un-shadow)`,
+      // boxShadow2: `var(--un-inset-shadow), var(--un-inset-ring-shadow), var(--un-ring-offset-shadow), var(--un-ring-shadow), var(--un-shadow)`,
+      // boxShadow3: `var(--un-inset-shadow), var(--un-inset-ring-shadow), var(--un-ring-offset-shadow), var(--un-ring-shadow), var(--un-shadow)`,
 
     },
+
+    Menu: {
+      itemIconColorCollapsed: getSemanticColor('text', 'accented'),
+    },
+
     DataTable: {
       borderColor: getSemanticColor('border', 'muted'),
-      tdColor: getSemanticColor('bg', 'muted'),
       thColor: getSemanticColor('bg', 'elevated'),
+      tdColor: getSemanticColor('bg', 'muted'),
       tdColorHover: getSemanticColor('bg', 'elevated'),
     },
 
@@ -90,17 +105,15 @@ export function themeOverrides() {
 
     },
 
-    Drawer: {
-      color: 'rgba(var(--ui-color-gray-900) / 20)',
-    },
-
     Tabs: {
-      colorSegment: 'rgba(var(--ui-color-gray-800) / 0.5)',
+      colorSegment: `rgba(${color2rgb(getSemanticColor('bg', 'elevated'))})`,
+      tabBorderColor: getSemanticColor('border', 'muted'),
       tabColorSegment: getSceneColor('primary'),
       tabTextColorSegment: getSemanticColor('text', 'toned'),
       tabTextColorActiveSegment: getSemanticColor('text', 'inverted'),
       tabTextColorHoverSegment: getSemanticColor('text', 'muted'),
     },
+
   }))
 
   const lightTheme = computed<GlobalThemeOverrides>(() => {
