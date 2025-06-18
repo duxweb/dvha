@@ -88,7 +88,7 @@ const { form, isLoading, onSubmit, onReset } = useExtendForm({
 | ------- | ------------- | ---- | --------------------------------- |
 | `rules` | `TypedSchema` | ❌   | 表单验证规则（基于 vee-validate） |
 
-其他参数继承自 `IUseFormProps`，详见 [useForm 文档](/hooks/data/useForm)。
+其他参数继承自 `IUseFormProps`，详见 [useForm 文档](/hooks/advanced/useForm)。
 
 ## 返回值
 
