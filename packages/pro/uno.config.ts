@@ -3,5 +3,9 @@ import { config } from './src/config'
 
 export default defineConfig({
   ...config(true),
-  include: ['src/**/*.ts', 'src/**/*.tsx'],
+  content: {
+    pipeline: {
+      include: ['src/**/*.ts', 'src/**/*.tsx'],
+    },
+  },
 })
