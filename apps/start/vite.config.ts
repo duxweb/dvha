@@ -3,7 +3,8 @@ import vue from '@vitejs/plugin-vue'
 import VueJsx from '@vitejs/plugin-vue-jsx'
 import { defineConfig } from 'vite'
 
-export default defineConfig(() => ({
+export default defineConfig(({ mode }) => ({
+  base: mode === 'production' ? '/dvha/start/' : '/',
   plugins: [
     vue(),
     VueJsx(),

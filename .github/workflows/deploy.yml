@@ -1,4 +1,4 @@
-name: Deploy VitePress site to Pages
+name: Deploy Docs and Start to Pages
 
 on:
   push:
@@ -35,12 +35,29 @@ jobs:
         uses: actions/configure-pages@v4
       - name: Install dependencies
         run: pnpm install
-      - name: Build with VitePress
+
+      # 构建文档
+      - name: Build VitePress docs
         run: pnpm run docs:build
+
+      # 构建 start 应用
+      - name: Build start app
+        run: pnpm run start:build
+
+      # 创建组合部署目录
+      - name: Prepare deployment
+        run: |
+          mkdir -p dist
+          # 复制文档到根目录
+          cp -r apps/docs/.vitepress/dist/* dist/
+          # 复制 start 应用到 start 子目录
+          mkdir -p dist/start
+          cp -r apps/start/dist/* dist/start/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: apps/docs/.vitepress/dist
+          path: dist
 
   deploy:
     environment:
