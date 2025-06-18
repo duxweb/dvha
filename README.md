@@ -16,7 +16,7 @@ _一个基于 Vue 3 的无头（Headless）中后台框架_
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
 
-📖 **[查看完整文档](https://duxweb.github.io/dvha/)** | 🌟 **[在线演示](https://duxweb.github.io/dvha/demo)** | 🎯 **[快速开始](#快速开始)** | 🇺🇸 **[English](./README.en.md)**
+📖 **[查看完整文档](https://duxweb.github.io/dvha/)** | 🌟 **[在线演示](https://duxweb.github.io/dvha/start)** | 🎯 **[快速开始](#快速开始)** | 🇺🇸 **[English](./README.en.md)**
 
 </div>
 
@@ -169,7 +169,7 @@ app.mount('#app')
 
 ```typescript
 import type { IConfig } from '@duxweb/dvha-core'
-import { createDux, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
+import { simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
 
 const config: IConfig = {
   title: '企业管理平台',
