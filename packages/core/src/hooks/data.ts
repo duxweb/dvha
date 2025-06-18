@@ -628,21 +628,24 @@ export interface ICustomParams extends IDataProviderCustomOptions {
  * Custom query request
  * @param params
  */
-export function useCustom(params: ICustomParams) {
+export function useCustom(params?: ICustomParams) {
   const manage = useManage()
   const auth = useGetAuth()
-  const providerName = params.providerName || 'default'
+  const providerName = params?.providerName || 'default'
   const { mutate: onAuthError } = useError()
 
   const props = computed((): IDataProviderCustomOptions => {
+    if (!params) {
+      return {}
+    }
     const { onError, options, ...rest } = params
     return rest
   })
 
   const req = useQuery({
-    queryKey: [`${manage.config?.name}:${providerName}:${params.path}`, props],
+    queryKey: [`${manage.config?.name}:${providerName}:${params?.path}`, props],
     queryFn: () => manage.config?.dataProvider?.[providerName]?.custom(props.value, manage, auth),
-    ...params.options,
+    ...params?.options,
   })
 
   const isLoading = computed<boolean>(() => {
@@ -654,7 +657,7 @@ export function useCustom(params: ICustomParams) {
 
   watch(() => req.isError, () => {
     onAuthError(req.error)
-    params.onError?.(req.error)
+    params?.onError?.(req.error)
   })
 
   const data = ref<IDataProviderResponse | undefined>(undefined)
@@ -686,13 +689,16 @@ export interface ICustomMutationParams extends IDataProviderCustomOptions {
  * Custom mutation request
  * @param params
  */
-export function useCustomMutation(params: ICustomMutationParams) {
+export function useCustomMutation(params?: ICustomMutationParams) {
   const manage = useManage()
   const auth = useGetAuth()
-  const providerName = params.providerName || 'default'
+  const providerName = params?.providerName || 'default'
   const { mutate: onAuthError } = useError()
 
   const props = computed((): IDataProviderCustomOptions => {
+    if (!params) {
+      return {}
+    }
     const { onError, options, ...rest } = params
     return rest
   })
@@ -709,13 +715,13 @@ export function useCustomMutation(params: ICustomMutationParams) {
     },
     onSuccess: (data) => {
       req.reset()
-      params.onSuccess?.(data)
+      params?.onSuccess?.(data)
     },
     onError: (error) => {
       onAuthError(error)
-      params.onError?.(error)
+      params?.onError?.(error)
     },
-    ...params.options,
+    ...params?.options,
   })
 
   const isLoading = computed<boolean>(() => req.isPending.value)

@@ -1,5 +1,12 @@
 # @duxweb/dvha-core
 
+## 0.1.21
+
+### Patch Changes
+
+- fix: 修正部分功能错误
+  feat: 增加增强表单功能
+
 ## 0.1.20
 
 ### Patch Changes

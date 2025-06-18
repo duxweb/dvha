@@ -1,3 +1,4 @@
+import type { MaybeRef } from 'vue'
 import type { IDataProviderError, IDataProviderResponse } from '../types'
 import { cloneDeep } from 'lodash-es'
 import { computed, ref, toRef, watch } from 'vue'
@@ -6,7 +7,7 @@ import { useCreate, useOne, useUpdate } from './data'
 export interface IUseFormProps {
   path?: string
   id?: string | number
-  form?: Record<string, any>
+  form?: MaybeRef<Record<string, any>>
   onSuccess?: (data: IDataProviderResponse) => void
   onError?: (error: IDataProviderError) => void
   action?: 'create' | 'edit'
@@ -14,8 +15,12 @@ export interface IUseFormProps {
 }
 
 export function useForm(props: IUseFormProps) {
-  const form = toRef(props.form || {})
+  const form = toRef(props, 'form', {})
   const initData = ref(cloneDeep(props.form || {}))
+
+  const isEdit = computed(() => {
+    return props.action === 'edit' || props.id
+  })
 
   const { data: oneData, isLoading: isLoadingOne, refetch } = useOne({
     path: props.path || '',
@@ -26,20 +31,21 @@ export function useForm(props: IUseFormProps) {
     providerName: props.providerName,
   })
 
-  watch([() => props.action, () => props.id], async ([action]) => {
-    if (action !== 'edit') {
+  watch([() => props.action, () => props.id], async () => {
+    if (!isEdit.value) {
       return
     }
     await refetch()
     const data = cloneDeep(oneData.value?.data || {})
-    form.value = data
-    initData.value = data
+    Object.assign(form.value as object, data)
+    Object.assign(initData.value as object, data)
   }, {
     immediate: true,
   })
 
   const onReset = () => {
-    form.value = cloneDeep(initData.value)
+    const resetData = cloneDeep(initData.value)
+    Object.assign(form.value, resetData)
   }
 
   const create = useCreate({
@@ -67,16 +73,16 @@ export function useForm(props: IUseFormProps) {
     providerName: props.providerName,
   })
 
-  const onSubmit = () => {
+  const onSubmit = (data?: Record<string, any>) => {
     if (props.action === 'create') {
       create.mutate({
-        data: form.value,
+        data: data || form.value,
       })
     }
     else {
       update.mutate({
         id: props.id,
-        data: form.value,
+        data: data || form.value,
       })
     }
   }
@@ -85,7 +91,9 @@ export function useForm(props: IUseFormProps) {
 
   return {
     form,
+    initData,
     isLoading,
+    isEdit,
     onSubmit,
     onReset,
   }

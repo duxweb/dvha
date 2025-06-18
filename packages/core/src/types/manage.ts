@@ -1,3 +1,4 @@
+import type { Options } from 'vue3-sfc-loader'
 import type { RouteRecordRaw } from 'vue-router'
 import type { IAuthProvider } from './auth'
 import type { IConfigComponent } from './config'
@@ -34,6 +35,13 @@ export interface IManage {
   components?: IConfigComponent // 组件配置
 
   theme?: IConfigTheme // 主题覆盖
+
+  // 全局包配置
+  remote?: {
+    packages?: Options
+    apiMethod?: string
+    apiRoutePath?: string | ((path: string) => string)
+  }
 
   [key: string]: any
 }

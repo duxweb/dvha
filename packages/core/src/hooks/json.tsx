@@ -15,13 +15,13 @@ export interface UseJsonSchemaProps extends JsonAdaptorOptions {
 /**
  * JSON Schema 渲染器
  */
-export function useJsonSchema(props: UseJsonSchemaProps) {
-  const adaptors = props.adaptors || defaultAdaptors
-  const components = props.components || {}
-  const data = computed(() => isRef(props.data) ? props.data.value : props.data)
+export function useJsonSchema(props?: UseJsonSchemaProps) {
+  const adaptors = props?.adaptors || defaultAdaptors
+  const components = props?.components || {}
+  const data = computed(() => isRef(props?.data) ? props?.data.value : props?.data)
 
   function getGlobalContext(): Record<string, any> {
-    const ctx = isRef(props.context) ? props.context.value : props.context
+    const ctx = isRef(props?.context) ? props?.context.value : props?.context
     return ctx || {}
   }
 

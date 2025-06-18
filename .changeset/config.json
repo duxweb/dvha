@@ -10,7 +10,7 @@
   "ignore": [
     "example",
     "docs",
-    "dvha-pro"
+    "dvha-start"
   ],
   "privatePackages": {
     "version": true,

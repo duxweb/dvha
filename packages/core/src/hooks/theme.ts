@@ -3,9 +3,9 @@ import { useColorMode, useCycleList } from '@vueuse/core'
 import { hex2rgb } from 'colorizr'
 import { storeToRefs } from 'pinia'
 import { computed, readonly, watch, watchEffect } from 'vue'
+import { themeColor } from '../config'
 import { useThemeStore } from '../stores'
 import { useManage } from './manage'
-import { themeColor } from './themeColor'
 
 // 色彩类型定义
 export type ThemeColorType = 'primary' | 'info' | 'success' | 'warning' | 'error' | 'gray'
@@ -135,7 +135,7 @@ export function useTheme() {
     // 色彩场景
     colorScenes: {
       light: {
-        default: { default: '500', hover: '600', pressed: '700', focus: '500', disabled: '300' },
+        default: { default: '600', hover: '600', pressed: '700', focus: '500', disabled: '300' },
       },
       dark: {
         default: { default: '500', hover: '400', pressed: '300', focus: '500', disabled: '600' },
@@ -144,14 +144,14 @@ export function useTheme() {
     // 语义颜色
     colorSemantic: {
       light: {
-        text: { dimmed: '400', muted: '500', toned: '600', base: '700', highlighted: '900', inverted: 'white' },
+        text: { dimmed: '300', muted: '400', toned: '600', base: '800', highlighted: '900', inverted: 'white' },
         bg: { base: 'white', muted: '50', elevated: '100', accented: '200', inverted: '900' },
-        border: { base: '200', muted: '200', accented: '300', inverted: '900' },
+        border: { base: '100', muted: '200', accented: '300', inverted: '900' },
       },
       dark: {
-        text: { dimmed: '600', muted: '400', toned: '300', base: '500', highlighted: '100', inverted: 'black' },
+        text: { dimmed: '600', muted: '500', toned: '300', base: '400', highlighted: '100', inverted: 'black' },
         bg: { base: '950', muted: '900', elevated: '800', accented: '700', inverted: '100' },
-        border: { base: '900', muted: '800', accented: '700', inverted: '100' },
+        border: { base: '600', muted: '800', accented: '700', inverted: '100' },
       },
     },
     colorBase: { white: '#ffffff', black: '#000000' },

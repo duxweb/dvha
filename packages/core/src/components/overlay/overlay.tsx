@@ -1,6 +1,5 @@
 import { useExtendOverlay } from '@overlastic/vue'
-import { onKeyStroke } from '@vueuse/core'
-import { defineAsyncComponent, defineComponent, nextTick, onMounted, ref, Transition } from 'vue'
+import { defineAsyncComponent, defineComponent, Transition } from 'vue'
 
 export const DuxOverlay = defineComponent({
   name: 'DuxOverlay',
@@ -40,24 +39,9 @@ export const DuxOverlay = defineComponent({
         reject()
       }
     }
-
-    const el = ref<HTMLElement>()
-
-    onMounted(() => {
-      nextTick(() => {
-        if (document.activeElement && document.activeElement instanceof HTMLElement) {
-          document.activeElement.blur()
-        }
-      })
-    })
-
-    onKeyStroke(['Escape'], () => {
-      reject()
-    })
-
     return () => (
       <div
-        class={`fixed inset-0 ${!props.mask ? 'pointer-events-none' : ''}`}
+        class="fixed inset-0 flex items-center justify-center overflow-auto"
         style={{
           zIndex: props.zIndex,
         }}
@@ -72,7 +56,7 @@ export const DuxOverlay = defineComponent({
         >
           {visible.value && props.mask && (
             <div
-              class="fixed inset-0 bg-black bg-opacity-50 overflow-auto"
+              class="fixed inset-0 bg-black bg-opacity-30"
               style={{
                 transitionDuration: `${props.duration}ms`,
               }}
@@ -84,15 +68,15 @@ export const DuxOverlay = defineComponent({
         </Transition>
 
         <Transition
-          enterActiveClass="transition-all duration-150"
-          enterFromClass="opacity-0 scale-90"
+          enterActiveClass="transition-all"
+          enterFromClass="opacity-0 scale-95"
           enterToClass="opacity-100 scale-100"
-          leaveActiveClass="transition-all duration-150"
+          leaveActiveClass="transition-all"
           leaveFromClass="opacity-100 scale-100"
-          leaveToClass="opacity-0 scale-90"
+          leaveToClass="opacity-0 scale-95"
         >
           {visible.value && (
-            <Modal ref={el} {...params} />
+            <Modal {...params} />
           )}
         </Transition>
       </div>

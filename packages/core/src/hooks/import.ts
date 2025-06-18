@@ -3,7 +3,7 @@ import type { IDataProviderCustomOptions, IDataProviderError, IDataProviderRespo
 import { computed, ref } from 'vue'
 import { useCustomMutation } from './data'
 
-interface IImportProgress {
+export interface IImportProgress {
   totalItems: number // 总条数
   processedItems: number // 处理条数
   totalBatches: number // 总批次

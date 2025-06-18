@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-core",
   "type": "module",
-  "version": "0.1.20",
+  "version": "0.1.21",
   "author": "DuxWeb",
   "license": "MIT",
   "repository": {
@@ -39,18 +39,24 @@
   "dependencies": {
     "@overlastic/vue": "^0.8.1",
     "@tanstack/vue-query": "^5.76.2",
+    "@vee-validate/rules": "^4.15.1",
     "@vueuse/core": "^13.3.0",
     "@vueuse/integrations": "^13.3.0",
     "axios": "^1.9.0",
     "clsx": "^2.1.1",
     "colorizr": "^3.0.8",
+    "crypto-js": "^4.2.0",
     "json-2-csv": "^5.5.9",
     "lodash-es": "^4.17.21",
-    "petite-vue-i18n": "^11.1.4",
-    "pinia": "^3.0.0",
-    "pinia-plugin-persistedstate": "^4.0.0",
+    "mathjs": "^14.5.2",
+    "mime": "^4.0.7",
+    "pinia": "^3.0.3",
+    "pinia-plugin-persistedstate": "^4.3.0",
+    "vee-validate": "^4.15.1",
     "vue": "^3.5.0",
-    "vue-router": "^4.0.0"
+    "vue-i18n": "^11.1.4",
+    "vue-router": "^4.0.0",
+    "vue3-sfc-loader": "^0.9.5"
   },
   "devDependencies": {
     "rimraf": "^6.0.1",

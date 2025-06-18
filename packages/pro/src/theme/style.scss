@@ -1,0 +1,25 @@
+@use './css/dropdown.scss';
+@use './css/halo.scss';
+@use './css/tab.scss';
+@use './css/table.scss';
+@use './css/command.scss';
+@use './css/button.scss';
+@use './css/menu.scss';
+@use './css/login.scss';
+
+html {
+  color-scheme: light;
+  background-color: rgb(var(--ui-bg-elevated));
+}
+html.dark {
+  color-scheme: dark;
+  background-color: rgb(var(--ui-bg) / 0.5);
+}
+
+[un-cloak] {
+  display: none;
+}
+
+.app-remote-loader {
+  height: 100%;
+}

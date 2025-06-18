@@ -5,6 +5,7 @@ import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { ref } from 'vue'
 import { permissionDirective } from './directive'
+import { initFormValidate } from './hooks'
 import { initRouter } from './router/route'
 
 export function createDux(config: IConfig) {
@@ -21,13 +22,15 @@ export function createDux(config: IConfig) {
         'background:transparent',
       )
 
+      initFormValidate()
+
       const manageRef = ref<string>()
       app.provide('dux.config', config)
       app.provide('dux.manage', manageRef)
       app.directive('can', permissionDirective)
+      app.use(pinia)
       app.use(VueQueryPlugin)
       app.use(initRouter(config))
-      app.use(pinia)
     },
   }
 }

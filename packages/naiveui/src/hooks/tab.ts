@@ -1,16 +1,18 @@
-import type { TabProps } from 'naive-ui'
 import { useTabStore } from '@duxweb/dvha-core'
+import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 export function useNaiveTab() {
   const tab = useTabStore()
+  const { tabs, current } = storeToRefs(tab)
+
   const router = useRouter()
 
   const props = computed(() => {
     return {
-      value: tab.current,
-      defaultValue: tab.current,
+      value: current.value,
+      defaultValue: current.value || '',
       onClose: (value) => {
         tab.delTab(value, (item) => {
           router.push(item.path || '')
@@ -21,11 +23,13 @@ export function useNaiveTab() {
           router.push(item.path || '')
         })
       },
-    } as TabProps
+    }
   })
 
   return {
     ...tab,
-    props,
+    tabs,
+    current,
+    tabsProps: props,
   }
 }

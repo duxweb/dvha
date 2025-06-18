@@ -1,5 +1,18 @@
 # @duxweb/dvha-naiveui
 
+## 1.0.7
+
+### Patch Changes
+
+- chore: 优化tabhook
+
+## 1.0.6
+
+### Patch Changes
+
+- Updated dependencies
+  - @duxweb/dvha-core@0.1.21
+
 ## 1.0.5
 
 ### Patch Changes

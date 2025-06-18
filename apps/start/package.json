@@ -1,0 +1,23 @@
+{
+  "name": "dvha-start",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "author": "DuxWeb",
+  "license": "MIT",
+  "files": [
+    "README.md",
+    "dist",
+    "package.json"
+  ],
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@duxweb/dvha-core": "workspace:*",
+    "@duxweb/dvha-naiveui": "workspace:*",
+    "@duxweb/dvha-pro": "workspace:*"
+  }
+}

@@ -1,2 +1,2 @@
-export * from './tree'
 export * from './theme'
+export * from './tree'

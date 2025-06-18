@@ -1,0 +1,75 @@
+.app-login-bg {
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      hsla(298, 16%, 68%, 0.06) 0px,
+      hsla(298, 16%, 68%, 0.06) 1px,
+      transparent 1px,
+      transparent 21px,
+      hsla(298, 16%, 68%, 0.06) 21px,
+      hsla(298, 16%, 68%, 0.06) 22px,
+      transparent 22px,
+      transparent 72px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      hsla(298, 16%, 68%, 0.06) 0px,
+      hsla(298, 16%, 68%, 0.06) 1px,
+      transparent 1px,
+      transparent 21px,
+      hsla(298, 16%, 68%, 0.06) 21px,
+      hsla(298, 16%, 68%, 0.06) 22px,
+      transparent 22px,
+      transparent 72px
+    ),
+    repeating-linear-gradient(
+      135deg,
+      hsla(298, 16%, 68%, 0.06) 0px,
+      hsla(298, 16%, 68%, 0.06) 1px,
+      transparent 1px,
+      transparent 21px,
+      hsla(298, 16%, 68%, 0.06) 21px,
+      hsla(298, 16%, 68%, 0.06) 22px,
+      transparent 22px,
+      transparent 72px
+    ),
+    linear-gradient(90deg, hsl(275, 3%, 97%), hsl(275, 3%, 97%));
+}
+
+.app-login-dark-bg {
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(90, 90, 90, 0.06) 0px,
+      rgba(90, 90, 90, 0.06) 1px,
+      transparent 1px,
+      transparent 21px,
+      rgba(90, 90, 90, 0.06) 21px,
+      rgba(90, 90, 90, 0.06) 22px,
+      transparent 22px,
+      transparent 72px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(90, 90, 90, 0.06) 0px,
+      rgba(90, 90, 90, 0.06) 1px,
+      transparent 1px,
+      transparent 21px,
+      rgba(90, 90, 90, 0.06) 21px,
+      rgba(90, 90, 90, 0.06) 22px,
+      transparent 22px,
+      transparent 72px
+    ),
+    repeating-linear-gradient(
+      135deg,
+      rgba(90, 90, 90, 0.06) 0px,
+      rgba(90, 90, 90, 0.06) 1px,
+      transparent 1px,
+      transparent 21px,
+      rgba(90, 90, 90, 0.06) 21px,
+      rgba(90, 90, 90, 0.06) 22px,
+      transparent 22px,
+      transparent 72px
+    ),
+    linear-gradient(90deg, rgb(16, 16, 20), rgb(16, 16, 20));
+}

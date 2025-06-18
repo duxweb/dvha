@@ -1,0 +1,108 @@
+{
+  "common": {
+    "search": "Search",
+    "empty": "No data",
+    "menu": "Menu",
+    "theme": "Theme",
+    "dark": "Dark",
+    "light": "Light",
+    "back": "Back",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error"
+  },
+  "components": {
+    "tab": {
+      "lock": "Lock",
+      "closeOther": "Close Other",
+      "closeLeft": "Close Left",
+      "closeRight": "Close Right"
+    },
+    "dialog": {
+      "confirm": {
+        "title": "Confirm",
+        "content": "Are you sure you want to confirm?"
+      },
+      "cancel": {
+        "title": "Cancel",
+        "content": "Are you sure you want to cancel?"
+      },
+      "success": {
+        "title": "Success",
+        "content": "Your operation has been successful"
+      },
+      "error": {
+        "title": "Error",
+        "content": "Your operation has been failed"
+      },
+      "prompt": {
+        "title": "Prompt"
+      }
+    },
+    "button": {
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "submit": "Submit",
+      "reset": "Reset",
+      "delete": "Delete",
+      "search": "Search",
+      "advanced": "Advanced",
+      "export": "Export",
+      "import": "Import",
+      "autoRefresh": "Auto Refresh",
+      "filter": "Filter",
+      "refresh": "Refresh"
+    },
+    "form": {
+      "edit": "Edit",
+      "create": "Create"
+    },
+    "list": {
+      "selectAll": "Select All",
+      "columnSetting": "Column Setting",
+      "selectedItems": "Selected Items: {num}",
+      "total": "Total: {total}"
+    }
+  },
+  "pages": {
+    "empty": {
+      "title": "No data",
+      "desc": "No more data, please try again later"
+    },
+    "404": {
+      "title": "404",
+      "desc": "Page not found"
+    },
+    "403": {
+      "title": "403",
+      "desc": "You do not have permission to access this page"
+    },
+    "401": {
+      "title": "401",
+      "desc": "You do not have permission to access this page"
+    },
+    "400": {
+      "title": "400",
+      "desc": "Request error"
+    },
+    "500": {
+      "title": "500",
+      "desc": "Server error"
+    },
+    "loading": {
+      "title": "Loading",
+      "desc": "Data is loading, please try again later"
+    },
+    "login": {
+      "success": "Login success",
+      "error": "Login failed, please check your username and password",
+      "placeholder": {
+        "username": "Please enter username",
+        "password": "Please enter password"
+      },
+      "buttons": {
+        "login": "Login"
+      }
+    }
+  }
+}

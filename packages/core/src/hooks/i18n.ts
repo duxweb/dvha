@@ -18,9 +18,19 @@ export function useI18n() {
     return manage.config?.i18nProvider?.getLocale()
   }
 
+  const loadLocale = (lang: string, messages: Record<string, unknown>) => {
+    return manage.config?.i18nProvider?.loadLocale(lang, messages)
+  }
+
+  const mergeLocale = (lang: string, messages: Record<string, unknown>) => {
+    return manage.config?.i18nProvider?.mergeLocale(lang, messages)
+  }
+
   return {
     t,
     changeLocale,
     getLocale,
+    loadLocale,
+    mergeLocale,
   }
 }

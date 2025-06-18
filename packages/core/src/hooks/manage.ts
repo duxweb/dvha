@@ -1,13 +1,15 @@
 import type { Ref } from 'vue'
 import type { IManage } from '../types'
 import { trimStart } from 'lodash-es'
-import { inject } from 'vue'
+import { inject, toRaw } from 'vue'
+import { useRoute } from 'vue-router'
 import { useManageStore } from '../stores'
 
 export interface IManageHook {
   config: IManage
   getRoutePath: (path?: string) => string
   getApiUrl: (path?: string, dataProviderName?: string) => string
+  getPath: () => string
 }
 
 /**
@@ -36,9 +38,19 @@ export function useManage(name?: string): IManageHook {
     return dataProvider?.apiUrl?.(path) || ''
   }
 
+  const route = useRoute()
+  const getPath = () => {
+    const fullPath = route.path
+    const prefix = manage?.routePrefix || ''
+    return trimStart(fullPath.replace(prefix, ''), '/')
+  }
+
+  const rawConfig = toRaw(manage) as IManage
+
   return {
-    config: manage as IManage,
+    config: rawConfig,
     getRoutePath,
     getApiUrl,
+    getPath,
   }
 }

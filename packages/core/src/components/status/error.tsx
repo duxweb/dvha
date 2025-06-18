@@ -1,6 +1,6 @@
 import { defineComponent } from 'vue'
 
-export default defineComponent({
+export const DuxError = defineComponent({
   name: 'DuxError',
   setup() {
     return () => (

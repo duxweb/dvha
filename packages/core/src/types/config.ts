@@ -1,3 +1,4 @@
+import type { Options } from 'vue3-sfc-loader'
 import type { RouteComponent, RouteRecordRaw } from 'vue-router'
 import type { IAuthProvider } from './auth'
 import type { IDataProvider } from './data'
@@ -36,6 +37,13 @@ export interface IConfig {
   // 全局主题
   theme?: IConfigTheme
 
+  // 全局包配置
+  remote?: {
+    packages?: Options
+    apiMethod?: string
+    apiRoutePath?: string | ((path: string) => string)
+  }
+
   [key: string]: any
 }
 
@@ -46,6 +54,9 @@ export interface IConfigComponent {
   notFound?: RouteComponent // 未找到布局
   notAuthorized?: RouteComponent // 未授权布局
   error?: RouteComponent // 错误布局
+  exception?: RouteComponent // 异常布局
+  loading?: RouteComponent // loading 组件
 
   iframe?: RouteComponent // iframe 组件
+  remote?: RouteComponent // remote 组件
 }

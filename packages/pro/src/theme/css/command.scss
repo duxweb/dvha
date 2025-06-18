@@ -1,0 +1,76 @@
+.command-palette {
+  [command-dialog-mask] {
+    background-color: rgb(var(--ui-bg-inverted) / 0.3);
+    backdrop-filter: blur(2px);
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+  }
+
+  [command-dialog-wrapper] {
+    position: relative;
+    flex-direction: column;
+    margin: 20vh auto auto;
+    max-width: 560px;
+    background-color: rgb(var(--ui-bg) / 0.9);
+    border-radius: 6px;
+  }
+
+  [command-group-heading] {
+    color: rgba(var(--ui-text-muted));
+    padding: 6px 6px;
+  }
+
+  [command-separator] {
+    border-bottom: 1px solid rgb(var(--ui-border-muted));
+    margin: 6px 0px;
+  }
+
+  [command-list] {
+    border-top: 1px solid rgb(var(--ui-border-muted));
+    padding: 0px 6px;
+    padding-bottom: 6px;
+  }
+
+  [command-group] {
+    //padding: 6px 0px;
+  }
+
+  [command-item] {
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 3px;
+    color: rgba(var(--ui-text-toned));
+
+    &[aria-selected='true'],
+    &:active {
+      background-color: rgb(var(--ui-bg-accented) / 0.8);
+      color: rgba(var(--ui-color-primary-500));
+    }
+  }
+}
+
+.dark {
+  .command-palette {
+    [command-dialog-mask] {
+      background-color: rgb(var(--ui-bg-inverted) / 0.02);
+    }
+
+    [command-dialog-wrapper] {
+      background-color: rgb(var(--ui-bg-elevated) / 0.95);
+    }
+
+    [command-separator] {
+      border-bottom: 1px solid rgb(var(--ui-border) / 0.5);
+    }
+
+    [command-list] {
+      border-top: 1px solid rgb(var(--ui-border) / 0.5);
+    }
+  }
+}

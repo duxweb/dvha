@@ -18,20 +18,23 @@ export function useExport(props: IUseExportProps) {
 
   const listProps = computed(() => {
     const { onSuccess, onProgress, interval, maxPage, ...rest } = props
-    return rest
+    return {
+      ...rest,
+      options: {
+        ...rest.options,
+        enabled: false,
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+      },
+    }
   })
 
   const interval = computed(() => {
     return props.interval || 300
   })
 
-  const { data, isLoading, fetchNextPage, hasNextPage, refetch, pagination } = useInfiniteList({
-    ...listProps.value,
-    options: {
-      ...listProps.value.options,
-      enabled: false,
-    },
-  })
+  const { data, isLoading, fetchNextPage, hasNextPage, refetch, pagination } = useInfiniteList(listProps.value)
 
   const trigger = async () => {
     if (isExporting.value) {
@@ -64,7 +67,9 @@ export function useExport(props: IUseExportProps) {
     }
   }
 
-  const loading = computed(() => isLoading.value || isExporting.value)
+  const loading = computed(() => {
+    return isLoading.value || isExporting.value
+  })
 
   return {
     data,

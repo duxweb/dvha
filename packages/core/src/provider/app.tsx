@@ -4,6 +4,7 @@ import type { IDataProvider, IManage, IMenu } from '../types'
 import { OverlaysProvider } from '@overlastic/vue'
 import { defineComponent, inject } from 'vue'
 import { useRouter } from 'vue-router'
+import { DuxError, DuxNotAuthorized, DuxNotFound } from '../components'
 import { useCan, useConfig, useManage } from '../hooks'
 import { useAuthStore, useI18nStore, useRouteStore } from '../stores'
 import { useManageStore } from '../stores/manage'
@@ -83,7 +84,7 @@ export const DuxAppProvider = defineComponent({
           name: `${manageName}.notFound`,
           label: '404',
           path: ':pathMatch(.*)*',
-          component: components.notFound || (() => import('../components/status/notFound')),
+          component: components.notFound || DuxNotFound,
           hidden: true,
           meta: {
             can: false,
@@ -94,7 +95,7 @@ export const DuxAppProvider = defineComponent({
           name: `${manageName}.notAuthorized`,
           label: '403',
           path: 'notAuthorized',
-          component: components.notAuthorized || (() => import('../components/status/notAuthorized')),
+          component: components.notAuthorized || DuxNotAuthorized,
           hidden: true,
           meta: {
             can: false,
@@ -105,7 +106,7 @@ export const DuxAppProvider = defineComponent({
           name: `${manageName}.error`,
           label: '500',
           path: 'error',
-          component: components.error || (() => import('../components/status/error')),
+          component: components.error || DuxError,
           hidden: true,
           meta: {
             can: false,
@@ -150,6 +151,9 @@ export const DuxAppProvider = defineComponent({
           switch (item.loader) {
             case 'iframe':
               route.component = manage.config?.components?.iframe || (() => import('../components/loader/iframe'))
+              break
+            case 'remote':
+              route.component = manage.config?.components?.remote || (() => import('../components/loader/loader'))
               break
             case 'link':
               route.beforeEnter = () => {
@@ -202,6 +206,7 @@ export const DuxAppProvider = defineComponent({
       }
 
       const can = useCan(manageName)
+
       if ((to.meta?.can === undefined || to.meta?.can === true) && !can(to.name as string)) {
         return next({
           name: `${manageName}.notAuthorized`,

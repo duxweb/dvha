@@ -10,6 +10,8 @@ interface SharedConfigOptions {
   packageDir: string
   /** 入口文件路径，相对于包根目录 */
   entry?: string
+  /** CSS 入口文件路径，相对于包根目录 */
+  cssEntry?: string
   /** 额外的外部依赖 */
   additionalExternal?: string[]
   /** 额外的 vite 插件 */
@@ -61,6 +63,7 @@ export function createSharedViteConfig(options: SharedConfigOptions): UserConfig
             entryFileNames: '[name].js',
             preserveModules: true,
             preserveModulesRoot: 'src',
+            exports: 'named',
           },
           {
             format: 'cjs',
@@ -68,6 +71,7 @@ export function createSharedViteConfig(options: SharedConfigOptions): UserConfig
             entryFileNames: '[name].cjs',
             preserveModules: true,
             preserveModulesRoot: 'src',
+            exports: 'named',
           },
         ],
       },

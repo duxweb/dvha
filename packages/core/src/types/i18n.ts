@@ -6,5 +6,6 @@ export interface I18nProvider {
   t: (key: string, options?: any, defaultMessage?: string) => string
   changeLocale: (lang: string, options?: any) => Promise<any>
   loadLocale: (lang: string, files: Record<string, unknown>) => Promise<any>
+  mergeLocale: (lang: string, messages: Record<string, unknown>) => void
   getLocale: () => string
 }

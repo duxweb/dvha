@@ -1,0 +1,74 @@
+{
+  "name": "@duxweb/dvha-pro",
+  "type": "module",
+  "version": "0.0.4",
+  "private": true,
+  "author": "DuxWeb",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/duxweb/dvha.git"
+  },
+  "exports": {
+    ".": {
+      "dvha:development": {
+        "types": "./src/index.ts",
+        "import": "./src/index.ts"
+      },
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.cjs"
+    },
+    "./style.css": {
+      "dvha:development": "./src/theme/style.scss",
+      "import": "./dist/esm/dvha-pro.css",
+      "require": "./dist/cjs/dvha-pro.css"
+    }
+  },
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "LICENSE",
+    "README.md",
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "bun run clean && vue-tsc --noEmit && bun run build:uno && vite build && bun run build:types",
+    "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/types",
+    "build:uno": "unocss -c uno.config.ts './src/**/*' -o ./src/theme/uno.css",
+    "prepublishOnly": "bun run build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "@duxweb/dvha-core": "workspace:*",
+    "@duxweb/dvha-naiveui": "workspace:*",
+    "@iconify-json/tabler": "^1.2.18",
+    "@unocss/preset-icons": "^66.2.1",
+    "@unocss/runtime": "^66.2.1",
+    "@vee-validate/i18n": "^4.15.1",
+    "@vee-validate/rules": "^4.15.1",
+    "@vueuse/core": "^13.3.0",
+    "@vueuse/integrations": "^13.3.0",
+    "clsx": "^2.1.1",
+    "jinrishici": "^1.0.6",
+    "jsep": "^1.4.0",
+    "lodash-es": "^4.17.21",
+    "naive-ui": "^2.41.0",
+    "pinia": "^3.0.3",
+    "pinia-plugin-persistedstate": "^4.3.0",
+    "sass-embedded": "^1.89.1",
+    "unocss": "^66.2.1",
+    "vee-validate": "^4.15.1",
+    "vue": "^3.5.0",
+    "vue-command-palette": "^0.2.3",
+    "vue-router": "^4.0.0"
+  },
+  "devDependencies": {
+    "@unocss/cli": "^66.2.1",
+    "rimraf": "^6.0.1",
+    "vue-tsc": "^2.2.10"
+  }
+}

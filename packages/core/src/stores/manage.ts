@@ -102,6 +102,18 @@ function createManageStore(manageName: string) {
         ...manage.layoutComponent,
       }
 
+      const components = {
+        ...globalConfig.components,
+        ...manage.components,
+      }
+
+      manage.components = components
+
+      manage.remote = {
+        ...globalConfig.remote,
+        ...manage.remote,
+      }
+
       config.value = manage
     }
 

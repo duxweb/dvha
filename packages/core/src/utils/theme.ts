@@ -1,107 +1,154 @@
 function withRgb(variableName: string) {
-  return `rgba(var(${variableName}))`
+  return `rgb(var(${variableName}))`
+}
+
+function withOpacity(variableName: string, opacityVar: string) {
+  return `color-mix(in oklab, rgb(var(${variableName})) var(${opacityVar}, 100%), transparent)`
 }
 
 export function themePreset(themeColor: Record<string, any>) {
-  const colorsVar: Record<string, Record<string, any>> = {}
-  const shades = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950']
-  const colorTypes = ['primary', 'info', 'success', 'warning', 'error', 'gray']
-  const scenes = ['hover', 'pressed', 'focus', 'disabled']
+  // 常量定义
+  const SHADES = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950']
+  const COLOR_TYPES = ['primary', 'info', 'success', 'warning', 'error', 'gray']
+  const SCENES = ['hover', 'pressed', 'focus', 'disabled']
 
-  colorsVar.white = { DEFAULT: withRgb('--ui-color-white') }
-  colorsVar.black = { DEFAULT: withRgb('--ui-color-black') }
+  // 构建颜色变量映射
+  const colorsVar: Record<string, Record<string, any>> = {
+    white: { DEFAULT: withRgb('--ui-color-white') },
+    black: { DEFAULT: withRgb('--ui-color-black') },
+  }
 
+  // 生成基础色彩变量
   Object.keys(themeColor).forEach((colorName) => {
     colorsVar[colorName] = {}
-    shades.forEach((shade) => {
+    SHADES.forEach((shade) => {
       colorsVar[colorName][shade] = withRgb(`--base-color-${colorName}-${shade}`)
     })
   })
 
-  colorTypes.forEach((type) => {
-    colorsVar[type] = {}
+  // 生成 UI 色彩变量
+  COLOR_TYPES.forEach((type) => {
+    colorsVar[type] = {
+      DEFAULT: withOpacity(`--ui-color-${type}`, '--un-text-opacity'),
+    }
 
-    colorsVar[type].DEFAULT = withRgb(`--ui-color-${type}`)
-
-    shades.forEach((shade) => {
-      colorsVar[type][shade] = withRgb(`--ui-color-${type}-${shade}`)
+    SHADES.forEach((shade) => {
+      colorsVar[type][shade] = withOpacity(`--ui-color-${type}-${shade}`, '--un-text-opacity')
     })
 
-    scenes.forEach((scene) => {
-      colorsVar[type][scene] = withRgb(`--ui-color-${type}-${scene}`)
+    SCENES.forEach((scene) => {
+      colorsVar[type][scene] = withOpacity(`--ui-color-${type}-${scene}`, '--un-text-opacity')
     })
   })
 
-  const classVars = {
-    // 文字颜色
-    'text-default': {
-      color: withRgb('--ui-text'),
-    },
-    'text-dimmed': {
-      color: withRgb('--ui-text-dimmed'),
-    },
-    'text-muted': {
-      color: withRgb('--ui-text-muted'),
-    },
-    'text-toned': {
-      color: withRgb('--ui-text-toned'),
-    },
-    'text-highlighted': {
-      color: withRgb('--ui-text-highlighted'),
-    },
-    'text-inverted': {
-      color: withRgb('--ui-text-inverted'),
-    },
-
-    // 背景颜色
-    'bg-default': {
-      'background-color': withRgb('--ui-bg'),
-    },
-    'bg-muted': {
-      'background-color': withRgb('--ui-bg-muted'),
-    },
-    'bg-elevated': {
-      'background-color': withRgb('--ui-bg-elevated'),
-    },
-    'bg-accented': {
-      'background-color': withRgb('--ui-bg-accented'),
-    },
-    'bg-inverted': {
-      'background-color': withRgb('--ui-bg-inverted'),
-    },
-
-    // 边框颜色
-    'border-default': {
-      'border-color': withRgb('--ui-border'),
-    },
-    'border-muted': {
-      'border-color': withRgb('--ui-border-muted'),
-    },
-    'border-accented': {
-      'border-color': withRgb('--ui-border-accented'),
-    },
-    'border-inverted': {
-      'border-color': withRgb('--ui-border-inverted'),
-    },
+  // 语义化颜色定义
+  const semanticColors = {
+    text: ['default', 'dimmed', 'muted', 'toned', 'highlighted', 'inverted'],
+    bg: ['default', 'muted', 'elevated', 'accented', 'inverted'],
+    border: ['default', 'muted', 'accented', 'inverted'],
   }
 
-  const utilities: Record<string, Record<string, string>> = {}
-  Object.entries(classVars).forEach(([className, styles]) => {
-    utilities[`.${className}`] = styles
-  })
+  function createSemanticColorRules(prefix: string, property: string, variants: string[], opacityVar: string, sourcePrefix?: string) {
+    const rules: any[] = []
 
-  const rules: object[] = []
-  Object.entries(classVars).forEach(([className, styles]) => {
-    rules.push([
-      className,
-      styles,
+    variants.forEach((variant) => {
+      const cssVarPrefix = sourcePrefix || prefix
+      const cssVar = `--ui-${cssVarPrefix}${variant === 'default' ? '' : `-${variant}`}`
+
+      rules.push([
+        `${prefix}-${variant}`,
+        {
+          [property]: `color-mix(in oklab, rgb(var(${cssVar})) var(${opacityVar}, 100%), transparent)`,
+          [opacityVar]: '100%',
+        },
+      ])
+
+      rules.push([
+        new RegExp(`^${prefix}-${variant}\\/(\\d*\\.?\\d+)(%?)$`),
+        ([, opacity, isPercent]: string[]) => {
+          const opacityValue = Number(opacity)
+          let opacityStr: string
+          if (isPercent || opacityValue > 1) {
+            opacityStr = `${opacityValue}%`
+          }
+          else {
+            // 小数转百分比
+            opacityStr = `${opacityValue * 100}%`
+          }
+          return {
+            [property]: `color-mix(in oklab, rgb(var(${cssVar})) var(${opacityVar}, 100%), transparent)`,
+            [opacityVar]: opacityStr,
+          }
+        },
+      ])
+
+      rules.push([
+        new RegExp(`^${prefix}-${variant}\\[(.+)\\]$`),
+        ([, value]: string[]) => ({
+          [property]: value.replace(/_/g, ' '),
+        }),
+      ])
+    })
+
+    return rules
+  }
+
+  // 生成所有语义化颜色规则
+  const textRules = createSemanticColorRules('text', 'color', semanticColors.text, '--un-text-opacity')
+  const bgRules = createSemanticColorRules('bg', 'background-color', semanticColors.bg, '--un-bg-opacity')
+  const borderRules = createSemanticColorRules('border', 'border-color', semanticColors.border, '--un-border-opacity')
+  const ringRules = createSemanticColorRules('ring', '--un-ring-color', semanticColors.border, '--un-ring-opacity', 'border')
+
+  const divideRules: any[] = []
+  semanticColors.border.forEach((variant) => {
+    const cssVar = `--ui-border${variant === 'default' ? '' : `-${variant}`}`
+
+    divideRules.push([
+      new RegExp(`^divide-${variant}$`),
+      (_: any, { rawSelector }: any) => {
+        const selector = rawSelector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        return `
+          .${selector} > :not(:last-child) {
+            border-color: color-mix(in oklab, rgb(var(${cssVar})) var(--un-border-opacity, 100%), transparent);
+            --un-border-opacity: 100%;
+          }`
+      },
+    ])
+
+    divideRules.push([
+      new RegExp(`^divide-${variant}\\/(\\d*\\.?\\d+)(%?)$`),
+      ([, opacity, isPercent]: string[], { rawSelector }: any) => {
+        const opacityValue = Number(opacity)
+        let opacityStr: string
+        if (isPercent || opacityValue > 1) {
+          opacityStr = `${opacityValue}%`
+        }
+        else {
+          opacityStr = `${opacityValue * 100}%`
+        }
+        const selector = rawSelector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        return `
+          .${selector} > :not(:last-child) {
+            border-color: color-mix(in oklab, rgb(var(${cssVar})) var(--un-border-opacity, 100%), transparent);
+            --un-border-opacity: ${opacityStr};
+          }`
+      },
     ])
   })
 
+  const rules = [
+    ...textRules,
+    ...bgRules,
+    ...borderRules,
+    ...ringRules,
+    ...divideRules,
+  ]
+
   return {
-    colors: colorsVar,
-    classes: classVars,
+    name: 'preset-theme',
+    theme: {
+      colors: colorsVar,
+    },
     rules,
-    utilities,
   }
 }

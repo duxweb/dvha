@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-naiveui",
   "type": "module",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "author": "DuxWeb",
   "license": "MIT",
   "exports": {
@@ -32,7 +32,7 @@
     "lint:fix": "eslint . --fix"
   },
   "peerDependencies": {
-    "@duxweb/dvha-core": "latest",
+    "@duxweb/dvha-core": "workspace:*",
     "naive-ui": "^2.41.0"
   },
   "devDependencies": {}
