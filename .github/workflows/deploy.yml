@@ -36,6 +36,16 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      # 构建依赖包（按依赖顺序）
+      - name: Build core package
+        run: pnpm run core:build
+
+      - name: Build naiveui package
+        run: pnpm run naiveui:build
+
+      - name: Build pro package
+        run: pnpm run pro:build
+
       # 构建文档
       - name: Build VitePress docs
         run: pnpm run docs:build
