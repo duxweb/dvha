@@ -1,39 +1,17 @@
 import {
+  notNullish,
   toArray,
   tryOnScopeDispose,
   unrefElement
-} from "./chunk-2LN7N2XR.js";
+} from "./chunk-JJL4V3TK.js";
 import {
   computed,
   shallowRef,
   toValue,
   watch
-} from "./chunk-WECGYMF3.js";
+} from "./chunk-FMSNHPEC.js";
 
-// ../../node_modules/vitepress/node_modules/@vueuse/integrations/node_modules/@vueuse/shared/index.mjs
-var isClient = typeof window !== "undefined" && typeof document !== "undefined";
-var isWorker = typeof WorkerGlobalScope !== "undefined" && globalThis instanceof WorkerGlobalScope;
-var notNullish = (val) => val != null;
-var isIOS = getIsIOS();
-function getIsIOS() {
-  var _a, _b;
-  return isClient && ((_a = window == null ? void 0 : window.navigator) == null ? void 0 : _a.userAgent) && (/iP(?:ad|hone|od)/.test(window.navigator.userAgent) || ((_b = window == null ? void 0 : window.navigator) == null ? void 0 : _b.maxTouchPoints) > 2 && /iPad|Macintosh/.test(window == null ? void 0 : window.navigator.userAgent));
-}
-function cacheStringFunction(fn) {
-  const cache = /* @__PURE__ */ Object.create(null);
-  return (str) => {
-    const hit = cache[str];
-    return hit || (cache[str] = fn(str));
-  };
-}
-var hyphenateRE = /\B([A-Z])/g;
-var hyphenate = cacheStringFunction((str) => str.replace(hyphenateRE, "-$1").toLowerCase());
-var camelizeRE = /-(\w)/g;
-var camelize = cacheStringFunction((str) => {
-  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : "");
-});
-
-// ../../node_modules/tabbable/dist/index.esm.js
+// ../../node_modules/.pnpm/tabbable@6.2.0/node_modules/tabbable/dist/index.esm.js
 var candidateSelectors = ["input:not([inert])", "select:not([inert])", "textarea:not([inert])", "a[href]:not([inert])", "button:not([inert])", "[tabindex]:not(slot):not([inert])", "audio[controls]:not([inert])", "video[controls]:not([inert])", '[contenteditable]:not([contenteditable="false"]):not([inert])', "details>summary:first-of-type:not([inert])", "details:not([inert])"];
 var candidateSelector = candidateSelectors.join(",");
 var NoElement = typeof Element === "undefined";
@@ -364,7 +342,7 @@ var isFocusable = function isFocusable2(node, options) {
   return isNodeMatchingSelectorFocusable(options, node);
 };
 
-// ../../node_modules/focus-trap/dist/focus-trap.esm.js
+// ../../node_modules/.pnpm/focus-trap@7.6.5/node_modules/focus-trap/dist/focus-trap.esm.js
 function _arrayLikeToArray(r, a) {
   (null == a || a > r.length) && (a = r.length);
   for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
@@ -415,7 +393,7 @@ function _toPrimitive(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
-    var i = e.call(t, r || "default");
+    var i = e.call(t, r);
     if ("object" != typeof i) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
@@ -969,7 +947,7 @@ var createFocusTrap = function createFocusTrap2(elements, userOptions) {
       }
       state.active = true;
       state.paused = false;
-      state.nodeFocusedBeforeActivation = doc.activeElement;
+      state.nodeFocusedBeforeActivation = _getActiveElement(doc);
       onActivate === null || onActivate === void 0 || onActivate();
       var finishActivation = function finishActivation2() {
         if (checkCanFocusTrap) {
@@ -1087,7 +1065,7 @@ var createFocusTrap = function createFocusTrap2(elements, userOptions) {
   return trap;
 };
 
-// ../../node_modules/vitepress/node_modules/@vueuse/integrations/useFocusTrap.mjs
+// ../../node_modules/.pnpm/@vueuse+integrations@12.8.2_async-validator@4.2.5_axios@1.10.0_focus-trap@7.6.5_typescript@5.8.3/node_modules/@vueuse/integrations/useFocusTrap.mjs
 function useFocusTrap(target, options = {}) {
   let trap;
   const { immediate, ...focusTrapOptions } = options;
@@ -1160,7 +1138,7 @@ tabbable/dist/index.esm.js:
 
 focus-trap/dist/focus-trap.esm.js:
   (*!
-  * focus-trap 7.6.4
+  * focus-trap 7.6.5
   * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
   *)
 */

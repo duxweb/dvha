@@ -2,7 +2,14 @@ import type { Ref } from 'vue'
 import type { IConfig, IDataProvider, IManage } from '../types'
 import { cloneDeep } from 'lodash-es'
 import { defineStore } from 'pinia'
-import { inject, ref } from 'vue'
+import { inject, markRaw, ref } from 'vue'
+
+export interface ManageStoreState {
+  config: Ref<IManage | undefined>
+  isInit: () => boolean
+  setConfig: (manageConfig: IManage, globalConfig: IConfig) => void
+  getConfig: () => IManage | undefined
+}
 
 /**
  * 判断是否为 Record<string, IDataProvider> 类型
@@ -42,7 +49,7 @@ export function useManageStore(manageName?: string) {
  * @returns manage store
  */
 function createManageStore(manageName: string) {
-  return defineStore(`manages-${manageName}`, () => {
+  return defineStore<string, ManageStoreState>(`manages-${manageName}`, () => {
     const config = ref<IManage>()
     const isInitConfig = ref<boolean>(false)
 
@@ -105,6 +112,14 @@ function createManageStore(manageName: string) {
       const components = {
         ...globalConfig.components,
         ...manage.components,
+      }
+
+      if (components) {
+        Object.keys(components).forEach((key) => {
+          if (components[key]) {
+            components[key] = markRaw(components[key])
+          }
+        })
       }
 
       manage.components = components

@@ -1,11 +1,11 @@
-import { defineConfig, presetIcons, presetWind3 } from 'unocss'
 import icons from '@iconify-json/tabler/icons.json'
+import { defineConfig, presetIcons, presetWind3 } from 'unocss'
 
-const generateSafeList = () => {
+function generateSafeList() {
   return Object.keys(icons.icons).flatMap((item) => {
     return `i-tabler:${item}`
   })
-};
+}
 
 const safeList = generateSafeList()
 

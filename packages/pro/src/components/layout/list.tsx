@@ -1,7 +1,11 @@
 import type { JsonSchemaNode } from '@duxweb/dvha-core'
-import type { TablePagination } from '@duxweb/dvha-naiveui'
 import type { PropType } from 'vue'
 import type { UseActionItem } from '../../hooks'
+
+export interface TablePagination {
+  page: number
+  pageSize: number
+}
 import { useExtendList, useI18n, useJsonSchema } from '@duxweb/dvha-core'
 import { useWindowSize } from '@vueuse/core'
 import { NButton, NCheckbox, NPagination, NPopover, NProgress, NSpin, NTab, NTabs, NTooltip } from 'naive-ui'

@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-import fs from 'fs-extra'
-import path from 'path'
-import { fileURLToPath } from 'url'
-import { input, select, confirm } from '@inquirer/prompts'
-import { cyan, green, red, yellow, blue, bold } from 'kolorist'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { confirm, input, select } from '@inquirer/prompts'
 import { Command } from 'commander'
+import fs from 'fs-extra'
+import { bold, cyan, green, red, yellow } from 'kolorist'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -29,7 +29,7 @@ async function createProject(projectName) {
   if (!targetDir) {
     targetDir = await input({
       message: '请输入项目名称 / Enter project name:',
-      default: 'my-dvha-app'
+      default: 'my-dvha-app',
     })
   }
 
@@ -43,7 +43,7 @@ async function createProject(projectName) {
   if (fs.existsSync(root)) {
     const overwrite = await confirm({
       message: `目录 ${targetDir} 已存在，是否覆盖？ / Directory ${targetDir} already exists, overwrite?`,
-      default: false
+      default: false,
     })
 
     if (!overwrite) {
@@ -58,15 +58,15 @@ async function createProject(projectName) {
   const uiConfigsDir = path.resolve(__dirname, '..', 'template', 'ui-configs')
   const availableUIs = fs.readdirSync(uiConfigsDir)
     .filter(dir => fs.statSync(path.join(uiConfigsDir, dir)).isDirectory())
-    .map(dir => {
-      const configPath = path.join(uiConfigsDir, dir + '.json')
+    .map((dir) => {
+      const configPath = path.join(uiConfigsDir, `${dir}.json`)
       if (fs.existsSync(configPath)) {
         const config = fs.readJsonSync(configPath)
         return {
           name: config.name,
           display: config.display,
           description: config.description,
-          value: config.name
+          value: config.name,
         }
       }
       return null
@@ -78,8 +78,8 @@ async function createProject(projectName) {
     choices: availableUIs.map(ui => ({
       name: `${ui.display} - ${ui.description}`,
       value: ui.value,
-      description: ui.description
-    }))
+      description: ui.description,
+    })),
   })
 
   if (!template) {
@@ -117,19 +117,19 @@ async function createProject(projectName) {
       const fileName = path.basename(src)
 
       // 过滤掉不需要的目录和文件
-      const shouldExclude =
-        relativePath.includes('node_modules') ||
-        relativePath.includes('.git') ||
-        relativePath.includes('dist') ||
-        relativePath.includes('.vite') ||
-        fileName === '.DS_Store' ||
-        fileName.endsWith('.log') ||
-        fileName === 'bun.lockb' ||
-        fileName === 'package-lock.json' ||
-        fileName === 'yarn.lock'
+      const shouldExclude
+        = relativePath.includes('node_modules')
+          || relativePath.includes('.git')
+          || relativePath.includes('dist')
+          || relativePath.includes('.vite')
+          || fileName === '.DS_Store'
+          || fileName.endsWith('.log')
+          || fileName === 'bun.lockb'
+          || fileName === 'package-lock.json'
+          || fileName === 'yarn.lock'
 
       return !shouldExclude
-    }
+    },
   })
 
   // 2. 复制UI特定的pages文件
@@ -150,13 +150,13 @@ async function createProject(projectName) {
     // 更新依赖
     pkg.dependencies = {
       ...pkg.dependencies,
-      ...uiConfig.dependencies
+      ...uiConfig.dependencies,
     }
 
     if (uiConfig.devDependencies && Object.keys(uiConfig.devDependencies).length > 0) {
       pkg.devDependencies = {
         ...pkg.devDependencies,
-        ...uiConfig.devDependencies
+        ...uiConfig.devDependencies,
       }
     }
 
@@ -173,7 +173,7 @@ async function createProject(projectName) {
     const appUseStatements = uiConfig.appUse || []
 
     // 找到现有导入的位置
-    const appImportIndex = mainTsContent.indexOf("import App from './App.vue'")
+    const appImportIndex = mainTsContent.indexOf('import App from \'./App.vue\'')
     if (appImportIndex !== -1) {
       const insertPosition = mainTsContent.indexOf('\n', appImportIndex) + 1
       const additionalImports = importStatements.join('\n') + (importStatements.length > 0 ? '\n' : '')
@@ -184,7 +184,7 @@ async function createProject(projectName) {
     if (appUseStatements.length > 0) {
       const appUseIndex = mainTsContent.indexOf('app.use(createDux(config))')
       if (appUseIndex !== -1) {
-        const additionalUse = appUseStatements.join('\n') + '\n'
+        const additionalUse = `${appUseStatements.join('\n')}\n`
         mainTsContent = mainTsContent.slice(0, appUseIndex) + additionalUse + mainTsContent.slice(appUseIndex)
       }
     }
@@ -223,7 +223,8 @@ program
   .action(async (projectName) => {
     try {
       await createProject(projectName)
-    } catch (error) {
+    }
+    catch (error) {
       if (error.name === 'ExitPromptError') {
         console.log(yellow('\n👋 操作已取消 / Operation cancelled'))
         process.exit(0)

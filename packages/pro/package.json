@@ -1,8 +1,7 @@
 {
   "name": "@duxweb/dvha-pro",
   "type": "module",
-  "version": "0.0.4",
-  "private": true,
+  "version": "0.0.6",
   "author": "DuxWeb",
   "license": "MIT",
   "repository": {
@@ -20,7 +19,6 @@
       "require": "./dist/cjs/index.cjs"
     },
     "./style.css": {
-      "dvha:development": "./src/theme/style.scss",
       "import": "./dist/esm/dvha-pro.css",
       "require": "./dist/cjs/dvha-pro.css"
     }
@@ -35,10 +33,9 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "build": "bun run clean && vue-tsc --noEmit && bun run build:uno && vite build && bun run build:types",
+    "build": "pnpm run clean && vue-tsc --noEmit && pnpm run build:uno && vite build && pnpm run build:types",
     "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/types",
     "build:uno": "unocss -c uno.config.ts './src/**/*' -o ./src/theme/uno.css",
-    "prepublishOnly": "bun run build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -46,17 +43,20 @@
     "@duxweb/dvha-core": "workspace:*",
     "@duxweb/dvha-naiveui": "workspace:*",
     "@iconify-json/tabler": "^1.2.18",
+    "@overlastic/vue": "^0.8.1",
     "@unocss/preset-icons": "^66.2.1",
+    "@unocss/preset-typography": "^66.2.3",
     "@unocss/runtime": "^66.2.1",
     "@vee-validate/i18n": "^4.15.1",
     "@vee-validate/rules": "^4.15.1",
     "@vueuse/core": "^13.3.0",
     "@vueuse/integrations": "^13.3.0",
     "clsx": "^2.1.1",
+    "colorizr": "^3.0.8",
     "jinrishici": "^1.0.6",
     "jsep": "^1.4.0",
     "lodash-es": "^4.17.21",
-    "naive-ui": "^2.41.0",
+    "naive-ui": "^2.42.0",
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.3.0",
     "sass-embedded": "^1.89.1",
@@ -64,7 +64,7 @@
     "vee-validate": "^4.15.1",
     "vue": "^3.5.0",
     "vue-command-palette": "^0.2.3",
-    "vue-router": "^4.0.0"
+    "vue-router": "^4.5.1"
   },
   "devDependencies": {
     "@unocss/cli": "^66.2.1",

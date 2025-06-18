@@ -2,6 +2,13 @@ import type { Ref } from 'vue'
 import { defineStore } from 'pinia'
 import { inject, ref } from 'vue'
 
+export interface I18nStoreState {
+  lang: Ref<string>
+  isInit: () => boolean
+  setLocale: (value: string) => void
+  getLocale: () => string
+}
+
 /**
  * use i18n store
  * @param manageName manage name
@@ -27,7 +34,7 @@ export function useI18nStore(manageName?: string) {
  * @returns manage store
  */
 function createI18nStore(manageName: string) {
-  return defineStore(`i18n-${manageName}`, () => {
+  return defineStore<string, I18nStoreState>(`i18n-${manageName}`, () => {
     const lang = ref<string>('')
 
     const init = ref<boolean>(false)

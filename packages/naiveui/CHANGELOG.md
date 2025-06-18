@@ -1,5 +1,33 @@
 # @duxweb/dvha-naiveui
 
+## 1.0.11
+
+### Patch Changes
+
+- feat: 增加pro版本示例
+  fix: 修正部分细节问题
+  chore: 更换工具链为 PNPM
+- Updated dependencies
+  - @duxweb/dvha-core@0.1.22
+
+## 1.0.10
+
+### Patch Changes
+
+- test: 测试版本号
+
+## 1.0.9
+
+### Patch Changes
+
+- test: 测试版本号更正
+
+## 1.0.8
+
+### Patch Changes
+
+- chore: 修改版本依赖
+
 ## 1.0.7
 
 ### Patch Changes

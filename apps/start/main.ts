@@ -1,12 +1,12 @@
 import type { IConfig } from '@duxweb/dvha-core'
 import { createDux, i18nProvider, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
-import * as dvhaPro from '@duxweb/dvha-pro'
+import { createDuxPro, DuxApp, DuxAuthLayout, DuxLayout, DuxLoginPage, DuxPage404, DuxPage500, DuxPageLoading, enUS, zhCN } from '@duxweb/dvha-pro'
 import NaiveUI from 'naive-ui'
 import { createApp } from 'vue'
 
 import '@duxweb/dvha-pro/style.css'
 
-const app = createApp(dvhaPro.DuxApp)
+const app = createApp(DuxApp)
 
 const config: IConfig = {
   defaultManage: 'admin',
@@ -18,11 +18,11 @@ const config: IConfig = {
       apiUrl: '/admin',
       apiRoutePath: '/routes',
       components: {
-        authLayout: () => import('./dvha/authLayout.vue'),
-        noAuthLayout: () => import('./dvha/layout.vue'),
-        notFound: () => import('./dvha/page404.vue'),
-        loading: () => import('./dvha/pageLoading.vue'),
-        error: () => import('./dvha/page500.vue'),
+        authLayout: DuxAuthLayout,
+        noAuthLayout: DuxLayout,
+        notFound: DuxPage404,
+        loading: DuxPageLoading,
+        error: DuxPage500,
       },
       userMenus: [
         {
@@ -36,7 +36,7 @@ const config: IConfig = {
         {
           name: 'admin.login',
           path: 'login',
-          component: dvhaPro.DuxLoginPage,
+          component: DuxLoginPage,
           meta: {
             authorization: false,
           },
@@ -145,19 +145,23 @@ const config: IConfig = {
     locale: 'zh-CN',
     fallbackLocale: 'en-US',
     messages: {
-      'zh-CN': dvhaPro.zhCN,
-      'en-US': dvhaPro.enUS,
+      'zh-CN': zhCN,
+      'en-US': enUS,
     },
   }),
-  remote: {
-    packages: {
-      'naive-ui': NaiveUI,
-      '@duxweb/dvha-pro': dvhaPro,
-    },
-  },
+  // remote: {
+  //   packages: {
+  //     'naive-ui': NaiveUI,
+  //     '@duxweb/dvha-pro': createDuxPro(),
+  //   },
+  // },
 }
 
-app.use(NaiveUI)
+// 先安装 Dux (包含 Pinia 初始化)
 app.use(createDux(config))
-app.use(dvhaPro.createDuxPro())
+
+// 然后安装其他插件
+app.use(NaiveUI)
+app.use(createDuxPro())
+
 app.mount('#app')

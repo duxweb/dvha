@@ -1,7 +1,7 @@
 import type { Ref } from 'vue'
 import type { IManage } from '../types'
 import { trimStart } from 'lodash-es'
-import { inject, toRaw } from 'vue'
+import { inject } from 'vue'
 import { useRoute } from 'vue-router'
 import { useManageStore } from '../stores'
 
@@ -45,10 +45,8 @@ export function useManage(name?: string): IManageHook {
     return trimStart(fullPath.replace(prefix, ''), '/')
   }
 
-  const rawConfig = toRaw(manage) as IManage
-
   return {
-    config: rawConfig,
+    config: manage as IManage,
     getRoutePath,
     getApiUrl,
     getPath,

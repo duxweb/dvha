@@ -9,6 +9,16 @@ export interface IUserState {
   permission?: any
 }
 
+export interface AuthStoreState {
+  data: Ref<IUserState | undefined>
+  getUser: () => IUserState
+  login: (params: IUserState) => void
+  isLogin: () => boolean
+  logout: () => void
+  update: (params: IUserState) => void
+  updateKey: (key: string, value: any) => void
+}
+
 /**
  * use auth store
  * @param manageName manage name
@@ -34,7 +44,7 @@ export function useAuthStore(manageName?: string) {
  * @returns auth store
  */
 function createAuthStore(manageName: string) {
-  return defineStore(`auths-${manageName}`, () => {
+  return defineStore<string, AuthStoreState>(`auths-${manageName}`, () => {
     const data = ref<IUserState>()
 
     const isLogin = (): boolean => {

@@ -1,5 +1,15 @@
 # @duxweb/dvha-elementui
 
+## 1.0.4
+
+### Patch Changes
+
+- feat: 增加pro版本示例
+  fix: 修正部分细节问题
+  chore: 更换工具链为 PNPM
+- Updated dependencies
+  - @duxweb/dvha-core@0.1.22
+
 ## 1.0.3
 
 ### Patch Changes

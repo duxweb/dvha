@@ -35,9 +35,9 @@ import {
   unref,
   watch,
   watchEffect
-} from "./chunk-WECGYMF3.js";
+} from "./chunk-FMSNHPEC.js";
 
-// ../../node_modules/vitepress/node_modules/@vueuse/core/node_modules/@vueuse/shared/index.mjs
+// ../../node_modules/.pnpm/@vueuse+shared@12.8.2_typescript@5.8.3/node_modules/@vueuse/shared/index.mjs
 function computedEager(fn, options) {
   var _a;
   const result = shallowRef();
@@ -1569,7 +1569,7 @@ function whenever(source, cb, options) {
   return stop;
 }
 
-// ../../node_modules/vitepress/node_modules/@vueuse/core/index.mjs
+// ../../node_modules/.pnpm/@vueuse+core@12.8.2_typescript@5.8.3/node_modules/@vueuse/core/index.mjs
 function computedAsync(evaluationCallback, initialState, optionsOrRef) {
   let options;
   if (isRef(optionsOrRef)) {
@@ -9716,4 +9716,4 @@ export {
   useWindowScroll,
   useWindowSize
 };
-//# sourceMappingURL=chunk-2LN7N2XR.js.map
+//# sourceMappingURL=chunk-JJL4V3TK.js.map

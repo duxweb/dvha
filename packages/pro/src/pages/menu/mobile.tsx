@@ -1,7 +1,7 @@
 import { NDrawer } from 'naive-ui'
 import { defineComponent } from 'vue'
-import { DuxMenuMain } from '.'
 import { useUI } from '../../hooks'
+import { DuxMenuMain } from './main'
 
 export const DuxMobileMenu = defineComponent({
   name: 'DuxMobileMenu',

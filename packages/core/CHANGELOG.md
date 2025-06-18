@@ -1,5 +1,13 @@
 # @duxweb/dvha-core
 
+## 0.1.22
+
+### Patch Changes
+
+- feat: 增加pro版本示例
+  fix: 修正部分细节问题
+  chore: 更换工具链为 PNPM
+
 ## 0.1.21
 
 ### Patch Changes

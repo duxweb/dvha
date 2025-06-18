@@ -1,5 +1,13 @@
 # @duxweb/dvha-template
 
+## 1.0.9
+
+### Patch Changes
+
+- feat: 增加pro版本示例
+  fix: 修正部分细节问题
+  chore: 更换工具链为 PNPM
+
 ## 1.0.8
 
 ### Patch Changes

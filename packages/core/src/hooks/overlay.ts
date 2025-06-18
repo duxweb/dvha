@@ -10,7 +10,9 @@ export interface UseOverlayProps {
   zIndex?: number
 }
 
-export function useOverlay() {
+export function useOverlay(): {
+  show: (props: UseOverlayProps) => any
+} {
   const create = useOverlayInject(DuxOverlay)
 
   const show = (props: UseOverlayProps) => {

@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-core",
   "type": "module",
-  "version": "0.1.21",
+  "version": "0.1.22",
   "author": "DuxWeb",
   "license": "MIT",
   "repository": {
@@ -29,13 +29,11 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "build": "bun run clean && vue-tsc --noEmit && vite build && bun run build:types",
+    "build": "pnpm run clean && vue-tsc --noEmit && vite build && pnpm run build:types",
     "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/types",
-    "prepublishOnly": "bun run build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "peerDependencies": {},
   "dependencies": {
     "@overlastic/vue": "^0.8.1",
     "@tanstack/vue-query": "^5.76.2",
@@ -46,16 +44,19 @@
     "clsx": "^2.1.1",
     "colorizr": "^3.0.8",
     "crypto-js": "^4.2.0",
+    "dayjs": "^1.11.13",
+    "jsep": "^1.4.0",
     "json-2-csv": "^5.5.9",
     "lodash-es": "^4.17.21",
     "mathjs": "^14.5.2",
     "mime": "^4.0.7",
+    "mitt": "^3.0.1",
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.3.0",
     "vee-validate": "^4.15.1",
     "vue": "^3.5.0",
-    "vue-i18n": "^11.1.4",
-    "vue-router": "^4.0.0",
+    "vue-i18n": "^11.1.6",
+    "vue-router": "^4.5.1",
     "vue3-sfc-loader": "^0.9.5"
   },
   "devDependencies": {

@@ -1,7 +1,9 @@
 import type { UserConfig } from 'unocss'
-import { presetIcons, presetTypography, presetWind4 } from 'unocss'
+import presetIcons from '@unocss/preset-icons/browser'
+import presetTypography from '@unocss/preset-typography'
+import { presetWind4 } from 'unocss/preset-wind4'
+
 import { presetTheme } from '../theme'
-// 直接导入 CSS 文件
 
 export function config(build?: boolean) {
   const config: UserConfig = {
@@ -20,7 +22,6 @@ export function config(build?: boolean) {
       presetTypography(),
       presetTheme(),
     ],
-
   }
 
   if (!build) {

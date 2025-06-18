@@ -1,10 +1,13 @@
 .app-loading {
+  position: fixed;
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100wh;
-  height: 100vh;
+  z-index: 1000;
+  background-color: rgb(var(--ui-bg));
+  overflow: hidden;
 }
 .app-box-loading {
   width: 50px;

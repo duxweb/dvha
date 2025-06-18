@@ -3,6 +3,20 @@ import type { IMenu } from '../types'
 import { defineStore } from 'pinia'
 import { inject, nextTick, ref } from 'vue'
 
+export interface TabStoreState {
+  current: Ref<string | undefined>
+  tabs: Ref<IMenu[]>
+  isTab: (path: string) => boolean
+  addTab: (item: IMenu, cb?: (item: IMenu) => void) => void
+  delTab: (path: string, cb?: (item: IMenu) => void) => void
+  changeTab: (path: string, cb?: (item: IMenu) => void) => void
+  delOther: (path: string, cb?: () => void) => void
+  delLeft: (path: string, cb?: () => void) => void
+  delRight: (path: string, cb?: () => void) => void
+  lockTab: (path: string) => void
+  clearTab: () => void
+}
+
 export function useTabStore(manageName?: string) {
   const manage = inject<Ref<string>>('dux.manage')
   if (!manageName) {
@@ -18,7 +32,7 @@ export function useTabStore(manageName?: string) {
 }
 
 export function createTabStore(manageName: string) {
-  return defineStore(`tab-${manageName}`, () => {
+  return defineStore<string, TabStoreState>(`tab-${manageName}`, () => {
     const current = ref<string>()
     const previousTab = ref<IMenu>()
     const tabs = ref<IMenu[]>([])

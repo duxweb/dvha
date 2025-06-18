@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-template",
   "type": "module",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Create DVHA project from template",
   "author": "DuxWeb",
   "license": "MIT",
@@ -39,7 +39,9 @@
   "scripts": {
     "test": "./scripts/test.sh",
     "push": "./scripts/publish.sh",
-    "dev": "bun run bin/index.js"
+    "dev": "node bin/index.js",
+    "changeset": "changeset",
+    "changeset:version": "changeset version"
   },
   "dependencies": {
     "@inquirer/prompts": "^7.5.1",

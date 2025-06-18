@@ -1,4 +1,5 @@
 import type { ThemeConfig } from '../hooks'
+import type { ThemeState } from '../stores'
 
 // 主题配置
 export interface IConfigTheme {
@@ -7,6 +8,7 @@ export interface IConfigTheme {
   banner?: string
   darkBanner?: string
   config?: ThemeConfig
+  defaultTheme?: ThemeState
 }
 
 export interface ITheme {

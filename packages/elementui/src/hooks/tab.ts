@@ -2,7 +2,7 @@ import { useTabStore } from '@duxweb/dvha-core'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
-export function useElmTab() {
+export function useElmTab(): ReturnType<typeof useTabStore> & { props: any } {
   const tab = useTabStore()
   const router = useRouter()
 

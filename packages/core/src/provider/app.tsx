@@ -74,7 +74,7 @@ export const DuxAppProvider = defineComponent({
         })
       }
 
-      // init route
+      // loading route
       if (!routeStore.getRouteInit()) {
         // components
         const components = manage.config?.components || {}
@@ -113,10 +113,10 @@ export const DuxAppProvider = defineComponent({
           },
         })
 
-        // init local route
+        // loading local route
         routeStore.setRoutes(formatMenus(manage.config?.menus || []))
 
-        // init remote route
+        // loading remote route
         if (manage.config?.apiRoutePath) {
           try {
             await (manage.config?.dataProvider as Record<string, IDataProvider>)?.default?.custom({

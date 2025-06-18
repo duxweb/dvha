@@ -3,6 +3,19 @@ import type { IMenu } from '../types'
 import { defineStore } from 'pinia'
 import { inject, ref } from 'vue'
 
+export interface RouteStoreState {
+  routes: Ref<IMenu[]>
+  searchRoute: (path: string) => IMenu | undefined
+  searchRouteName: (name: string) => IMenu | undefined
+  appendRoute: (data: IMenu) => void
+  appendRoutes: (data: IMenu[]) => void
+  setRoutes: (data: IMenu[]) => void
+  getRoutes: () => IMenu[]
+  clearRoutes: () => void
+  getIndexRoute: () => IMenu | undefined
+  getRouteInit: () => boolean
+}
+
 /**
  * use route store
  * @param manageName manage name
@@ -28,7 +41,7 @@ export function useRouteStore(manageName?: string) {
  * @returns route store
  */
 function createRouteStore(manageName: string) {
-  return defineStore(`routes-${manageName}`, () => {
+  return defineStore<string, RouteStoreState>(`routes-${manageName}`, () => {
     const routes = ref<IMenu[]>([])
 
     /**
