@@ -265,7 +265,7 @@ const config: IConfig = {
   <p><em>微信扫码加入交流群</em></p>
 </div>
 
-> 如果二维码过期，请添加微信号：`dvha-assistant` 备注「DVHA」拉你入群
+> 如果二维码过期，请添加微信号：`deak100` 备注「DVHA」拉你入群
 
 ## 📊 项目数据
 
