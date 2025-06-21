@@ -49,9 +49,17 @@ const config: IConfig = {
           name: 'home',
           path: 'index',
           icon: 'i-tabler:home',
-          label: '首页',
+          label: '工作台',
           component: () => import('./pages/home.vue'),
         },
+        {
+          name: 'stats',
+          path: 'stats',
+          icon: 'i-tabler:chart-bar',
+          label: '统计',
+          component: () => import('./pages/stats.vue'),
+        },
+
         {
           name: 'example.list',
           icon: 'i-tabler:layout-kanban',
@@ -118,7 +126,6 @@ const config: IConfig = {
           label: '图表',
           component: () => import('./pages/chart.vue'),
         },
-
         {
           name: 'render',
           icon: 'i-tabler:layout-kanban',

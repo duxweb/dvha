@@ -30,6 +30,10 @@ import {
   DuxPanelCard,
   DuxSelectCard,
   DuxSettingForm,
+  DuxStatsNumber,
+  DuxStatsRealTime,
+  DuxStatsStore,
+  DuxStatsStoreItem,
   DuxTableFilter,
   DuxTableLayout,
   DuxTablePage,
@@ -88,6 +92,10 @@ export default {
 
     app.component('DuxChart', DuxChart)
     app.component('DuxSelectCard', DuxSelectCard)
+    app.component('DuxStatsStore', DuxStatsStore)
+    app.component('DuxStatsStoreItem', DuxStatsStoreItem)
+    app.component('DuxStatsRealTime', DuxStatsRealTime)
+    app.component('DuxStatsNumber', DuxStatsNumber)
 
     // 注册pages中的所有组件
     app.component('DuxAuthLayout', DuxAuthLayout)

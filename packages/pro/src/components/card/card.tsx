@@ -69,11 +69,12 @@ export const DuxCard = defineComponent({
     const computedSize = (size: string) => {
       switch (size) {
         case 'small':
-          return 'px-2 py-1'
+          return 'p-2'
         case 'large':
-          return 'px-6 py-4'
+          return 'p-6'
         case 'medium':
-          return 'px-4 py-3'
+          return 'p-4'
+        case 'none':
         default:
           return ''
       }
@@ -115,7 +116,12 @@ export const DuxCard = defineComponent({
       >
         {slots.header
           && (
-            <div class={[headerSizeClass.value, props.headerClass, props.headerBordered && 'border-b border-muted']}>
+            <div class={[
+              headerSizeClass.value,
+              props.headerClass,
+              props.headerBordered || props.divide ? 'border-b border-muted' : 'pb-0',
+            ]}
+            >
               {slots.header?.()}
             </div>
           )}
@@ -124,7 +130,7 @@ export const DuxCard = defineComponent({
           <div class={[
             'flex justify-between items-center',
             headerSizeClass.value,
-            props.headerBordered && 'border-b border-muted',
+            props.headerBordered || props.divide ? 'border-b border-muted' : 'pb-0',
             props.headerClass,
           ]}
           >

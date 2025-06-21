@@ -4,6 +4,20 @@ import { computed, ref, watch } from 'vue'
 
 export interface EchartCommonProps {
   min?: boolean
+  /** 显示 X 轴标签 */
+  showXAxisLabel?: boolean
+  /** 显示 Y 轴标签 */
+  showYAxisLabel?: boolean
+  /** 显示 X 轴线 */
+  showXAxisLine?: boolean
+  /** 显示 Y 轴线 */
+  showYAxisLine?: boolean
+  /** 显示网格线 */
+  showGridLine?: boolean
+  /** 显示分割区域 */
+  showSplitArea?: boolean
+  /** 显示图例 */
+  showLegend?: boolean
 }
 
 /**
@@ -12,19 +26,25 @@ export interface EchartCommonProps {
 export function useEchartCommon(props?: EchartCommonProps): EChartsOption {
   const isMin = props?.min ?? false
 
+  // 根据是否为迷你图设置默认值，用户可通过 props 覆盖
+  const showLegend = props?.showLegend ?? !isMin
+
+  // 迷你图如果要显示标签，需要调整空间预留
+  const needAxisLabels = isMin && (props?.showXAxisLabel || props?.showYAxisLabel)
+
   return {
     grid: {
       left: isMin ? '0%' : '10',
       right: isMin ? '0%' : '10',
       top: isMin ? '2%' : '15%',
       bottom: isMin ? '0%' : '10%',
-      containLabel: !isMin,
+      containLabel: !isMin || needAxisLabels, // 如果迷你图需要显示标签，则包含标签
     },
     tooltip: {
       show: true,
     },
     legend: {
-      show: !isMin,
+      show: showLegend,
       top: '0',
       bottom: '0',
     },
@@ -63,27 +83,20 @@ function useEchartAxis(props?: EchartAxisProps) {
 
   // X轴标签数据
   const xAxisData = computed(() => {
-    // 优先使用 labels，如果没有则从 data 中提取 name
-    if (props?.labels && props.labels.length > 0) {
+    if (props?.labels?.length)
       return props.labels
-    }
 
     if (Array.isArray(props?.data) && props.data.length > 0
       && typeof props.data[0] === 'object' && props.data[0] !== null && 'name' in props.data[0]) {
       return (props.data as EchartDataItem[]).map(item => item.name)
     }
-
     return []
   })
 
   // 自动判断并处理数据
   const seriesData = computed(() => {
-    if (!props?.data || !Array.isArray(props.data) || props.data.length === 0) {
-      return [{
-        name: props?.name || 'Series',
-        data: [],
-        stack: undefined,
-      }]
+    if (!props?.data?.length) {
+      return [{ name: props?.name || 'Series', data: [], stack: undefined }]
     }
 
     const firstItem = props.data[0]
@@ -95,10 +108,9 @@ function useEchartAxis(props?: EchartAxisProps) {
 
     // 判断是否为单系列对象数据 (EchartDataItem[])
     if (typeof firstItem === 'object' && firstItem !== null && 'name' in firstItem && 'value' in firstItem) {
-      const singleData = (props.data as EchartDataItem[]).map(item => item.value)
       return [{
         name: props?.name || 'Series',
-        data: singleData,
+        data: (props.data as EchartDataItem[]).map(item => item.value),
         stack: undefined,
       }]
     }
@@ -113,26 +125,48 @@ function useEchartAxis(props?: EchartAxisProps) {
     }
 
     // 默认返回空数据
-    return [{
-      name: props?.name || 'Series',
-      data: [],
-      stack: undefined,
-    }]
+    return [{ name: props?.name || 'Series', data: [], stack: undefined }]
   })
 
-  const axisConfig = {
-    axisLabel: { show: !isMin },
-    axisLine: { show: !isMin },
-    axisTick: { show: !isMin },
-    splitLine: { show: false }, // 迷你图和普通图都不显示网格线
-    splitArea: { show: true }, // 普通图和迷你图都显示背景间隔
+  // 根据是否为迷你图设置默认值，用户可通过 props 覆盖
+  const showXAxisLabel = props?.showXAxisLabel ?? !isMin
+  const showYAxisLabel = props?.showYAxisLabel ?? !isMin
+  const showXAxisLine = props?.showXAxisLine ?? !isMin
+  const showYAxisLine = props?.showYAxisLine ?? !isMin
+  const showGridLine = props?.showGridLine ?? false
+  const showXSplitArea = props?.showSplitArea ?? false // X轴背景色默认关闭
+  const showYSplitArea = props?.showSplitArea ?? !isMin // Y轴背景色非mini模式下显示
+
+  const xAxisConfig = {
+    axisLabel: {
+      show: showXAxisLabel,
+      showMinLabel: !isMin,
+      showMaxLabel: !isMin,
+    },
+    axisLine: { show: showXAxisLine },
+    axisTick: { show: showXAxisLine },
+    splitLine: { show: showGridLine },
+    splitArea: { show: showXSplitArea },
+  }
+
+  const yAxisConfig = {
+    axisLabel: {
+      show: showYAxisLabel,
+      showMinLabel: !isMin,
+      showMaxLabel: !isMin,
+    },
+    axisLine: { show: showYAxisLine },
+    axisTick: { show: showYAxisLine },
+    splitLine: { show: showGridLine },
+    splitArea: { show: showYSplitArea },
   }
 
   return {
     commonOption,
     xAxisData,
     seriesData,
-    axisConfig,
+    xAxisConfig,
+    yAxisConfig,
     isMin,
   }
 }
@@ -149,11 +183,18 @@ export interface EchartBarProps extends EchartAxisProps {
  * 柱状图
  */
 export function useEchartBar(props?: EchartBarProps) {
-  const { commonOption, xAxisData, seriesData, axisConfig, isMin } = useEchartAxis(props)
+  const { commonOption, xAxisData, seriesData, xAxisConfig, yAxisConfig, isMin } = useEchartAxis(props)
 
   const option = computed(() => {
+    // 当只有一个系列时隐藏 legend
+    const shouldShowLegend = seriesData.value.length > 1 && (props?.showLegend ?? !isMin)
+
     return {
       ...commonOption,
+      legend: {
+        ...commonOption.legend,
+        show: shouldShowLegend,
+      },
       tooltip: {
         ...commonOption.tooltip,
         trigger: 'axis',
@@ -161,14 +202,21 @@ export function useEchartBar(props?: EchartBarProps) {
       xAxis: {
         type: props?.horizontal ? 'value' : 'category',
         data: props?.horizontal ? undefined : xAxisData.value,
-        ...axisConfig,
-        splitArea: { show: !props?.horizontal }, // 水平柱状图显示X轴背景间隔
+        ...xAxisConfig,
+        axisLabel: {
+          ...xAxisConfig.axisLabel,
+        },
+        splitArea: { ...xAxisConfig.splitArea, show: xAxisConfig.splitArea?.show ?? !props?.horizontal },
       },
       yAxis: {
         type: props?.horizontal ? 'category' : 'value',
         data: props?.horizontal ? xAxisData.value : undefined,
-        ...axisConfig,
-        splitArea: { show: !!props?.horizontal }, // 垂直柱状图显示Y轴背景间隔
+        ...yAxisConfig,
+        axisLabel: {
+          ...yAxisConfig.axisLabel,
+        },
+        splitNumber: isMin ? 3 : undefined,
+        splitArea: { ...yAxisConfig.splitArea },
       },
       series: seriesData.value.map((item, index) => {
         const isStacked = !!(props?.stack || item.stack)
@@ -225,11 +273,18 @@ export interface EchartLineProps extends EchartAxisProps {
  * 折线图
  */
 export function useEchartLine(props?: EchartLineProps) {
-  const { commonOption, xAxisData, seriesData, axisConfig, isMin } = useEchartAxis(props)
+  const { commonOption, xAxisData, seriesData, xAxisConfig, yAxisConfig, isMin } = useEchartAxis(props)
 
   const option = computed(() => {
+    // 当只有一个系列时隐藏 legend
+    const shouldShowLegend = seriesData.value.length > 1 && (props?.showLegend ?? !isMin)
+
     return {
       ...commonOption,
+      legend: {
+        ...commonOption.legend,
+        show: shouldShowLegend,
+      },
       tooltip: {
         ...commonOption.tooltip,
         trigger: 'axis',
@@ -237,13 +292,22 @@ export function useEchartLine(props?: EchartLineProps) {
       xAxis: {
         type: 'category',
         data: xAxisData.value,
-        ...axisConfig,
-        splitArea: { show: false }, // X轴不显示背景间隔
+        boundaryGap: !isMin, // 迷你图不留边界间隙
+        ...xAxisConfig,
+        axisLabel: {
+          ...xAxisConfig.axisLabel,
+        },
+        splitArea: { ...xAxisConfig.splitArea, show: xAxisConfig.splitArea?.show ?? false }, // 优先使用用户配置
       },
       yAxis: {
         type: 'value',
-        ...axisConfig,
-        splitArea: { show: !isMin }, // Y轴不显示背景间隔
+        ...yAxisConfig,
+        axisLabel: {
+          ...yAxisConfig.axisLabel,
+        },
+        // 迷你图减少Y轴刻度数量，避免过于密集
+        splitNumber: isMin ? 3 : undefined,
+        splitArea: { ...yAxisConfig.splitArea },
       },
       series: seriesData.value.map(item => ({
         type: 'line',
@@ -298,22 +362,29 @@ function useEchartPieBase(props?: EchartPieProps) {
     }, {} as Record<string, boolean>)
   })
 
+  // 当只有一条数据时隐藏 legend
+  const shouldShowLegend = computed(() => {
+    const dataLength = props?.data?.length || 0
+    return dataLength > 1 && (props?.showLegend ?? !isMin)
+  })
+
   return {
     commonOption,
     data,
     legendData,
     selected,
+    shouldShowLegend,
     isMin,
   }
 }
 
 // 饼图
 export function useEchartPie(props?: EchartPieProps) {
-  const { commonOption, data, legendData, selected, isMin } = useEchartPieBase(props)
+  const { commonOption, data, legendData, selected, shouldShowLegend, isMin } = useEchartPieBase(props)
 
   const option = computed(() => {
     const baseOption = { ...commonOption }
-    delete baseOption.grid // 饼图不需要grid配置
+    delete baseOption.grid
 
     return {
       ...baseOption,
@@ -323,6 +394,7 @@ export function useEchartPie(props?: EchartPieProps) {
       },
       legend: {
         ...commonOption.legend,
+        show: shouldShowLegend.value,
         selected: selected.value,
       },
       series: {
@@ -354,7 +426,7 @@ export interface EchartRingProps extends EchartPieProps {
  * 环形图
  */
 export function useEchartRing(props?: EchartRingProps) {
-  const { commonOption, data, legendData, selected, isMin } = useEchartPieBase(props)
+  const { commonOption, data, legendData, selected, shouldShowLegend, isMin } = useEchartPieBase(props)
 
   const total = computed(() => {
     return legendData.value?.reduce((acc, current) => {
@@ -374,6 +446,7 @@ export function useEchartRing(props?: EchartRingProps) {
       },
       legend: {
         ...commonOption.legend,
+        show: shouldShowLegend.value,
         selected: selected.value,
       },
       graphic: isMin
@@ -421,7 +494,7 @@ export function useEchartRing(props?: EchartRingProps) {
 
 // 玫瑰图
 export function useEchartRose(props?: EchartPieProps) {
-  const { commonOption, data, legendData, selected, isMin } = useEchartPieBase(props)
+  const { commonOption, data, legendData, selected, shouldShowLegend, isMin } = useEchartPieBase(props)
 
   const option = computed(() => {
     const baseOption = { ...commonOption }
@@ -435,6 +508,7 @@ export function useEchartRose(props?: EchartPieProps) {
       },
       legend: {
         ...commonOption.legend,
+        show: shouldShowLegend.value,
         selected: selected.value,
       },
       series: {
@@ -459,11 +533,11 @@ export function useEchartRose(props?: EchartPieProps) {
 
 // 漏斗图
 export function useEchartFunnel(props?: EchartPieProps) {
-  const { commonOption, data, legendData, selected, isMin } = useEchartPieBase(props)
+  const { commonOption, data, legendData, selected, shouldShowLegend, isMin } = useEchartPieBase(props)
 
   const option = computed(() => {
     const baseOption = { ...commonOption }
-    delete baseOption.grid // 漏斗图不需要grid配置
+    delete baseOption.grid
 
     return {
       ...baseOption,
@@ -473,6 +547,7 @@ export function useEchartFunnel(props?: EchartPieProps) {
       },
       legend: {
         ...commonOption.legend,
+        show: shouldShowLegend.value,
         selected: selected.value,
       },
       series: {
@@ -513,6 +588,10 @@ export function useEchartRadar(props?: EchartRadarProps) {
     const baseOption = { ...commonOption }
     delete baseOption.grid
 
+    // 当只有一条数据时隐藏 legend
+    const dataLength = props?.data?.length || 0
+    const shouldShowLegend = dataLength > 1 && (props?.showLegend ?? !isMin)
+
     return {
       ...baseOption,
       tooltip: {
@@ -521,6 +600,7 @@ export function useEchartRadar(props?: EchartRadarProps) {
       },
       legend: {
         ...commonOption.legend,
+        show: shouldShowLegend,
         left: 'center',
       },
       radar: {

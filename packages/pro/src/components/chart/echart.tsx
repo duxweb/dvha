@@ -33,7 +33,10 @@ export const DuxChart = defineComponent({
       return rest
     })
 
-    const { option: chartOption } = useEchartType(props.type, props.option)
+    const { option: chartOption } = useEchartType(props.type, {
+      min: props.min,
+      ...props.option,
+    })
 
     return () => (
       <VChart

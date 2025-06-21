@@ -20,7 +20,7 @@ export const DuxMenuMain = defineComponent({
     const { t } = useI18n()
 
     return () => (
-      <div class="flex flex-col h-screen">
+      <div class="flex flex-col h-screen px-1">
         <div class="h-13 px-2 hidden lg:flex justify-center items-center">
 
           <DuxMenuButton onClick={() => setMenuCollapsed(!menuCollapsed.value)} collapsed={props.collapsed}>

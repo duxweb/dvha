@@ -19,7 +19,7 @@ export const DuxAuthLayout = defineComponent({
               class={[
                 'flex-none transition-all',
                 'hidden lg:block app-menu',
-                menuCollapsed.value ? 'w-100px' : 'w-200px',
+                menuCollapsed.value ? 'w-120px' : 'w-200px',
               ]}
             >
               <DuxMenuMain />

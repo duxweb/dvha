@@ -28,7 +28,7 @@ export function useUIStore(manageName?: string) {
  */
 function createUIStore(manageName: string) {
   return defineStore(`ui-${manageName}`, () => {
-    const menuCollapsed = ref(false)
+    const menuCollapsed = ref(true)
     const menuMobileCollapsed = ref(false)
 
     const setMenuCollapsed = (collapsed: boolean) => {

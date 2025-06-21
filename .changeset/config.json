@@ -2,7 +2,9 @@
   "$schema": "https://unpkg.com/@changesets/config@3.0.3/schema.json",
   "changelog": "@changesets/cli/changelog",
   "commit": false,
-  "fixed": [],
+  "fixed": [
+    ["@duxweb/dvha-core", "@duxweb/dvha-naiveui", "@duxweb/dvha-elementui", "@duxweb/dvha-pro"]
+  ],
   "linked": [],
   "access": "public",
   "baseBranch": "main",
