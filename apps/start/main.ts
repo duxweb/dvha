@@ -4,7 +4,9 @@ import { createDuxPro, DuxApp, DuxAuthLayout, DuxLayout, DuxLoginPage, DuxPage40
 import NaiveUI from 'naive-ui'
 import { createApp } from 'vue'
 
-import '@duxweb/dvha-pro/style.css'
+// import '@duxweb/dvha-pro/style.css'
+
+import '@duxweb/dvha-pro/theme/style.scss'
 
 const app = createApp(DuxApp)
 
@@ -109,6 +111,14 @@ const config: IConfig = {
           component: () => import('./pages/setting.vue'),
           parent: 'example.form',
         },
+        {
+          name: 'chart',
+          path: 'chart',
+          icon: 'i-tabler:chart-bar',
+          label: '图表',
+          component: () => import('./pages/chart.vue'),
+        },
+
         {
           name: 'render',
           icon: 'i-tabler:layout-kanban',

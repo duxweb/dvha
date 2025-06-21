@@ -129,7 +129,8 @@ const taskData = [
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-2">
           <div>
             <NCard
-              class="shadow-xs"
+              class="shadow-sm"
+              :bordered="false"
               title="今日任务"
               content-class="!p-0"
 
@@ -173,8 +174,8 @@ const taskData = [
 
           <div class="flex flex-col gap-4">
             <NCard
-              class="shadow-xs"
-
+              class="shadow-sm"
+              :bordered="false"
               size="small" title="常用功能" :segmented="{
                 content: true,
               }"
@@ -218,8 +219,8 @@ const taskData = [
               />
             </NCard>
             <NCard
-              class="shadow-xs"
-
+              class="shadow-sm"
+              :bordered="false"
               size="small" title="计划日历" :segmented="{
                 content: true,
               }"
@@ -252,7 +253,8 @@ const taskData = [
         />
         <NCard
 
-          class="shadow-xs"
+          class="shadow-sm"
+          :bordered="false"
           title="系统公告" size="small" :segmented="{
             content: true,
           }"

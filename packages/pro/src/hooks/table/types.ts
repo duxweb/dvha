@@ -16,6 +16,7 @@ export interface ModalActionItem extends BaseActionItem {
   component: AsyncComponentLoader<any>
   componentProps?: Record<string, any> | ((data: any) => Record<string, any>)
   width?: number
+  draggable?: boolean
 }
 
 // 抽屉类型
@@ -62,14 +63,14 @@ export interface CallbackActionItem extends BaseActionItem {
 }
 
 // 联合类型
-export type UseActionItem =
-  | ModalActionItem
-  | DrawerActionItem
-  | LinkActionItem
-  | ConfirmActionItem
-  | RequestActionItem
-  | DeleteActionItem
-  | CallbackActionItem
+export type UseActionItem
+  = | ModalActionItem
+    | DrawerActionItem
+    | LinkActionItem
+    | ConfirmActionItem
+    | RequestActionItem
+    | DeleteActionItem
+    | CallbackActionItem
 
 export interface UseActionProps {
   items: UseActionItem[]

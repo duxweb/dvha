@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-pro",
   "type": "module",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "author": "DuxWeb",
   "license": "MIT",
   "repository": {
@@ -40,6 +40,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@ant-design/colors": "^7.2.1",
     "@duxweb/dvha-core": "workspace:*",
     "@duxweb/dvha-naiveui": "workspace:*",
     "@iconify-json/tabler": "^1.2.18",
@@ -53,17 +54,21 @@
     "@vueuse/integrations": "^13.3.0",
     "clsx": "^2.1.1",
     "colorizr": "^3.0.8",
+    "echarts": "^5.6.0",
     "jinrishici": "^1.0.6",
     "jsep": "^1.4.0",
     "lodash-es": "^4.17.21",
+    "mathjs": "^14.5.2",
     "naive-ui": "^2.42.0",
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.3.0",
     "sass-embedded": "^1.89.1",
+    "tslib": "^2.8.1",
     "unocss": "^66.2.1",
     "vee-validate": "^4.15.1",
     "vue": "^3.5.0",
     "vue-command-palette": "^0.2.3",
+    "vue-echarts": "^7.0.3",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {

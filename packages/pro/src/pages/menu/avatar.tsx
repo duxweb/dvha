@@ -9,7 +9,7 @@ import DuxMenuButton from './button'
 export default defineComponent({
   name: 'DuxMenuAvatar',
   props: {
-    open: {
+    collapsed: {
       type: Boolean,
       default: false,
     },
@@ -209,7 +209,7 @@ export default defineComponent({
         width={200}
 
       >
-        <DuxMenuButton open={props.open}>
+        <DuxMenuButton collapsed={props.collapsed}>
           {{
             icon: () => (
               <NAvatar class="group-hover:shadow-lg" round size={28} src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />

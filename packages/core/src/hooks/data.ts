@@ -65,11 +65,16 @@ export function useList(params: IListParams) {
   })
 
   const data = ref<IDataProviderResponse | undefined>(undefined)
+  const total = ref(0)
+  const pageCount = ref(0)
+
   watch(req.data, (v) => {
     if (!v) {
       return
     }
     data.value = v
+    total.value = manage.config?.dataProvider?.[providerName]?.getTotal?.(v) || 0
+    pageCount.value = Math.ceil(total.value / (pagination.value.pageSize || 20)) || 0
   }, {
     immediate: true,
   })
@@ -80,6 +85,8 @@ export function useList(params: IListParams) {
     data,
     refetch: req.refetch,
     pagination,
+    total,
+    pageCount,
   }
 }
 
@@ -116,6 +123,9 @@ export function useInfiniteList(params: IInfiniteListParams) {
     deep: true,
   })
 
+  const total = ref(0)
+  const pageCount = ref(0)
+
   const req = useInfiniteQuery({
     queryKey: [`${manage.config?.name}:${providerName}:${params.path}`, props],
     queryFn: ({ pageParam }) => {
@@ -134,12 +144,18 @@ export function useInfiniteList(params: IInfiniteListParams) {
       if (!lastPage?.data || lastPage?.data?.length === 0) {
         return undefined
       }
+      const total = manage.config?.dataProvider?.[providerName]?.getTotal?.(lastPage) || 0
+      pageCount.value = Math.ceil(total / (pagination.value.pageSize || 20)) || 0
+      total.value = total
       return lastPageParam + 1
     },
-    getPreviousPageParam: (_firstPage, _allPages, firstPageParam) => {
+    getPreviousPageParam: (firstPage, _allPages, firstPageParam) => {
       if (firstPageParam <= 1) {
         return undefined
       }
+      const total = manage.config?.dataProvider?.[providerName]?.getTotal?.(firstPage) || 0
+      pageCount.value = Math.ceil(total / (pagination.value.pageSize || 20)) || 0
+      total.value = total
       return firstPageParam - 1
     },
     ...params.options,
@@ -179,6 +195,8 @@ export function useInfiniteList(params: IInfiniteListParams) {
     hasNextPage: req.hasNextPage,
     refetch: req.refetch,
     pagination,
+    total,
+    pageCount,
   }
 }
 

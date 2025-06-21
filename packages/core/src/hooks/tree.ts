@@ -2,7 +2,7 @@ import { computed } from 'vue'
 import { arrayToTree, treeToArr } from '../utils'
 import { useList } from './data'
 
-interface IUseTreeProps {
+export interface IUseTreeProps {
   path?: string
   params?: Record<string, any>
   treeOptions?: {
@@ -46,8 +46,26 @@ export function useTree(props: IUseTreeProps) {
 
   const loading = computed(() => isLoading.value)
 
+  const optionsData = computed(() => {
+    const processOptions = (items: any[]) => {
+      return items.map((item) => {
+        const newItem = { ...item }
+        if (Array.isArray(newItem.children)) {
+          if (newItem.children.length === 0) {
+            delete newItem.children
+          }
+          else {
+            newItem.children = processOptions(newItem.children)
+          }
+        }
+        return newItem
+      })
+    }
+    return processOptions(options.value || [])
+  })
+
   return {
-    options,
+    options: optionsData,
     loading,
     expanded,
   }

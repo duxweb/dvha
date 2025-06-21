@@ -50,7 +50,7 @@ export default defineComponent({
           }}
         </NTabs>
         {slots.footer?.() && (
-          <div class="flex justify-end gap-2 p-3 border-t border-muted bg-gray-200/20 dark:bg-gray-800/50">
+          <div class="flex justify-end gap-2 p-3 rounded-b border-t border-muted bg-muted dark:bg-gray-800/50">
             {slots.footer?.()}
           </div>
         )}

@@ -1,5 +1,21 @@
 # @duxweb/dvha-pro
 
+## 0.0.8
+
+### Patch Changes
+
+- feat: 增加 echart
+- Updated dependencies
+  - @duxweb/dvha-naiveui@1.0.13
+
+## 0.0.7
+
+### Patch Changes
+
+- Updated dependencies
+  - @duxweb/dvha-core@0.1.23
+  - @duxweb/dvha-naiveui@1.0.12
+
 ## 0.0.6
 
 ### Patch Changes

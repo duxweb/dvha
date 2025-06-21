@@ -99,7 +99,7 @@ export const DuxCard = defineComponent({
         case 'inverted':
           return 'bg-inverted'
         default:
-          return 'bg-white dark:bg-muted'
+          return 'bg-default dark:bg-muted'
       }
     })
 

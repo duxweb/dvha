@@ -1,5 +1,18 @@
 # @duxweb/dvha-naiveui
 
+## 1.0.13
+
+### Patch Changes
+
+- feat: 封装常用异步组件
+
+## 1.0.12
+
+### Patch Changes
+
+- Updated dependencies
+  - @duxweb/dvha-core@0.1.23
+
 ## 1.0.11
 
 ### Patch Changes

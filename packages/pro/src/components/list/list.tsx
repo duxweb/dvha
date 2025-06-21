@@ -11,7 +11,14 @@ export interface ListPageSlotProps {
 export const DuxListPage = defineComponent({
   name: 'DuxListPage',
   props: {
-
+    sideLeftTitle: {
+      type: String,
+      default: '',
+    },
+    sideRightTitle: {
+      type: String,
+      default: '',
+    },
   },
   extends: DuxListLayout,
   slots: Object as SlotsType<{
@@ -19,6 +26,8 @@ export const DuxListPage = defineComponent({
     bottom: () => any
     tools: () => any
     actions: () => any
+    sideLeft: () => any
+    sideRight: () => any
   }>,
   setup(props, { slots }) {
     const listProps = computed(() => {
@@ -45,6 +54,8 @@ export const DuxListPage = defineComponent({
           actions: slots.actions,
           tools: slots.tools,
           bottom: slots.bottom,
+          sideLeft: slots.sideLeft,
+          sideRight: slots.sideRight,
         }}
       </DuxListLayout>
     )

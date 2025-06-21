@@ -1,21 +1,26 @@
-import type { UseOverlayProps } from '@duxweb/dvha-core'
-import { useOverlay } from '@duxweb/dvha-core'
+import type { ModalProps } from 'naive-ui'
+import type { AsyncComponentLoader, Component } from 'vue'
+import { useOverlayInject } from '@overlastic/vue'
+import { DuxModal } from '../components'
 
-export interface UseModalProps extends UseOverlayProps {
-  title?: string
-  width?: number | string
-  draggable?: boolean
+export interface UseModalResult {
+  show: (props: UseModalProps) => Promise<any>
 }
 
-export function useModal() {
-  const overlay = useOverlay()
+export interface UseModalProps {
+  title?: string
+  width?: number | string
+  component: AsyncComponentLoader<any> | Component
+  componentProps?: Record<string, any>
+  draggable?: boolean
+  modalProps?: ModalProps
+}
+
+export function useModal(): UseModalResult {
+  const create = useOverlayInject(DuxModal)
 
   const show = (props: UseModalProps) => {
-    return overlay.show({
-      component: () => import('../components/modal/modal'),
-      componentProps: props,
-      mask: !props.draggable,
-    })
+    return create(props)
   }
 
   return {

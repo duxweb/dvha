@@ -45,9 +45,6 @@ export function themeOverrides() {
       // textColor3: getSemanticColor('text', 'muted'),
       // textColorDisabled: getSemanticColor('text', 'dimmed'),
 
-      cardColor: getSemanticColor('bg', 'muted'),
-      modalColor: getSemanticColor('bg', 'muted'),
-      // bodyColor: getSemanticColor('bg', 'base'),
       // tableColor: getSemanticColor('bg', 'muted'),
       // actionColor: getSemanticColor('bg', 'muted'),
       // hoverColor: getSemanticColor('bg', 'muted'),
@@ -55,11 +52,12 @@ export function themeOverrides() {
       // dividerColor: getSemanticColor('border', 'muted'),
       // borderColor: getSemanticColor('border', 'muted'),
 
-      placeholderColor: getSemanticColor('text', 'muted'),
+      // placeholderColor: getSemanticColor('text', 'muted'),
       iconColor: getSemanticColor('text', 'muted'),
 
       borderRadius: 'var(--radius-sm)',
       borderRadiusSmall: 'var(--radius-xs)',
+
     },
 
     Menu: {
@@ -95,11 +93,19 @@ export function themeOverrides() {
       tabTextColorHoverSegment: getSemanticColor('text', 'muted'),
     },
 
+    Card: {
+
+    },
+
   }))
 
   const lightTheme = computed<GlobalThemeOverrides>(() => {
     return merge(commonTheme.value, {
       common: {
+        cardColor: getSemanticColor('bg', 'base'),
+        modalColor: getSemanticColor('bg', 'base'),
+        dividerColor: getSemanticColor('border', 'muted'),
+        borderColor: getSemanticColor('border', 'muted'),
         popoverColor: `rgba(${color2rgb(getSemanticColor('bg', 'muted'))}, 0.95)`,
       },
       DataTable: {
@@ -111,6 +117,10 @@ export function themeOverrides() {
   const darkTheme = computed<GlobalThemeOverrides>(() => {
     return merge(commonTheme.value, {
       common: {
+        cardColor: getSemanticColor('bg', 'muted'),
+        modalColor: getSemanticColor('bg', 'muted'),
+        dividerColor: getSemanticColor('border', 'muted'),
+        borderColor: getSemanticColor('border', 'muted'),
         popoverColor: `rgba(${color2rgb(getSemanticColor('bg', 'elevated'))}, 0.95)`,
       },
       DataTable: {

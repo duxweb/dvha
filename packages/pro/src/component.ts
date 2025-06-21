@@ -8,6 +8,7 @@ import {
   DuxCard,
   DuxCardPage,
   DuxCarousel,
+  DuxChart,
   DuxDashboardHello,
   DuxDashboardHelloBig,
   DuxDashboardQuick,
@@ -27,6 +28,7 @@ import {
   DuxPageForm,
   DuxPanelAlert,
   DuxPanelCard,
+  DuxSelectCard,
   DuxSettingForm,
   DuxTableFilter,
   DuxTableLayout,
@@ -83,6 +85,9 @@ export default {
     app.component('DuxDashboardQuick', DuxDashboardQuick)
     app.component('DuxCarousel', DuxCarousel)
     app.component('DuxWidgetConnect', DuxWidgetConnect)
+
+    app.component('DuxChart', DuxChart)
+    app.component('DuxSelectCard', DuxSelectCard)
 
     // 注册pages中的所有组件
     app.component('DuxAuthLayout', DuxAuthLayout)

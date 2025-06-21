@@ -10,16 +10,18 @@ export default defineConfig(({ mode }) => ({
     VueJsx(),
   ],
   resolve: {
-    conditions: [
-      // 'dvha:development',
-      'import',
-      'default',
-    ],
+    alias: {
+      '@duxweb/dvha-core': resolve(__dirname, '../../packages/core/src'),
+      '@duxweb/dvha-naiveui': resolve(__dirname, '../../packages/naiveui/src'),
+      '@duxweb/dvha-elementui': resolve(__dirname, '../../packages/elementui/src'),
+      '@duxweb/dvha-pro': resolve(__dirname, '../../packages/pro/src'),
+    },
   },
   output: {
     manualChunks: {
       'vendor-vue': ['vue', 'vue-router'],
       'vendor-naive': ['naive-ui'],
+      'vendor-echarts': ['echarts', 'vue-echarts'],
       'vendor-vueuse': ['@vueuse/core'],
       'vendor-pinia': ['pinia', 'pinia-plugin-persistedstate'],
       'vendor-loader': ['vue3-sfc-loader'],

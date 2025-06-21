@@ -1,6 +1,6 @@
-import type { PropType, Ref } from 'vue'
+import type { PropType } from 'vue'
 import { NButton } from 'naive-ui'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, nextTick, ref, watch } from 'vue'
 
 export default defineComponent({
   name: 'ModalPage',
@@ -14,8 +14,7 @@ export default defineComponent({
       default: false,
     },
     handle: {
-      type: Object as PropType<Ref<HTMLElement>>,
-      default: () => ref<HTMLElement>(),
+      type: String,
     },
     onClose: {
       type: Function as PropType<() => void>,
@@ -23,18 +22,28 @@ export default defineComponent({
     },
   },
   setup(props, { slots }) {
+    const closeRef = ref()
+
+    watch(closeRef, (val) => {
+      if (val) {
+        nextTick(() => {
+          val.$el?.focus?.()
+        })
+      }
+    })
+
     return () => (
       <div class="flex flex-col gap-2">
         <div
           class={[
-            'px-4 py-3 border-b border-muted flex justify-between items-center  bg-gray-200/20 dark:bg-gray-800/50',
+            'px-4 py-3 border-b border-muted rounded-t flex justify-between items-center  bg-white dark:bg-gray-800/50',
             props.draggable && 'cursor-move',
+            props.handle,
           ]}
-          ref={props.handle}
         >
           <div class="text-base font-bold">{props.title}</div>
           <div class="flex justify-end gap-2">
-            <NButton text onClick={props.onClose} aria-label="close">
+            <NButton text onClick={props.onClose} aria-label="close" ref={closeRef}>
               {{
                 icon: () => <div class="i-tabler:x" />,
               }}
@@ -45,7 +54,7 @@ export default defineComponent({
           {slots.default?.()}
         </div>
         {slots.footer?.() && (
-          <div class="flex justify-end gap-2 p-3 border-t border-muted bg-gray-200/20 dark:bg-gray-800/50">
+          <div class="flex justify-end gap-2 p-3 rounded-b border-t border-muted bg-muted dark:bg-gray-800/50">
             {slots.footer?.()}
           </div>
         )}

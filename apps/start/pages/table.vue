@@ -22,6 +22,7 @@ function handleCreate() {
   show({
     title: '新增',
     component: () => import('./form/modal.vue'),
+    draggable: true,
   })
 }
 
@@ -138,6 +139,7 @@ const columns: TableColumn[] = [
           label: '编辑',
           type: 'modal',
           component: () => import('./form/modal.vue'),
+          draggable: true,
         },
         {
           label: '删除',
@@ -178,6 +180,7 @@ const actions = ref<UseActionItem[]>([
     label: '新增',
     type: 'modal',
     component: () => import('./form/modal.vue'),
+    draggable: true,
   },
 ])
 </script>

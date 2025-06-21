@@ -8,6 +8,7 @@ export interface ISimpleDataProviderProps {
   apiUrl: string
   successCallback?: (res: any) => IDataProviderResponse
   errorCallback?: (err: any) => IDataProviderError
+  getTotal?: (options: IDataProviderResponse) => number
 }
 
 export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvider {
@@ -197,6 +198,9 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
       }).catch((err) => {
         throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
+    },
+    getTotal: (options: IDataProviderResponse) => {
+      return props.getTotal ? props.getTotal(options) : options.meta?.total || 0
     },
   }
 }

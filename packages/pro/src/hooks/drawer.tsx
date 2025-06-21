@@ -1,4 +1,4 @@
-import type { AsyncComponentLoader } from 'vue'
+import type { AsyncComponentLoader, Component } from 'vue'
 import { useOverlayInject } from '@overlastic/vue'
 import { DuxDrawer } from '../components'
 
@@ -9,8 +9,9 @@ export interface UseDrawerResult {
 export interface UseDrawerProps {
   title?: string
   width?: number | string
-  component: AsyncComponentLoader<any>
+  component: AsyncComponentLoader<any> | Component
   componentProps?: Record<string, any>
+  placement?: 'top' | 'right' | 'bottom' | 'left'
 }
 
 export function useDrawer(): UseDrawerResult {

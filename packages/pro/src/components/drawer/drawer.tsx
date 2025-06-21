@@ -1,4 +1,4 @@
-import type { AsyncComponentLoader, PropType } from 'vue'
+import type { AsyncComponentLoader, Component, PropType } from 'vue'
 import { useExtendOverlay } from '@overlastic/vue'
 import { NButton, NDrawer, NSpin } from 'naive-ui'
 import { defineAsyncComponent, defineComponent, Suspense } from 'vue'
@@ -8,8 +8,12 @@ export default defineComponent({
   props: {
     title: String,
     width: [Number, String],
+    placement: {
+      type: String as PropType<'left' | 'right' | 'top' | 'bottom'>,
+      default: 'right',
+    },
     component: {
-      type: Function as PropType<AsyncComponentLoader<any>>,
+      type: [Function, Object] as PropType<AsyncComponentLoader<any> | Component>,
       required: true,
     },
     componentProps: Object,
@@ -23,7 +27,9 @@ export default defineComponent({
     params.onConfirm = resolve
     params.onClose = reject
 
-    const Page = defineAsyncComponent(props.component)
+    const Page = typeof props.component === 'function'
+      ? defineAsyncComponent(props.component as AsyncComponentLoader<any>)
+      : props.component as Component
 
     return () => (
       <NDrawer
@@ -32,6 +38,7 @@ export default defineComponent({
         minWidth={400}
         defaultWidth={props?.width || 400}
         resizable={true}
+        placement={props.placement}
         show={visible.value}
         onUpdateShow={() => resolve()}
         onAfterLeave={() => {
@@ -40,7 +47,7 @@ export default defineComponent({
         class=""
       >
         <div class="h-full flex flex-col">
-          <div class="flex justify-between items-center px-4 py-3 border-b border-gray-2 dark:border-gray-3">
+          <div class="flex justify-between items-center px-4 py-3 border-b border-default">
             <div class="text-base">{props?.title}</div>
             <div>
               <NButton quaternary size="small" color="default" class="!px-1 h-6" onClick={() => reject()}>
@@ -50,7 +57,7 @@ export default defineComponent({
           </div>
           <Suspense>
             {{
-              default: () => <Page {...params} onSuccess={resolve} onClose={reject} />,
+              default: () => <Page {...params} />,
               fallback: () => (
                 <NSpin show>
                   <div class="flex-1 min-h-1"></div>

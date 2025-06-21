@@ -56,6 +56,7 @@ export function useAction(action?: UseActionProps) {
           ...item.componentProps,
         },
         width: item.width,
+        draggable: item.draggable !== undefined ? item.draggable : true,
       })
     }
 

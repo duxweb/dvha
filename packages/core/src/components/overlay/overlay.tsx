@@ -61,7 +61,6 @@ export const DuxOverlay = defineComponent({
                 transitionDuration: `${props.duration}ms`,
               }}
               onClick={handleMaskClick}
-              aria-hidden="true"
             >
             </div>
           )}

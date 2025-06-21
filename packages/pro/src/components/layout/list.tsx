@@ -10,7 +10,7 @@ import { useExtendList, useI18n, useJsonSchema } from '@duxweb/dvha-core'
 import { useWindowSize } from '@vueuse/core'
 import { NButton, NCheckbox, NPagination, NPopover, NProgress, NSpin, NTab, NTabs, NTooltip } from 'naive-ui'
 import { computed, defineComponent, h, onMounted, reactive, ref, toRef, watch } from 'vue'
-import { useAction } from '../../hooks'
+import { useAction, useDrawer } from '../../hooks'
 import { DuxPage, DuxPageEmpty } from '../../pages'
 import { DuxTableFilter, DuxTableTools } from './'
 
@@ -56,6 +56,14 @@ export const DuxListLayout = defineComponent({
     },
     checkable: {
       type: Boolean,
+    },
+    sideLeftTitle: {
+      type: String,
+      default: '',
+    },
+    sideRightTitle: {
+      type: String,
+      default: '',
     },
   },
   setup(props, { slots }) {
@@ -188,13 +196,17 @@ export const DuxListLayout = defineComponent({
       }
     })
 
+    const { show } = useDrawer()
+
     return () => (
       <DuxPage padding={false} scrollbar={false}>
         {{
+          sideLeft: () => slots?.sideLeft && windowWidth.value >= 1024 ? slots?.sideLeft?.() : undefined,
+          sideRight: () => slots?.sideRight && windowWidth.value >= 1024 ? slots?.sideRight?.() : undefined,
           default: () => (
             <div class="flex flex-col h-full relative">
               <div class="lg:justify-between gap-2 p-3">
-                <div class="flex flex-col lg:flex-row items-center gap-2">
+                <div class="flex flex-col lg:flex-row lg:items-center gap-2">
                   {props.checkable && (
                     <div class="hidden lg:flex items-center pl-2">
                       <NTooltip>
@@ -238,6 +250,26 @@ export const DuxListLayout = defineComponent({
                   )}
 
                   <div class="flex gap-2">
+                    {slots?.sideLeft && windowWidth.value < 1024 && (
+                      <NButton
+                        class="flex-none"
+                        secondary
+                        loading={isExporting.value}
+                        onClick={() => {
+                          show({
+                            title: props.sideLeftTitle,
+                            component: () => <div>{slots?.sideLeft?.()}</div>,
+                            width: 300,
+                            placement: 'left',
+                          })
+                        }}
+                      >
+                        {{
+                          icon: () => <div class="i-tabler:layout-sidebar-inactive size-4" />,
+                        }}
+                      </NButton>
+                    )}
+
                     <div
                       class="flex flex-wrap gap-2 items-center flex-1 lg:flex-none"
                     >
@@ -250,6 +282,26 @@ export const DuxListLayout = defineComponent({
                         default: () => t('components.button.search'),
                       }}
                     </NButton>
+
+                    {slots?.sideRight && windowWidth.value < 1024 && (
+                      <NButton
+                        class="flex-none"
+                        secondary
+                        loading={isExporting.value}
+                        onClick={() => {
+                          show({
+                            title: props.sideRightTitle,
+                            component: () => <div>{slots?.sideRight?.()}</div>,
+                            width: 300,
+                            placement: 'right',
+                          })
+                        }}
+                      >
+                        {{
+                          icon: () => <div class="i-tabler:layout-sidebar-right-inactive size-4" />,
+                        }}
+                      </NButton>
+                    )}
 
                     {showAdvancedFilter.value && (
 

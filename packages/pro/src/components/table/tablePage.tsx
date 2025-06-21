@@ -1,5 +1,6 @@
 import type { DataTableProps } from 'naive-ui'
-import type { PropType } from 'vue'
+import type { PropType, SlotsType } from 'vue'
+import type { TablePageSlotProps } from '../layout/table'
 import { NDataTable } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
 import { DuxTableLayout } from '../layout/table'
@@ -12,6 +13,14 @@ export const DuxTablePage = defineComponent({
     },
   },
   extends: DuxTableLayout,
+  slots: Object as SlotsType<{
+    default: (props: TablePageSlotProps) => any
+    bottom: () => any
+    tools: () => any
+    actions: () => any
+    sideLeft: () => any
+    sideRight: () => any
+  }>,
   setup(props, { slots }) {
     const tableProps = computed(() => {
       const { tableProps, ...rest } = props
@@ -38,6 +47,8 @@ export const DuxTablePage = defineComponent({
           bottom: slots?.bottom,
           tools: slots?.tools,
           actions: slots?.actions,
+          sideLeft: slots?.sideLeft,
+          sideRight: slots?.sideRight,
         }}
       </DuxTableLayout>
     )

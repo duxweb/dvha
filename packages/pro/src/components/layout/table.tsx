@@ -1,5 +1,5 @@
 import type { JsonSchemaNode } from '@duxweb/dvha-core'
-import type { TableColumn, TablePagination } from '@duxweb/dvha-naiveui'
+import type { TableColumn, TablePagination, UseNaiveTableReturn } from '@duxweb/dvha-naiveui'
 import type { DataTableBaseColumn, SelectOption } from 'naive-ui'
 import type { PropType } from 'vue'
 import type { UseActionItem } from '../../hooks'
@@ -7,7 +7,7 @@ import { useI18n, useJsonSchema } from '@duxweb/dvha-core'
 import { useElementSize, useWindowSize } from '@vueuse/core'
 import { NButton, NInput, NPagination, NPopover, NPopselect, NProgress, NTab, NTabs, NTooltip } from 'naive-ui'
 import { computed, defineComponent, h, reactive, ref, toRef, watch } from 'vue'
-import { useAction, useTable } from '../../hooks'
+import { useAction, useDrawer, useTable } from '../../hooks'
 import { DuxPage } from '../../pages'
 import { DuxTableFilter } from './filter'
 import { DuxTableTools } from './tools'
@@ -16,6 +16,10 @@ export interface TablePageTools {
   import?: boolean
   export?: boolean
   refresh?: boolean
+}
+
+export interface TablePageSlotProps extends UseNaiveTableReturn {
+  width: number
 }
 
 export const DuxTableLayout = defineComponent({
@@ -49,6 +53,14 @@ export const DuxTableLayout = defineComponent({
     },
     tools: {
       type: Object as PropType<TablePageTools>,
+    },
+    sideLeftTitle: {
+      type: String,
+      default: '',
+    },
+    sideRightTitle: {
+      type: String,
+      default: '',
     },
   },
   setup(props, { slots }) {
@@ -136,14 +148,19 @@ export const DuxTableLayout = defineComponent({
       }
     })
 
+    const { show } = useDrawer()
+
     return () => (
       <DuxPage actions={props.actions} scrollbar={false}>
         {{
+          sideLeft: () => slots?.sideLeft && width.value >= 1024 ? slots?.sideLeft?.() : undefined,
+          sideRight: () => slots?.sideRight && width.value >= 1024 ? slots?.sideRight?.() : undefined,
           default: () => (
-            <div class="flex flex-col gap-3 h-full relative ">
+            <div class="flex flex-col gap-3 h-full relative">
               <div class="flex gap-3 justify-between flex-col lg:flex-row">
                 {props.tabs && (
                   <div class="flex flex-none">
+
                     <NTabs
                       type="segment"
                       size="small"
@@ -163,19 +180,60 @@ export const DuxTableLayout = defineComponent({
                   </div>
                 )}
                 <div class={[
-                  'overflow-hidden flex-1',
+                  'overflow-hidden flex-1 flex gap-2',
                   filterOptions.collapse ? 'h-auto' : 'h-8.5',
                 ]}
                 >
+                  {slots?.sideLeft && width.value < 1024 && (
+                    <NButton
+                      class="flex-none"
+                      secondary
+                      loading={isExporting.value}
+                      onClick={() => {
+                        show({
+                          title: props.sideLeftTitle,
+                          component: () => <div>{slots?.sideLeft?.()}</div>,
+                          width: 300,
+                          placement: 'left',
+                        })
+                      }}
+                    >
+                      {{
+                        icon: () => <div class="i-tabler:layout-sidebar-inactive size-4" />,
+                      }}
+                    </NButton>
+                  )}
+
                   <div
                     ref={filterEl}
                     class={[
-                      'lg:flex gap-2 flex-wrap',
+                      'flex-1 lg:flex gap-2 flex-wrap',
                       props.tabs ? 'justify-end' : 'justify-start',
                     ]}
                   >
                     {h(filterRenderCollapse)}
                   </div>
+
+                  {slots?.sideRight && width.value < 1024 && (
+                    <NButton
+                      class="flex-none"
+                      secondary
+                      loading={isExporting.value}
+                      onClick={() => {
+                        show({
+                          title: props.sideRightTitle,
+                          component: () => <div>{slots?.sideRight?.()}</div>,
+                          width: 300,
+                          placement: 'right',
+                        })
+                      }}
+                    >
+                      {{
+                        icon: () => <div class="i-tabler:layout-sidebar-right-inactive size-4" />,
+                      }}
+                    </NButton>
+                  )}
+
                 </div>
                 <div class="flex gap-2 justify-between lg:justify-end">
 
@@ -228,7 +286,7 @@ export const DuxTableLayout = defineComponent({
                       <NTooltip>
                         {{
                           trigger: () => (
-                            <NButton icon-placement="right">
+                            <NButton secondary icon-placement="right">
                               {{
                                 icon: () => <div class="i-tabler:columns size-4" />,
                               }}
@@ -243,7 +301,7 @@ export const DuxTableLayout = defineComponent({
                       <NTooltip>
                         {{
                           trigger: () => (
-                            <NButton loading={isExporting.value} onClick={onExport}>
+                            <NButton secondary loading={isExporting.value} onClick={onExport}>
                               {{
                                 icon: () => <div class="i-tabler:database-export size-4" />,
                               }}
@@ -257,7 +315,7 @@ export const DuxTableLayout = defineComponent({
                       <NTooltip>
                         {{
                           trigger: () => (
-                            <NButton loading={isImporting.value} onClick={onImport}>
+                            <NButton secondary loading={isImporting.value} onClick={onImport}>
                               {{
                                 icon: () => <div class="i-tabler:database-import size-4" />,
                               }}
@@ -271,7 +329,7 @@ export const DuxTableLayout = defineComponent({
                       <NTooltip>
                         {{
                           trigger: () => (
-                            <NButton onClick={onAutoRefetch}>
+                            <NButton secondary onClick={onAutoRefetch}>
                               {{
                                 icon: () => (
                                   autoRefetch.value

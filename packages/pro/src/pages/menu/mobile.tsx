@@ -11,7 +11,7 @@ export const DuxMobileMenu = defineComponent({
     const { menuMobileCollapsed } = useUI()
     return () => (
       <NDrawer show={menuMobileCollapsed.value} onUpdateShow={v => menuMobileCollapsed.value = v} width={250} placement="left">
-        <DuxMenuMain open={true} />
+        <DuxMenuMain collapsed={false} />
       </NDrawer>
     )
   },

@@ -1,5 +1,7 @@
 export * from './action'
 export * from './dialog'
+export * from './drawer'
+export * from './echart'
 export * from './modal'
 export * from './table'
 export * from './table/index'

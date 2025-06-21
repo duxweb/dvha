@@ -30,21 +30,23 @@ export const DuxPage = defineComponent({
       const scrollClass = !props.scrollbar ? 'h-full' : ''
 
       const content = (
-        <div class="h-full">
+        <div class="h-full flex-1 flex gap-2">
+          {slots?.sideLeft?.()}
           {props.scrollbar
             ? (
                 <NScrollbar
-                  class={cardClass}
+                  class={[cardClass, 'flex-1 min-w-0']}
                   contentClass={`${paddingClass} ${scrollClass}`}
                 >
                   {slots.default?.()}
                 </NScrollbar>
               )
             : (
-                <div class={`${cardClass} ${paddingClass} ${scrollClass}`}>
+                <div class={`${cardClass} ${paddingClass} ${scrollClass} flex-1 min-w-0`}>
                   {slots.default?.()}
                 </div>
               )}
+          {slots?.sideRight?.()}
         </div>
       )
 

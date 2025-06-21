@@ -151,7 +151,7 @@ export function useTheme() {
       dark: {
         text: { dimmed: '600', muted: '500', toned: '300', base: '400', highlighted: '100', inverted: 'black' },
         bg: { base: '950', muted: '900', elevated: '800', accented: '700', inverted: '100' },
-        border: { base: '600', muted: '800', accented: '700', inverted: '100' },
+        border: { base: '900', muted: '800', accented: '700', inverted: '100' },
       },
     },
     colorBase: { white: '#ffffff', black: '#000000' },

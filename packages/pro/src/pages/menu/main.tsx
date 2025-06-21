@@ -8,7 +8,7 @@ import { DuxMenuAvatar, DuxMenuButton } from './'
 export const DuxMenuMain = defineComponent({
   name: 'DuxMenuMain',
   props: {
-    open: {
+    collapsed: {
       type: Boolean,
       default: false,
     },
@@ -23,7 +23,7 @@ export const DuxMenuMain = defineComponent({
       <div class="flex flex-col h-screen">
         <div class="h-13 px-2 hidden lg:flex justify-center items-center">
 
-          <DuxMenuButton onClick={() => setMenuCollapsed(!menuCollapsed.value)} open={props.open}>
+          <DuxMenuButton onClick={() => setMenuCollapsed(!menuCollapsed.value)} collapsed={props.collapsed}>
             {{
               icon: () => (
                 <div class="bg-white dark:bg-primary-950 rounded-full p-2 shadow group-hover:shadow-lg">
@@ -41,7 +41,7 @@ export const DuxMenuMain = defineComponent({
         </div>
 
         <div class="px-2 py-1 hidden lg:block">
-          <DuxMenuButton open={props.open} inverted class="relative py-1.5 px-3" onClick={() => setCmdVisible(true)}>
+          <DuxMenuButton collapsed={props.collapsed} inverted class="relative py-1.5 px-3" onClick={() => setCmdVisible(true)}>
             {{
               icon: () => <div class="i-tabler:search size-4 icon-gradient"></div>,
               default: () => (
@@ -76,7 +76,7 @@ export const DuxMenuMain = defineComponent({
         </div>
 
         <div class="flex-none hidden lg:flex flex-col items-center gap-2  p-2">
-          <DuxMenuAvatar open={props.open} />
+          <DuxMenuAvatar collapsed={props.collapsed} />
         </div>
       </div>
     )

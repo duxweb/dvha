@@ -30,6 +30,8 @@ export interface IDataProvider {
   deleteMany: (options: IDataProviderDeleteManyOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
   // 自定义请求
   custom: (options: IDataProviderCustomOptions, manage?: IManageHook, auth?: IUserState) => Promise<IDataProviderResponse>
+  // 获取数据总数
+  getTotal: (options: IDataProviderResponse) => number
 }
 
 export interface IDataProviderResponse {
@@ -52,6 +54,8 @@ export interface IDataProviderError {
 export interface IDataProviderPagination {
   page?: number
   pageSize?: number
+  pageCount?: number
+  total?: number
 }
 
 export interface IDataProviderListOptions {

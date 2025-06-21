@@ -1,6 +1,7 @@
 import type { JsonSchemaData } from '@duxweb/dvha-core'
 import type { VNode } from 'vue'
-import { useOverlay } from '@duxweb/dvha-core'
+import { useOverlayInject } from '@overlastic/vue'
+import { DuxDialog } from '../components'
 
 export interface UseDialogResult {
   confirm: (props: UseDialogProps) => Promise<any>
@@ -18,13 +19,10 @@ export interface UseDialogProps {
 }
 
 export function useDialog(): UseDialogResult {
-  const overlay = useOverlay()
+  const create = useOverlayInject(DuxDialog)
 
   const show = (props: UseDialogProps) => {
-    return overlay.show({
-      component: () => import('../components/dialog/dialog'),
-      componentProps: props,
-    })
+    return create(props)
   }
 
   const confirm = (props: UseDialogProps) => {

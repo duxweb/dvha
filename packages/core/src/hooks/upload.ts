@@ -67,7 +67,8 @@ export interface IOverallProgress {
   totalSize: number
 }
 
-export function useUpload(props: IUseUploadProps) {
+export function useUpload(props?: IUseUploadProps) {
+  props = props || {}
   const isUploading = ref<boolean>(false)
   const uploadFiles = ref<IUseUploadFile[]>([])
   const currentUploadingIndex = ref<number>(-1)

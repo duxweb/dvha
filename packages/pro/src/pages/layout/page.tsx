@@ -24,7 +24,7 @@ export const DuxLayoutPage = defineComponent({
               {config.title}
             </div>
             <div>
-              <DuxMenuAvatar open={false} />
+              <DuxMenuAvatar collapsed={true} />
             </div>
           </div>
 

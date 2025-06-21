@@ -1,5 +1,12 @@
 # @duxweb/dvha-core
 
+## 0.1.23
+
+### Patch Changes
+
+- fix: 修正树形与选择器请求问题
+  feat: 增加数据提供者获取总量接口方法
+
 ## 0.1.22
 
 ### Patch Changes

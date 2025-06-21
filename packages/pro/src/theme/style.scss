@@ -10,7 +10,7 @@
 
 html {
   color-scheme: light;
-  background-color: rgb(var(--ui-bg-elevated));
+  background-color: rgb(var(--ui-color-primary-700) / 0.05);
 }
 html.dark {
   color-scheme: dark;

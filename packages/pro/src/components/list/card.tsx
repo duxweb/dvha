@@ -24,6 +24,14 @@ export const DuxCardPage = defineComponent({
       type: Number,
       default: 10,
     },
+    sideLeftTitle: {
+      type: String,
+      default: '',
+    },
+    sideRightTitle: {
+      type: String,
+      default: '',
+    },
   },
   extends: DuxListLayout,
   slots: Object as SlotsType<{
@@ -31,6 +39,8 @@ export const DuxCardPage = defineComponent({
     bottom: () => any
     tools: () => any
     actions: () => any
+    sideLeft: () => any
+    sideRight: () => any
   }>,
   setup(props, { slots }) {
     // 网格容器引用
@@ -115,6 +125,8 @@ export const DuxCardPage = defineComponent({
           actions: slots.actions,
           tools: slots.tools,
           bottom: slots.bottom,
+          sideLeft: slots.sideLeft,
+          sideRight: slots.sideRight,
         }}
       </DuxListLayout>
     )

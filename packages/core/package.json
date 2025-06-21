@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-core",
   "type": "module",
-  "version": "0.1.22",
+  "version": "0.1.23",
   "author": "DuxWeb",
   "license": "MIT",
   "repository": {
@@ -53,6 +53,7 @@
     "mitt": "^3.0.1",
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.3.0",
+    "tslib": "^2.8.1",
     "vee-validate": "^4.15.1",
     "vue": "^3.5.0",
     "vue-i18n": "^11.1.6",

@@ -12,9 +12,9 @@ export default defineComponent({
       type: Function,
       default: () => {},
     },
-    open: {
+    collapsed: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     inverted: {
       type: Boolean,
@@ -36,7 +36,7 @@ export default defineComponent({
         ]}
       >
         {slots.icon?.()}
-        {((!menuCollapsed.value && !menuMobileCollapsed.value) || props.open) && (
+        {props.collapsed === false && (!menuCollapsed.value && !menuMobileCollapsed.value) && (
           <div class={[
             'overflow-hidden ease-in-out whitespace-nowrap text-left min-w-0 flex-1',
             props.inverted ? 'text-default' : '',
