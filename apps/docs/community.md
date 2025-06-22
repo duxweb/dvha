@@ -11,7 +11,7 @@
 - 🔧 [贡献代码](https://github.com/duxweb/dvha/pulls) - 参与开发
 
 ### 在线文档
-- 📖 [完整文档](https://duxweb.github.io/dvha/) - 详细的使用指南
+- 📖 [完整文档](http://duxweb.dux.plus/dvha/) - 详细的使用指南
 - 🎯 [快速开始](/guide/started) - 5分钟上手DVHA
 - 🔍 [API参考](/hooks/data/useList) - 完整的API文档
 

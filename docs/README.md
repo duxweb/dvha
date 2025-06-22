@@ -494,7 +494,7 @@ DVHA 通过无头架构的设计理念，真正实现了业务逻辑与 UI 表�
 
 ## 🔗 相关链接
 
-- 📖 **官方文档**：https://duxweb.github.io/dvha/
+- 📖 **官方文档**：http://duxweb.dux.plus/dvha/
 - 💻 **GitHub 仓库**：https://github.com/duxweb/dvha
 
 ---

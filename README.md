@@ -16,7 +16,7 @@ _一个基于 Vue 3 的无头（Headless）中后台框架_
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
 
-📖 **[查看完整文档](https://duxweb.github.io/dvha/)** | 🌟 **[UI集成演示](https://duxweb.github.io/dvha/start)** | 🎯 **[快速开始](#快速开始)** | 🇺🇸 **[English](./README.en.md)**
+📖 **[查看完整文档](http://duxweb.dux.plus/dvha/)** | 🌟 **[UI集成演示](http://duxweb.dux.plus/dvha/start)** | 🎯 **[快速开始](#快速开始)** | 🇺🇸 **[English](./README.en.md)**
 
 </div>
 
@@ -244,7 +244,7 @@ const config: IConfig = {
 
 ### 更多示例
 
-查看 [完整文档](https://duxweb.github.io/dvha/) 获取更多使用示例和高级配置。
+查看 [完整文档](http://duxweb.dux.plus/dvha/) 获取更多使用示例和高级配置。
 
 ## 📚 相关包
 
@@ -285,7 +285,7 @@ const config: IConfig = {
 
 ## 🤝 贡献
 
-我们欢迎所有的贡献！请查看 [贡献指南](https://duxweb.github.io/dvha/contributing) 了解如何开始。
+我们欢迎所有的贡献！请查看 [贡献指南](http://duxweb.dux.plus/dvha/contributing) 了解如何开始。
 
 ## 📄 开源协议
 
@@ -299,6 +299,6 @@ const config: IConfig = {
 
 如果这个项目对你有帮助，请给我们一个 ⭐️
 
-[📖 文档](https://duxweb.github.io/dvha/) • [🐛 报告问题](https://github.com/duxweb/dvha/issues) • [💡 功能建议](https://github.com/duxweb/dvha/discussions)
+[📖 文档](http://duxweb.dux.plus/dvha/) • [🐛 报告问题](https://github.com/duxweb/dvha/issues) • [💡 功能建议](https://github.com/duxweb/dvha/discussions)
 
 </div>

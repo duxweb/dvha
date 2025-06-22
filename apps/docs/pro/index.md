@@ -13,7 +13,7 @@ DVHA Pro 是基于 DVHA 核心框架结合 Naive UI 打造的完整中后台前�
 
 ## 🚀 在线演示
 
-🎯 **[立即体验 Pro 版本](https://duxweb.github.io/dvha/start/)** - 完整功能演示
+🎯 **[立即体验 Pro 版本](http://duxweb.dux.plus/dvha/start/)** - 完整功能演示
 
 ### 演示账号
 
@@ -482,7 +482,7 @@ MIT License - 查看 [LICENSE](https://github.com/duxweb/dvha/blob/main/LICENSE)
 ## 🔗 相关链接
 
 - 📖 **[完整文档](/)** - 详细的使用指南
-- 🎯 **[在线演示](https://duxweb.github.io/dvha/start/)** - 功能演示
+- 🎯 **[在线演示](http://duxweb.dux.plus/dvha/start/)** - 功能演示
 - 💻 **[GitHub](https://github.com/duxweb/dvha)** - 源码仓库
 - 📦 **[NPM](https://www.npmjs.com/package/@duxweb/dvha-pro)** - 包管理
 - 💬 **[社区讨论](/community)** - 技术交流

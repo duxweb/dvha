@@ -15,7 +15,7 @@ hero:
       link: /guide/overview
     - theme: alt
       text: Pro 版演示
-      link: https://duxweb.github.io/dvha/start/
+      link: http://duxweb.dux.plus/dvha/start/
     - theme: alt
       text: 加入社区
       link: /community
