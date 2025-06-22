@@ -34,6 +34,7 @@ export const DuxLayoutPage = defineComponent({
         </div>
 
         <div class="flex-1 min-h-0  mr-2 ml-2 mb-2 lg:ml-0">
+
           <DuxTabRouterView />
         </div>
       </div>
