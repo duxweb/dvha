@@ -1,124 +1,371 @@
 <script setup lang="ts">
-import { DuxDashboardQuick, DuxMedia, DuxWidgetConnect } from '@duxweb/dvha-pro'
-import { NCalendar, NCard } from 'naive-ui'
+import { DuxCard, DuxCarousel, DuxChart, DuxDashboardQuick, DuxMedia, DuxWidgetConnect } from '@duxweb/dvha-pro'
+import { NAvatar, NButton, NCalendar, NCard, NScrollbar, NTabPane, NTabs, NTag } from 'naive-ui'
+import { computed, ref } from 'vue'
 
-const taskData = [
+// 生成随机数的工具函数
+function randomBetween(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+function randomFloat(min: number, max: number, decimals: number = 2): number {
+  return Number((Math.random() * (max - min) + min).toFixed(decimals))
+}
+
+// 顶部统计数据
+const topStats = ref([
   {
-    title: '完成年度财务报告的编制',
-    section: '财务部主管',
-    nickname: '张华',
-    status: 1,
-    date: '09-01',
+    label: '今日订单',
+    icon: 'i-tabler:shopping-cart',
+    value: randomBetween(45, 180),
   },
   {
-    title: '更新公司内部网络安全协议',
-    section: 'IT部门经理',
-    nickname: '李明',
+    label: '待发货',
+    icon: 'i-tabler:truck',
+    value: randomBetween(15, 65),
+  },
+  {
+    label: '待处理售后',
+    icon: 'i-tabler:headset',
+    value: randomBetween(3, 18),
+  },
+])
+
+// 订单趋势图表数据
+const orderTrendData = ref({
+  title: '近7天订单趋势',
+  labels: ['12-02', '12-03', '12-04', '12-05', '12-06', '12-07', '12-08'],
+  data: [
+    {
+      name: '订单量',
+      type: 'bar',
+      data: Array.from({ length: 7 }, () => randomBetween(80, 200)),
+      color: '#18a058',
+    },
+    {
+      name: '销售额(万)',
+      type: 'line',
+      data: Array.from({ length: 7 }, () => randomFloat(15, 45, 1)),
+      color: '#2080f0',
+    },
+  ],
+})
+
+// 销售统计数据
+const salesStats = ref([
+  {
+    title: '今日销售额',
+    value: `¥${randomBetween(50000, 120000).toLocaleString()}`,
+    change: randomFloat(-15, 25, 1),
+    changeType: (Math.random() > 0.5 ? 'up' : 'down') as 'up' | 'down',
+  },
+  {
+    title: '今日订单数',
+    value: randomBetween(150, 350),
+    change: randomFloat(-10, 30, 1),
+    changeType: (Math.random() > 0.5 ? 'up' : 'down') as 'up' | 'down',
+  },
+  {
+    title: '平均客单价',
+    value: `¥${randomFloat(280, 580, 0)}`,
+    change: randomFloat(-8, 15, 1),
+    changeType: (Math.random() > 0.5 ? 'up' : 'down') as 'up' | 'down',
+  },
+  {
+    title: '转化率',
+    value: `${randomFloat(8, 18, 2)}%`,
+    change: randomFloat(-3, 6, 1),
+    changeType: (Math.random() > 0.5 ? 'up' : 'down') as 'up' | 'down',
+  },
+])
+
+// 订单数据（原任务数据）
+const orderData = ref([
+  {
+    title: '苹果iPhone 15 Pro 256GB 天然钛色',
+    section: '订单号：2024120800001',
+    nickname: '张先生',
+    status: 1,
+    date: '12-08',
+    amount: '¥8999',
+  },
+  {
+    title: '小米14 Ultra 16GB+1TB 黑色',
+    section: '订单号：2024120800002',
+    nickname: '李女士',
     status: 2,
-    date: '09-02',
+    date: '12-08',
+    amount: '¥6999',
   },
   {
-    title: '策划并执行下季度市场推广活动',
-    section: '市场部负责人',
-    nickname: '王丽',
+    title: '华为Mate60 Pro 12GB+256GB 雅川青',
+    section: '订单号：2024120800003',
+    nickname: '王先生',
     status: 3,
-    date: '09-03',
+    date: '12-07',
+    amount: '¥6999',
   },
   {
-    title: '设计新的员工培训课程',
-    section: '人力资源部主管',
-    nickname: '赵强',
+    title: '戴森V15 Detect 无绳吸尘器',
+    section: '订单号：2024120800004',
+    nickname: '赵女士',
     status: 1,
-    date: '09-04',
+    date: '12-07',
+    amount: '¥4990',
   },
   {
-    title: '组织公司年度健康检查',
-    section: '行政部经理',
-    nickname: '刘洋',
+    title: 'Apple MacBook Pro 14英寸 M3芯片',
+    section: '订单号：2024120800005',
+    nickname: '刘先生',
     status: 2,
-    date: '09-05',
+    date: '12-06',
+    amount: '¥14999',
   },
   {
-    title: '开发新的客户关系管理系统',
-    section: '研发部负责人',
-    nickname: '陈晨',
+    title: 'Nike Air Jordan 1 Retro High OG',
+    section: '订单号：2024120800006',
+    nickname: '陈女士',
     status: 3,
-    date: '09-06',
+    date: '12-06',
+    amount: '¥1299',
   },
   {
-    title: '撰写并提交新产品的市场调研报告',
-    section: '市场调研部主管',
-    nickname: '孙悦',
+    title: '海尔冰箱 BCD-452WDPCU1',
+    section: '订单号：2024120800007',
+    nickname: '孙先生',
     status: 1,
-    date: '09-07',
+    date: '12-05',
+    amount: '¥3299',
   },
   {
-    title: '准备并提交下个月的预算报告',
-    section: '财务部副经理',
-    nickname: '周杰',
+    title: '索尼WH-1000XM5 头戴式降噪耳机',
+    section: '订单号：2024120800008',
+    nickname: '周女士',
     status: 2,
-    date: '09-08',
+    date: '12-05',
+    amount: '¥2399',
   },
   {
-    title: '更新公司网站内容和用户界面',
-    section: '网络运营部经理',
-    nickname: '吴浩',
+    title: 'Levi\'s 501 经典直筒牛仔裤',
+    section: '订单号：2024120800009',
+    nickname: '吴先生',
     status: 3,
-    date: '09-09',
+    date: '12-04',
+    amount: '¥699',
   },
   {
-    title: '组织公司年度员工满意度调查',
-    section: '人力资源部副经理',
-    nickname: '郑洁',
+    title: '美的空调 KFR-35GW/BP3DN8Y-PH200',
+    section: '订单号：2024120800010',
+    nickname: '郑女士',
     status: 1,
-    date: '09-10',
+    date: '12-04',
+    amount: '¥2899',
   },
   {
-    title: '实施新的员工激励计划',
-    section: '人力资源部主管',
-    nickname: '赵强',
+    title: 'SK-II 神仙水 230ml',
+    section: '订单号：2024120800011',
+    nickname: '何女士',
     status: 1,
-    date: '09-11',
+    date: '12-03',
+    amount: '¥1690',
+  },
+  {
+    title: '小鹏汽车G9 智能座舱版',
+    section: '订单号：2024120800012',
+    nickname: '林先生',
+    status: 2,
+    date: '12-02',
+    amount: '¥289999',
+  },
+  {
+    title: 'Hermès Kelly 28 手袋 金棕色',
+    section: '订单号：2024120800013',
+    nickname: '王女士',
+    status: 3,
+    date: '12-01',
+    amount: '¥89999',
+  },
+])
+
+// 当前选中的tab
+const currentTab = ref('1')
+
+// 根据tab过滤数据
+const filteredOrderData = computed(() => {
+  const statusMap = {
+    1: 1, // 待发货
+    2: 2, // 配送中
+    3: 3, // 已完成
+  }
+  return orderData.value.filter(item => item.status === statusMap[currentTab.value])
+})
+
+// 电商功能列表
+const ecommerceFeatures = [
+  {
+    title: '商品管理',
+    icon: 'i-tabler:package',
+  },
+  {
+    title: '订单管理',
+    icon: 'i-tabler:clipboard-list',
+  },
+  {
+    title: '库存管理',
+    icon: 'i-tabler:packages',
+  },
+  {
+    title: '客户管理',
+    icon: 'i-tabler:users',
+  },
+  {
+    title: '营销活动',
+    icon: 'i-tabler:speakerphone',
+  },
+  {
+    title: '数据分析',
+    icon: 'i-tabler:chart-bar',
+  },
+  {
+    title: '财务管理',
+    icon: 'i-tabler:coins',
+  },
+  {
+    title: '客服中心',
+    icon: 'i-tabler:headset',
   },
 ]
+
+// 系统公告数据
+const announcements = [
+  {
+    type: 'success' as const,
+    tag: '活动',
+    content: '双12购物节活动即将开始，优惠力度空前',
+  },
+  {
+    type: 'info' as const,
+    tag: '系统',
+    content: '订单管理系统升级完成，新增批量处理功能',
+  },
+  {
+    type: 'warning' as const,
+    tag: '提醒',
+    content: '部分商品库存紧张，请及时补货',
+  },
+  {
+    type: 'info' as const,
+    tag: '通知',
+    content: '新增支付方式：支持微信分付、花呗分期',
+  },
+  {
+    type: 'success' as const,
+    tag: '活动',
+    content: '新用户注册送100元优惠券活动进行中',
+  },
+  {
+    type: 'info' as const,
+    tag: '系统',
+    content: '物流跟踪系统优化，支持实时位置查询',
+  },
+]
+
+// 轮播图数据
+const carouselData = [
+  'https://picsum.photos/400/200?random=1',
+  'https://picsum.photos/400/200?random=2',
+  'https://picsum.photos/400/200?random=3',
+  'https://picsum.photos/400/200?random=4',
+]
+
+// 刷新数据
+function refreshData() {
+  topStats.value.forEach((stat) => {
+    switch (stat.label) {
+      case '今日订单':
+        stat.value = randomBetween(45, 180)
+        break
+      case '待发货':
+        stat.value = randomBetween(15, 65)
+        break
+      case '待处理售后':
+        stat.value = randomBetween(3, 18)
+        break
+    }
+  })
+
+  // 刷新图表数据
+  orderTrendData.value.data[0].data = Array.from({ length: 7 }, () => randomBetween(80, 200))
+  orderTrendData.value.data[1].data = Array.from({ length: 7 }, () => randomFloat(15, 45, 1))
+
+  // 刷新销售统计数据
+  salesStats.value.forEach((stat) => {
+    stat.change = randomFloat(-15, 25, 1)
+    stat.changeType = (Math.random() > 0.5 ? 'up' : 'down') as 'up' | 'down'
+
+    switch (stat.title) {
+      case '今日销售额':
+        stat.value = `¥${randomBetween(50000, 120000).toLocaleString()}`
+        break
+      case '今日订单数':
+        stat.value = randomBetween(150, 350)
+        break
+      case '平均客单价':
+        stat.value = `¥${randomFloat(280, 580, 0)}`
+        break
+      case '转化率':
+        stat.value = `${randomFloat(8, 18, 2)}%`
+        break
+    }
+  })
+}
+
+// 获取订单状态显示
+function getOrderStatusDisplay(status: number) {
+  switch (status) {
+    case 1:
+      return { text: '待发货', class: 'text-warning bg-warning/10' }
+    case 2:
+      return { text: '配送中', class: 'text-info bg-info/10' }
+    case 3:
+      return { text: '已完成', class: 'text-success bg-success/10' }
+    default:
+      return { text: '未知', class: 'text-gray bg-gray/10' }
+  }
+}
+
+// 获取变化指示器样式
+function getChangeIndicator(change: number, changeType: 'up' | 'down') {
+  const isPositive = changeType === 'up'
+  return {
+    icon: isPositive ? 'i-tabler:arrow-up' : 'i-tabler:arrow-down',
+    class: isPositive ? 'text-success' : 'text-error',
+    text: `${isPositive ? '+' : ''}${change}%`,
+  }
+}
 </script>
 
 <template>
-  <dux-page :card="false">
+  <DuxPage :card="false">
     <div class="flex gap-2 flex-col lg:flex-row">
       <div class="flex-1 flex flex-col gap-2 lg:w-1">
-        <dux-dashboard-hello-big
-          title="HELLO，张三" :data="[
-            {
-              label: '已处理',
-              icon: 'i-tabler:cube',
-              value: 0,
-            },
-            {
-              label: '处理中',
-              icon: 'i-tabler:cube',
-              value: 0,
-            },
-            {
-              label: '未处理',
-              icon: 'i-tabler:cube',
-              value: 0,
-            },
-          ]"
+        <DuxDashboardHelloBig
+          title="HELLO，店长"
+          :data="topStats"
         />
 
         <div class="bg-primary rounded-sm text-white px-10 py-6 relative overflow-hidden flex justify-between">
           <div>
             <div class="text-xl">
-              Dux Vue Admin
+              电商管理平台
             </div>
             <div class="text-sm opacity-60">
-              基于 Vue3 和 Naive UI 的异步渲染中后台前端框架
+              基于 Vue3 和 Naive UI 的电商管理系统
             </div>
           </div>
 
           <div class="flex items-center text-lg italic">
-            简单、高效、易用
+            专业、高效、可靠
           </div>
 
           <div class="absolute top-7 -right-20 rounded-full size-40 bg-white/8" />
@@ -126,49 +373,94 @@ const taskData = [
           <div class="absolute -top-7 -right-18 rounded-full size-60 bg-white/8" />
         </div>
 
+        <!-- 新增：订单趋势图表卡片 -->
+        <DuxCard title="数据概览" content-class="flex flex-col gap-4">
+          <template #headerExtra>
+            <NButton size="small" text @click="refreshData">
+              <template #icon>
+                <div class="i-tabler:refresh size-4" />
+              </template>
+              刷新
+            </NButton>
+          </template>
+
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div v-for="stat in salesStats" :key="stat.title" class="flex flex-col gap-2 p-4 rounded-lg bg-muted/30">
+              <div class="text-sm text-muted">
+                {{ stat.title }}
+              </div>
+              <div class="text-2xl font-bold text-default">
+                {{ stat.value }}
+              </div>
+              <div class="flex items-center gap-1 text-xs">
+                <div class="size-3" :class="[getChangeIndicator(stat.change, stat.changeType).icon, getChangeIndicator(stat.change, stat.changeType).class]" />
+                <span :class="getChangeIndicator(stat.change, stat.changeType).class">
+                  {{ getChangeIndicator(stat.change, stat.changeType).text }}
+                </span>
+                <span class="text-muted">较昨日</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="h-80">
+            <DuxChart
+              type="bar"
+              height="320px"
+              :option="{
+                labels: orderTrendData.labels,
+                data: orderTrendData.data,
+                showLegend: true,
+                showGrid: true,
+                showXAxisLabel: true,
+                showYAxisLabel: true,
+              }"
+            />
+          </div>
+        </DuxCard>
+
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-2">
           <div>
             <NCard
               class="shadow-sm"
               :bordered="false"
-              title="今日任务"
+              title="订单管理"
               content-class="!p-0"
-
               :segmented="{
                 content: true,
               }"
               size="small"
             >
               <template #header-extra>
-                <n-tabs pane-class="!p-0" type="segment" size="small" animated class="!w-50">
-                  <n-tab-pane name="1" tab="待处理" />
-                  <n-tab-pane name="2" tab="已处理" />
-                  <n-tab-pane name="3" tab="未处理" />
-                </n-tabs>
+                <NTabs v-model:value="currentTab" pane-class="!p-0" type="segment" size="small" animated class="!w-50">
+                  <NTabPane name="1" tab="待发货" />
+                  <NTabPane name="2" tab="配送中" />
+                  <NTabPane name="3" tab="已完成" />
+                </NTabs>
               </template>
-              <n-scrollbar>
+              <NScrollbar>
                 <div class="flex flex-col gap-4 p-4">
-                  <DuxMedia v-for="(item, key) in taskData" :key="key">
+                  <DuxMedia v-for="(item, key) in filteredOrderData" :key="key">
                     {{ item.title }}
                     <template #image>
-                      <n-avatar round class="!bg-primary">
+                      <NAvatar round class="!bg-primary">
                         {{ item.nickname.charAt(0) }}
-                      </n-avatar>
+                      </NAvatar>
                     </template>
                     <template #desc>
                       <div>{{ item.section }} <span class="text-primary">{{ item.nickname }}</span></div>
                     </template>
                     <template #extend>
-                      <div class="flex items-center justify-center h-10 w-16 rounded" :class="[item.status === 1 ? 'text-info bg-info/10' : '', item.status === 2 ? 'text-warning bg-warning/10' : '', item.status === 3 ? 'text-success bg-success/10' : '']">
-                        {{ item.status === 1 ? '未处理' : item.status === 2 ? '处理中' : '已处理' }}
+                      <div class="flex items-center justify-center h-10 w-16 rounded" :class="getOrderStatusDisplay(item.status).class">
+                        {{ getOrderStatusDisplay(item.status).text }}
                       </div>
-                      <div class="text-warning bg-warning/10 flex flex-col gap-0 items-center justify-center h-10 w-16 rounded">
-                        {{ item.date }}
+                      <div class="text-success bg-success/10 flex flex-col gap-0 items-center justify-center h-10 w-16 rounded text-xs">
+                        <div>{{ item.amount }}</div>
+                        <div>{{ item.date }}</div>
                       </div>
                     </template>
                   </DuxMedia>
                 </div>
-              </n-scrollbar>
+              </NScrollbar>
             </NCard>
           </div>
 
@@ -176,59 +468,14 @@ const taskData = [
             <NCard
               class="shadow-sm"
               :bordered="false"
-              size="small" title="常用功能" :segmented="{
-                content: true,
-              }"
-            >
-              <DuxDashboardQuick
-                :col="4"
-                :data="[
-                  {
-                    title: '我的任务',
-                    icon: 'i-tabler:checklist',
-                  },
-                  {
-                    title: '部门任务',
-                    icon: 'i-tabler:building-skyscraper',
-                  },
-                  {
-                    title: '项目管理',
-                    icon: 'i-tabler:presentation',
-                  },
-                  {
-                    title: '团队成员',
-                    icon: 'i-tabler:users-group',
-                  },
-                  {
-                    title: '合同管理',
-                    icon: 'i-tabler:contract',
-                  },
-                  {
-                    title: '审批待办',
-                    icon: 'i-tabler:rubber-stamp',
-                  },
-                  {
-                    title: '考勤管理',
-                    icon: 'i-tabler:clock-pin',
-                  },
-                  {
-                    title: '绩效管理',
-                    icon: 'i-tabler:activity',
-                  },
-                ]"
-              />
-            </NCard>
-            <NCard
-              class="shadow-sm"
-              :bordered="false"
-              size="small" title="计划日历" :segmented="{
+              size="small"
+              title="营销日历"
+              :segmented="{
                 content: true,
               }"
             >
               <div>
-                <NCalendar
-                  class="!h-92"
-                />
+                <NCalendar class="!h-92" />
               </div>
             </NCard>
           </div>
@@ -236,92 +483,56 @@ const taskData = [
       </div>
       <div class="flex-none flex flex-col gap-2 lg:w-86">
         <DuxCarousel
-          :height="200" :data="[
-            {
-              src: 'https://naive-ui.oss-cn-beijing.aliyuncs.com/carousel-img/carousel1.jpeg',
-            },
-            {
-              src: 'https://naive-ui.oss-cn-beijing.aliyuncs.com/carousel-img/carousel2.jpeg',
-            },
-            {
-              src: 'https://naive-ui.oss-cn-beijing.aliyuncs.com/carousel-img/carousel3.jpeg',
-            },
-            {
-              src: 'https://naive-ui.oss-cn-beijing.aliyuncs.com/carousel-img/carousel4.jpeg',
-            },
-          ]"
+          :height="200"
+          :data="carouselData"
         />
         <NCard
-
           class="shadow-sm"
           :bordered="false"
-          title="系统公告" size="small" :segmented="{
+          title="平台公告"
+          size="small"
+          :segmented="{
             content: true,
           }"
         >
           <template #header-extra>
-            <n-button size="small" text>
-              更多
-            </n-button>
+            <NButton size="small" text @click="refreshData">
+              刷新
+            </NButton>
           </template>
           <div class="flex flex-col gap-2">
-            <DuxMedia @click="() => {}">
+            <DuxMedia v-for="(item, index) in announcements" :key="index" @click="() => {}">
               <template #prefix>
-                <n-tag type="success" size="small">
-                  系统
-                </n-tag>
+                <NTag :type="item.type" size="small">
+                  {{ item.tag }}
+                </NTag>
               </template>
-              优化功能与安全升级
-            </DuxMedia>
-            <DuxMedia @click="() => {}">
-              <template #prefix>
-                <n-tag type="info" size="small">
-                  部门
-                </n-tag>
-              </template>
-              2024年第二季度工作总结会议通知
-            </DuxMedia>
-            <DuxMedia @click="() => {}">
-              <template #prefix>
-                <n-tag type="success" size="small">
-                  系统
-                </n-tag>
-              </template>
-              本周五晚进行服务器升级
-            </DuxMedia>
-            <DuxMedia @click="() => {}">
-              <template #prefix>
-                <n-tag type="info" size="small">
-                  部门
-                </n-tag>
-              </template>
-              新员工入职培训计划安排
-            </DuxMedia>
-            <DuxMedia @click="() => {}">
-              <template #prefix>
-                <n-tag type="success" size="small">
-                  系统
-                </n-tag>
-              </template>
-              网络安全意识月活动启动
-            </DuxMedia>
-            <DuxMedia @click="() => {}">
-              <template #prefix>
-                <n-tag type="info" size="small">
-                  部门
-                </n-tag>
-              </template>
-              年度绩效评估流程及时间表
+              {{ item.content }}
             </DuxMedia>
           </div>
         </NCard>
 
-        <DuxWidgetConnect title="平台定制需求" desc="助力企业提升管理效率">
-          <n-button type="primary" size="small">
-            联系我们
-          </n-button>
+        <NCard
+          class="shadow-sm"
+          :bordered="false"
+          size="small"
+          title="常用功能"
+          :segmented="{
+            content: true,
+          }"
+        >
+          <DuxDashboardQuick
+            :col="4"
+            :data="ecommerceFeatures"
+          />
+        </NCard>
+
+        <DuxWidgetConnect title="电商服务升级" desc="助力商家提升销售业绩">
+          <NButton type="primary" size="small">
+            了解更多
+          </NButton>
         </DuxWidgetConnect>
       </div>
     </div>
-  </dux-page>
+  </DuxPage>
 </template>

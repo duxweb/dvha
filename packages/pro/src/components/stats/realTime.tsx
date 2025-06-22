@@ -1,4 +1,5 @@
 import type { PropType } from 'vue'
+import { NScrollbar } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
 import { DuxCard } from '../card'
 import { DuxChart } from '../chart'
@@ -74,28 +75,32 @@ export const DuxStatsRealTime = defineComponent({
             <>
               {/* Stats Cards */}
               {props.cards.length > 0 && (
-                <div class={[
-                  'grid grid-cols-2 bg-muted lg:overflow-hidden lg:h-26',
-                  `lg:grid-cols-[repeat(auto-fit,minmax(100px,1fr))]`,
-                ]}
-                >
-                  {props.cards.map((card, index) => (
-                    <div
-                      key={index}
-                      class="text-center flex flex-col gap-1 py-6"
+                <div class="lg:h-26 bg-muted">
+                  <NScrollbar xScrollable>
+                    <div class={[
+                      'grid grid-cols-2 whitespace-nowrap auto-cols-max',
+                      `lg:grid-cols-[repeat(auto-fit,minmax(100px,1fr))]`,
+                    ]}
                     >
-                      <div
-                        class={[
-                          'text-2xl font-bold',
-                        ]}
-                      >
-                        {formatValue(card.value)}
-                      </div>
-                      <div class="text-sm text-muted">
-                        {card.label}
-                      </div>
+                      {props.cards.map((card, index) => (
+                        <div
+                          key={index}
+                          class="text-center flex flex-col gap-1 py-6"
+                        >
+                          <div
+                            class={[
+                              'text-2xl font-bold',
+                            ]}
+                          >
+                            {formatValue(card.value)}
+                          </div>
+                          <div class="text-sm text-muted">
+                            {card.label}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </NScrollbar>
                 </div>
               )}
 

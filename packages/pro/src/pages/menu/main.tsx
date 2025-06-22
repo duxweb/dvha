@@ -75,7 +75,7 @@ export const DuxMenuMain = defineComponent({
           />
         </div>
 
-        <div class="flex-none hidden lg:flex flex-col items-center gap-2  p-2">
+        <div class="flex-none hidden lg:flex flex-col items-center gap-2 p-2 border-t border-muted/50">
           <DuxMenuAvatar collapsed={props.collapsed} />
         </div>
       </div>
