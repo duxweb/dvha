@@ -66,7 +66,7 @@ export const DuxModal = defineComponent({
             >
               <Suspense>
                 {{
-                  default: () => <Page {...props.componentProps} handle={draggableClass} />,
+                  default: () => <Page {...params} handle={draggableClass} />,
                   fallback: () => (
                     <NSpin show>
                       <div class="h-100"></div>

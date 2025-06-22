@@ -2,7 +2,7 @@ import type { IDataProviderResponse } from '../../types'
 import type { IUploadDriver, IUploadDriverOptions } from './types'
 import { useClient } from '../data'
 
-export const createLocalUploadDriver = (): IUploadDriver => {
+export function createLocalUploadDriver(): IUploadDriver {
   const client = useClient()
   return {
     upload(file: File, options: IUploadDriverOptions): Promise<IDataProviderResponse> {
@@ -14,7 +14,8 @@ export const createLocalUploadDriver = (): IUploadDriver => {
           query[key] = value
         })
         payload = file
-      } else {
+      }
+      else {
         const formData = new FormData()
         formData.append('file', file)
         Object.entries(options.params || {}).forEach(([key, value]) => {
@@ -27,10 +28,10 @@ export const createLocalUploadDriver = (): IUploadDriver => {
         ...options,
         query,
         method: options.method || 'POST',
-        payload: payload,
+        payload,
         signal: options.signal,
         onUploadProgress: options.onUploadProgress,
       })
-    }
+    },
   }
 }

@@ -28,7 +28,7 @@ function handleCreate() {
 
 const { renderTable, renderAction } = useAction()
 
-const { renderMedia, renderSwitch, renderStatus, renderMap, renderInput, renderCopy, renderHidden } = useTableColumn()
+const { renderMedia, renderSwitch, renderStatus, renderMap, renderInput, renderImage, renderCopy, renderHidden } = useTableColumn()
 
 const columns: TableColumn[] = [
   {
@@ -96,6 +96,14 @@ const columns: TableColumn[] = [
           icon: 'i-tabler:phone',
         },
       ],
+    }),
+  },
+  {
+    title: '图片',
+    key: 'images',
+    minWidth: 100,
+    render: renderImage({
+      key: 'images',
     }),
   },
   {

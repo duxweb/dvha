@@ -26,26 +26,65 @@ export const DuxBlockEmpty = defineComponent({
         ])}
         >
           <div>
-            <svg class="size-60px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6634" width="128" height="128">
-              <path d="M77 813.758a368.464 61.243 0 1 0 736.928 0 368.464 61.243 0 1 0-736.928 0Z" fill="rgba(var(--n-gray-color-2))" fill-opacity=".8" p-id="6635"></path>
-              <path d="M740.233 633.838L610.205 491.486c-6.24-6.7-15.36-10.756-24.962-10.756H305.675c-9.597 0-18.717 4.056-24.956 10.756L150.696 633.838v74.368h589.542v-74.368h-0.005z" fill="rgba(var(--n-gray-color-6))" p-id="6636"></path>
-              <path d="M702.531 713.8L588.906 592.396c-5.44-5.835-13.625-9.026-22-9.026H323.11c-8.37 0-16.56 3.191-22 9.026L187.484 713.8v66.677h515.047V713.8z" fill="rgba(var(--n-gray-color-9))" p-id="6637"></path>
-              <path d="M260.86 297h369.203c12.007 0 21.74 8.658 21.74 19.338v451.27c0 10.68-9.733 19.337-21.74 19.337H260.86c-12.006 0-21.74-8.657-21.74-19.337V316.338C239.12 305.658 248.855 297 260.86 297z" fill="rgba(var(--n-gray-color-2))" p-id="6638"></path>
-              <path d="M308.947 345.118h273.03c6.002 0 10.869 4.329 10.869 9.669V475.44c0 5.34-4.867 9.669-10.87 9.669H308.947c-6.003 0-10.87-4.33-10.87-9.67V354.788c0-5.34 4.867-9.67 10.87-9.67z m1.424 192.48h270.181c6.79 0 12.294 4.896 12.294 10.935 0 6.04-5.504 10.936-12.294 10.936h-270.18c-6.79 0-12.294-4.896-12.294-10.936s5.504-10.935 12.293-10.935z m0 56.868h270.181c6.791 0 12.297 4.897 12.297 10.938 0 6.04-5.506 10.938-12.297 10.938h-270.18c-6.792 0-12.297-4.898-12.297-10.938 0-6.041 5.505-10.938 12.296-10.938z m428.66 210.309c-4.211 14.847-19.005 25.913-36.603 25.913H188.495c-17.598 0-32.391-11.071-36.598-25.913a31.651 31.651 0 0 1-1.206-8.654V633.842h143.033c15.8 0 28.533 11.835 28.533 26.203v0.194c0 14.363 12.88 25.96 28.68 25.96h189.05c15.799 0 28.68-11.704 28.68-26.072v-0.058c0-14.368 12.733-26.231 28.532-26.231h143.034v162.288c0 2.983-0.419 5.879-1.201 8.649z" fill="rgba(var(--n-gray-color-4))" p-id="6639"></path>
-              <path d="M757.935 304.969l-37.023 12.813c-1.94 0.673-4.142 0.295-5.664-0.973-1.522-1.268-2.095-3.201-1.474-4.975l10.5-30.01C710.238 267.588 702 250.23 702 231.5c0-48.326 54.846-87.5 122.505-87.5C892.15 144 947 183.174 947 231.5S892.154 319 824.5 319c-24.544 0-47.398-5.154-66.565-14.031z" fill="rgba(var(--n-gray-color-4))" p-id="6640"></path>
-              <path d="M856.64 233.251a15.464 13.662 0 1 0 30.928 0 15.464 13.662 0 1 0-30.928 0Z" fill="rgba(var(--n-gray-color-1))" p-id="6641"></path>
-              <path d="M790.927 245.204H760L775.73 221.297l15.197 23.907zM810.255 221.297h27.058v23.907H810.255V221.297z" fill="rgba(var(--n-gray-color-1))" p-id="6642"></path>
+            <svg class="size-60px" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:rgb(var(--ui-color-primary));stop-opacity:0.1" />
+                  <stop offset="100%" style="stop-color:rgb(var(--ui-color-primary));stop-opacity:0.05" />
+                </linearGradient>
+                <linearGradient id="boxGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" style="stop-color:rgb(var(--ui-bg-elevated));stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:rgb(var(--ui-bg-muted));stop-opacity:1" />
+                </linearGradient>
+              </defs>
+
+              <circle cx="100" cy="100" r="85" fill="url(#bgGradient)" />
+
+              <g transform="translate(100, 100)">
+                <ellipse cx="0" cy="35" rx="45" ry="8" fill="rgb(var(--ui-color-gray-300))" opacity="0.3" />
+
+                <path
+                  d="M -35 -10 L -35 25 Q -35 30 -30 30 L 30 30 Q 35 30 35 25 L 35 -5 Q 35 -10 30 -10 L 5 -10 L -5 -20 L -30 -20 Q -35 -20 -35 -15 Z"
+                  fill="url(#boxGradient)"
+                  stroke="rgb(var(--ui-color-gray-300))"
+                  stroke-width="1"
+                />
+
+                <path
+                  d="M -5 -20 L 5 -10 L 15 -10 Q 20 -10 20 -15 Q 20 -20 15 -20 Z"
+                  fill="rgb(var(--ui-color-primary))"
+                  opacity="0.8"
+                />
+
+                <g transform="translate(0, -5)" opacity="0.6">
+                  <rect x="-8" y="-5" width="16" height="20" rx="2" fill="rgb(var(--ui-bg-elevated))" stroke="rgb(var(--ui-color-gray-400))" stroke-width="0.5" />
+                  <line x1="-5" y1="0" x2="5" y2="0" stroke="rgb(var(--ui-color-gray-400))" stroke-width="1" opacity="0.5" />
+                  <line x1="-5" y1="4" x2="3" y2="4" stroke="rgb(var(--ui-color-gray-400))" stroke-width="1" opacity="0.5" />
+                  <line x1="-5" y1="8" x2="5" y2="8" stroke="rgb(var(--ui-color-gray-400))" stroke-width="1" opacity="0.5" />
+                </g>
+
+                <circle cx="-25" cy="-25" r="2" fill="rgb(var(--ui-color-primary))" opacity="0.4">
+                  <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="25" cy="-15" r="1.5" fill="rgb(var(--ui-color-primary))" opacity="0.3">
+                  <animate attributeName="opacity" values="0.3;0.6;0.3" dur="3s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="20" cy="25" r="1" fill="rgb(var(--ui-color-primary))" opacity="0.2">
+                  <animate attributeName="opacity" values="0.2;0.5;0.2" dur="4s" repeatCount="indefinite" />
+                </circle>
+              </g>
             </svg>
           </div>
 
           <div class="flex flex-col gap-0">
             <div class={clsx([
-              props.simple ? 'text-center text-gray-5' : '',
+              'text-default',
+              props.simple ? 'text-center' : '',
             ])}
             >
               {props.text || t('pages.empty.title')}
             </div>
-            {!props.simple && (<div class="text-gray-5">{props.desc || t('pages.empty.desc')}</div>
+            {!props.simple && (<div class="text-muted">{props.desc || t('pages.empty.desc')}</div>
             )}
           </div>
         </div>

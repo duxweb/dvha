@@ -51,7 +51,8 @@
       "import": "导入",
       "autoRefresh": "自动刷新",
       "filter": "筛选",
-      "refresh": "刷新"
+      "refresh": "刷新",
+      "select": "选择"
     },
     "form": {
       "edit": "编辑",
@@ -64,6 +65,36 @@
       "columnSetting": "列设置",
       "selectedItems": "选中项: {num}",
       "total": "共 {total} 条"
+    },
+    "editor": {
+      "placeholder": "请输入内容"
+    },
+    "upload": {
+      "fileManager": "文件管理器",
+      "uploadFile": "上传文件",
+      "cancel": "取消",
+      "delete": "删除",
+      "error": "上传失败",
+      "empty": "暂无文件",
+      "desc": "点击或拖拽文件到此区域",
+      "dropHere": "拖拽文件到此处",
+      "allFormats": "支持任意格式文件",
+      "supportFormats": "支持 {formats} 格式文件",
+      "maxSize": "最大文件大小: {size}MB",
+      "status": {
+        "pending": "待上传",
+        "uploading": "上传中",
+        "success": "已上传",
+        "cancelled": "已取消",
+        "error": "失败"
+      },
+      "file": {
+        "name": "文件名",
+        "size": "大小",
+        "type": "类型",
+        "status": "状态"
+      },
+      "actions": "操作"
     }
   },
   "pages": {

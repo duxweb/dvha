@@ -3,7 +3,7 @@ import type { MaybeRef, PropType } from 'vue'
 import { useExtendForm, useI18n } from '@duxweb/dvha-core'
 import { useMessage } from 'naive-ui'
 import { computed, defineComponent, toRef } from 'vue'
-import { ModalPage } from '../../components/modal'
+import { DuxModalPage } from '../../components'
 import { DuxFormLayout } from './formLayout'
 
 export const DuxModalForm = defineComponent({
@@ -61,7 +61,7 @@ export const DuxModalForm = defineComponent({
     })
 
     return () => (
-      <ModalPage title={props?.title || (isEdit.value ? t('components.form.edit') : t('components.form.create'))} onClose={props?.onClose}>
+      <DuxModalPage title={props?.title || (isEdit.value ? t('components.form.edit') : t('components.form.create'))} onClose={props?.onClose}>
         {{
           default: () => (
             <DuxFormLayout
@@ -82,7 +82,7 @@ export const DuxModalForm = defineComponent({
             </>
           ),
         }}
-      </ModalPage>
+      </DuxModalPage>
     )
   },
 })

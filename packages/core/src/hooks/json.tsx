@@ -7,7 +7,7 @@ import { injectContext } from './json/utils/contextManager'
 export type JsonSchemaData = JsonSchemaNode[] | Ref<JsonSchemaNode[]>
 
 export interface UseJsonSchemaProps extends JsonAdaptorOptions {
-  data: JsonSchemaData
+  data?: JsonSchemaData
   components?: Record<string, any>
   context?: Record<string, any> | Ref<Record<string, any>>
 }
@@ -130,9 +130,22 @@ export function useJsonSchema(props?: UseJsonSchemaProps) {
   const render = defineComponent({
     name: 'JsonSchemaRenderer',
     render() {
-      return data.value?.map(node => processNode(node)).filter(Boolean)
+      return data.value?.map(node => processNode(node)).filter(Boolean) || []
     },
   })
 
-  return { render }
+  function renderAsync(options: {
+    data: JsonSchemaNode[]
+    context?: Record<string, any>
+  }) {
+    return defineComponent({
+      name: 'DynamicJsonSchemaRenderer',
+      render() {
+        const dynamicContext = { ...getGlobalContext(), ...options.context }
+        return options.data?.map(node => processNode(node, false, dynamicContext)).filter(Boolean)
+      },
+    })
+  }
+
+  return { render, renderAsync }
 }

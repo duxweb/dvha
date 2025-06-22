@@ -4,6 +4,7 @@ import { DuxApp } from './app'
 
 // 导入components中的所有Dux组件
 import {
+  DuxAiEditor,
   DuxBlockEmpty,
   DuxCard,
   DuxCardPage,
@@ -18,13 +19,22 @@ import {
   DuxDrawEmptyForm,
   DuxDrawerPage,
   DuxDrawError,
+  DuxDynamicData,
+  DuxDynamicSelect,
+  DuxFileUpload,
   DuxFormItem,
   DuxFormLayout,
+  DuxImageCrop,
+  DuxImageCropModal,
+  DuxImageUpload,
+  DuxLevel,
   DuxListLayout,
   DuxListPage,
   DuxMedia,
   DuxModal,
   DuxModalForm,
+  DuxModalPage,
+  DuxModalTab,
   DuxPageForm,
   DuxPanelAlert,
   DuxPanelCard,
@@ -59,6 +69,7 @@ import { DuxLayout } from './pages/layout'
 export default {
   install(app: App) {
     // 注册components中的所有组件
+    app.component('DuxAiEditor', DuxAiEditor)
     app.component('DuxCard', DuxCard)
     app.component('DuxDrawerPage', DuxDrawerPage)
     app.component('DuxDrawApps', DuxDrawApps)
@@ -66,6 +77,8 @@ export default {
     app.component('DuxDrawEmpty', DuxDrawEmpty)
     app.component('DuxDrawEmptyForm', DuxDrawEmptyForm)
     app.component('DuxDrawError', DuxDrawError)
+    app.component('DuxDynamicData', DuxDynamicData)
+    app.component('DuxDynamicSelect', DuxDynamicSelect)
     app.component('DuxFormItem', DuxFormItem)
     app.component('DuxFormLayout', DuxFormLayout)
     app.component('DuxModalForm', DuxModalForm)
@@ -83,6 +96,13 @@ export default {
     app.component('DuxPanelCard', DuxPanelCard)
     app.component('DuxBlockEmpty', DuxBlockEmpty)
     app.component('DuxTablePage', DuxTablePage)
+    app.component('DuxLevel', DuxLevel)
+    app.component('DuxImageCrop', DuxImageCrop)
+    app.component('DuxImageCropModal', DuxImageCropModal)
+    app.component('DuxModalPage', DuxModalPage)
+    app.component('DuxModalTab', DuxModalTab)
+    app.component('DuxFileUpload', DuxFileUpload)
+    app.component('DuxImageUpload', DuxImageUpload)
 
     app.component('DuxDashboardHello', DuxDashboardHello)
     app.component('DuxDashboardHelloBig', DuxDashboardHelloBig)

@@ -17,4 +17,11 @@ export default defineConfig(() => ({
       '@duxweb/dvha-elementui': path.resolve(__dirname, '../../packages/elementui/src'),
     },
   },
+  optimizeDeps: {
+    exclude: [
+      '@duxweb/dvha-core',
+      '@duxweb/dvha-naiveui',
+      '@duxweb/dvha-elementui',
+    ],
+  },
 }))

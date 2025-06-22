@@ -1,5 +1,7 @@
 import type { IJsonAdaptor, VModelBinding } from './types'
 import { toRef } from 'vue'
+import { extractContext } from './utils/contextManager'
+import { evaluateExpression } from './utils/expressionParser'
 
 export const vModelAdaptor: IJsonAdaptor = {
   name: 'v-model',
@@ -8,6 +10,7 @@ export const vModelAdaptor: IJsonAdaptor = {
     const modelProps: Record<string, any> = {}
     const restProps: Record<string, any> = {}
     let hasModel = false
+    const context = extractContext(props)
 
     Object.entries(props).forEach(([key, value]) => {
       if (key.startsWith('v-model') || key.startsWith('vModel')) {
@@ -30,7 +33,7 @@ export const vModelAdaptor: IJsonAdaptor = {
         }
 
         try {
-          const { modelValue, updateFn } = createModelBinding(value as VModelBinding, modifiers)
+          const { modelValue, updateFn } = createModelBinding(value as VModelBinding, modifiers, context)
 
           modelProps[modelName] = modelValue
           modelProps[`onUpdate:${modelName}`] = updateFn
@@ -48,7 +51,47 @@ export const vModelAdaptor: IJsonAdaptor = {
   },
 }
 
-function createModelBinding(value: VModelBinding | any, modifiers: string[]) {
+function createModelBinding(value: VModelBinding | any, modifiers: string[], context: Record<string, any>) {
+  // 如果是字符串表达式，尝试从 context 中解析
+  if (typeof value === 'string') {
+    // 简单的路径解析，如 'row.name' -> context.row.name
+    const getValue = () => {
+      try {
+        return evaluateExpression(value, context)
+      }
+      catch (error) {
+        console.warn(`v-model: Failed to evaluate expression "${value}"`, error)
+        return undefined
+      }
+    }
+
+    const setValue = (newValue: any) => {
+      try {
+        // 解析路径，如 'row.name' -> ['row', 'name']
+        const parts = value.split('.')
+        if (parts.length >= 2) {
+          const objPath = parts.slice(0, -1).join('.')
+          const propName = parts[parts.length - 1]
+          const obj = evaluateExpression(objPath, context)
+
+          if (obj && typeof obj === 'object') {
+            obj[propName] = applyModifiers(newValue, modifiers)
+            return
+          }
+        }
+        console.warn(`v-model: Cannot update expression "${value}". Target object not found.`)
+      }
+      catch (error) {
+        console.warn(`v-model: Failed to update expression "${value}"`, error)
+      }
+    }
+
+    return {
+      modelValue: getValue(),
+      updateFn: setValue,
+    }
+  }
+
   if (Array.isArray(value) && value.length === 2
     && typeof value[0] === 'function' && typeof value[1] === 'function') {
     const [getter, setter] = value

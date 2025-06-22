@@ -279,7 +279,7 @@ export function useUpload(props?: IUseUploadProps) {
   }
 
   // trigger file upload
-  const upload = async (uploadFile: IUseUploadFile) => {
+  const upload = async (uploadFile: IUseUploadFile): Promise<IUseUploadFile> => {
     if (!uploadFile.file) {
       throw new Error('File not found')
     }
@@ -293,7 +293,7 @@ export function useUpload(props?: IUseUploadProps) {
 
     updateFileStatus(uploadFile.id, { status: 'uploading' })
 
-    await uploadDriver.upload(uploadFile.file, {
+    return uploadDriver.upload(uploadFile.file, {
       ...params.value,
       method: method.value,
       signal: abortController.signal,
@@ -326,15 +326,16 @@ export function useUpload(props?: IUseUploadProps) {
       },
     }).then((response) => {
       if (uploadFile.status === 'cancelled') {
-        return
+        throw new Error('Upload cancelled')
       }
 
-      const callbackData = props.onDataCallback?.(response, uploadFile) || {}
+      const callbackData = props.onDataCallback?.(response, uploadFile) || response.data
 
       const finalUploadTime = Math.round((Date.now() - fileStartTime) / 1000)
 
-      updateFileStatus(uploadFile.id, {
-        status: 'success',
+      const updatedFile = {
+        ...uploadFile,
+        status: 'success' as const,
         data: response,
         ...callbackData,
         progress: {
@@ -346,13 +347,16 @@ export function useUpload(props?: IUseUploadProps) {
           uploadTime: finalUploadTime,
           remainingTime: 0,
         },
-      })
+      }
 
+      updateFileStatus(uploadFile.id, updatedFile)
       uploadControllers.value.delete(uploadFile.id)
       props.onSuccess?.(response)
+
+      return updatedFile
     }).catch((err) => {
       if (err.message === 'canceled' || uploadFile.status === 'cancelled') {
-        return
+        throw new Error('Upload cancelled')
       }
       updateFileStatus(uploadFile.id, {
         status: 'error',
@@ -366,22 +370,28 @@ export function useUpload(props?: IUseUploadProps) {
   }
 
   // trigger upload
-  const trigger = async () => {
+  const trigger = async (): Promise<IUseUploadFile[]> => {
     const pendingFiles = uploadFiles.value.filter(file => file.status === 'pending')
     if (pendingFiles.length === 0) {
-      return
+      return []
     }
 
     isUploading.value = true
+
     try {
+      const uploadedFiles: IUseUploadFile[] = []
+
       for (let i = 0; i < pendingFiles.length; i++) {
         const fileData = pendingFiles[i]
 
         const fileIndex = uploadFiles.value.findIndex(f => f.id === fileData.id)
         currentUploadingIndex.value = fileIndex
 
-        await upload(fileData)
+        const uploadedFile = await upload(fileData)
+        uploadedFiles.push(uploadedFile)
       }
+
+      return uploadedFiles
     }
     catch (error: any) {
       props.onError?.({
@@ -396,11 +406,28 @@ export function useUpload(props?: IUseUploadProps) {
     }
   }
 
+  // clear all files from upload list
+  const clearFiles = () => {
+    uploadFiles.value.forEach((file) => {
+      cancelFile(file.id)
+    })
+
+    uploadControllers.value.clear()
+
+    uploadFiles.value = []
+    currentUploadingIndex.value = -1
+  }
+
   // add files to upload list
   const addFiles = async (files: IUseUploadPayload[], type: IUseUploadType = 'file') => {
     try {
       if (!props.multiple && files.length > 1) {
         throw new Error('Single file mode: only one file can be selected')
+      }
+
+      // 单文件模式下，添加新文件前先清空已有文件
+      if (!props.multiple && uploadFiles.value.length > 0) {
+        clearFiles()
       }
 
       if (props.maxFileCount && uploadFiles.value.length + files.length > props.maxFileCount) {
@@ -420,20 +447,10 @@ export function useUpload(props?: IUseUploadProps) {
     }
 
     if (props.autoUpload) {
-      trigger()
+      trigger().catch((error) => {
+        console.warn('Auto upload failed:', error)
+      })
     }
-  }
-
-  // clear all files from upload list
-  const clearFiles = () => {
-    uploadFiles.value.forEach((file) => {
-      cancelFile(file.id)
-    })
-
-    uploadControllers.value.clear()
-
-    uploadFiles.value = []
-    currentUploadingIndex.value = -1
   }
 
   // remove file from upload list
@@ -506,12 +523,14 @@ export function useUpload(props?: IUseUploadProps) {
   const dataFiles = computed((): IUseUploadFileData[] => {
     return uploadFiles.value
       .filter(file => file.status === 'success')
-      .map(file => ({
-        url: file.url,
-        filename: file.filename,
-        filesize: file.filesize,
-        filetype: file.filetype,
-      }))
+      .map((file) => {
+        return {
+          url: file.url,
+          filename: file.filename,
+          filesize: file.filesize,
+          filetype: file.filetype,
+        }
+      })
   })
 
   // add data files to upload list

@@ -1,6 +1,8 @@
 import clsx from 'clsx'
-import { NAvatar, NImage, NImageGroup } from 'naive-ui'
+import { NImageGroup } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
+import { DuxAvatar } from '../widget'
+import { DuxImage } from '../widget/image'
 
 export const DuxMedia = defineComponent({
   name: 'DuxMedia',
@@ -37,14 +39,14 @@ export const DuxMedia = defineComponent({
               ? (
                   <>
                     { images.value.map((item, key) => (
-                      <NAvatar key={key} src={item} round size={props.imageWidth} />
+                      <DuxAvatar key={key} src={item} round size={props.imageWidth} />
                     ))}
                   </>
                 )
               : (
                   <NImageGroup>
                     { images.value.map((item, key) => (
-                      <NImage key={key} src={item} class="rounded" objectFit="cover" width={props.imageWidth} height={props.imageHeight} />
+                      <DuxImage key={key} src={item} class="rounded" objectFit="cover" width={props.imageWidth} height={props.imageHeight} />
                     ))}
                   </NImageGroup>
                 )}

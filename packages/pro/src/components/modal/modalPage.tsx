@@ -3,7 +3,7 @@ import { NButton } from 'naive-ui'
 import { defineComponent, nextTick, ref, watch } from 'vue'
 
 export default defineComponent({
-  name: 'ModalPage',
+  name: 'DuxModalPage',
   props: {
     title: {
       type: String,

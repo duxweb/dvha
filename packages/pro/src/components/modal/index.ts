@@ -1,3 +1,3 @@
 export * from './modal'
-export { default as ModalPage } from './modalPage'
-export { default as ModalTab } from './modalTab'
+export { default as DuxModalPage } from './modalPage'
+export { default as DuxModalTab } from './modalTab'

@@ -51,7 +51,8 @@
       "import": "Import",
       "autoRefresh": "Auto Refresh",
       "filter": "Filter",
-      "refresh": "Refresh"
+      "refresh": "Refresh",
+      "select": "Select"
     },
     "form": {
       "edit": "Edit",
@@ -62,6 +63,36 @@
       "columnSetting": "Column Setting",
       "selectedItems": "Selected Items: {num}",
       "total": "Total: {total}"
+    },
+    "editor": {
+      "placeholder": "Please enter content"
+    },
+    "upload": {
+      "fileManager": "File Manager",
+      "uploadFile": "Upload File",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "error": "Upload failed",
+      "empty": "No files",
+      "desc": "Click or drag files to this area",
+      "dropHere": "Drop files here",
+      "allFormats": "Support any format files",
+      "supportFormats": "Support {formats} format files",
+      "maxSize": "Max file size: {size}MB",
+      "status": {
+        "pending": "Pending",
+        "uploading": "Uploading",
+        "success": "Success",
+        "cancelled": "Cancelled",
+        "error": "Error"
+      },
+      "file": {
+        "name": "File Name",
+        "size": "Size",
+        "type": "Type",
+        "status": "Status"
+      },
+      "actions": "Actions"
     }
   },
   "pages": {

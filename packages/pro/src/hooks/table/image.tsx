@@ -1,6 +1,7 @@
 import { get } from 'lodash-es'
 import { NImage } from 'naive-ui'
-import placeholder from '../../static/images/placeholder.png'
+import { h } from 'vue'
+import { DuxPlaceholder } from '../../components'
 
 export interface UseTableColumnImageProps {
   key?: string
@@ -16,9 +17,31 @@ export function useTableColumnImage() {
 
       return (
         <div class="flex flex-wrap gap-2">
-          {value.map((item, index) => (
-            <NImage key={index} src={item} width={props.imageWidth} height={props.imageHeight} fallbackSrc={placeholder} objectFit="cover" />
-          ))}
+          {value.length > 0
+            ? value.map((item, index) => (
+                <NImage
+                  key={index}
+                  src={item}
+                  width={props.imageWidth}
+                  height={props.imageHeight}
+                  objectFit="cover"
+                  fallbackSrc="data:image/svg+xml;base64,"
+                >
+                  {{
+                    placeholder: () => h(DuxPlaceholder, {
+                      width: props.imageWidth || 40,
+                      height: props.imageHeight || 40,
+                    }),
+                    error: () => h(DuxPlaceholder, {
+                      width: props.imageWidth || 40,
+                      height: props.imageHeight || 40,
+                    }),
+                  }}
+                </NImage>
+              ))
+            : (
+                <DuxPlaceholder height={40} />
+              )}
         </div>
       )
     }
