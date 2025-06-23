@@ -32,6 +32,7 @@ declare module '@duxweb/dvha-core' {
     // Pro 包特有的配置
     apiPath?: {
       upload?: string
+      uploadManager?: string
       ai?: string
       [key: string]: any
     }

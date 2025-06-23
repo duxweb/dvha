@@ -139,6 +139,13 @@ async function createProject(projectName) {
     fs.copySync(uiPagesDir, targetPagesDir)
   }
 
+  // 2.5. 检查并复制UI特定的main.ts文件（如果存在）
+  const uiMainTsPath = path.resolve(__dirname, '..', 'template', 'ui-configs', template, 'main.ts')
+  if (fs.existsSync(uiMainTsPath)) {
+    const targetMainTsPath = path.join(root, 'main.ts')
+    fs.copySync(uiMainTsPath, targetMainTsPath)
+  }
+
   // 3. 更新package.json
   const pkgPath = path.join(root, 'package.json')
   if (fs.existsSync(pkgPath)) {
@@ -163,9 +170,11 @@ async function createProject(projectName) {
     fs.writeJsonSync(pkgPath, pkg, { spaces: 2 })
   }
 
-  // 4. 更新main.ts
+  // 4. 更新main.ts（仅当UI配置没有自定义main.ts时）
   const mainTsPath = path.join(root, 'main.ts')
-  if (fs.existsSync(mainTsPath)) {
+
+  // 如果UI配置有自定义main.ts，跳过修改；否则修改基础main.ts
+  if (!fs.existsSync(uiMainTsPath) && fs.existsSync(mainTsPath)) {
     let mainTsContent = fs.readFileSync(mainTsPath, 'utf-8')
 
     // 在导入语句后添加UI库的导入

@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-core",
   "type": "module",
-  "version": "0.1.23",
+  "version": "1.0.14",
   "author": "DuxWeb",
   "license": "MIT",
   "repository": {
@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@overlastic/vue": "^0.8.1",
-    "@tanstack/vue-query": "^5.76.2",
+    "@tanstack/vue-query": "^5.80.7",
     "@vee-validate/rules": "^4.15.1",
     "@vueuse/core": "^13.3.0",
     "@vueuse/integrations": "^13.3.0",

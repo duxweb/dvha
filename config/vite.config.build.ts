@@ -29,7 +29,6 @@ export function createSharedViteConfig(options: SharedConfigOptions): UserConfig
     additionalPlugins = [],
   } = options
 
-  // 读取包的 package.json 来自动获取外部依赖
   const pkgPath = path.resolve(packageDir, 'package.json')
   const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
 
@@ -38,6 +37,18 @@ export function createSharedViteConfig(options: SharedConfigOptions): UserConfig
     ...Object.keys(pkg.peerDependencies || {}),
     ...additionalExternal,
   ]
+
+  const isExternal = (id: string) => {
+    if (id.startsWith('.') || id.startsWith('/') || id.includes('\\')) {
+      return false
+    }
+
+    if (external.some(ext => id === ext || id.startsWith(`${ext}/`))) {
+      return true
+    }
+
+    return true
+  }
 
   const entryPath = path.resolve(packageDir, entry)
 
@@ -55,7 +66,7 @@ export function createSharedViteConfig(options: SharedConfigOptions): UserConfig
         formats: ['es', 'cjs'],
       },
       rollupOptions: {
-        external,
+        external: isExternal,
         output: [
           {
             format: 'es',

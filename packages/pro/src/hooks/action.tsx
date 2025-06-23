@@ -24,19 +24,19 @@ export function useAction(action?: UseActionProps) {
 
   const mutation = useCustomMutation({
     onSuccess: (data) => {
-      message.success(data.message || '操作成功')
+      message.success(data.message || (t('common.success') as string))
     },
     onError: (error) => {
-      message.error(error.message || '操作失败')
+      message.error(error.message || (t('common.error') as string))
     },
   })
 
   const deleteMutation = useDelete({
     onSuccess: (data) => {
-      message.success(data.message || '操作成功')
+      message.success(data.message || (t('common.success') as string))
     },
     onError: (error) => {
-      message.error(error.message || '操作失败')
+      message.error(error.message || (t('common.error') as string))
     },
   })
 

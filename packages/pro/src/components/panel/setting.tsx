@@ -36,7 +36,7 @@ export const DuxPanelCard = defineComponent({
           </div>
         </div>
 
-        <DuxCard size={props.padding} bordered>
+        <DuxCard size={props.padding} bordered shadow={false}>
           {slots.default?.()}
         </DuxCard>
       </div>

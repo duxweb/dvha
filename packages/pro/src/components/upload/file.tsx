@@ -1,10 +1,12 @@
 import type { PropType } from 'vue'
-import { useI18n, useUpload } from '@duxweb/dvha-core'
+import type { IUploadParams } from './manager'
+import { useI18n, useManage, useUpload } from '@duxweb/dvha-core'
 import { useVModel } from '@vueuse/core'
 import { useDropZone } from '@vueuse/core'
 import mime from 'mime'
 import { NButton, NDataTable, NProgress, useMessage } from 'naive-ui'
 import { computed, defineComponent, ref, watch } from 'vue'
+import { useModal } from '../../hooks'
 import { DuxMedia } from '../media'
 
 const typeMap: Record<string, string> = {
@@ -42,13 +44,23 @@ const styles = {
   },
 }
 
-export const DuxFileUpload = defineComponent({
+export interface IUploadProps extends IUploadParams {
+  managePath?: string
+  value?: string | string[]
+  defaultValue?: string | string[]
+  onUpdateValue?: (value?: string | string[]) => void
+  manager?: boolean
+}
+
+export const DuxFileUpload = defineComponent<IUploadProps>({
   name: 'DuxFileUpload',
   props: {
-    path: { type: String, default: 'upload' },
+    path: { type: String, default: '' },
+    managePath: { type: String, default: '' },
     maxNum: Number,
-    multiple: Boolean,
     maxSize: Number,
+    multiple: Boolean,
+    manager: Boolean,
     accept: String,
     value: [String, Array<string>],
     defaultValue: [String, Array<string>],
@@ -61,14 +73,19 @@ export const DuxFileUpload = defineComponent({
       defaultValue: props.defaultValue,
     })
 
+    const manage = useManage()
     const message = useMessage()
     const { t } = useI18n()
     const dropZoneRef = ref<HTMLDivElement>()
 
     const maxSize = computed(() => props.maxSize || 5)
+    const modal = useModal()
+
+    const uploadPath = computed(() => props.path || manage.config?.apiPath?.upload)
+    const managePath = computed(() => props.managePath || manage.config?.apiPath?.uploadManage)
 
     const upload = useUpload({
-      path: props.path,
+      path: uploadPath.value,
       multiple: props.multiple,
       maxFileCount: props.maxNum,
       maxFileSize: maxSize.value * 1024 * 1024,
@@ -102,7 +119,7 @@ export const DuxFileUpload = defineComponent({
             return typeMap[trimmed]
           if (trimmed.includes('*')) {
             const base = trimmed.split('/')[0]
-            return typeMap[trimmed] || `${base.toUpperCase()}文件`
+            return typeMap[trimmed] || t('common.fileExtension', { ext: base.toUpperCase() })
           }
           const ext = mime.getExtension(trimmed)
           return ext ? ext.toUpperCase() : trimmed
@@ -131,7 +148,33 @@ export const DuxFileUpload = defineComponent({
       <div class={styles.container}>
         <div ref={dropZoneRef} class={dropZoneClass.value} onClick={() => upload.open()}>
           <div class={styles.content}>
-            <div class={styles.icon.wrapper}>
+            <div
+              class={styles.icon.wrapper}
+              onClick={(e) => {
+                if (!props.manager) {
+                  return
+                }
+
+                e.stopPropagation()
+                modal.show({
+                  title: t('components.upload.title'),
+                  width: 800,
+                  component: () => import('./manager'),
+                  componentProps: {
+                    path: managePath.value,
+                    multiple: props.multiple,
+                    uploadParams: {
+                      path: uploadPath.value,
+                      accept: props.accept,
+                      maxNum: props.maxNum,
+                      maxSize: maxSize.value,
+                    },
+                  },
+                }).then((value: Record<string, any>[]) => {
+                  upload.addDataFiles(value)
+                })
+              }}
+            >
               <div class={styles.icon.icon}></div>
             </div>
             <div class={styles.text.title}>{t('components.upload.desc')}</div>

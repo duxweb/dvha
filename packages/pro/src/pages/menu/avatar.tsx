@@ -1,9 +1,10 @@
 import type { DropdownOption } from 'naive-ui'
 import type { VNodeChild } from 'vue'
-import { useI18n, useLogout, useManage, useTheme } from '@duxweb/dvha-core'
-import { NAvatar, NDropdown } from 'naive-ui'
+import { useGetAuth, useI18n, useLogout, useManage, useTheme } from '@duxweb/dvha-core'
+import { NDropdown } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
+import { DuxAvatar } from '../../components'
 import DuxMenuButton from './button'
 
 export default defineComponent({
@@ -15,6 +16,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const { t } = useI18n()
     const i18n = useI18n()
     const router = useRouter()
     const { config, getRoutePath } = useManage()
@@ -38,7 +40,7 @@ export default defineComponent({
 
     const userMenu = computed(() => {
       const menu = config.userMenus?.map(item => ({
-        label: item.label,
+        label: t(item.label || '', {}, item.label),
         key: item.key,
         icon: () => iconRender(item.icon),
         path: item.path,
@@ -54,16 +56,18 @@ export default defineComponent({
         : []
     })
 
+    const auth = useGetAuth()
+
     const options = computed(() => [
       {
         key: 'header',
         type: 'render',
         render: () => (
           <div class="flex gap-2 px-3 pb-1 pt-1 items-center ">
-            <NAvatar round size={28} src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+            <DuxAvatar round size={28} src={auth.info?.avatar} />
             <div class="flex flex-col">
-              <div class="text-sm font-medium">admin</div>
-              <div class="text-xs text-muted">admin@example.com</div>
+              <div class="text-sm font-medium">{auth.info?.nickname}</div>
+              <div class="text-xs text-muted">{auth.info?.username}</div>
             </div>
           </div>
         ),
@@ -73,22 +77,22 @@ export default defineComponent({
       },
       ...userMenu.value,
       {
-        label: '语言',
+        label: t('components.menu.language'),
         key: 'locale',
         icon: () => iconRender('i-tabler:language'),
         children: [
           {
-            label: () => labelCheckRender('中文', i18n.getLocale() === 'zh-CN'),
+            label: () => labelCheckRender(t('components.menu.chinese'), i18n.getLocale() === 'zh-CN'),
             key: 'locale.zh-CN',
           },
           {
-            label: () => labelCheckRender('English', i18n.getLocale() === 'en-US'),
+            label: () => labelCheckRender(t('components.menu.english'), i18n.getLocale() === 'en-US'),
             key: 'locale.en-US',
           },
         ],
       },
       {
-        label: '颜色',
+        label: t('components.menu.color'),
         key: 'color',
         icon: () => iconRender('i-tabler:palette'),
         children: [
@@ -96,7 +100,7 @@ export default defineComponent({
             label: () => (
               <div class="flex gap-2 items-center w-30">
                 <div class="size-2 rounded-full" style={{ backgroundColor: `rgb(var(--ui-color-primary))` }}></div>
-                <div>主题色</div>
+                <div>{t('components.menu.primaryColor')}</div>
               </div>
             ),
             key: 'color.primary',
@@ -115,7 +119,7 @@ export default defineComponent({
             label: () => (
               <div class="flex gap-2 items-center w-30">
                 <div class="size-2 rounded-full" style={{ backgroundColor: `rgb(var(--ui-color-gray-600))` }}></div>
-                <div>中性色</div>
+                <div>{t('components.menu.neutralColor')}</div>
               </div>
             ),
             key: 'color.neutral',
@@ -134,20 +138,20 @@ export default defineComponent({
         ],
       },
       {
-        label: '主题',
+        label: t('components.menu.theme'),
         key: 'theme',
         icon: () => iconRender('i-tabler:brightness-half'),
         children: [
           {
-            label: () => labelCheckRender('跟随系统', mode.value === 'auto'),
+            label: () => labelCheckRender(t('components.menu.followSystem'), mode.value === 'auto'),
             key: 'theme.auto',
           },
           {
-            label: () => labelCheckRender('亮色', mode.value === 'light'),
+            label: () => labelCheckRender(t('components.menu.lightMode'), mode.value === 'light'),
             key: 'theme.light',
           },
           {
-            label: () => labelCheckRender('暗色', mode.value === 'dark'),
+            label: () => labelCheckRender(t('components.menu.darkMode'), mode.value === 'dark'),
             key: 'theme.dark',
           },
         ],
@@ -156,15 +160,7 @@ export default defineComponent({
         type: 'divider',
       },
       {
-        label: '查看文档',
-        key: 'link.docs',
-        icon: () => iconRender('i-tabler:link'),
-      },
-      {
-        type: 'divider',
-      },
-      {
-        label: '退出登录',
+        label: t('components.menu.logout'),
         key: 'logout',
         icon: () => iconRender('i-tabler:logout'),
       },
@@ -212,7 +208,7 @@ export default defineComponent({
         <DuxMenuButton collapsed={props.collapsed}>
           {{
             icon: () => (
-              <NAvatar class="group-hover:shadow-lg" round size={28} src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+              <DuxAvatar class="group-hover:shadow-lg" round size={28} src={auth.info?.avatar} />
             ),
             default: () => (
               <div class="flex flex-col">

@@ -9,7 +9,8 @@
     "back": "返回",
     "loading": "加载中...",
     "success": "操作成功",
-    "error": "操作失败"
+    "error": "操作失败",
+    "unknownError": "未知错误"
   },
   "components": {
     "tab": {
@@ -52,7 +53,11 @@
       "autoRefresh": "自动刷新",
       "filter": "筛选",
       "refresh": "刷新",
-      "select": "选择"
+      "select": "选择",
+      "create": "新建",
+      "download": "下载",
+      "rename": "重命名",
+      "preview": "预览"
     },
     "form": {
       "edit": "编辑",
@@ -81,6 +86,9 @@
       "allFormats": "支持任意格式文件",
       "supportFormats": "支持 {formats} 格式文件",
       "maxSize": "最大文件大小: {size}MB",
+      "success": "上传成功",
+      "failed": "上传失败",
+      "fileExtension": "{ext}文件",
       "status": {
         "pending": "待上传",
         "uploading": "上传中",
@@ -95,6 +103,69 @@
         "status": "状态"
       },
       "actions": "操作"
+    },
+    "uploadManage": {
+      "title": "文件管理",
+      "all": "全部",
+      "image": "图片",
+      "media": "媒体",
+      "docs": "文档",
+      "upload": "上传",
+      "empty": "暂无文件",
+      "back": "返回上一级",
+      "parentLevel": "上一级",
+      "namePlaceholder": "请输入名称",
+      "createError": "创建失败",
+      "editError": "修改失败",
+      "delError": "删除失败",
+      "delTitle": "确认删除",
+      "delDesc": "确定要删除选中的文件吗？删除后不可恢复。"
+    },
+    "crop": {
+      "title": "裁剪",
+      "select": "选择",
+      "confirm": "确认"
+    },
+    "stats": {
+      "realTimeData": "实时数据"
+    },
+    "data": {
+      "selectTitle": "请选择数据"
+    },
+    "menu": {
+      "language": "语言",
+      "chinese": "中文",
+      "english": "English",
+      "color": "颜色",
+      "primaryColor": "主题色",
+      "neutralColor": "中性色",
+      "theme": "主题",
+      "followSystem": "跟随系统",
+      "lightMode": "亮色",
+      "darkMode": "暗色",
+      "logout": "退出登录"
+    }
+  },
+  "hooks": {
+    "table": {
+      "exportSuccess": "导出数据成功",
+      "exportProgress": "导出数据中, 请稍后...",
+      "exportFailed": "导出数据失败",
+      "exportSuccessContent": "成功导出 {count} 条数据",
+      "exportProgressContent": "第 {page} 页数据",
+      "exportFailedContent": "导出数据失败：{error}",
+      "importSuccess": "导入数据成功",
+      "importProgress": "导入数据中, 请稍后...",
+      "importFailed": "导入数据失败",
+      "importSuccessContent": "成功导入 {count} 条数据",
+      "importProgressContent": "{processed} / {total} 条数据",
+      "importFailedContent": "导入数据失败：{error}",
+      "saveSuccess": "保存成功",
+      "copySuccess": "复制成功",
+      "copyFailed": "复制失败"
+    },
+    "download": {
+      "failed": "下载失败"
     }
   },
   "pages": {

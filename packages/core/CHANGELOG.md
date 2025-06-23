@@ -1,5 +1,12 @@
 # @duxweb/dvha-core
 
+## 1.0.14
+
+### Patch Changes
+
+- feat: 更换组件的内容为语言包
+  fix: 修正部分适配 pro 版的问题
+
 ## 0.1.23
 
 ### Patch Changes

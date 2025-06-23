@@ -1,5 +1,12 @@
 # @duxweb/dvha-template
 
+## 1.0.10
+
+### Patch Changes
+
+- feat: 更换组件的内容为语言包
+  fix: 修正部分适配 pro 版的问题
+
 ## 1.0.9
 
 ### Patch Changes

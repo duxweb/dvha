@@ -1,4 +1,5 @@
 import { useManage, useUpload } from '@duxweb/dvha-core'
+import { useI18n } from '@duxweb/dvha-core'
 import { useVModel } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
 import { defineComponent } from 'vue'
@@ -26,6 +27,7 @@ export const DuxImageCrop = defineComponent({
     },
   },
   setup(props, { emit }) {
+    const { t } = useI18n()
     const data = useVModel(props, 'value', emit, {
       passive: true,
       defaultValue: props.defaultValue || '',
@@ -38,10 +40,10 @@ export const DuxImageCrop = defineComponent({
       autoUpload: true,
       onSuccess: (res) => {
         data.value = res.data?.url
-        message.success('上传成功')
+        message.success(t('components.upload.success') as string)
       },
       onError: (error) => {
-        message.error(error.message || '上传失败')
+        message.error(error.message || (t('components.upload.failed') as string))
       },
     })
     return () => (

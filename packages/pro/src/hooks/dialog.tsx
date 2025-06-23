@@ -15,6 +15,7 @@ export interface UseDialogProps {
   content?: string
   type?: 'confirm' | 'error' | 'success' | 'prompt' | 'node'
   formSchema?: JsonSchemaData
+  defaultValue?: Record<string, any>
   render?: () => VNode
 }
 

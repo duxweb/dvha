@@ -1,0 +1,14 @@
+{
+  "name": "pro",
+  "display": "Vue 3 + Dux Pro",
+  "description": "使用 Dux Pro 组件库的 Vue 3 项目",
+  "dependencies": {
+    "@duxweb/dvha-core": "latest",
+    "@duxweb/dvha-naiveui": "latest",
+    "@duxweb/dvha-pro": "latest",
+    "naive-ui": "^2.42.0",
+    "vue": "^3.5.0",
+    "vue-router": "^4.5.1"
+  },
+  "devDependencies": {}
+}

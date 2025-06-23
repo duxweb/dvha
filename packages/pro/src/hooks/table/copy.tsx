@@ -1,3 +1,4 @@
+import { useI18n } from '@duxweb/dvha-core'
 import { useClipboard } from '@vueuse/core'
 import { get } from 'lodash-es'
 import { useMessage } from 'naive-ui'
@@ -7,6 +8,7 @@ export interface UseTableColumnCopyProps {
 }
 
 export function useTableColumnCopy() {
+  const { t } = useI18n()
   const message = useMessage()
   const { copy } = useClipboard()
 
@@ -28,7 +30,7 @@ export function useTableColumnCopy() {
                   <div
                     class="cursor-pointer i-tabler:copy size-4 text-muted hover:text-primary"
                     onClick={() => {
-                      copy(value).then(() => message.success('复制成功')).catch(() => message.error('复制失败'))
+                      copy(value).then(() => message.success(t('hooks.table.copySuccess') as string)).catch(() => message.error(t('hooks.table.copyFailed') as string))
                     }}
                   />
                 </div>

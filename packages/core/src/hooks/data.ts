@@ -107,7 +107,7 @@ export function useInfiniteList(params: IInfiniteListParams) {
   const providerName = params.providerName || 'default'
   const { mutate: onAuthError } = useError()
 
-  const pagination = toRef(params.pagination || { page: 1, pageSize: 20 })
+  const pagination = toRef(params, 'pagination', { page: 1, pageSize: 20 })
 
   const props = computed((): IDataProviderListOptions => {
     const { onError, options, pagination, ...rest } = params
@@ -115,9 +115,6 @@ export function useInfiniteList(params: IInfiniteListParams) {
   })
 
   watch(props, () => {
-    if (!params.pagination) {
-      return
-    }
     pagination.value.page = 1
   }, {
     deep: true,
@@ -144,18 +141,25 @@ export function useInfiniteList(params: IInfiniteListParams) {
       if (!lastPage?.data || lastPage?.data?.length === 0) {
         return undefined
       }
-      const total = manage.config?.dataProvider?.[providerName]?.getTotal?.(lastPage) || 0
-      pageCount.value = Math.ceil(total / (pagination.value.pageSize || 20)) || 0
-      total.value = total
+
+      const resTotal = manage.config?.dataProvider?.[providerName]?.getTotal?.(lastPage) || 0
+      pageCount.value = Math.ceil(resTotal / (pagination.value.pageSize || 20)) || 0
+      total.value = resTotal
+
+      const currentTotal = lastPageParam * (pagination.value.pageSize || 20)
+      if (currentTotal >= resTotal) {
+        return undefined
+      }
+
       return lastPageParam + 1
     },
     getPreviousPageParam: (firstPage, _allPages, firstPageParam) => {
       if (firstPageParam <= 1) {
         return undefined
       }
-      const total = manage.config?.dataProvider?.[providerName]?.getTotal?.(firstPage) || 0
-      pageCount.value = Math.ceil(total / (pagination.value.pageSize || 20)) || 0
-      total.value = total
+      const resTotal = manage.config?.dataProvider?.[providerName]?.getTotal?.(firstPage) || 0
+      pageCount.value = Math.ceil(resTotal / (pagination.value.pageSize || 20)) || 0
+      total.value = resTotal
       return firstPageParam - 1
     },
     ...params.options,
@@ -179,11 +183,25 @@ export function useInfiniteList(params: IInfiniteListParams) {
 
   const data = ref<IDataProviderResponse | undefined>(undefined)
   watch(req.data, (v) => {
-    if (!v) {
+    if (!v?.pages || v.pages.length === 0) {
       return
     }
-    data.value = v
+    const allData = v.pages.reduce((acc, page) => {
+      if (page?.data && page.data.length > 0) {
+        return acc.concat(page.data)
+      }
+      return acc
+    }, [] as any[])
+
+    const firstPage = v.pages[0]
+    if (firstPage) {
+      data.value = {
+        ...firstPage,
+        data: allData,
+      }
+    }
   }, {
+    deep: true,
     immediate: true,
   })
 

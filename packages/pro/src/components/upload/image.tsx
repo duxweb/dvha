@@ -1,11 +1,11 @@
 import type { PropType } from 'vue'
-import { useI18n, useUpload } from '@duxweb/dvha-core'
+import { useI18n, useManage, useUpload } from '@duxweb/dvha-core'
 import { useVModel } from '@vueuse/core'
 import clsx from 'clsx'
 import { NButton, NImage, NProgress, useMessage } from 'naive-ui'
 import { computed, defineComponent, watch } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
-import { useImagePreview } from '../../hooks'
+import { useImagePreview, useModal } from '../../hooks'
 
 export const DuxImageUpload = defineComponent({
   name: 'DuxImageUpload',
@@ -14,8 +14,14 @@ export const DuxImageUpload = defineComponent({
       type: String,
       default: 'upload',
     },
+    managePath: {
+      type: String,
+      default: '',
+    },
     maxNum: Number,
+    maxSize: Number,
     multiple: Boolean,
+    manager: Boolean,
     value: [String, Array<string>],
     defaultValue: [String, Array<string>],
     onUpdateValue: Function as PropType<(value?: string | string[]) => void>,
@@ -35,16 +41,23 @@ export const DuxImageUpload = defineComponent({
       container: 'flex gap-2',
       imageItem: 'size-80px rounded border border-muted relative group draggable flex items-center',
       imageOverlay: 'z-1 size-full inset-0 absolute flex items-center justify-center bg-default/80 transition-all opacity-0 group-hover:opacity-100 rounded',
-      uploadArea: 'size-80px text-sm rounded flex flex-col border border-dashed bg-elevated border-muted dark:border-accented hover:bg-accented/50 hover:border-accented dark:hover:bg-accented/50 dark:hover:border-accented cursor-pointer',
+      uploadArea: 'relative size-80px text-sm rounded flex flex-col border border-dashed bg-elevated border-muted dark:border-accented hover:bg-accented/50 hover:border-accented dark:hover:bg-accented/50 dark:hover:border-accented cursor-pointer',
       uploadContent: 'flex-1 flex flex-col justify-center items-center gap-1 relative',
       progressContainer: 'size-80px flex items-center justify-center rounded',
       progressBar: 'absolute left-2 right-2 bottom-2',
     }
 
+    const manage = useManage()
+
+    const maxSize = computed(() => props.maxSize || 5)
+    const uploadPath = computed(() => props.path || manage.config?.apiPath?.upload)
+    const managePath = computed(() => props.managePath || manage.config?.apiPath?.uploadManage)
+
     const upload = useUpload({
-      path: props.path,
+      path: uploadPath.value,
       multiple: props.multiple,
       maxFileCount: props.maxNum,
+      maxFileSize: maxSize.value * 1024 * 1024,
       autoUpload: true,
       accept: 'image/*',
       onError: (error) => {
@@ -78,6 +91,8 @@ export const DuxImageUpload = defineComponent({
       return upload.dataFiles.value?.map(file => file.url as string)
     })
 
+    const modal = useModal()
+
     return () => (
       <div>
         <VueDraggable
@@ -87,7 +102,7 @@ export const DuxImageUpload = defineComponent({
           draggable=".draggable"
         >
           {upload.uploadFiles.value?.map((file, index) => {
-            const url = file.data?.data?.url || URL.createObjectURL(file.file as File)
+            const url = file.url || URL.createObjectURL(file.file as File)
             return (
               <div
                 key={index}
@@ -132,6 +147,35 @@ export const DuxImageUpload = defineComponent({
                 handleFileChange()
               }}
             >
+              {props.manager && (
+                <div
+                  class=" py-1 text-xs bg-muted border-b border-dashed border-accented flex items-center justify-center"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    modal.show({
+                      title: t('components.upload.title'),
+                      width: '800px',
+                      component: () => import('./manager'),
+                      componentProps: {
+                        path: managePath.value,
+                        type: 'image',
+                        multiple: props.multiple,
+                        uploadParams: {
+                          path: uploadPath.value,
+                          accept: 'image/*',
+                          maxNum: props.maxNum,
+                          maxSize: props.maxSize,
+                        },
+                      },
+                    }).then((value: Record<string, any>[]) => {
+                      upload.addDataFiles(value)
+                    })
+                  }}
+                >
+                  <div class="i-tabler:folder size-4"></div>
+                </div>
+              )}
+
               <div class={styles.uploadContent}>
                 {isUploading.value
                   ? (

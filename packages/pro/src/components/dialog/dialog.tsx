@@ -3,7 +3,7 @@ import type { PropType } from 'vue'
 import { useI18n, useJsonSchema } from '@duxweb/dvha-core'
 import { useExtendOverlay } from '@overlastic/vue'
 import { NButton, NForm, NModal } from 'naive-ui'
-import { defineComponent, h, reactive } from 'vue'
+import { defineComponent, h, reactive, ref } from 'vue'
 
 export default defineComponent({
   name: 'DuxDialog',
@@ -12,6 +12,7 @@ export default defineComponent({
     content: String,
     type: String as PropType<'confirm' | 'success' | 'error' | 'prompt' | 'node'>,
     formSchema: Array as PropType<JsonSchemaData>,
+    defaultValue: Object as PropType<Record<string, any>>,
     render: Function,
   },
   setup(props) {
@@ -49,8 +50,15 @@ export default defineComponent({
       data.button = 'primary'
     }
 
+    const form = ref<Record<string, any>>({
+      ...props.defaultValue,
+    })
+
     const { render } = useJsonSchema({
       data: props.formSchema || [],
+      context: {
+        form: form.value,
+      },
     })
 
     return () => (
@@ -59,6 +67,12 @@ export default defineComponent({
         show={visible.value}
         onAfterLeave={() => {
           vanish()
+        }}
+        onClose={() => {
+          reject()
+        }}
+        onEsc={() => {
+          reject()
         }}
         role="dialog"
         aria-modal="true"
@@ -133,7 +147,7 @@ export default defineComponent({
                   aria-label={t('components.button.confirm')}
                   type={data.button as any}
                   onClick={() => {
-                    resolve()
+                    resolve(form.value)
                   }}
                 >
                   {t('components.button.confirm')}

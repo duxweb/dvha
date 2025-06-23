@@ -1,4 +1,5 @@
 import type { PropType } from 'vue'
+import { useI18n } from '@duxweb/dvha-core'
 import { NScrollbar } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
 import { DuxCard } from '../card'
@@ -27,7 +28,7 @@ export const DuxStatsRealTime = defineComponent({
   props: {
     title: {
       type: String,
-      default: '实时数据',
+      default: '',
     },
     subtitle: {
       type: String,
@@ -43,16 +44,42 @@ export const DuxStatsRealTime = defineComponent({
     },
   },
   setup(props) {
+    const { t } = useI18n()
+
+    const computedTitle = computed(() => {
+      return props.title || t('components.stats.realTimeData')
+    })
+
     const computedCharts = computed(() => {
       if (props.charts.length === 1) {
         return props.charts.map(chart => ({
           ...chart,
           class: 'col-span-2',
+          chartOption: {
+            showXAxisLabel: true,
+            labels: chart.labels,
+            data: [
+              {
+                name: chart.title,
+                data: chart.data,
+              },
+            ],
+          },
         }))
       }
       return props.charts.map(chart => ({
         ...chart,
         class: 'col-span-1',
+        chartOption: {
+          showXAxisLabel: true,
+          labels: chart.labels,
+          data: [
+            {
+              name: chart.title,
+              data: chart.data,
+            },
+          ],
+        },
       }))
     })
 
@@ -64,7 +91,7 @@ export const DuxStatsRealTime = defineComponent({
     }
 
     return () => (
-      <DuxCard title="实时数据">
+      <DuxCard title={computedTitle.value}>
         {{
           headerExtra: () => (
             <div class="text-sm text-muted">
@@ -130,16 +157,7 @@ export const DuxStatsRealTime = defineComponent({
                           type="line"
                           height="100px"
                           min={true}
-                          option={{
-                            showXAxisLabel: true,
-                            labels: chart.labels,
-                            data: [
-                              {
-                                name: chart.title,
-                                data: chart.data,
-                              },
-                            ],
-                          }}
+                          option={chart.chartOption}
                         />
                       </div>
                     </div>

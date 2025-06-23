@@ -8,7 +8,7 @@ export const DuxAvatar = defineComponent({
   extends: NAvatar,
   setup(props) {
     return () => {
-      const sizeClass = `size-${props.size}px`
+      const sizeClass = `size-${props.size}px rounded-full`
 
       const image = (
         <svg viewBox="0 0 100 100" class={sizeClass}>

@@ -9,7 +9,6 @@ export const DuxModal = defineComponent({
   props: {
     title: {
       type: String,
-      default: '',
     },
     component: {
       type: [Function, Object] as PropType<AsyncComponentLoader<any> | Component>,
@@ -47,8 +46,14 @@ export const DuxModal = defineComponent({
         onAfterLeave={() => {
           vanish()
         }}
+        onClose={() => {
+          reject()
+        }}
+        onEsc={() => {
+          reject()
+        }}
         draggable={props.draggable}
-        class="bg-white rounded dark:shadow-gray-950/80  dark:bg-gray-900/90 backdrop-blur"
+        class="bg-white rounded dark:shadow-gray-950/80  dark:bg-gray-800/60 backdrop-blur"
         role="dialog"
         aria-modal="true"
         {...props.modalProps}
@@ -61,12 +66,12 @@ export const DuxModal = defineComponent({
                 'max-w-full shadow-lg',
               ]}
               style={{
-                width: `${props.width}px`,
+                width: typeof props.width === 'number' ? `${props.width}px` : props.width,
               }}
             >
               <Suspense>
                 {{
-                  default: () => <Page {...params} handle={draggableClass} />,
+                  default: () => <Page {...params} title={props.title} handle={draggableClass} />,
                   fallback: () => (
                     <NSpin show>
                       <div class="h-100"></div>

@@ -9,7 +9,8 @@
     "back": "Back",
     "loading": "Loading...",
     "success": "Success",
-    "error": "Error"
+    "error": "Error",
+    "unknownError": "Unknown error"
   },
   "components": {
     "tab": {
@@ -52,7 +53,11 @@
       "autoRefresh": "Auto Refresh",
       "filter": "Filter",
       "refresh": "Refresh",
-      "select": "Select"
+      "select": "Select",
+      "create": "Create",
+      "download": "Download",
+      "rename": "Rename",
+      "preview": "Preview"
     },
     "form": {
       "edit": "Edit",
@@ -79,6 +84,9 @@
       "allFormats": "Support any format files",
       "supportFormats": "Support {formats} format files",
       "maxSize": "Max file size: {size}MB",
+      "success": "Upload success",
+      "failed": "Upload failed",
+      "fileExtension": "{ext} file",
       "status": {
         "pending": "Pending",
         "uploading": "Uploading",
@@ -93,6 +101,69 @@
         "status": "Status"
       },
       "actions": "Actions"
+    },
+    "uploadManage": {
+      "title": "File Manager",
+      "all": "All",
+      "image": "Images",
+      "media": "Media",
+      "docs": "Documents",
+      "upload": "Upload",
+      "empty": "No files",
+      "back": "Back to parent",
+      "parentLevel": "Parent Level",
+      "namePlaceholder": "Please enter name",
+      "createError": "Create failed",
+      "editError": "Edit failed",
+      "delError": "Delete failed",
+      "delTitle": "Confirm Delete",
+      "delDesc": "Are you sure you want to delete the selected files? This action cannot be undone."
+    },
+    "crop": {
+      "title": "Crop",
+      "select": "Select",
+      "confirm": "Confirm"
+    },
+    "stats": {
+      "realTimeData": "Real-time Data"
+    },
+    "data": {
+      "selectTitle": "Please select data"
+    },
+    "menu": {
+      "language": "Language",
+      "chinese": "中文",
+      "english": "English",
+      "color": "Color",
+      "primaryColor": "Primary Color",
+      "neutralColor": "Neutral Color",
+      "theme": "Theme",
+      "followSystem": "Follow System",
+      "lightMode": "Light",
+      "darkMode": "Dark",
+      "logout": "Logout"
+    }
+  },
+  "hooks": {
+    "table": {
+      "exportSuccess": "Export data successfully",
+      "exportProgress": "Exporting data, please wait...",
+      "exportFailed": "Export data failed",
+      "exportSuccessContent": "Successfully exported {count} records",
+      "exportProgressContent": "Page {page} data",
+      "exportFailedContent": "Export data failed: {error}",
+      "importSuccess": "Import data successfully",
+      "importProgress": "Importing data, please wait...",
+      "importFailed": "Import data failed",
+      "importSuccessContent": "Successfully imported {count} records",
+      "importProgressContent": "{processed} / {total} records",
+      "importFailedContent": "Import data failed: {error}",
+      "saveSuccess": "Save successfully",
+      "copySuccess": "Copy successfully",
+      "copyFailed": "Copy failed"
+    },
+    "download": {
+      "failed": "Download failed"
     }
   },
   "pages": {

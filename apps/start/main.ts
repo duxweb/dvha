@@ -1,12 +1,14 @@
 import type { IConfig } from '@duxweb/dvha-core'
 import { createDux, i18nProvider, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
-import { createDuxPro, DuxApp, DuxAuthLayout, DuxLayout, DuxLoginPage, DuxPage404, DuxPage500, DuxPageLoading, enUS, zhCN } from '@duxweb/dvha-pro'
-import NaiveUI from 'naive-ui'
+import * as DuxPro from '@duxweb/dvha-pro'
+import * as NaiveUI from 'naive-ui'
 import { createApp } from 'vue'
 
-// import '@duxweb/dvha-pro/style.css'
+import '@duxweb/dvha-pro/style.css'
 
-import '@duxweb/dvha-pro/theme/style.scss'
+// import '@duxweb/dvha-pro/theme/style.scss'
+
+const { createDuxPro, DuxApp, DuxAuthLayout, DuxLayout, DuxLoginPage, DuxPage404, DuxPage500, DuxPageLoading, enUS, zhCN } = DuxPro
 
 const app = createApp(DuxApp)
 
@@ -128,6 +130,13 @@ const config: IConfig = {
           parent: 'example.form',
         },
         {
+          name: 'interaction',
+          path: 'interaction',
+          icon: 'i-tabler:chart-bar',
+          label: '交互',
+          component: () => import('./pages/interaction.vue'),
+        },
+        {
           name: 'chart',
           path: 'chart',
           icon: 'i-tabler:chart-bar',
@@ -174,18 +183,16 @@ const config: IConfig = {
       'en-US': enUS,
     },
   }),
-  // remote: {
-  //   packages: {
-  //     'naive-ui': NaiveUI,
-  //     '@duxweb/dvha-pro': createDuxPro(),
-  //   },
-  // },
+  remote: {
+    packages: {
+      'naive-ui': NaiveUI,
+      '@duxweb/dvha-pro': DuxPro,
+    },
+  },
 }
 
-// 先安装 Dux (包含 Pinia 初始化)
 app.use(createDux(config))
 
-// 然后安装其他插件
 app.use(NaiveUI)
 app.use(createDuxPro())
 

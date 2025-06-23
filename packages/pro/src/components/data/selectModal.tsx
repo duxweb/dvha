@@ -62,7 +62,7 @@ const Select = defineComponent({
 
     return () => (
       <DuxModalPage
-        title="请选择数据"
+        title={t('components.data.selectTitle')}
         onClose={() => {
           props.onClose?.()
         }}

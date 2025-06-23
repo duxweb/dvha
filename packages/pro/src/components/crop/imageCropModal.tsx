@@ -1,3 +1,4 @@
+import { useI18n } from '@duxweb/dvha-core'
 import { useFileDialog } from '@vueuse/core'
 import { NButton } from 'naive-ui'
 import { defineComponent, ref, watch } from 'vue'
@@ -10,6 +11,7 @@ export const DuxImageCropModal = defineComponent({
     onConfirm: Function,
   },
   setup(props) {
+    const { t } = useI18n()
     const cropper = ref<any>()
 
     const value = ref(props.value || '')
@@ -31,7 +33,7 @@ export const DuxImageCropModal = defineComponent({
     }
 
     return () => (
-      <DuxModalPage title="裁剪">
+      <DuxModalPage title={t('components.crop.title')}>
         {{
           default: () => (
             <div class="h-100">
@@ -58,7 +60,7 @@ export const DuxImageCropModal = defineComponent({
                     onSelect()
                   }}
                 >
-                  选择
+                  {t('components.crop.select')}
                 </NButton>
 
                 <NButton
@@ -106,7 +108,7 @@ export const DuxImageCropModal = defineComponent({
                   })
                 }}
               >
-                确认
+                {t('components.crop.confirm')}
               </NButton>
             </div>
           ),

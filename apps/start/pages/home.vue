@@ -51,6 +51,16 @@ const orderTrendData = ref({
   ],
 })
 
+// 图表配置对象
+const chartOption = computed(() => ({
+  labels: orderTrendData.value.labels,
+  data: orderTrendData.value.data,
+  showLegend: true,
+  showGrid: true,
+  showXAxisLabel: true,
+  showYAxisLabel: true,
+}))
+
 // 销售统计数据
 const salesStats = ref([
   {
@@ -406,14 +416,7 @@ function getChangeIndicator(change: number, changeType: 'up' | 'down') {
             <DuxChart
               type="bar"
               height="320px"
-              :option="{
-                labels: orderTrendData.labels,
-                data: orderTrendData.data,
-                showLegend: true,
-                showGrid: true,
-                showXAxisLabel: true,
-                showYAxisLabel: true,
-              }"
+              :option="chartOption"
             />
           </div>
         </DuxCard>

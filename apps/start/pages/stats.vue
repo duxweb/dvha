@@ -368,7 +368,7 @@ onMounted(() => {
                     :value="stat.value"
                     :subtitle="stat.subtitle"
                     :change="stat.change"
-                    :change-type="stat.changeType"
+                    :change-type="stat.changeType as any"
                   />
                 </div>
               </NScrollbar>

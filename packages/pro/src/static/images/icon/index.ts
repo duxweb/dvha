@@ -1,0 +1,8 @@
+export * as audioSvg from './audio.svg'
+export * as excelSvg from './excel.svg'
+export * as fileSvg from './file.svg'
+export * as folderSvg from './folder.svg'
+export * as pdfSvg from './pdf.svg'
+export * as pptSvg from './ppt.svg'
+export * as videoSvg from './video.svg'
+export * as wordSvg from './word.svg'

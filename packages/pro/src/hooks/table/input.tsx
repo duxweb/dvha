@@ -1,6 +1,7 @@
 import type { Component, PropType } from 'vue'
 import type { UseTableColumnProps } from './column'
 import { useCustomMutation } from '@duxweb/dvha-core'
+import { useI18n } from '@duxweb/dvha-core'
 import { get } from 'lodash-es'
 import { NButton, NInput, useMessage } from 'naive-ui'
 import { defineComponent, h, ref } from 'vue'
@@ -25,6 +26,7 @@ const TableColumnInput = defineComponent({
     },
   },
   setup(props) {
+    const { t } = useI18n()
     const isEditing = ref(false)
     const inputValue = ref('')
 
@@ -39,7 +41,7 @@ const TableColumnInput = defineComponent({
           [props.field]: v,
         },
       }).then(() => {
-        message.success('保存成功')
+        message.success(t('hooks.table.saveSuccess') as string)
       }).catch((e) => {
         message.error(e.message)
       })

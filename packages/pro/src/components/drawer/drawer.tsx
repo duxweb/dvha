@@ -44,7 +44,9 @@ export default defineComponent({
         onAfterLeave={() => {
           vanish()
         }}
-        class=""
+        onEsc={() => {
+          reject()
+        }}
       >
         <div class="h-full flex flex-col">
           <div class="flex justify-between items-center px-4 py-3 border-b border-default">

@@ -425,7 +425,6 @@ export function useUpload(props?: IUseUploadProps) {
         throw new Error('Single file mode: only one file can be selected')
       }
 
-      // 单文件模式下，添加新文件前先清空已有文件
       if (!props.multiple && uploadFiles.value.length > 0) {
         clearFiles()
       }
@@ -535,6 +534,10 @@ export function useUpload(props?: IUseUploadProps) {
 
   // add data files to upload list
   const addDataFiles = (dataFiles: IUseUploadFileData[]) => {
+    if (!props.multiple && uploadFiles.value.length > 0) {
+      clearFiles()
+    }
+
     const newUploadFiles = dataFiles.map(fileData => createFileFromData(fileData))
     uploadFiles.value.push(...newUploadFiles)
   }

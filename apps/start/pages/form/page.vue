@@ -1,13 +1,31 @@
 <script setup lang="ts">
 import { DuxSelect, DuxTreeSelect } from '@duxweb/dvha-naiveui'
-import { DuxAiEditor, DuxCard, DuxDynamicData, DuxDynamicSelect, DuxFileUpload, DuxFormItem, DuxFormLayout, DuxImageCrop, DuxImageUpload, DuxLevel, DuxPageForm, DuxSelectCard } from '@duxweb/dvha-pro'
-import { NInput, NInputNumber, NSelect } from 'naive-ui'
+// @ts-expect-error - DuxFileManage 组件导入
+import { DuxAiEditor, DuxCard, DuxDynamicData, DuxDynamicSelect, DuxFileManage, DuxFileUpload, DuxFormItem, DuxFormLayout, DuxImageCrop, DuxImageUpload, DuxLevel, DuxPageForm, DuxSelectCard, useDownload } from '@duxweb/dvha-pro'
+import { NButton, NInput, NInputNumber, NProgress, NSelect } from 'naive-ui'
 import { ref } from 'vue'
 
 // Props 定义
 const props = defineProps<{
   id?: string | number
 }>()
+
+// 下载功能
+const { file: downloadFile, loading: downloadLoading, progress: downloadProgress } = useDownload()
+
+// 下载示例函数
+function handleDownload() {
+  // 这里使用一个示例下载地址，实际使用时替换为真实的API路径
+  downloadFile(
+    'files/sample.pdf', // API路径
+    { version: '1.0' }, // 查询参数
+    undefined, // 内容类型（自动检测）
+    'sample-document.pdf', // 自定义文件名
+    (progress) => {
+      downloadProgress.value = progress
+    },
+  )
+}
 
 // 表单数据模型
 const model = ref({
@@ -19,13 +37,13 @@ const model = ref({
   // 上传组件
   avatar: '',
   images: [],
-  files: [],
+  files: [] as any[],
 
   // 编辑器
   description: '<p>这是富文本编辑器的示例内容，支持 AI 辅助编辑功能。</p><p>你可以尝试各种富文本格式。</p>',
 
   // 卡片选择
-  cardSelect: 'basic',
+  cardSelect: null as string | null,
 
   // 动态数据
   tableData: [
@@ -257,12 +275,14 @@ const userTableColumns = [
                 multiple
                 :max="5"
                 path="upload"
+                manager
               />
             </DuxFormItem>
 
             <DuxFormItem label="文件上传" path="files">
               <DuxFileUpload
                 v-model:value="model.files"
+                manager
                 multiple
                 :max="3"
                 accept="*"
@@ -353,6 +373,67 @@ const userTableColumns = [
               />
             </DuxFormItem>
           </DuxFormLayout>
+        </div>
+      </DuxCard>
+
+      <!-- 下载进度演示 -->
+      <DuxCard
+        title="下载进度演示"
+        description="展示带进度条的文件下载功能"
+        header-bordered
+      >
+        <div class="container mx-auto max-w-2xl">
+          <DuxFormLayout label-placement="top" class="space-y-4">
+            <DuxFormItem label="文件下载">
+              <div class="space-y-4">
+                <div class="flex items-center gap-4">
+                  <NButton
+                    type="primary"
+                    :loading="downloadLoading"
+                    @click="handleDownload"
+                  >
+                    {{ downloadLoading ? '下载中...' : '下载示例文件' }}
+                  </NButton>
+
+                  <div v-if="downloadLoading" class="text-sm text-muted">
+                    {{ downloadProgress.speedText }} | 剩余 {{ Math.round(downloadProgress.remainingTime || 0) }}s
+                  </div>
+                </div>
+
+                <div v-if="downloadLoading || downloadProgress.percent > 0" class="space-y-2">
+                  <div class="flex justify-between text-sm">
+                    <span>下载进度</span>
+                    <span>{{ downloadProgress.percent?.toFixed(1) }}%</span>
+                  </div>
+                  <NProgress
+                    :percentage="downloadProgress.percent || 0"
+                    :show-indicator="false"
+                    status="success"
+                  />
+                  <div class="flex justify-between text-xs text-muted">
+                    <span>{{ downloadProgress.speedText }}</span>
+                  </div>
+                </div>
+              </div>
+            </DuxFormItem>
+          </DuxFormLayout>
+        </div>
+      </DuxCard>
+
+      <!-- 文件管理器组件 -->
+      <DuxCard
+        title="文件管理器组件"
+        description="展示文件管理功能"
+        header-bordered
+      >
+        <div class="container mx-auto max-w-4xl">
+          <DuxFileManage
+            v-model:value="model.files"
+            :page="false"
+            :max="3"
+            accept="*"
+            path="uploadManage"
+          />
         </div>
       </DuxCard>
 

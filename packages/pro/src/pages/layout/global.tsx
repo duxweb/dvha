@@ -3,7 +3,7 @@ import { useI18n, useTheme } from '@duxweb/dvha-core'
 import { setLocale } from '@vee-validate/i18n'
 import { hex2hsl } from 'colorizr'
 import { registerTheme } from 'echarts'
-import { darkTheme, dateEnUS, dateZhCN, enUS, lightTheme, NConfigProvider, NMessageProvider, NModalProvider, NNotificationProvider, useLoadingBar, zhCN } from 'naive-ui'
+import { darkTheme, dateEnUS, dateZhCN, enUS, lightTheme, NConfigProvider, NDialogProvider, NMessageProvider, NModalProvider, NNotificationProvider, useLoadingBar, zhCN } from 'naive-ui'
 import { computed, defineComponent, inject, onBeforeMount, onMounted, watch } from 'vue'
 import { generateRainbowFromColor, getTheme } from '../../config'
 import { themeOverrides } from '../../theme'
@@ -67,11 +67,13 @@ export const DuxGlobalLayout = defineComponent({
     return () => (
       <NConfigProvider locale={locale.value} dateLocale={dateLocale.value} theme={isDark.value ? darkTheme : lightTheme} themeOverrides={isDark.value ? darkThemeOverrides.value : lightThemeOverrides.value}>
         <NModalProvider>
-          <NNotificationProvider>
-            <NMessageProvider>
-              {slots.default?.()}
-            </NMessageProvider>
-          </NNotificationProvider>
+          <NDialogProvider>
+            <NNotificationProvider>
+              <NMessageProvider>
+                {slots.default?.()}
+              </NMessageProvider>
+            </NNotificationProvider>
+          </NDialogProvider>
         </NModalProvider>
       </NConfigProvider>
     )

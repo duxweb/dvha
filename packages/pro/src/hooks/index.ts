@@ -1,5 +1,6 @@
 export * from './action'
 export * from './dialog'
+export * from './download'
 export * from './drawer'
 export * from './echart'
 export * from './image'
