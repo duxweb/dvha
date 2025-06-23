@@ -14,7 +14,7 @@ import {
   useDialog as useNaiveDialog,
   useNotification,
 } from 'naive-ui'
-import { h, markRaw } from 'vue'
+import { h } from 'vue'
 
 // 基础数据（已删除不使用的变量）
 
@@ -146,14 +146,14 @@ function showPromptDialog() {
       {
         name: 'username',
         label: '用户名',
-        tag: markRaw(NInput),
+        tag: NInput,
         required: true,
         placeholder: '请输入用户名',
       },
       {
         name: 'email',
         label: '邮箱',
-        tag: markRaw(NInput),
+        tag: NInput,
         required: true,
         placeholder: '请输入邮箱地址',
       },

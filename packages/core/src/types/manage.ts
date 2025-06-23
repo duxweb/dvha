@@ -1,5 +1,7 @@
+import type { Component } from 'vue'
 import type { Options } from 'vue3-sfc-loader'
 import type { RouteRecordRaw } from 'vue-router'
+import type { IJsonAdaptor } from '../hooks'
 import type { IAuthProvider } from './auth'
 import type { IConfigComponent } from './config'
 import type { IDataProvider } from './data'
@@ -41,6 +43,12 @@ export interface IManage {
     packages?: Options
     apiMethod?: string
     apiRoutePath?: string | ((path: string) => string)
+  }
+
+  // 全局 JSON Schema 配置
+  jsonSchema?: {
+    adaptors?: IJsonAdaptor[]
+    components?: Record<string, Component> | Component[]
   }
 
   [key: string]: any

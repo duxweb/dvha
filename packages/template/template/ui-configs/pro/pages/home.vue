@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { DuxCard, DuxChart, DuxDashboardQuick } from '@duxweb/dvha-pro'
-import { NButton, NGi, NGrid } from 'naive-ui'
+import { DuxCard } from '@duxweb/dvha-pro'
 import { computed, ref } from 'vue'
 
 // 基本统计数据
@@ -37,11 +36,11 @@ const chartData = computed(() => ({
 </script>
 
 <template>
-  <div class="p-6 space-y-6">
+  <div class="space-y-4">
     <!-- 欢迎区域 -->
     <DuxCard>
       <div class="text-center py-8">
-        <div class="i-tabler:brand-vue text-6xl text-blue-600 mx-auto mb-6" />
+        <div class="i-tabler:brand-vue text-4xl text-blue-600 mx-auto mb-4" />
         <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
           欢迎使用 Dux Pro
         </h1>
@@ -51,49 +50,23 @@ const chartData = computed(() => ({
       </div>
     </DuxCard>
 
-    <!-- 统计卡片 -->
-    <NGrid :cols="3" :x-gap="16">
-      <NGi v-for="item in stats" :key="item.label">
-        <DuxDashboardQuick
-          :label="item.label"
-          :icon="item.icon"
-          :value="item.value"
-        />
-      </NGi>
-    </NGrid>
-
-    <!-- 图表区域 -->
-    <DuxCard>
-      <template #header>
-        <div class="flex items-center justify-between">
-          <h3 class="text-lg font-semibold">
-            数据概览
-          </h3>
-          <NButton size="small" type="primary">
-            查看详情
-          </NButton>
-        </div>
-      </template>
-      <DuxChart :option="chartData" style="height: 300px;" />
-    </DuxCard>
-
     <!-- Dux Pro 特性展示 -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
       <DuxCard>
         <div class="text-center p-4">
-          <div class="i-tabler:components text-4xl text-purple-600 mb-4" />
+          <div class="i-tabler:components text-4xl text-purple-600 mb-6 mx-auto" />
           <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            丰富组件
+            远程渲染
           </h3>
           <p class="text-gray-600 dark:text-gray-300 text-sm">
-            提供丰富的业务组件，快速构建管理后台
+            支持字符串渲染为 Vue 页面，远程组件动态加载
           </p>
         </div>
       </DuxCard>
 
       <DuxCard>
         <div class="text-center p-4">
-          <div class="i-tabler:chart-bar text-4xl text-green-600 mb-4" />
+          <div class="i-tabler:chart-bar text-4xl text-green-600 mb-6 mx-auto" />
           <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
             数据可视化
           </h3>
@@ -105,54 +78,91 @@ const chartData = computed(() => ({
 
       <DuxCard>
         <div class="text-center p-4">
-          <div class="i-tabler:layout-dashboard text-4xl text-blue-600 mb-4" />
+          <div class="i-tabler:layout-dashboard text-4xl text-blue-600 mb-6 mx-auto" />
           <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            页面布局
+            动态渲染
           </h3>
           <p class="text-gray-600 dark:text-gray-300 text-sm">
-            灵活的布局组件，适应各种业务场景
+            页面布局支持动态渲染，运行时 UnoCSS 样式生成
+          </p>
+        </div>
+      </DuxCard>
+
+      <DuxCard>
+        <div class="text-center p-4">
+          <div class="i-tabler:forms text-4xl text-orange-600 mb-6 mx-auto" />
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            表单组件
+          </h3>
+          <p class="text-gray-600 dark:text-gray-300 text-sm">
+            强大的表单构建器，支持各种表单验证
+          </p>
+        </div>
+      </DuxCard>
+
+      <DuxCard>
+        <div class="text-center p-4">
+          <div class="i-tabler:table text-4xl text-indigo-600 mb-6 mx-auto" />
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            数据表格
+          </h3>
+          <p class="text-gray-600 dark:text-gray-300 text-sm">
+            功能完整的数据表格，支持排序、筛选、分页
+          </p>
+        </div>
+      </DuxCard>
+
+      <DuxCard>
+        <div class="text-center p-4">
+          <div class="i-tabler:palette text-4xl text-pink-600 mb-6 mx-auto" />
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            主题定制
+          </h3>
+          <p class="text-gray-600 dark:text-gray-300 text-sm">
+            灵活的主题配置，支持深色模式和自定义色彩
+          </p>
+        </div>
+      </DuxCard>
+
+      <DuxCard>
+        <div class="text-center p-4">
+          <div class="i-tabler:shield-check text-4xl text-red-600 mb-6 mx-auto" />
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            权限管理
+          </h3>
+          <p class="text-gray-600 dark:text-gray-300 text-sm">
+            完善的权限控制系统，角色和权限精细化管理
+          </p>
+        </div>
+      </DuxCard>
+
+      <DuxCard>
+        <div class="text-center p-4">
+          <div class="i-tabler:rocket text-4xl text-cyan-600 mb-6 mx-auto" />
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            高性能
+          </h3>
+          <p class="text-gray-600 dark:text-gray-300 text-sm">
+            基于 Vue 3 构建，享受最新技术带来的性能提升
+          </p>
+        </div>
+      </DuxCard>
+
+      <DuxCard>
+        <div class="text-center p-4">
+          <div class="i-tabler:devices text-4xl text-teal-600 mb-6 mx-auto" />
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            响应式设计
+          </h3>
+          <p class="text-gray-600 dark:text-gray-300 text-sm">
+            完美适配桌面、平板、手机等各种设备
           </p>
         </div>
       </DuxCard>
     </div>
 
-    <!-- 快速操作 -->
-    <DuxCard>
-      <template #header>
-        <h3 class="text-lg font-semibold">
-          快速操作
-        </h3>
-      </template>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <NButton block type="primary">
-          <template #icon>
-            <div class="i-tabler:plus" />
-          </template>
-          创建订单
-        </NButton>
-        <NButton block>
-          <template #icon>
-            <div class="i-tabler:users" />
-          </template>
-          用户管理
-        </NButton>
-        <NButton block>
-          <template #icon>
-            <div class="i-tabler:chart-bar" />
-          </template>
-          数据统计
-        </NButton>
-        <NButton block>
-          <template #icon>
-            <div class="i-tabler:settings" />
-          </template>
-          系统设置
-        </NButton>
-      </div>
-    </DuxCard>
-
     <!-- 开始使用 -->
-    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 rounded-lg border p-8 text-center">
+    <div class="bg-primary-50 dark:bg-primary-950 rounded-lg border border-primary/50 p-8 text-center">
       <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
         开始构建您的 Pro 应用
       </h3>
@@ -162,12 +172,15 @@ const chartData = computed(() => ({
       <div class="flex justify-center space-x-4">
         <a
           href="https://github.com/duxweb/dvha" target="_blank"
-          class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
+          class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium"
         >
           <div class="i-tabler:brand-github mr-2" />
           查看源码
         </a>
-        <a href="#" class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 dark:text-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-sm font-medium">
+        <a
+          href="https://duxweb.dux.plus/dvha/" target="_blank"
+          class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 dark:text-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-sm font-medium"
+        >
           <div class="i-tabler:book mr-2" />
           查看文档
         </a>

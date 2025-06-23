@@ -139,11 +139,29 @@ async function createProject(projectName) {
     fs.copySync(uiPagesDir, targetPagesDir)
   }
 
-  // 2.5. 检查并复制UI特定的main.ts文件（如果存在）
-  const uiMainTsPath = path.resolve(__dirname, '..', 'template', 'ui-configs', template, 'main.ts')
+  // 2.5. 检查并复制UI特定的配置文件（如果存在）
+  const uiConfigDir = path.resolve(__dirname, '..', 'template', 'ui-configs', template)
+
+  // 复制 main.ts
+  const uiMainTsPath = path.join(uiConfigDir, 'main.ts')
   if (fs.existsSync(uiMainTsPath)) {
     const targetMainTsPath = path.join(root, 'main.ts')
     fs.copySync(uiMainTsPath, targetMainTsPath)
+  }
+
+  // 复制 vite.config.ts
+  const uiViteConfigPath = path.join(uiConfigDir, 'vite.config.ts')
+  if (fs.existsSync(uiViteConfigPath)) {
+    const targetViteConfigPath = path.join(root, 'vite.config.ts')
+    fs.copySync(uiViteConfigPath, targetViteConfigPath)
+  }
+
+  // 对于 pro 模板，删除 uno.config.ts（因为不需要 UnoCSS）
+  if (template === 'pro') {
+    const targetUnoConfigPath = path.join(root, 'uno.config.ts')
+    if (fs.existsSync(targetUnoConfigPath)) {
+      fs.removeSync(targetUnoConfigPath)
+    }
   }
 
   // 3. 更新package.json
@@ -165,6 +183,18 @@ async function createProject(projectName) {
         ...pkg.devDependencies,
         ...uiConfig.devDependencies,
       }
+    }
+
+    // 移除排除的依赖
+    if (uiConfig.excludeDependencies && Array.isArray(uiConfig.excludeDependencies)) {
+      uiConfig.excludeDependencies.forEach((dep) => {
+        if (pkg.dependencies && pkg.dependencies[dep]) {
+          delete pkg.dependencies[dep]
+        }
+        if (pkg.devDependencies && pkg.devDependencies[dep]) {
+          delete pkg.devDependencies[dep]
+        }
+      })
     }
 
     fs.writeJsonSync(pkgPath, pkg, { spaces: 2 })

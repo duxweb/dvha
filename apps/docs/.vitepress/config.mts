@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import { MermaidMarkdown, MermaidPlugin, withMermaid } from 'vitepress-plugin-mermaid'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -14,6 +15,10 @@ export default defineConfig({
     editLink: {
       pattern: 'https://github.com/duxweb/dvha/edit/main/apps/docs/:path',
       text: '在 GitHub 上编辑此页',
+    },
+    outline: {
+      level: [1, 2],
+      label: '页面导航',
     },
     nav: [
       { text: '首页', link: '/' },
@@ -31,42 +36,67 @@ export default defineConfig({
             { text: '快速开始', link: '/pro/getting-started' },
             { text: '安装指南', link: '/pro/installation' },
             { text: '配置说明', link: '/pro/configuration' },
+            { text: '页面组件', link: '/pro/pages' },
           ],
         },
-        // {
-        //   text: '组件库',
-        //   items: [
-        //     { text: '布局组件', link: '/pro/components/layout' },
-        //     { text: '表格组件', link: '/pro/components/table' },
-        //     { text: '表单组件', link: '/pro/components/form' },
-        //     { text: '对话框组件', link: '/pro/components/dialog' },
-        //   ],
-        // },
-        // {
-        //   text: 'Hooks',
-        //   items: [
-        //     { text: '表格增强', link: '/pro/hooks/table' },
-        //     { text: '表单处理', link: '/pro/hooks/form' },
-        //     { text: '对话框管理', link: '/pro/hooks/dialog' },
-        //     { text: '操作增强', link: '/pro/hooks/action' },
-        //   ],
-        // },
-        // {
-        //   text: '主题定制',
-        //   items: [
-        //     { text: '主题配置', link: '/pro/theme/config' },
-        //     { text: '颜色系统', link: '/pro/theme/colors' },
-        //     { text: '样式定制', link: '/pro/theme/styles' },
-        //   ],
-        // },
-        // {
-        //   text: '部署运维',
-        //   items: [
-        //     { text: '构建部署', link: '/pro/deploy/build' },
-        //     { text: '环境配置', link: '/pro/deploy/environment' },
-        //     { text: '性能优化', link: '/pro/deploy/optimization' },
-        //   ],
-        // },
+        {
+          text: '教程',
+          items: [
+            { text: '教程总览', link: '/pro/course/' },
+            { text: '快速开始', link: '/pro/course/quick-start' },
+            { text: '第一个页面', link: '/pro/course/start' },
+            { text: '登录与鉴权', link: '/pro/course/login' },
+            { text: '自定义数据接口', link: '/pro/course/api' },
+            { text: '权限管理与路由守卫', link: '/pro/course/permission' },
+            { text: '文件上传与管理', link: '/pro/course/upload' },
+            { text: 'JSON Schema 动态表单', link: '/pro/course/json-schema' },
+            { text: '远程组件与微前端', link: '/pro/course/remote' },
+          ],
+        },
+        {
+          text: '组件库',
+          items: [
+            { text: '组件总览', link: '/pro/components/' },
+            { text: '布局组件', link: '/pro/components/layout' },
+            { text: '表单组件', link: '/pro/components/form' },
+            { text: '表格组件', link: '/pro/components/table' },
+            { text: '对话框组件', link: '/pro/components/dialog' },
+            { text: '抽屉组件', link: '/pro/components/drawer' },
+            { text: '弹窗组件', link: '/pro/components/popup' },
+            { text: '上传组件', link: '/pro/components/upload' },
+            { text: '编辑器组件', link: '/pro/components/editor' },
+            { text: '图表组件', link: '/pro/components/chart' },
+            { text: '数据组件', link: '/pro/components/data' },
+            { text: '媒体组件', link: '/pro/components/media' },
+            { text: '选择组件', link: '/pro/components/select' },
+            { text: '裁剪组件', link: '/pro/components/crop' },
+            { text: '统计组件', link: '/pro/components/stats' },
+            { text: '小部件', link: '/pro/components/widget' },
+            { text: '面板组件', link: '/pro/components/panel' },
+            { text: '状态组件', link: '/pro/components/status' },
+            { text: '层级组件', link: '/pro/components/level' },
+            { text: '列表组件', link: '/pro/components/list' },
+            { text: '卡片组件', link: '/pro/components/card' },
+            { text: '轮播组件', link: '/pro/components/carousel' },
+            { text: '仪表盘组件', link: '/pro/components/dashboard' },
+          ],
+        },
+        {
+          text: 'Hooks',
+          items: [
+            { text: 'Hooks 总览', link: '/pro/hooks/' },
+            { text: '表格 Hooks', link: '/pro/hooks/table' },
+            { text: '操作增强', link: '/pro/hooks/action' },
+            { text: '对话框管理', link: '/pro/hooks/dialog' },
+            { text: '抽屉管理', link: '/pro/hooks/drawer' },
+            { text: '模态框管理', link: '/pro/hooks/modal' },
+            { text: '下载功能', link: '/pro/hooks/download' },
+            { text: '图片处理', link: '/pro/hooks/image' },
+            { text: '层级处理', link: '/pro/hooks/level' },
+            { text: '图表处理', link: '/pro/hooks/echart' },
+            { text: 'UI 工具', link: '/pro/hooks/ui' },
+          ],
+        },
       ],
       '/': [
         {
@@ -177,5 +207,20 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/duxweb/dvha' },
     ],
+  },
+  // Mermaid 配置
+  markdown: {
+    config(md) {
+      md.use(MermaidMarkdown) // add this
+    },
+  },
+  vite: {
+    plugins: [MermaidPlugin()], // add plugins
+    optimizeDeps: { // include mermaid
+      include: ['mermaid'],
+    },
+    ssr: {
+      noExternal: ['mermaid'],
+    },
   },
 })

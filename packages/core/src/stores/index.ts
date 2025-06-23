@@ -1,5 +1,6 @@
 export * from './auth'
 export * from './i18n'
+export * from './jsonSchema'
 export * from './manage'
 export * from './route'
 export * from './tab'

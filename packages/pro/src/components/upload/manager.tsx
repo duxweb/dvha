@@ -2,7 +2,7 @@ import type { PropType } from 'vue'
 import { useClient, useI18n, useInfiniteList, useManage, useUpload } from '@duxweb/dvha-core'
 import { cloneDeep } from 'lodash-es'
 import { NButton, NDropdown, NInfiniteScroll, NInput, NSpin, NTab, NTabs, NTooltip, useMessage } from 'naive-ui'
-import { computed, defineComponent, markRaw, nextTick, ref } from 'vue'
+import { computed, defineComponent, nextTick, ref } from 'vue'
 import { useDialog, useDownload } from '../../hooks'
 import { DuxDrawEmpty } from '../draw'
 import { DuxFileManageItem } from './manage/item'
@@ -168,7 +168,7 @@ const DuxFileManage = defineComponent({
                   title: t('components.uploadManage.namePlaceholder') || '',
                   formSchema: [
                     {
-                      tag: markRaw(NInput),
+                      tag: NInput,
                       attrs: {
                         'v-model:value': 'form.name',
                       },
@@ -348,7 +348,7 @@ const DuxFileManage = defineComponent({
                   title: t('components.uploadManage.namePlaceholder'),
                   formSchema: [
                     {
-                      tag: markRaw(NInput),
+                      tag: NInput,
                       attrs: {
                         'v-model:value': 'form.name',
                       },

@@ -5,7 +5,7 @@ import { OverlaysProvider } from '@overlastic/vue'
 import { defineComponent, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import { DuxError, DuxNotAuthorized, DuxNotFound } from '../components'
-import { useCan, useConfig, useManage } from '../hooks'
+import { initJsonSchemaComponents, useCan, useConfig, useManage } from '../hooks'
 import { useAuthStore, useI18nStore, useRouteStore } from '../stores'
 import { useManageStore } from '../stores/manage'
 
@@ -52,6 +52,9 @@ export const DuxAppProvider = defineComponent({
           manage.config?.i18nProvider.changeLocale(locale)
         }
       }
+
+      // init json schema components
+      initJsonSchemaComponents(config, manageName)
 
       // unlogin handle
       if (!authStore.isLogin()) {

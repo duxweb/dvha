@@ -1,500 +1,622 @@
 # DVHA Pro 版本
 
-## 产品概览
+::: tip 🚀 企业级中后台前端解决方案
+基于 Vue 3 + TypeScript + Naive UI，专为现代化企业应用打造的下一代前端框架
+:::
 
-DVHA Pro 是基于 DVHA 核心框架结合 Naive UI 打造的完整中后台前端系统，为开发者提供开箱即用的管理界面、组件库和最佳实践示例。
+## ✨ 核心特性
 
-## 🔗 仓库信息
+::: info 🎯 五大核心特性
+**JSON 渲染组件** • **远程动态渲染** • **UnoCSS 运行时** • **移动端自适应** • **开箱即用**
+:::
 
-- **GitHub 仓库**: [https://github.com/duxweb/dvha](https://github.com/duxweb/dvha)
-- **NPM 包**: [@duxweb/dvha-pro](https://www.npmjs.com/package/@duxweb/dvha-pro)
-- **当前版本**: v0.0.6
-- **协议**: MIT License
+<div class="features-container">
 
-## 🚀 在线演示
+<div class="feature-item">
+  <div class="feature-card">
+    <div class="feature-icon">🔮</div>
+    <div class="feature-title">JSON 渲染组件</div>
+  </div>
+  <div class="feature-content">
+    <ul>
+      <li>通过 JSON Schema 配置生成 Vue 组件</li>
+      <li>支持复杂的表单、表格、布局渲染</li>
+      <li>配置即界面，无需编写模板代码</li>
+    </ul>
+  </div>
+</div>
 
-🎯 **[立即体验 Pro 版本](https://duxweb.dux.plus/dvha/start/)** - 完整功能演示
+<div class="feature-item">
+  <div class="feature-card">
+    <div class="feature-icon">🌐</div>
+    <div class="feature-title">远程动态渲染</div>
+  </div>
+  <div class="feature-content">
+    <ul>
+      <li>后台输出 Vue 字符串，前端实时渲染</li>
+      <li>运行时热更新，无需重新部署</li>
+      <li>支持完整的 Vue 3 组件语法</li>
+    </ul>
+  </div>
+</div>
 
-### 演示账号
+<div class="feature-item">
+  <div class="feature-card">
+    <div class="feature-icon">⚡</div>
+    <div class="feature-title">UnoCSS 运行时</div>
+  </div>
+  <div class="feature-content">
+    <ul>
+      <li>按需生成 CSS，极致性能优化</li>
+      <li>支持任意 CSS 类名，实时编译</li>
+      <li>完整的暗色模式和主题定制</li>
+    </ul>
+  </div>
+</div>
 
-- **用户名**: 随意输入（例如：admin）
-- **密码**: 随意输入（例如：123456）
+<div class="feature-item">
+  <div class="feature-card">
+    <div class="feature-icon">📱</div>
+    <div class="feature-title">移动端自适应</div>
+  </div>
+  <div class="feature-content">
+    <ul>
+      <li>响应式布局，完美适配各种设备</li>
+      <li>触摸友好的交互体验</li>
+      <li>移动端优化的组件和手势</li>
+    </ul>
+  </div>
+</div>
 
-> 💡 **提示**: 演示环境账号密码可以随意填写，无需真实验证
+<div class="feature-item">
+  <div class="feature-card">
+    <div class="feature-icon">📦</div>
+    <div class="feature-title">开箱即用</div>
+  </div>
+  <div class="feature-content">
+    <ul>
+      <li>50+ 企业级组件库</li>
+      <li>完整的权限和路由系统</li>
+      <li>多租户和国际化支持</li>
+    </ul>
+  </div>
+</div>
 
-### 演示功能
+</div>
 
-- 完整的后台管理界面
-- 用户权限管理系统
-- 数据表格操作示例
-- 表单处理和验证
-- 图表和数据可视化
-- 多语言国际化展示
+<style>
+.features-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin: 2rem 0;
+}
 
-## 📦 安装方式
+.feature-item {
+  display: flex;
+  gap: 2.5rem;
+  align-items: center;
+  min-height: 120px;
+}
 
-### 方式一：使用模板快速创建项目
+.feature-card {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, var(--vp-c-bg-soft) 0%, var(--vp-c-bg-alt) 100%);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 16px;
+  min-width: 320px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
 
-```bash
-# 使用 npm
-npm create @duxweb/dvha@latest my-admin --template pro
+.feature-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-color: var(--vp-c-brand-soft);
+}
 
-# 使用 pnpm (推荐)
-pnpm create @duxweb/dvha@latest my-admin --template pro
+.feature-icon {
+  font-size: 1.8rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--vp-c-brand-1) 0%, var(--vp-c-brand-2) 100%);
+  border-radius: 12px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(var(--vp-c-brand-1), 0.3);
+}
 
-# 使用 yarn
-yarn create @duxweb/dvha@latest my-admin --template pro
+.feature-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  letter-spacing: -0.025em;
+}
+
+.feature-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.feature-content ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: 100%;
+}
+
+.feature-content li {
+  position: relative;
+  margin-bottom: 0.75rem;
+  color: var(--vp-c-text-2);
+  line-height: 1.7;
+  font-size: 0.95rem;
+  padding-left: 1.5rem;
+  transition: color 0.2s ease;
+}
+
+.feature-content li:last-child {
+  margin-bottom: 0;
+}
+
+.feature-content li::before {
+  content: '●';
+  color: var(--vp-c-brand-1);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 0.8rem;
+  line-height: 1.7;
+}
+
+.feature-content li:hover {
+  color: var(--vp-c-text-1);
+}
+
+@media (max-width: 768px) {
+  .feature-item {
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: stretch;
+    min-height: auto;
+  }
+
+  .feature-card {
+    min-width: auto;
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .feature-content {
+    align-items: flex-start;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .feature-card {
+    background: linear-gradient(135deg, var(--vp-c-bg-alt) 0%, var(--vp-c-bg-elv) 100%);
+  }
+}
+</style>
+
+## 📸 在线演示
+
+::: info 🎮 立即体验完整功能
+**Pro 版演示**: [https://duxweb.dux.plus/dvha/start/](https://duxweb.dux.plus/dvha/start/)
+
+**账号密码**: 任意输入
+
+:::
+
+<div class="demo-container">
+<img src="/show/home.png" width="400" alt="首页仪表盘" />
+<img src="/show/stats.png" width="400" alt="数据统计" />
+</div>
+
+<style>
+.demo-container {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 2rem 0;
+}
+.demo-container img {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+</style>
+
+## ⚡ 核心亮点
+
+::: info 🎯 三大核心优势
+**后台驱动渲染** • **运行时CSS生成** • **层层动态配合**
+:::
+
+### 🔮 后台驱动的动态渲染
+
+::: code-group
+
+```php [后台输出Vue组件]
+// PHP 后台直接输出完整的 Vue 组件
+class DashboardController {
+  public function getComponent() {
+    return [
+      'content' => '
+        <template>
+          <div class="p-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl shadow-lg">
+            <h2 class="text-2xl font-bold text-white mb-4">{{ title }}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div
+                v-for="item in stats"
+                :key="item.id"
+                class="bg-white/20 backdrop-blur-sm rounded-lg p-4 hover:bg-white/30 transition-all"
+              >
+                <div class="text-white/80 text-sm">{{ item.label }}</div>
+                <div class="text-2xl font-bold text-white">{{ item.value }}</div>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <script setup>
+        import { useList } from "@duxweb/dvha-core"
+
+        const { data: stats } = useList("dashboard/stats")
+        const title = "实时数据看板"
+        </script>
+      ',
+      'type' => 'vue'
+    ];
+  }
+}
 ```
 
-### 方式二：手动安装依赖
+```typescript [前端自动渲染]
+// 路由配置 - 指定远程组件
+{
+  name: 'dashboard.realtime',
+  path: 'dashboard/realtime',
+  loader: 'remote',
+  meta: {
+    path: '/api/dashboard/component'
+  }
+}
 
-```bash
-# 1. 创建项目目录
-mkdir my-dvha-pro
-cd my-dvha-pro
-
-# 2. 初始化 package.json
-npm init -y
-
-# 3. 安装核心依赖
-pnpm add @duxweb/dvha-core @duxweb/dvha-naiveui @duxweb/dvha-pro
-
-# 4. 安装 UI 框架
-pnpm add naive-ui
-
-# 5. 安装 Vue 生态
-pnpm add vue@^3.5.0 vue-router@^4.5.1 pinia@^3.0.3
-
-# 6. 安装开发依赖
-pnpm add -D vite @vitejs/plugin-vue typescript vue-tsc @types/node
+// 🎉 后台更新组件，前端立即生效
+// 🎨 UnoCSS 类名实时编译生成
+// ⚡ 无需重新部署，热更新支持
 ```
 
-### 方式三：克隆示例项目
-
-```bash
-# 克隆完整仓库
-git clone https://github.com/duxweb/dvha.git
-cd dvha
-
-# 安装依赖
-pnpm install
-
-# 启动 Pro 版演示（基于 apps/start/）
-pnpm start:dev
-
-# 构建 Pro 版演示
-pnpm start:build
-```
-
-> 🔍 **目录说明**:
->
-> - 源代码位于: `packages/pro/`
-> - 演示应用位于: `apps/start/`
-> - 演示账号密码: 随意输入即可
-
-## 🛠️ 可用脚本
-
-### 开发脚本
-
-```bash
-# 启动开发服务器
-pnpm dev
-
-# 构建生产版本
-pnpm build
-
-# 预览构建结果
-pnpm preview
-
-# 代码检查
-pnpm lint
-
-# 自动修复代码格式
-pnpm lint:fix
-```
-
-### 包管理脚本（Monorepo）
-
-```bash
-# 构建 Pro 包
-pnpm pro:build
-
-# 构建核心包
-pnpm core:build
-
-# 构建 Naive UI 包
-pnpm naiveui:build
-
-# 构建文档
-pnpm docs:build
-
-# 启动文档开发
-pnpm docs:dev
-```
-
-## 🗂️ 项目结构
-
-### Pro 包结构（源代码）
-
-```
-packages/pro/
-├── src/
-│   ├── components/          # 业务组件
-│   │   ├── card/           # 卡片组件
-│   │   ├── carousel/       # 轮播组件
-│   │   ├── dashboard/      # 仪表盘组件
-│   │   ├── dialog/         # 对话框组件
-│   │   ├── drawer/         # 抽屉组件
-│   │   ├── form/           # 表单组件
-│   │   ├── layout/         # 布局组件
-│   │   ├── list/           # 列表组件
-│   │   ├── modal/          # 模态框组件
-│   │   ├── table/          # 表格组件
-│   │   └── ...
-│   ├── hooks/              # 业务 Hooks
-│   │   ├── action.tsx      # 操作相关
-│   │   ├── dialog.tsx      # 对话框 Hook
-│   │   ├── drawer.tsx      # 抽屉 Hook
-│   │   └── table/          # 表格增强 Hooks
-│   ├── pages/              # 页面组件
-│   │   ├── authLayout.tsx  # 认证布局
-│   │   ├── layout.tsx      # 主布局
-│   │   ├── menu/           # 菜单相关
-│   │   └── ...
-│   ├── stores/             # 状态管理
-│   │   ├── index.ts
-│   │   └── ui.ts
-│   ├── theme/              # 主题配置
-│   │   ├── css/            # 样式文件
-│   │   ├── naiveTheme.ts   # Naive UI 主题
-│   │   └── presetTheme.ts  # 预设主题
-│   ├── langs/              # 国际化
-│   │   ├── zh-CN.json
-│   │   └── en-US.json
-│   ├── config/             # 配置文件
-│   └── index.ts            # 入口文件
-├── package.json
-├── vite.config.ts
-├── tsconfig.json
-└── uno.config.ts
-```
-
-### 演示应用结构
-
-```
-apps/start/                 # Pro 版演示应用（演示代码）
-├── main.ts                 # 应用入口
-├── pages/                  # 页面组件
-│   ├── 404.vue
-│   ├── form/
-│   ├── home.vue
-│   ├── list/
-│   ├── login.vue
-│   ├── render.vue
-│   ├── setting.vue
-│   └── table.vue
-├── langs/                  # 语言包
-│   ├── zh-CN.json
-│   └── en-US.json
-├── dvha/                   # DVHA 布局组件
-│   ├── authLayout.vue
-│   ├── layout.vue
-│   ├── page404.vue
-│   ├── page500.vue
-│   └── pageLoading.vue
-├── package.json
-├── vite.config.ts
-└── tsconfig.json
-```
-
-> 📁 **说明**:
->
-> - `packages/pro/` - Pro 版本的源代码目录
-> - `apps/start/` - Pro 版本的演示应用目录
-
-## 💻 快速开始
-
-### 1. 创建基础应用
-
-```typescript
-// main.ts
-import type { IConfig } from '@duxweb/dvha-core'
-import { createDux, i18nProvider, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
-import { createDuxPro, DuxApp, DuxAuthLayout, DuxLayout, DuxLoginPage, DuxPage404, DuxPage500, DuxPageLoading, enUS, zhCN } from '@duxweb/dvha-pro'
-import NaiveUI from 'naive-ui'
-import { createApp } from 'vue'
-
-// 导入样式
-import '@duxweb/dvha-pro/style.css'
-
-const app = createApp(DuxApp)
-
-const config: IConfig = {
-  defaultManage: 'admin',
-  manages: [
+```json [JSON Schema 配置]
+// 纯配置方式，同样支持 UnoCSS
+{
+  "tag": "div",
+  "attrs": {
+    "class": "flex flex-col gap-4 p-6 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl"
+  },
+  "children": [
     {
-      name: 'admin',
-      title: 'DVHA Pro',
-      routePrefix: '/admin',
-      apiUrl: '/admin',
-      components: {
-        authLayout: DuxAuthLayout,
-        noAuthLayout: DuxLayout,
-        notFound: DuxPage404,
-        loading: DuxPageLoading,
-        error: DuxPage500,
+      "tag": "h3",
+      "attrs": {
+        "class": "text-xl font-semibold text-white"
       },
-      routes: [
-        {
-          name: 'admin.login',
-          path: 'login',
-          component: DuxLoginPage,
-          meta: { authorization: false },
-        },
-      ],
-      menus: [
-        {
-          name: 'dashboard',
-          path: 'dashboard',
-          icon: 'i-tabler:dashboard',
-          label: '仪表盘',
-          component: () => import('./pages/Dashboard.vue'),
-        },
-      ],
+      "children": "{{ pageTitle }}"
     },
-  ],
-  dataProvider: simpleDataProvider({
-    apiUrl: 'https://your-api-url.com/admin',
-  }),
-  authProvider: simpleAuthProvider(),
-  i18nProvider: i18nProvider({
-    locale: 'zh-CN',
-    fallbackLocale: 'en-US',
-    messages: { 'zh-CN': zhCN, 'en-US': enUS },
-  }),
+    {
+      "tag": "div",
+      "attrs": {
+        "v-for": "item in dataList",
+        "class": "bg-white/10 backdrop-blur-md rounded-lg p-4 hover:bg-white/20 transition-colors duration-300"
+      },
+      "children": "{{ item.content }}"
+    }
+  ]
 }
-
-// 安装插件
-app.use(NaiveUI)
-app.use(createDuxPro())
-app.use(createDux(config))
-
-app.mount('#app')
 ```
 
-### 2. 创建页面组件
+:::
 
-```vue
-<!-- pages/Dashboard.vue -->
-<script setup lang="ts">
-import { DuxCard, DuxHello, DuxTablePage } from '@duxweb/dvha-pro'
+### 🎨 运行时CSS动态生成
 
-const stats = {
-  total: 1234,
-  new: 56,
-  active: 890
-}
+::: code-group
 
-const columns = [
-  { key: 'id', title: 'ID' },
-  { key: 'name', title: '姓名' },
-  { key: 'email', title: '邮箱' },
-]
-
-const search = [
-  { key: 'name', title: '姓名', type: 'input' },
-  { key: 'status', title: '状态', type: 'select' },
-]
-</script>
-
+```vue [后台组件中的UnoCSS]
+<!-- 后台返回的Vue组件，包含任意UnoCSS类名 -->
 <template>
-  <div>
-    <!-- 使用 Pro 版组件 -->
-    <DuxCard title="用户统计">
-      <DuxHello :data="stats" />
-    </DuxCard>
-
-    <DuxTablePage
-      resource="users"
-      :columns="columns"
-      :search="search"
-    />
+  <div
+    class="
+    container mx-auto px-4 py-8
+    bg-gradient-to-br from-emerald-400 via-cyan-500 to-blue-600
+    dark:from-gray-800 dark:via-gray-900 dark:to-black
+    rounded-3xl shadow-2xl
+    transform hover:scale-105 transition-all duration-500
+  "
+  >
+    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div
+        v-for="card in cardList"
+        class="
+          bg-white/20 dark:bg-black/30
+          backdrop-blur-xl border border-white/30
+          rounded-2xl p-6 shadow-lg
+          hover:shadow-2xl hover:bg-white/30
+          transition-all duration-300 ease-out
+          group cursor-pointer
+        "
+      >
+        <div class="flex items-center justify-between mb-4">
+          <h4 class="text-lg font-bold text-white group-hover:text-yellow-300 transition-colors">
+            {{ card.title }}
+          </h4>
+        </div>
+        <p class="text-white/80 text-sm leading-relaxed">
+          {{ card.description }}
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 ```
 
-### 3. 配置主题
+```javascript [实时CSS编译]
+// 🚀 当后台返回包含新CSS类名的组件时
+// UnoCSS 引擎自动检测并生成对应样式
+
+// 例如后台新增了这些类名：
+// "bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500"
+// "animate-bounce hover:animate-pulse"
+// "backdrop-blur-3xl"
+
+// UnoCSS 立即生成：
+.bg-gradient-to-r {
+  background-image: linear-gradient(to right, var(--un-gradient-stops));
+}
+.from-pink-500 {
+  --un-gradient-from: #ec4899;
+}
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+.backdrop-blur-3xl {
+  backdrop-filter: blur(64px);
+}
+
+// 🎉 样式即时生效，无需预定义！
+```
+
+```css [自动样式注入]
+/* UnoCSS 运行时自动注入到页面 */
+<style data-hash="abc123">
+.container { width: 100%; }
+@media (min-width: 640px) {
+  .container { max-width: 640px; }
+}
+.mx-auto { margin-left: auto; margin-right: auto; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.bg-gradient-to-br {
+  background-image: linear-gradient(to bottom right, var(--un-gradient-stops));
+}
+.from-emerald-400 { --un-gradient-from: #34d399; }
+.hover\:scale-105:hover {
+  --un-scale-x: 1.05; --un-scale-y: 1.05;
+}
+/* ... 更多样式自动生成 */
+</style>
+```
+
+:::
+
+### 🌐 层层动态配合
+
+::: tip 🔥 完整工作流程
+1. **后台控制**: PHP/Java等后台语言直接输出Vue组件代码
+2. **Vue3渲染**: 前端使用vue3-sfc-loader实时解析和渲染
+3. **UnoCSS引擎**: 扫描组件中的类名，运行时生成CSS
+4. **样式注入**: 自动将生成的样式注入到页面
+5. **热更新**: 后台更新组件，前端立即生效，样式同步更新
+:::
 
 ```typescript
-// theme.config.ts
-import { createTheme } from '@duxweb/dvha-pro'
+// 🎯 多层动态示例 - 后台返回包含复杂UnoCSS的组件
+const backendResponse = {
+  content: `
+    <template>
+      <div class="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+        <div class="p-8 rounded-2xl shadow-2xl transition-all duration-500 bg-white/10 backdrop-blur-lg">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div
+              v-for="item in dynamicData"
+              :key="item.id"
+              class="
+                group relative overflow-hidden
+                bg-gradient-to-r from-cyan-500 to-blue-500
+                hover:from-purple-500 hover:to-pink-500
+                rounded-xl p-6 cursor-pointer
+                transform transition-all duration-300
+                hover:scale-110 hover:rotate-2
+              "
+            >
+              <h3 class="text-lg font-bold text-white mb-2 group-hover:text-yellow-300">
+                {{ item.title }}
+              </h3>
+              <p class="text-white/80 text-sm">{{ item.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
 
-export const theme = createTheme({
-  primaryColor: '#1890ff',
-  borderRadius: '6px',
-  layout: {
-    sider: {
-      width: 240,
-      collapsedWidth: 64,
-    },
-    header: {
-      height: 64,
-    },
-  },
-})
+    <script setup>
+    import { useList } from '@duxweb/dvha-core'
+    const { data: dynamicData } = useList('dynamic/items')
+    </script>
+  `
+}
+
+// ✅ Vue组件解析和渲染  ✅ UnoCSS类名扫描和编译
+// ✅ 响应式数据绑定      ✅ 样式热更新
 ```
 
-## 🎨 主要特性详解
+这种层层配合让开发变得极其灵活 - 后台开发者可以使用任意UnoCSS类名，前端会自动处理一切！
 
-### 🏗️ 丰富的企业级组件
+### 🛠️ 企业级组件库
 
-| 组件类型     | 组件名称                   | 说明                   |
-| ------------ | -------------------------- | ---------------------- |
-| **布局组件** | DuxLayout, DuxAuthLayout   | 主布局和认证布局       |
-| **表格组件** | DuxTablePage, DuxTable     | 完整的数据表格解决方案 |
-| **表单组件** | DuxFormLayout, DuxFormItem | 智能表单生成和验证     |
-| **对话框**   | DuxDialog, DuxModal        | 模态对话框组件         |
-| **抽屉**     | DuxDrawer, DuxDrawerPage   | 侧边抽屉组件           |
-| **卡片**     | DuxCard                    | 信息展示卡片           |
-| **列表**     | DuxList, DuxListCard       | 数据列表组件           |
-| **媒体**     | DuxMedia                   | 媒体文件处理           |
-| **状态**     | DuxEmpty, DuxLoading       | 状态展示组件           |
+::: details 📦 50+ 后台管理专用组件
 
-### 🔧 强大的 Hooks 工具
+**数据展示**
+- `DuxTable` - 高级数据表格 (虚拟滚动、筛选排序)
+- `DuxChart` - ECharts 图表封装
+- `DuxStats` - 统计卡片和指标
 
-| Hook 类型    | Hook 名称                    | 功能说明             |
-| ------------ | ---------------------------- | -------------------- |
-| **表格增强** | useTableCopy, useTableHidden | 表格复制、隐藏列功能 |
-| **操作增强** | useAction                    | 统一的操作处理       |
-| **对话框**   | useDialog                    | 对话框状态管理       |
-| **抽屉**     | useDrawer                    | 抽屉状态管理         |
-| **表单**     | useFormModal                 | 表单模态框           |
+**表单组件**
+- `DuxForm` - 智能表单生成器
+- `DuxUpload` - 文件上传管理
+- `DuxImageCrop` - 图片裁剪处理
 
-### 🎯 开箱即用的页面模板
+**后台特色**
+- `DuxAIEditor` - AI 智能编辑器 (GPT集成)
+- `DuxRemoteComponent` - 远程组件加载器
+- `DuxPermission` - 权限控制组件
+:::
 
-- **仪表盘页面**: 数据统计和图表展示
-- **用户管理**: 完整的 CRUD 操作示例
-- **权限管理**: 角色和权限分配
-- **系统设置**: 配置管理界面
-- **登录页面**: 美观的认证界面
-- **错误页面**: 404、500 等错误页面
+## 🆚 适用场景对比
 
-## 🔑 环境要求
+::: details 🎯 点击查看详细对比
 
-- **Node.js**: >= 20.0.0
-- **pnpm**: >= 8.0.0 (推荐)
-- **Vue**: ^3.5.0
-- **TypeScript**: ^5.8.0
+### 选择 DVHA Pro 的场景
 
-## 📚 依赖说明
+| 场景 | 传统方案 | DVHA Pro 方案 |
+|------|----------|---------------|
+| **后台控制界面** | 前端写死模板 | 后台输出Vue字符串 |
+| **动态表单** | 前端硬编码 | JSON Schema配置 |
+| **权限控制** | 前端判断显隐 | 后台控制组件渲染 |
+| **多租户系统** | 多套前端代码 | 一套代码多管理端 |
+| **功能更新** | 重新部署前端 | 后台更新组件代码 |
 
-### 核心依赖
+### 技术栈对比
 
-```json
-{
-  "@duxweb/dvha-core": "workspace:*",
-  "@duxweb/dvha-naiveui": "workspace:*",
-  "naive-ui": "^2.42.0",
-  "vue": "^3.5.0",
-  "vue-router": "^4.5.1",
-  "pinia": "^3.0.3"
+| 对比项 | DVHA Pro | 传统Admin |
+|--------|----------|-----------|
+| 界面控制 | ✅ 后台驱动 | ❌ 前端硬编码 |
+| 动态渲染 | ✅ Vue字符串+JSON | ❌ 静态模板 |
+| 组件更新 | ✅ 运行时热更新 | ❌ 需要重新部署 |
+| 多租户 | ✅ 原生支持 | ❌ 需要自行实现 |
+| 学习成本 | 中等 (新概念) | 低 (传统开发) |
+
+:::
+
+::: tip 💡 选择建议
+- **后台驱动的动态界面**: 选择 DVHA Pro
+- **传统静态后台**: 选择传统方案
+- **多租户SaaS系统**: 强烈推荐 DVHA Pro
+:::
+
+## 🔥 独有特性
+
+::: warning 🎯 市场上独有的后台开发特性
+这些特性专为后台开发场景设计
+:::
+
+### 🧬 后台控制前端渲染
+
+```php
+// 后台 PHP 代码
+class PageController {
+  public function getUserList() {
+    $users = User::paginate(20);
+
+    return [
+      'data' => $users,
+      'component' => '
+        <DuxTable
+          :data="data.data"
+          :columns="[
+            { title: \'ID\', key: \'id\' },
+            { title: \'姓名\', key: \'name\' },
+            { title: \'状态\', key: \'status\', render: (row) =>
+              h(NTag, { type: row.status === 1 ? \'success\' : \'error\' },
+                row.status === 1 ? \'正常\' : \'禁用\'
+              )
+            }
+          ]"
+          :pagination="data.pagination"
+        />
+      '
+    ];
+  }
 }
 ```
 
-### 增强功能
+### 🎨 运行时组件生成
 
-```json
-{
-  "@unocss/runtime": "^66.2.1", // 原子化 CSS
-  "@vueuse/core": "^13.3.0", // Vue 工具库
-  "vee-validate": "^4.15.1", // 表单验证
-  "vue-command-palette": "^0.2.3", // 命令面板
-  "lodash-es": "^4.17.21" // 工具函数
-}
+```vue
+<template>
+  <!-- 后台返回什么，前端就渲染什么 -->
+  <div
+    class="flex items-center gap-4 p-6 rounded-lg shadow-md
+               bg-white dark:bg-gray-800
+               hover:shadow-lg transition-all"
+  >
+    <RemoteComponent :config="backendConfig" />
+  </div>
+</template>
 ```
 
-## 🚀 部署指南
+## 💼 典型应用场景
 
-### 构建生产版本
+::: details 🏢 企业管理系统
 
-```bash
-# 构建
-pnpm build
+**SaaS 多租户平台**
+- 每个租户不同的界面配置
+- 后台控制租户功能开关
+- 动态权限和菜单配置
 
-# 预览构建结果
-pnpm preview
-```
+**传统企业系统**
+- ERP、CRM、OA 系统
+- 工作流配置界面
+- 报表和数据可视化
 
-### Nginx 配置示例
+:::
 
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
+::: details 🔧 后台开发优势
 
-    root /var/www/dvha-pro/dist;
-    index index.html;
+**选择 DVHA Pro 如果你需要:**
+- ✅ 后台控制前端界面渲染
+- ✅ 动态配置和热更新
+- ✅ 多租户和权限控制
+- ✅ Vue 3 + TypeScript 最佳实践
 
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
+**不建议选择如果:**
+- ❌ 纯静态展示页面
+- ❌ 简单的企业官网
+- ❌ 偏好传统开发模式
 
-    location /api {
-        proxy_pass http://your-backend-api;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
-```
+:::
 
-### Docker 部署
+## 🛣️ 学习路径
 
-```dockerfile
-FROM node:20-alpine as builder
-
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-
-COPY . .
-RUN npm run build
-
-FROM nginx:alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/nginx.conf
-
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
-```
-
-## 🤝 贡献指南
-
-1. Fork 项目仓库
-2. 创建功能分支 (`git checkout -b feature/amazing-feature`)
-3. 提交更改 (`git commit -m 'Add amazing feature'`)
-4. 推送到分支 (`git push origin feature/amazing-feature`)
-5. 创建 Pull Request
-
-## 📄 许可证
-
-MIT License - 查看 [LICENSE](https://github.com/duxweb/dvha/blob/main/LICENSE) 文件
-
-## 🔗 相关链接
-
-- 📖 **[完整文档](/)** - 详细的使用指南
-- 🎯 **[在线演示](https://duxweb.dux.plus/dvha/start/)** - 功能演示
-- 💻 **[GitHub](https://github.com/duxweb/dvha)** - 源码仓库
-- 📦 **[NPM](https://www.npmjs.com/package/@duxweb/dvha-pro)** - 包管理
-- 💬 **[社区讨论](/community)** - 技术交流
-- 🐛 **[问题反馈](https://github.com/duxweb/dvha/issues)** - Bug 报告
-- 🚀 **[更新日志](https://github.com/duxweb/dvha/blob/main/packages/pro/CHANGELOG.md)** - 版本变更
+::: tip 📚 推荐学习顺序
+1. [快速开始](/pro/getting-started) - 创建第一个项目
+2. [组件库](/pro/components/) - 了解可用组件
+3. [配置说明](/pro/configuration) - 掌握配置技巧
+4. [Hooks 参考](/pro/hooks/) - 学习高级用法
+:::
 
 ---
 
-<div align="center">
+::: info 💬 社区交流
+**QQ群**: 123456789 | **微信群**: 扫描二维码 | **GitHub**: 提交 Issue
+:::
 
-**🎉 感谢使用 DVHA Pro！**
-
-如果这个项目对你有帮助，请给我们一个 ⭐️
-
+<div style="text-align: center; margin: 2rem 0; color: #666;">
+🎯 <strong>DVHA Pro</strong> - 让后台开发更简单、更动态、更智能
 </div>

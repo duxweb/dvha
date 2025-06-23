@@ -1,5 +1,13 @@
 # @duxweb/dvha-core
 
+## 1.0.15
+
+### Patch Changes
+
+- feat: 增加 Json 渲染器组件全局配置
+  chore: 优化部分组件加载模式
+  chore: 统一部分组件接口命名
+
 ## 1.0.14
 
 ### Patch Changes

@@ -11,10 +11,10 @@ export default defineConfig(({ mode }) => ({
   ],
   resolve: {
     alias: {
-      // '@duxweb/dvha-core': resolve(__dirname, '../../packages/core/src'),
-      // '@duxweb/dvha-naiveui': resolve(__dirname, '../../packages/naiveui/src'),
-      // '@duxweb/dvha-elementui': resolve(__dirname, '../../packages/elementui/src'),
-      // '@duxweb/dvha-pro': resolve(__dirname, '../../packages/pro/src'),
+      '@duxweb/dvha-core': resolve(__dirname, '../../packages/core/src'),
+      '@duxweb/dvha-naiveui': resolve(__dirname, '../../packages/naiveui/src'),
+      '@duxweb/dvha-elementui': resolve(__dirname, '../../packages/elementui/src'),
+      '@duxweb/dvha-pro': resolve(__dirname, '../../packages/pro/src'),
     },
   },
   output: {

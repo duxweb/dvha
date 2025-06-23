@@ -1,14 +1,64 @@
-import type { Ref } from 'vue'
+import type { Component, Ref } from 'vue'
+import type { IConfig } from '../types'
 import type { JsonAdaptorOptions, JsonSchemaNode } from './json/index'
-import { computed, defineComponent, h, isRef, unref } from 'vue'
+import { computed, defineComponent, h, isRef, markRaw, unref } from 'vue'
+import { useJsonSchemaStore } from '../stores/jsonSchema'
+import { useConfig } from './config'
 import { defaultAdaptors } from './json/index'
 import { injectContext } from './json/utils/contextManager'
+
+function kebabCase(str: string): string {
+  return str
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+    .toLowerCase()
+}
+
+/**
+ * 加载组件到 store
+ */
+function loadComponentsToStore(components: Record<string, Component> | Component[], jsonSchemaStore: any) {
+  if (Array.isArray(components)) {
+    components.forEach((component) => {
+      const comp = component as any
+      let name = comp.name
+      if (!name && comp.__name) {
+        name = comp.__name.replace(/\.(vue|ts|tsx|js|jsx)$/, '').split('/').pop()
+      }
+      if (name) {
+        jsonSchemaStore.addComponent(markRaw(component), name)
+      }
+    })
+  }
+  else if (typeof components === 'object' && components !== null) {
+    Object.entries(components).forEach(([name, component]) => {
+      jsonSchemaStore.addComponent(markRaw(component), name)
+    })
+  }
+}
+
+/**
+ * 初始化 JSON Schema 组件
+ * 在应用启动时调用，将配置中的组件加载到全局缓存
+ */
+export function initJsonSchemaComponents(config: IConfig, manageName?: string) {
+  const jsonSchemaStore = useJsonSchemaStore(manageName)
+
+  if (config.jsonSchema?.components) {
+    loadComponentsToStore(config.jsonSchema.components, jsonSchemaStore)
+  }
+
+  config.manages?.forEach((manage) => {
+    if (manage.jsonSchema?.components) {
+      loadComponentsToStore(manage.jsonSchema.components, jsonSchemaStore)
+    }
+  })
+}
 
 export type JsonSchemaData = JsonSchemaNode[] | Ref<JsonSchemaNode[]>
 
 export interface UseJsonSchemaProps extends JsonAdaptorOptions {
   data?: JsonSchemaData
-  components?: Record<string, any>
+  components?: Record<string, Component> | Component[]
   context?: Record<string, any> | Ref<Record<string, any>>
 }
 
@@ -16,8 +66,19 @@ export interface UseJsonSchemaProps extends JsonAdaptorOptions {
  * JSON Schema 渲染器
  */
 export function useJsonSchema(props?: UseJsonSchemaProps) {
-  const adaptors = props?.adaptors || defaultAdaptors
-  const components = props?.components || {}
+  const config = useConfig()
+  const jsonSchemaStore = useJsonSchemaStore()
+
+  const adaptors = [
+    ...defaultAdaptors,
+    ...(config.jsonSchema?.adaptors || []),
+    ...(props?.adaptors || []),
+  ]
+
+  // 如果 props 中有额外的组件，加载到 store
+  if (props?.components) {
+    loadComponentsToStore(props.components, jsonSchemaStore)
+  }
   const data = computed(() => isRef(props?.data) ? props?.data.value : props?.data)
 
   function getGlobalContext(): Record<string, any> {
@@ -106,7 +167,37 @@ export function useJsonSchema(props?: UseJsonSchemaProps) {
       }
     }
 
-    const resolvedTag = typeof tag === 'string' && components[tag] ? components[tag] : tag
+    const resolveComponent = (tagName: string) => {
+      // 直接从 store 中查找组件
+      let component = jsonSchemaStore.getComponentByName(tagName)
+      if (component) {
+        return component
+      }
+
+      // 尝试 kebab-case 格式查找
+      const kebabName = kebabCase(tagName)
+      component = jsonSchemaStore.getComponentByName(kebabName)
+      if (component) {
+        return component
+      }
+
+      // 尝试 PascalCase 格式查找
+      const pascalName = tagName.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())
+        .replace(/^[a-z]/, letter => letter.toUpperCase())
+      component = jsonSchemaStore.getComponentByName(pascalName)
+      if (component) {
+        return component
+      }
+
+      return null
+    }
+
+    let resolvedTag = typeof tag === 'string' ? (resolveComponent(tag) || tag) : tag
+
+    if (typeof resolvedTag !== 'string' && typeof resolvedTag === 'object') {
+      resolvedTag = markRaw(resolvedTag)
+    }
+
     const isVueComponent = typeof resolvedTag !== 'string'
     const processedProps = processProps(nodeProps)
 

@@ -4,16 +4,16 @@ import { useGetAuth, useI18n, useManage, useTheme, useUpload } from '@duxweb/dvh
 import { useVModel } from '@vueuse/core'
 import { AiEditor } from 'aieditor'
 import { useMessage } from 'naive-ui'
-import { defineComponent, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, defineComponent, onMounted, onUnmounted, ref, watch } from 'vue'
 
 export const DuxAiEditor = defineComponent({
   name: 'DuxAiEditor',
   props: {
     value: String,
     defaultValue: String,
-    uploadUrl: String,
+    uploadPath: String,
     uploadHeaders: Object as PropType<Record<string, any>>,
-    aiUrl: String,
+    aiPath: String,
     height: {
       type: String,
       default: '500px',
@@ -34,8 +34,12 @@ export const DuxAiEditor = defineComponent({
       passive: true,
     })
 
+    const uploadPath = computed(() => {
+      return props.uploadPath || config.apiPath?.upload || 'upload'
+    })
+
     const upload = useUpload({
-      path: props.uploadUrl || config.apiPath?.upload || 'upload',
+      path: uploadPath.value,
       autoUpload: false,
     })
 
@@ -81,24 +85,24 @@ export const DuxAiEditor = defineComponent({
           model.value = aiEditor.getHtml()
         },
         image: {
-          uploadUrl: props.uploadUrl || config.apiPath?.upload || 'upload',
+          uploadUrl: uploadPath.value,
           uploadHeaders: props.uploadHeaders || {},
           uploader: editorUpload,
         },
         video: {
-          uploadUrl: props.uploadUrl || config.apiPath?.upload || 'upload',
+          uploadUrl: uploadPath.value,
           uploadHeaders: props.uploadHeaders || {},
           uploader: editorUpload,
         },
         attachment: {
-          uploadUrl: props.uploadUrl || config.apiPath?.upload || 'upload',
+          uploadUrl: uploadPath.value,
           uploadHeaders: props.uploadHeaders || {},
           uploader: editorUpload,
         },
         ai: {
           models: {
             custom: {
-              url: props.aiUrl || config.apiPath?.ai || 'ai',
+              url: props.aiPath || config.apiPath?.ai || 'ai',
               headers: () => {
                 return {
                   'Content-Type': 'application/json',

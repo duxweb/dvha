@@ -4,9 +4,9 @@ import * as DuxPro from '@duxweb/dvha-pro'
 import * as NaiveUI from 'naive-ui'
 import { createApp } from 'vue'
 
-import '@duxweb/dvha-pro/style.css'
+// import '@duxweb/dvha-pro/style.css'
 
-// import '@duxweb/dvha-pro/theme/style.scss'
+import '@duxweb/dvha-pro/theme/style.scss'
 
 const { createDuxPro, DuxApp, DuxAuthLayout, DuxLayout, DuxLoginPage, DuxPage404, DuxPage500, DuxPageLoading, enUS, zhCN } = DuxPro
 
@@ -188,6 +188,9 @@ const config: IConfig = {
       'naive-ui': NaiveUI,
       '@duxweb/dvha-pro': DuxPro,
     },
+  },
+  jsonSchema: {
+    components: NaiveUI,
   },
 }
 

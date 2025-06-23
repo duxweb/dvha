@@ -1,7 +1,6 @@
 <script setup>
 import { useJsonSchema } from '@duxweb/dvha-core'
 import { DuxPage } from '@duxweb/dvha-pro'
-import { NButton, NCard, NCheckbox, NInput, NSelect, NSpace, NSwitch, NTag } from 'naive-ui'
 import { computed, ref } from 'vue'
 
 const data = ref({
@@ -757,16 +756,7 @@ const schema = computed(() => [
 const { render } = useJsonSchema({
   data: schema,
   context: { testData },
-  components: {
-    'n-input': NInput,
-    'n-button': NButton,
-    'n-select': NSelect,
-    'n-switch': NSwitch,
-    'n-card': NCard,
-    'n-space': NSpace,
-    'n-tag': NTag,
-    'n-checkbox': NCheckbox,
-  },
+  // components: naive,
 })
 </script>
 
