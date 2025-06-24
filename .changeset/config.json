@@ -10,7 +10,6 @@
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [
-    "example",
     "docs",
     "dvha-start"
   ],

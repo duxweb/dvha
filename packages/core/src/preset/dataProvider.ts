@@ -2,7 +2,7 @@ import type { IManageHook } from '../hooks'
 import type { IUserState } from '../stores'
 import type { IDataProvider, IDataProviderCreateManyOptions, IDataProviderCreateOptions, IDataProviderCustomOptions, IDataProviderDeleteManyOptions, IDataProviderDeleteOptions, IDataProviderError, IDataProviderGetManyOptions, IDataProviderGetOneOptions, IDataProviderListOptions, IDataProviderResponse, IDataProviderUpdateManyOptions, IDataProviderUpdateOptions } from '../types'
 import axios from 'axios'
-import { trimStart } from 'lodash-es'
+import { trim } from 'lodash-es'
 
 export interface ISimpleDataProviderProps {
   apiUrl: string
@@ -12,13 +12,14 @@ export interface ISimpleDataProviderProps {
 }
 
 export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvider {
-  const apiUrl = (path?: string): string => {
-    return path ? `${props.apiUrl}/${trimStart(path || '', '/')}` : props.apiUrl
+  const apiUrl = (path?: string, basePath?: string): string => {
+    const prefixUrl = `${trim(props.apiUrl, '/')}${basePath ? `/${trim(basePath, '/')}` : ''}`
+    return path ? `${prefixUrl}/${trim(path || '', '/')}` : prefixUrl
   }
 
   return {
     apiUrl,
-    getList: (options: IDataProviderListOptions, _manage?: IManageHook, auth?: IUserState) => {
+    getList: (options: IDataProviderListOptions, manage?: IManageHook, auth?: IUserState) => {
       const params: Record<string, any> = {}
 
       if (options.pagination && typeof options.pagination === 'object') {
@@ -26,7 +27,7 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         params.pageSize = options.pagination.pageSize
       }
 
-      return axios.get(apiUrl(options.path) || '', {
+      return axios.get(apiUrl(options.path, manage?.config.apiBasePath) || '', {
         params: {
           ...params,
           ...options.filters,
@@ -42,8 +43,8 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
     },
-    create: (options: IDataProviderCreateOptions, _manage?: IManageHook, auth?: IUserState) => {
-      return axios.post(apiUrl(options.path) || '', options.data, {
+    create: (options: IDataProviderCreateOptions, manage?: IManageHook, auth?: IUserState) => {
+      return axios.post(apiUrl(options.path, manage?.config.apiBasePath) || '', options.data, {
         headers: {
           Authorization: auth?.token,
         },
@@ -54,8 +55,8 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
     },
-    update: (options: IDataProviderUpdateOptions, _manage?: IManageHook, auth?: IUserState) => {
-      return axios.put(apiUrl(options.id ? `${options.path}/${options.id}` : options.path) || '', options.data, {
+    update: (options: IDataProviderUpdateOptions, manage?: IManageHook, auth?: IUserState) => {
+      return axios.put(apiUrl(options.id ? `${options.path}/${options.id}` : options.path, manage?.config.apiBasePath) || '', options.data, {
         headers: {
           Authorization: auth?.token,
         },
@@ -66,8 +67,8 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
     },
-    deleteOne: (options: IDataProviderDeleteOptions, _manage?: IManageHook, auth?: IUserState) => {
-      return axios.delete(apiUrl(options.id ? `${options.path}/${options.id}` : options.path) || '', {
+    deleteOne: (options: IDataProviderDeleteOptions, manage?: IManageHook, auth?: IUserState) => {
+      return axios.delete(apiUrl(options.id ? `${options.path}/${options.id}` : options.path, manage?.config.apiBasePath) || '', {
         headers: {
           Authorization: auth?.token,
         },
@@ -78,8 +79,8 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
     },
-    getOne: (options: IDataProviderGetOneOptions, _manage?: IManageHook, auth?: IUserState) => {
-      return axios.get(apiUrl(options.id ? `${options.path}/${options.id}` : options.path) || '', {
+    getOne: (options: IDataProviderGetOneOptions, manage?: IManageHook, auth?: IUserState) => {
+      return axios.get(apiUrl(options.id ? `${options.path}/${options.id}` : options.path, manage?.config.apiBasePath) || '', {
         headers: {
           Authorization: auth?.token,
         },
@@ -90,8 +91,8 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
     },
-    getMany: (options: IDataProviderGetManyOptions, _manage?: IManageHook, auth?: IUserState) => {
-      return axios.get(apiUrl(options.path) || '', {
+    getMany: (options: IDataProviderGetManyOptions, manage?: IManageHook, auth?: IUserState) => {
+      return axios.get(apiUrl(options.path, manage?.config.apiBasePath) || '', {
         params: {
           ids: options.ids,
         },
@@ -105,8 +106,8 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
     },
-    createMany: (options: IDataProviderCreateManyOptions, _manage?: IManageHook, auth?: IUserState) => {
-      return axios.post(apiUrl(options.path) || '', options.data, {
+    createMany: (options: IDataProviderCreateManyOptions, manage?: IManageHook, auth?: IUserState) => {
+      return axios.post(apiUrl(options.path, manage?.config.apiBasePath) || '', options.data, {
         headers: {
           Authorization: auth?.token,
         },
@@ -117,8 +118,8 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
     },
-    updateMany: (options: IDataProviderUpdateManyOptions, _manage?: IManageHook, auth?: IUserState) => {
-      return axios.put(apiUrl(options.path) || '', {
+    updateMany: (options: IDataProviderUpdateManyOptions, manage?: IManageHook, auth?: IUserState) => {
+      return axios.put(apiUrl(options.path, manage?.config.apiBasePath) || '', {
         ids: options.ids,
         data: options.data,
       }, {
@@ -132,8 +133,8 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
     },
-    deleteMany: (options: IDataProviderDeleteManyOptions, _manage?: IManageHook, auth?: IUserState) => {
-      return axios.delete(apiUrl(options.path) || '', {
+    deleteMany: (options: IDataProviderDeleteManyOptions, manage?: IManageHook, auth?: IUserState) => {
+      return axios.delete(apiUrl(options.path, manage?.config.apiBasePath) || '', {
         params: {
           ids: options.ids,
         },
@@ -147,7 +148,7 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
         throw props.errorCallback ? props.errorCallback(err) : handleError(err)
       })
     },
-    custom: (options: IDataProviderCustomOptions, _manage?: IManageHook, auth?: IUserState) => {
+    custom: (options: IDataProviderCustomOptions, manage?: IManageHook, auth?: IUserState) => {
       let params: Record<string, any> = {
         ...options.query,
       }
@@ -167,7 +168,7 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
       }
 
       return axios.request({
-        url: apiUrl(options.path || ''),
+        url: apiUrl(options.path, manage?.config.apiBasePath) || '',
         method: options.method || 'GET',
         data: options.payload,
         params,

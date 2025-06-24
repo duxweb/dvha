@@ -19,7 +19,7 @@ const config: IConfig = {
       name: 'admin',
       title: 'Dvha Pro',
       routePrefix: '/admin',
-      apiUrl: '/admin',
+      apiBasePath: '/admin',
       apiRoutePath: '/routes',
       components: {
         authLayout: DuxAuthLayout,
@@ -172,7 +172,7 @@ const config: IConfig = {
     },
   ],
   dataProvider: simpleDataProvider({
-    apiUrl: 'https://m1.apifoxmock.com/m1/4407506-4052338-default/admin',
+    apiUrl: 'https://m1.apifoxmock.com/m1/4407506-4052338-default',
   }),
   authProvider: simpleAuthProvider(),
   i18nProvider: i18nProvider({

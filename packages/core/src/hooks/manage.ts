@@ -35,7 +35,7 @@ export function useManage(name?: string): IManageHook {
 
   const getApiUrl = (path?: string, dataProviderName?: string) => {
     const dataProvider = manage?.dataProvider?.[dataProviderName || 'default']
-    return dataProvider?.apiUrl?.(path) || ''
+    return dataProvider?.apiUrl?.(path, manage?.apiBasePath) || ''
   }
 
   const route = useRoute()

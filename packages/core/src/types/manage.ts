@@ -38,6 +38,8 @@ export interface IManage {
 
   theme?: IConfigTheme // 主题覆盖
 
+  apiBasePath?: string // 接口基础路径
+
   // 全局包配置
   remote?: {
     packages?: Options
