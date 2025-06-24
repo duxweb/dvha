@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 1.0.17
+
+### Patch Changes
+
+- chore: 修正部分参数问题
+
 ## 1.0.16
 
 ### Patch Changes

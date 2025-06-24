@@ -4,9 +4,9 @@ import * as NaiveUI from 'naive-ui'
 import { createApp } from 'vue'
 import config from './config'
 
-// import '@duxweb/dvha-pro/style.css'
+import '@duxweb/dvha-pro/style.css'
 
-import '@duxweb/dvha-pro/theme/style.scss'
+// import '@duxweb/dvha-pro/theme/style.scss'
 
 const { createDuxPro, DuxApp } = DuxPro
 
