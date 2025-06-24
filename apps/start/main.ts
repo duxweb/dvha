@@ -190,7 +190,7 @@ const config: IConfig = {
     },
   },
   jsonSchema: {
-    components: NaiveUI,
+    components: NaiveUI as any,
   },
 }
 

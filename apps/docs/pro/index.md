@@ -613,10 +613,6 @@ class PageController {
 
 ---
 
-::: info 💬 社区交流
-**QQ群**: 123456789 | **微信群**: 扫描二维码 | **GitHub**: 提交 Issue
-:::
-
 <div style="text-align: center; margin: 2rem 0; color: #666;">
 🎯 <strong>DVHA Pro</strong> - 让后台开发更简单、更动态、更智能
 </div>
