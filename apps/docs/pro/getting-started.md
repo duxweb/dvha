@@ -6,23 +6,10 @@
 
 ### 使用官方创建工具
 
-```bash
-# 使用 npm
-npm create @duxweb/dvha@latest my-admin --template pro
-
-# 使用 pnpm (推荐)
-pnpm create @duxweb/dvha@latest my-admin --template pro
-
-# 使用 yarn
-yarn create @duxweb/dvha@latest my-admin --template pro
-```
-
-### 交互式创建
-
 如果不指定项目名称，创建工具会启动交互式界面：
 
 ```bash
-pnpm create @duxweb/dvha@latest
+npx @duxweb/dvha-template@latest init
 ```
 
 系统会提示你：
