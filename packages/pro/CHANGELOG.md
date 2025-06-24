@@ -1,5 +1,14 @@
 # @duxweb/dvha-pro
 
+## 1.0.16
+
+### Patch Changes
+
+- feat: 增加 data 的 apiBasePath 参数
+- Updated dependencies
+  - @duxweb/dvha-core@1.0.16
+  - @duxweb/dvha-naiveui@1.0.16
+
 ## 1.0.15
 
 ### Patch Changes

@@ -1,0 +1,44 @@
+{
+  "name": "@duxweb/dvha-cdn",
+  "type": "module",
+  "version": "0.0.0",
+  "author": "DuxWeb",
+  "license": "MIT",
+  "files": [
+    "README.md",
+    "dist",
+    "package.json"
+  ],
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@duxweb/dvha-core": "workspace:*",
+    "@duxweb/dvha-naiveui": "workspace:*",
+    "@duxweb/dvha-pro": "workspace:*",
+    "@vueuse/core": "^13.3.0",
+    "@vueuse/integrations": "^13.3.0",
+    "axios": "^1.9.0",
+    "clsx": "^2.1.1",
+    "lodash-es": "^4.17.21",
+    "naive-ui": "^2.42.0",
+    "petite-vue-i18n": "^11.1.4",
+    "pinia": "^3.0.3",
+    "pinia-plugin-persistedstate": "^4.3.0",
+    "vue": "^3.5.0",
+    "vue-router": "^4.5.1"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^4.13.1",
+    "@tanstack/eslint-plugin-query": "^5.78.0",
+    "@types/node": "^22.15.21",
+    "@vitejs/plugin-vue": "^5.2.4",
+    "@vitejs/plugin-vue-jsx": "^4.2.0",
+    "eslint": "^9.27.0",
+    "typescript": "^5.8.2",
+    "vite": "^6.3.5",
+    "vitest": "^3.1.4"
+  }
+}

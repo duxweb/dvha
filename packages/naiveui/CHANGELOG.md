@@ -1,5 +1,11 @@
 # @duxweb/dvha-naiveui
 
+## 1.0.16
+
+### Patch Changes
+
+- feat: 增加 data 的 apiBasePath 参数
+
 ## 1.0.15
 
 ## 1.0.14

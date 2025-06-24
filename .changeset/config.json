@@ -3,7 +3,7 @@
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "fixed": [
-    ["@duxweb/dvha-core", "@duxweb/dvha-naiveui", "@duxweb/dvha-elementui", "@duxweb/dvha-pro"]
+    ["@duxweb/dvha-core", "@duxweb/dvha-naiveui", "@duxweb/dvha-elementui", "@duxweb/dvha-pro", "@duxweb/dvha-template"]
   ],
   "linked": [],
   "access": "public",
@@ -11,7 +11,8 @@
   "updateInternalDependencies": "patch",
   "ignore": [
     "docs",
-    "dvha-start"
+    "dvha-start",
+    "@duxweb/dvha-cdn"
   ],
   "privatePackages": {
     "version": true,
