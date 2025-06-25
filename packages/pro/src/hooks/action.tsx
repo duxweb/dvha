@@ -46,14 +46,17 @@ export function useAction(action?: UseActionProps) {
     const title = t(props.item.title || '', {}, props.item.title)
     const label = t(props.item.label || '', {}, props.item.label)
 
+
+
     if (props.item.type === 'modal') {
       const item = props.item
+      const componentProps = typeof item.componentProps === 'function' ? item.componentProps(props.data) : item.componentProps
       modal.show({
         title: title || label,
         component: item.component,
         componentProps: {
           id: props.id,
-          ...item.componentProps,
+          ...componentProps,
         },
         width: item.width,
         draggable: item.draggable !== undefined ? item.draggable : true,
@@ -62,14 +65,16 @@ export function useAction(action?: UseActionProps) {
 
     if (props.item.type === 'drawer') {
       const item = props.item
+      const componentProps = typeof item.componentProps === 'function' ? item.componentProps(props.data) : item.componentProps
       drawer.show({
         title: title || label,
         component: item.component,
         componentProps: {
           id: props.id,
-          ...item.componentProps,
+          ...componentProps,
         },
         width: item.width,
+        maxWidth: item.maxWidth,
       })
     }
 
@@ -173,8 +178,9 @@ export function useActionButton() {
     const items = props.action.items?.filter(item => !item.show || item.show?.(props.data, props.index)).map((item, index) => {
       return h(NButton, {
         key: index,
-        type: item.color || item.type === 'delete' ? 'error' : 'primary',
+        type: item.color || (item.type === 'delete' ? 'error' : 'primary'),
         text: props.text,
+        secondary: !props.text,
         onClick: () => {
           props?.target?.({
             id: props.id,

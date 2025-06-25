@@ -24,7 +24,6 @@ export const DuxFileManageItem = defineComponent({
     const dialog = useDialog()
     const { t } = useI18n()
 
-    // 文件类型映射配置
     const fileTypeConfig = {
       image: {
         check: (mime: string) => mime.startsWith('image/'),
@@ -106,7 +105,6 @@ export const DuxFileManageItem = defineComponent({
       },
     }
 
-    // 获取文件图标
     const getFileIcon = () => {
       if (props.type === 'folder') {
         return <img src={folderSvg.default} class="size-12" />
@@ -116,14 +114,12 @@ export const DuxFileManageItem = defineComponent({
         return <img src={fileSvg.default} class="size-12" />
       }
 
-      // 查找匹配的文件类型
       for (const config of Object.values(fileTypeConfig)) {
         if (config.check(props.mime)) {
           return config.render()
         }
       }
 
-      // 默认文件图标
       return <img src={fileSvg.default} class="size-12" />
     }
 

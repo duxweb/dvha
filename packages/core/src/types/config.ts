@@ -63,7 +63,6 @@ export interface IConfigComponent {
   notAuthorized?: RouteComponent // 未授权布局
   error?: RouteComponent // 错误布局
   exception?: RouteComponent // 异常布局
-  loading?: RouteComponent // loading 组件
 
   iframe?: RouteComponent // iframe 组件
   remote?: RouteComponent // remote 组件

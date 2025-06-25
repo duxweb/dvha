@@ -33,7 +33,7 @@ export default defineComponent({
     })
 
     return () => (
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col">
         <div
           class={[
             'px-4 py-3 border-b border-muted rounded-t flex justify-between items-center  bg-white dark:bg-gray-800/50',
@@ -50,7 +50,7 @@ export default defineComponent({
             </NButton>
           </div>
         </div>
-        <div class="px-4 py-2">
+        <div class="p-4">
           {slots.default?.()}
         </div>
         {slots.footer?.() && (

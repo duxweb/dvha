@@ -10,6 +10,7 @@ import 'echarts'
 import 'vue-cropper/dist/index.css'
 import 'aieditor/dist/style.css'
 import './theme/style.scss'
+import { IDataProviderResponse, IS3SignData } from '@duxweb/dvha-core'
 
 export function createDuxPro() {
   initVeeValidate()
@@ -27,9 +28,16 @@ export function createDuxPro() {
   }
 }
 
+// 声明 Pro 包特有的配置
 declare module '@duxweb/dvha-core' {
   interface IManage {
-    // Pro 包特有的配置
+    // 上传配置
+    upload?: {
+      driver?: 'local' | 's3'
+      signPath?: string
+      signCallback?: (response: IDataProviderResponse) => IS3SignData
+    }
+    // 接口路径
     apiPath?: {
       upload?: string
       uploadManager?: string

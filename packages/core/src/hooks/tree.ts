@@ -1,4 +1,4 @@
-import { computed } from 'vue'
+import { computed, toRef } from 'vue'
 import { arrayToTree, treeToArr } from '../utils'
 import { useList } from './data'
 
@@ -16,16 +16,14 @@ export interface IUseTreeProps {
 }
 
 export function useTree(props: IUseTreeProps) {
+  const path = toRef(props, 'path')
+  const params = toRef(props, 'params')
+  const providerName = toRef(props, 'providerName')
+
   const { data, isLoading } = useList({
-    get path() {
-      return props.path || ''
-    },
-    get filters() {
-      return props.params
-    },
-    get providerName() {
-      return props.providerName
-    },
+    path: path.value || '',
+    filters: params.value,
+    providerName: providerName.value,
   })
 
   const options = computed(() => {
@@ -34,7 +32,7 @@ export function useTree(props: IUseTreeProps) {
     }
     return arrayToTree(data.value?.data || [], {
       idKey: props.treeOptions?.valueKey || 'id',
-      parentKey: props.treeOptions?.parentKey || 'parentId',
+      parentKey: props.treeOptions?.parentKey || 'parent_id',
       sortKey: props.treeOptions?.sortKey || 'sort',
       childrenKey: props.treeOptions?.childrenKey || 'children',
     })

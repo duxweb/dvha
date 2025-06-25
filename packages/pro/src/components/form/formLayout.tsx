@@ -5,7 +5,7 @@ export const DuxFormLayout = defineComponent({
   name: 'DuxFormLayout',
   props: {
     labelPlacement: {
-      type: String as PropType<'left' | 'top' | 'setting'>,
+      type: String as PropType<'left' | 'top' | 'setting' | 'page'>,
       default: 'left',
     },
     labelWidth: {
@@ -29,9 +29,10 @@ export const DuxFormLayout = defineComponent({
 
     return () => (
       <div class={[
-        'flex gap-4',
-        props.divider && 'divide-y divide-muted',
+        'flex ',
+        (props.divider || props.labelPlacement === 'page') ? ' divide-y divide-default dark:divide-gray-800' : '',
         props.inline ? 'flex-row' : 'flex-col',
+        props.labelPlacement === 'page' || props.labelPlacement === 'setting' ? 'container mx-auto' : 'gap-4',
       ]}
       >
         {slots?.default?.()}

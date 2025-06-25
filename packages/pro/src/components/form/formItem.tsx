@@ -11,7 +11,7 @@ export const DuxFormItem = defineComponent({
     description: [String, Object] as PropType<string | VNode>,
     path: String,
     labelPlacement: {
-      type: String as PropType<'left' | 'top' | 'setting'>,
+      type: String as PropType<'left' | 'top' | 'setting' | 'page'>,
     },
     labelWidth: {
       type: Number,
@@ -72,20 +72,24 @@ export const DuxFormItem = defineComponent({
       if (typeof width === 'number') {
         width = `${width}px`
       }
-      return labelPlacement.value === 'top' || labelPlacement.value === 'setting' ? 'auto' : width
+      return labelPlacement.value !== 'left' ? 'auto' : width
+    })
+
+    const divider = computed(() => {
+      return form.divider || labelPlacement.value === 'page'
     })
 
     return () => (
       <div class={[
-        'flex flex-col ',
         labelPlacement.value !== 'top' ? 'md:flex-row gap-2' : 'gap-1',
-        form.divider && 'pb-4',
+        divider.value ? 'py-6' : '',
         labelPlacement.value === 'setting' ? 'md:justify-between md:items-start md:gap-4' : '',
+        labelPlacement.value === 'page' ? 'grid grid-cols-1 lg:grid-cols-4 px-4' : 'flex flex-col lg:items-center',
       ]}
       >
         <div
           class={[
-            labelPlacement.value !== 'top' && labelPlacement.value !== 'setting' ? 'mt-1.5' : '',
+            labelPlacement.value === 'left' ? 'flex lg:items-center' : '',
           ]}
           style={{ width: labelWidth.value }}
         >
@@ -106,7 +110,8 @@ export const DuxFormItem = defineComponent({
         <div class={[
           'flex flex-col gap-1',
           labelPlacement.value !== 'left' ? 'md:mt-1' : '',
-          labelPlacement.value === 'setting' ? 'flex-none' : 'flex-1',
+          labelPlacement.value === 'setting' ? 'flex-none min-w-200px' : 'flex-1',
+          labelPlacement.value === 'page' ? 'col-span-3' : '',
         ]}
         >
           <div>

@@ -24,3 +24,23 @@ html.dark {
 .app-remote-loader {
   height: 100%;
 }
+
+
+.tab-fade-leave-active,
+.tab-fade-enter-active {
+  transition: all 0.3s;
+}
+
+.tab-fade-enter-from {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+.tab-fade-enter-to {
+  opacity: 1;
+  transform: translateX(0px);
+}
+
+.tab-fade-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}

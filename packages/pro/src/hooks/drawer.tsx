@@ -9,6 +9,7 @@ export interface UseDrawerResult {
 export interface UseDrawerProps {
   title?: string
   width?: number | string
+  maxWidth?: number
   component: AsyncComponentLoader<any> | Component
   componentProps?: Record<string, any>
   placement?: 'top' | 'right' | 'bottom' | 'left'

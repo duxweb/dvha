@@ -1,6 +1,7 @@
+import type { IDataProviderResponse, IS3SignData } from '@duxweb/dvha-core'
 import type { PropType } from 'vue'
 import type { IUploadParams } from './manager'
-import { useI18n, useManage, useUpload } from '@duxweb/dvha-core'
+import { useI18n, useUpload } from '@duxweb/dvha-core'
 import { useVModel } from '@vueuse/core'
 import { useDropZone } from '@vueuse/core'
 import mime from 'mime'
@@ -8,6 +9,7 @@ import { NButton, NDataTable, NProgress, useMessage } from 'naive-ui'
 import { computed, defineComponent, ref, watch } from 'vue'
 import { useModal } from '../../hooks'
 import { DuxMedia } from '../media'
+import { useUploadConfig } from './config'
 
 const typeMap: Record<string, string> = {
   'image/*': 'JPG, PNG, GIF, BMP, WEBP',
@@ -45,6 +47,9 @@ const styles = {
 }
 
 export interface IUploadProps extends IUploadParams {
+  driver?: 'local' | 's3'
+  signPath?: string
+  signCallback?: (response: IDataProviderResponse) => IS3SignData
   managePath?: string
   value?: string | string[]
   defaultValue?: string | string[]
@@ -57,6 +62,12 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
   props: {
     path: { type: String, default: '' },
     managePath: { type: String, default: '' },
+    signPath: { type: String, default: '' },
+    signCallback: Function as PropType<(response: IDataProviderResponse) => IS3SignData>,
+    driver: {
+      type: String as PropType<'local' | 's3'>,
+      default: 'local',
+    },
     maxNum: Number,
     maxSize: Number,
     multiple: Boolean,
@@ -73,7 +84,6 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
       defaultValue: props.defaultValue,
     })
 
-    const manage = useManage()
     const message = useMessage()
     const { t } = useI18n()
     const dropZoneRef = ref<HTMLDivElement>()
@@ -81,8 +91,13 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
     const maxSize = computed(() => props.maxSize || 5)
     const modal = useModal()
 
-    const uploadPath = computed(() => props.path || manage.config?.apiPath?.upload)
-    const managePath = computed(() => props.managePath || manage.config?.apiPath?.uploadManage)
+    const { uploadPath, managePath, driver } = useUploadConfig({
+      driver: props?.driver,
+      signPath: props?.signPath,
+      signCallback: props?.signCallback,
+      uploadPath: props?.path,
+      managePath: props?.managePath,
+    })
 
     const upload = useUpload({
       path: uploadPath.value,
@@ -92,6 +107,7 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
       autoUpload: true,
       accept: props.accept,
       onError: error => message.error(error.message || t('components.upload.error') as string),
+      driver: driver.value,
     })
 
     const { isOverDropZone } = useDropZone(dropZoneRef, {

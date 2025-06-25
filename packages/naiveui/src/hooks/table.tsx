@@ -1,6 +1,6 @@
 import type { UseExtendListProps } from '@duxweb/dvha-core'
 import type { DataTableBaseColumn, DataTableExpandColumn, DataTableFilterState, DataTableProps, DataTableRowKey, DataTableSelectionColumn, DataTableSortState, PaginationProps } from 'naive-ui'
-import type { ComputedRef, Ref } from 'vue'
+import type { ComputedRef, MaybeRef, Ref } from 'vue'
 import { useExtendList } from '@duxweb/dvha-core'
 import { watchDebounced } from '@vueuse/core'
 import { cloneDeep } from 'lodash-es'
@@ -23,7 +23,7 @@ export type TableColumn = DataTableColumn & TableColumnExtend
 
 export interface UseTableProps extends Omit<UseExtendListProps, 'key'> {
   key?: TableColumnKey
-  columns: TableColumn[]
+  columns: MaybeRef<TableColumn[]>
 }
 
 export interface UseNaiveTableReturn extends ReturnType<typeof useExtendList> {
@@ -38,6 +38,7 @@ export interface UseNaiveTableReturn extends ReturnType<typeof useExtendList> {
 export function useNaiveTable(props: UseTableProps): UseNaiveTableReturn {
   const filters = toRef(props, 'filters', {})
   const sorters = toRef(props, 'sorters', {})
+  const tableColumns = toRef(props, 'columns', [])
 
   const tableFilters = ref<Record<string, any>>({})
   const tableExpanded = ref<DataTableRowKey[]>([])
@@ -67,8 +68,8 @@ export function useNaiveTable(props: UseTableProps): UseNaiveTableReturn {
   // 列处理
   const columns = ref<TableColumn[]>([])
 
-  watch(() => props.columns, (v) => {
-    columns.value = v
+  watch(tableColumns, (v) => {
+    columns.value = v as TableColumn[]
   }, {
     immediate: true,
   })
@@ -78,7 +79,7 @@ export function useNaiveTable(props: UseTableProps): UseNaiveTableReturn {
   })
 
   const onUpdateColumnSelected = (v: string[]) => {
-    const newColumns = cloneDeep(props.columns)?.map((item) => {
+    const newColumns = cloneDeep(tableColumns.value)?.map((item) => {
       if (!('key' in item) || !item?.key || !('title' in item) || !item?.title) {
         return item
       }

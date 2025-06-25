@@ -1,7 +1,7 @@
 import type { IDataProviderError, IDataProviderResponse } from '@duxweb/dvha-core'
 import type { MaybeRef, PropType } from 'vue'
 import { useExtendForm, useI18n } from '@duxweb/dvha-core'
-import { useMessage } from 'naive-ui'
+import { NButton, useMessage } from 'naive-ui'
 import { computed, defineComponent, toRef } from 'vue'
 import { DuxModalPage } from '../../components'
 import { DuxFormLayout } from './formLayout'
@@ -66,19 +66,18 @@ export const DuxModalForm = defineComponent({
           default: () => (
             <DuxFormLayout
               {...formProps.value}
-              class="px-2 py-2"
             >
               {slots?.default?.()}
             </DuxFormLayout>
           ),
           footer: () => (
             <>
-              <n-button onClick={onReset} loading={isLoading.value}>
+              <NButton onClick={onReset} loading={isLoading.value}>
                 {t('components.button.reset')}
-              </n-button>
-              <n-button type="primary" loading={isLoading.value} onClick={onSubmit}>
+              </NButton>
+              <NButton type="primary" loading={isLoading.value} onClick={() => onSubmit()}>
                 {t('components.button.submit')}
-              </n-button>
+              </NButton>
             </>
           ),
         }}

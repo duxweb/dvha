@@ -20,11 +20,13 @@ export function useExtendForm(props: UseExtendFormProps) {
     const { form, ...rest } = props
     return {
       ...rest,
-      form,
     }
   })
 
-  const result = useForm(formProps.value)
+  const result = useForm({
+    ...formProps.value,
+    form: form.value,
+  })
 
   const onSubmit = (data?: Record<string, any>) => {
     validate().then((v) => {

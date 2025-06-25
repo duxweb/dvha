@@ -48,9 +48,9 @@ export function useExportCsv(props: IUseExportCsvProps) {
       }
 
       // 合并所有页面的数据
-      const allData = data.pages.flatMap(page => page?.data || [])
+      const allData = data.pages.flatMap(page => Array.isArray(page?.data) ? page.data : [])
 
-      if (allData.length === 0) {
+      if (!allData || !allData?.length) {
         props.onError?.({
           message: 'No data to export',
           status: 400,

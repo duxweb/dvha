@@ -106,7 +106,7 @@ export function themeOverrides() {
         modalColor: getSemanticColor('bg', 'base'),
         dividerColor: getSemanticColor('border', 'muted'),
         borderColor: getSemanticColor('border', 'muted'),
-        popoverColor: `rgba(${color2rgb(getSemanticColor('bg', 'muted'))}, 0.95)`,
+        popoverColor: `rgba(${color2rgb(getSemanticColor('bg', 'base'))}, 0.98)`,
       },
       DataTable: {
         tdColor: getSemanticColor('bg', 'base'),

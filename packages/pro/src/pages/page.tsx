@@ -34,7 +34,7 @@ export const DuxPage = defineComponent({
     }
 
     return () => {
-      const cardClass = props.card ? 'bg-default dark:bg-muted rounded-md shadow-xs lg:dark:border lg:dark:border-muted' : ''
+      const cardClass = props.card ? 'bg-default dark:bg-muted rounded shadow-xs lg:dark:border lg:dark:border-muted' : ''
       const paddingClass = props.card && props.padding ? 'p-3' : ''
       const scrollClass = !props.scrollbar ? 'h-full' : ''
 

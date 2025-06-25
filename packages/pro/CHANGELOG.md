@@ -1,5 +1,32 @@
 # @duxweb/dvha-pro
 
+## 1.0.19
+
+### Patch Changes
+
+- feat(pro): 增加上传驱动全局配置
+  feat(pro): 修改表单页面组件为居中布局
+  feat(pro): 增加图标选择器
+  feat(pro): 增加空列表状态页
+  feat(pro): 增加空页面状态
+  feat(pro): 增加列表筛选组件布局
+  deat(pro): 增加侧栏面板的页面样式
+  fix(pro): 修正dvha pro popover 背景透明度
+  fix(pro): 修改筛选器为 modal 弹窗
+  fix(core): 修正无限列表与普通列表的 key
+- Updated dependencies
+  - @duxweb/dvha-naiveui@1.0.19
+  - @duxweb/dvha-core@1.0.19
+
+## 1.0.18
+
+### Patch Changes
+
+- feat: 增加树形筛选,增加图标组件
+- Updated dependencies
+  - @duxweb/dvha-core@1.0.18
+  - @duxweb/dvha-naiveui@1.0.18
+
 ## 1.0.17
 
 ### Patch Changes

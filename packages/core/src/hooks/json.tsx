@@ -75,7 +75,6 @@ export function useJsonSchema(props?: UseJsonSchemaProps) {
     ...(props?.adaptors || []),
   ]
 
-  // 如果 props 中有额外的组件，加载到 store
   if (props?.components) {
     loadComponentsToStore(props.components, jsonSchemaStore)
   }

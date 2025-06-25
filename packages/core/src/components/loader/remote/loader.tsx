@@ -96,10 +96,6 @@ export function sfcLoader(path: string) {
         throw new Error(`${err?.message} ${url}`)
       })
 
-      await setTimeout(() => {
-        console.log('res', res)
-      }, 10000)
-
       return {
         getContentData: () => res?.content,
         type: `${res?.type || 'vue'}`,

@@ -8,11 +8,13 @@ export interface TablePagination {
 }
 import { useExtendList, useI18n, useJsonSchema } from '@duxweb/dvha-core'
 import { useWindowSize } from '@vueuse/core'
-import { NButton, NCheckbox, NPagination, NPopover, NProgress, NSpin, NTab, NTabs, NTooltip } from 'naive-ui'
+import { NButton, NCheckbox, NDrawer, NModal, NPagination, NProgress, NSpin, NTab, NTabs, NTooltip } from 'naive-ui'
 import { computed, defineComponent, h, onMounted, reactive, ref, toRef, watch } from 'vue'
-import { useAction, useDrawer } from '../../hooks'
+import { useAction } from '../../hooks'
 import { DuxPage, DuxPageEmpty } from '../../pages'
-import { DuxTableFilter, DuxTableTools } from './'
+import { DuxDrawerPage } from '../drawer'
+import { DuxModalPage } from '../modal'
+import { DuxFilterLayout, DuxTableFilter, DuxTableTools } from './'
 
 export interface ListPageTools {
   import?: boolean
@@ -109,7 +111,14 @@ export const DuxListLayout = defineComponent({
     // 筛选处理
     const filterOptions = reactive({
       show: false,
-      collapse: false,
+    })
+
+    const sideLeft = reactive({
+      show: false,
+    })
+
+    const sideRight = reactive({
+      show: false,
     })
 
     const visibleFieldCount = ref(props.filterSchema?.length || 0)
@@ -196,8 +205,6 @@ export const DuxListLayout = defineComponent({
       }
     })
 
-    const { show } = useDrawer()
-
     return () => (
       <DuxPage padding={false} scrollbar={false}>
         {{
@@ -254,14 +261,8 @@ export const DuxListLayout = defineComponent({
                       <NButton
                         class="flex-none"
                         secondary
-                        loading={isExporting.value}
                         onClick={() => {
-                          show({
-                            title: props.sideLeftTitle,
-                            component: () => <div>{slots?.sideLeft?.()}</div>,
-                            width: 300,
-                            placement: 'left',
-                          })
+                          sideLeft.show = !sideLeft.show
                         }}
                       >
                         {{
@@ -287,14 +288,8 @@ export const DuxListLayout = defineComponent({
                       <NButton
                         class="flex-none"
                         secondary
-                        loading={isExporting.value}
                         onClick={() => {
-                          show({
-                            title: props.sideRightTitle,
-                            component: () => <div>{slots?.sideRight?.()}</div>,
-                            width: 300,
-                            placement: 'right',
-                          })
+                          sideRight.show = !sideRight.show
                         }}
                       >
                         {{
@@ -304,37 +299,23 @@ export const DuxListLayout = defineComponent({
                     )}
 
                     {showAdvancedFilter.value && (
-
-                      <NPopover trigger="click" displayDirective="show">
+                      <NButton
+                        iconPlacement="right"
+                        onClick={() => {
+                          filterOptions.show = !filterOptions.show
+                        }}
+                      >
                         {{
-                          trigger: () => (
-                            <NButton
-                              iconPlacement="right"
-                              onClick={() => {
-                                filterOptions.collapse = !filterOptions.collapse
-                              }}
-                            >
-                              {{
-                                default: () => t('components.button.advanced'),
-                                icon: () => (
-                                  <div class={[
-                                    'i-tabler:chevrons-down size-4 transition-all',
-                                  ]}
-                                  />
-                                ),
-                              }}
-                            </NButton>
-                          ),
-                          default: () => (
-                            <div class="flex flex-col gap-2 py-1">
-                              {h(filterRenderAdvanced)}
-                            </div>
+                          default: () => t('components.button.advanced'),
+                          icon: () => (
+                            <div class={[
+                              'i-tabler:chevrons-down size-4 transition-all',
+                            ]}
+                            />
                           ),
                         }}
-                      </NPopover>
-
+                      </NButton>
                     )}
-
                   </div>
                 </div>
 
@@ -494,6 +475,42 @@ export const DuxListLayout = defineComponent({
                   ],
                 ]}
               />
+
+              <NModal draggable class="bg-white rounded dark:shadow-gray-950/80  dark:bg-gray-800/60 backdrop-blur" show={filterOptions.show} onUpdateShow={v => filterOptions.show = v}>
+                {{
+                  default: ({ draggableClass }) => {
+                    return (
+                      <DuxModalPage title={t('components.button.filter')} handle={draggableClass} onClose={() => filterOptions.show = false}>
+                        <DuxFilterLayout showLabel labelPlacement="top">
+                          {h(filterRenderAdvanced)}
+                        </DuxFilterLayout>
+                      </DuxModalPage>
+                    )
+                  },
+                }}
+              </NModal>
+
+              <NDrawer
+                show={sideLeft.show}
+                onUpdateShow={v => sideLeft.show = v}
+                autoFocus={false}
+                placement="left"
+              >
+                <DuxDrawerPage title={props.sideLeftTitle || t('components.button.sideLeft')} onClose={() => sideLeft.show = false} scrollbar={false}>
+                  {slots?.sideLeft?.()}
+                </DuxDrawerPage>
+              </NDrawer>
+
+              <NDrawer
+                show={sideRight.show}
+                onUpdateShow={v => sideRight.show = v}
+                autoFocus={false}
+                placement="right"
+              >
+                <DuxDrawerPage title={props.sideRightTitle || t('components.button.sideRight')} onClose={() => sideRight.show = false} scrollbar={false}>
+                  {slots?.sideRight?.()}
+                </DuxDrawerPage>
+              </NDrawer>
             </div>
           ),
         }}

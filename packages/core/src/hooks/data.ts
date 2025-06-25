@@ -27,9 +27,12 @@ export function useList(params: IListParams) {
   const { mutate: onAuthError } = useError()
 
   const pagination = toRef<IDataProviderPagination>(params.pagination ? params.pagination as IDataProviderPagination : { page: 1, pageSize: 20 })
+  const sorters = toRef(params, 'sorters', {})
+  const filters = toRef(params, 'filters', {})
+  const meta = toRef(params, 'meta', {})
 
   const props = computed((): IDataProviderListOptions => {
-    const { onError, options, pagination, ...rest } = params
+    const { onError, options, pagination, filters, sorters, meta, ...rest } = params
     return rest
   })
 
@@ -46,11 +49,14 @@ export function useList(params: IListParams) {
     return {
       ...props.value,
       pagination: params.pagination ? pagination.value : undefined,
+      filters: filters.value || {},
+      sorters: sorters.value || {},
+      meta: meta.value || {},
     }
   })
 
   const req = useQuery({
-    queryKey: [`${manage.config?.name}:${providerName}:${params.path}`, queryProps],
+    queryKey: [`${manage.config?.name}:${providerName}:${params.path}`, queryProps.value],
     queryFn: () => manage.config?.dataProvider?.[providerName]?.getList(queryProps.value, manage, auth),
     ...params.options,
   })
@@ -59,9 +65,12 @@ export function useList(params: IListParams) {
     return req.isFetching.value
   })
 
-  watch(() => req.isError, () => {
-    onAuthError(req.error)
-    params.onError?.(req.error)
+  watch(req.isError, (v) => {
+    if (!v) {
+      return
+    }
+    onAuthError(req.error.value as IDataProviderError)
+    params?.onError?.(req.error.value as IDataProviderError)
   })
 
   const data = ref<IDataProviderResponse | undefined>(undefined)
@@ -108,9 +117,12 @@ export function useInfiniteList(params: IInfiniteListParams) {
   const { mutate: onAuthError } = useError()
 
   const pagination = toRef(params, 'pagination', { page: 1, pageSize: 20 })
+  const sorters = toRef(params, 'sorters', {})
+  const filters = toRef(params, 'filters', {})
+  const meta = toRef(params, 'meta', {})
 
   const props = computed((): IDataProviderListOptions => {
-    const { onError, options, pagination, ...rest } = params
+    const { onError, options, pagination, filters, sorters, meta, ...rest } = params
     return rest
   })
 
@@ -123,13 +135,21 @@ export function useInfiniteList(params: IInfiniteListParams) {
   const total = ref(0)
   const pageCount = ref(0)
 
+  const queryProps = computed(() => {
+    return {
+      ...props.value,
+      filters: filters.value || {},
+      sorters: sorters.value || {},
+      meta: meta.value || {},
+    }
+  })
+
   const req = useInfiniteQuery({
-    queryKey: [`${manage.config?.name}:${providerName}:${params.path}`, props],
+    queryKey: [`${manage.config?.name}:${providerName}:${params.path}:infinite`, queryProps.value],
     queryFn: ({ pageParam }) => {
       pagination.value.page = pageParam
-
       return manage.config?.dataProvider?.[providerName]?.getList({
-        ...props.value,
+        ...queryProps.value,
         pagination: {
           ...pagination.value,
           page: pageParam,
@@ -138,8 +158,8 @@ export function useInfiniteList(params: IInfiniteListParams) {
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage, _allPages, lastPageParam) => {
-      if (!lastPage?.data || lastPage?.data?.length === 0) {
-        return undefined
+      if (!lastPage?.data || !lastPage?.data?.length) {
+        return
       }
 
       const resTotal = manage.config?.dataProvider?.[providerName]?.getTotal?.(lastPage) || 0
@@ -148,14 +168,14 @@ export function useInfiniteList(params: IInfiniteListParams) {
 
       const currentTotal = lastPageParam * (pagination.value.pageSize || 20)
       if (currentTotal >= resTotal) {
-        return undefined
+        return
       }
 
       return lastPageParam + 1
     },
     getPreviousPageParam: (firstPage, _allPages, firstPageParam) => {
       if (firstPageParam <= 1) {
-        return undefined
+        return
       }
       const resTotal = manage.config?.dataProvider?.[providerName]?.getTotal?.(firstPage) || 0
       pageCount.value = Math.ceil(resTotal / (pagination.value.pageSize || 20)) || 0
@@ -169,9 +189,12 @@ export function useInfiniteList(params: IInfiniteListParams) {
     return req.isFetching.value
   })
 
-  watch(() => req.isError, () => {
-    onAuthError(req.error)
-    params.onError?.(req.error)
+  watch(req.isError, (v) => {
+    if (!v) {
+      return
+    }
+    onAuthError(req.error.value as IDataProviderError)
+    params?.onError?.(req.error.value as IDataProviderError)
   })
 
   const fetchNextPage = () => {
@@ -183,11 +206,11 @@ export function useInfiniteList(params: IInfiniteListParams) {
 
   const data = ref<IDataProviderResponse | undefined>(undefined)
   watch(req.data, (v) => {
-    if (!v?.pages || v.pages.length === 0) {
+    if (!v || !v?.pages || !v.pages?.length) {
       return
     }
     const allData = v.pages.reduce((acc, page) => {
-      if (page?.data && page.data.length > 0) {
+      if (page?.data && Array.isArray(page.data) && page.data?.length) {
         return acc.concat(page.data)
       }
       return acc
@@ -252,9 +275,14 @@ export function useOne(params: IOneParams) {
     return req.isFetching.value
   })
 
-  watch(() => req.isError, () => {
-    onAuthError(req.error)
-    params.onError?.(req.error)
+  watch(req.isError, (v) => {
+    if (!v) {
+      return
+    }
+    onAuthError(req.error.value as IDataProviderError)
+    params?.onError?.(req.error.value as IDataProviderError)
+  }, {
+    immediate: true,
   })
 
   const data = ref<IDataProviderResponse | undefined>(undefined)
@@ -308,9 +336,12 @@ export function useMany(params: IManyParams) {
     return req.isFetching.value
   })
 
-  watch(() => req.isError, () => {
-    onAuthError(req.error)
-    params.onError?.(req.error)
+  watch(req.isError, (v) => {
+    if (!v) {
+      return
+    }
+    onAuthError(req.error.value as IDataProviderError)
+    params?.onError?.(req.error.value as IDataProviderError)
   })
 
   const data = ref<IDataProviderResponse | undefined>(undefined)
@@ -359,6 +390,9 @@ export function useCreate(params: ICreateParams) {
       if (!manage.config?.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
+      if (data.path) {
+        params.path = data.path
+      }
       return manage.config?.dataProvider?.[providerName]?.create({
         ...props.value,
         ...data,
@@ -372,7 +406,7 @@ export function useCreate(params: ICreateParams) {
     },
     onError: (error) => {
       onAuthError(error)
-      params.onError?.(error)
+      params?.onError?.(error)
     },
     ...params.options,
   })
@@ -413,6 +447,9 @@ export function useCreateMany(params: ICreateManyParams) {
       if (!manage.config?.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
+      if (data.path) {
+        params.path = data.path
+      }
       return manage.config?.dataProvider?.[providerName]?.createMany({
         ...props.value,
         ...data,
@@ -426,7 +463,7 @@ export function useCreateMany(params: ICreateManyParams) {
     },
     onError: (error) => {
       onAuthError(error)
-      params.onError?.(error)
+      params?.onError?.(error)
     },
     ...params.options,
   })
@@ -467,6 +504,9 @@ export function useUpdate(params: IUpdateParams) {
       if (!manage.config?.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
+      if (data.path) {
+        params.path = data.path
+      }
       return manage.config?.dataProvider?.[providerName]?.update({
         ...props.value,
         ...data,
@@ -480,7 +520,7 @@ export function useUpdate(params: IUpdateParams) {
     },
     onError: (error) => {
       onAuthError(error)
-      params.onError?.(error)
+      params?.onError?.(error)
     },
     ...params.options,
   })
@@ -518,6 +558,9 @@ export function useUpdateMany(params: IUpdateManyParams) {
       if (!manage.config?.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
+      if (data.path) {
+        params.path = data.path
+      }
       return manage.config?.dataProvider?.[providerName]?.updateMany({
         ...props.value,
         ...data,
@@ -531,7 +574,7 @@ export function useUpdateMany(params: IUpdateManyParams) {
     },
     onError: (error) => {
       onAuthError(error)
-      params.onError?.(error)
+      params?.onError?.(error)
     },
     ...params.options,
   })
@@ -562,6 +605,7 @@ export function useDelete(params: IDeleteParams) {
   const providerName = params.providerName || 'default'
   const { mutate: onAuthError } = useError()
   const { invalidate } = useInvalidate()
+
   const props = computed((): IDataProviderDeleteOptions => {
     const { onError, options, ...rest } = params
     return rest
@@ -572,13 +616,15 @@ export function useDelete(params: IDeleteParams) {
       if (!manage.config?.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
+      if (data.path) {
+        params.path = data.path
+      }
       return manage.config?.dataProvider?.[providerName]?.deleteOne({
         ...props.value,
         ...data,
       }, manage, auth)
     },
     onSuccess: (data) => {
-      req.reset()
       params.onSuccess?.(data)
       if (params.path) {
         invalidate(params.path)
@@ -586,7 +632,7 @@ export function useDelete(params: IDeleteParams) {
     },
     onError: (error) => {
       onAuthError(error)
-      params.onError?.(error)
+      params?.onError?.(error)
     },
     ...params.options,
   })
@@ -627,6 +673,9 @@ export function useDeleteMany(params: IDeleteManyParams) {
       if (!manage.config?.dataProvider) {
         throw new Error('Data provider is not initialized')
       }
+      if (data.path) {
+        params.path = data.path
+      }
       return manage.config?.dataProvider?.[providerName]?.deleteMany({
         ...props.value,
         ...data,
@@ -640,7 +689,7 @@ export function useDeleteMany(params: IDeleteManyParams) {
     },
     onError: (error) => {
       onAuthError(error)
-      params.onError?.(error)
+      params?.onError?.(error)
     },
     ...params.options,
   })
@@ -691,9 +740,12 @@ export function useCustom(params?: ICustomParams) {
     return req.isFetching.value
   })
 
-  watch(() => req.isError, () => {
-    onAuthError(req.error)
-    params?.onError?.(req.error)
+  watch(req.isError, (v) => {
+    if (!v) {
+      return
+    }
+    onAuthError(req.error.value as IDataProviderError)
+    params?.onError?.(req.error.value as IDataProviderError)
   })
 
   const data = ref<IDataProviderResponse | undefined>(undefined)

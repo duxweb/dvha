@@ -4,12 +4,15 @@ import type { DataTableBaseColumn, SelectOption } from 'naive-ui'
 import type { PropType } from 'vue'
 import type { UseActionItem } from '../../hooks'
 import { useI18n, useJsonSchema } from '@duxweb/dvha-core'
-import { useElementSize, useWindowSize } from '@vueuse/core'
-import { NButton, NInput, NPagination, NPopover, NPopselect, NProgress, NTab, NTabs, NTooltip } from 'naive-ui'
-import { computed, defineComponent, h, reactive, ref, toRef, watch } from 'vue'
-import { useAction, useDrawer, useTable } from '../../hooks'
+import { useWindowSize } from '@vueuse/core'
+import { NButton, NDrawer, NModal, NPagination, NPopselect, NProgress, NTab, NTabs, NTooltip } from 'naive-ui'
+import { computed, defineComponent, h, reactive, toRef } from 'vue'
+import { useAction, useTable } from '../../hooks'
 import { DuxPage } from '../../pages'
+import { DuxDrawerPage } from '../drawer'
+import { DuxModalPage } from '../modal'
 import { DuxTableFilter } from './filter'
+import { DuxFilterLayout } from './filterLayout'
 import { DuxTableTools } from './tools'
 
 export interface TablePageTools {
@@ -40,6 +43,7 @@ export const DuxTableLayout = defineComponent({
     },
     pagination: {
       type: [Boolean, Object] as PropType<boolean | TablePagination>,
+      default: true,
     },
     tabs: {
       type: Array as PropType<{
@@ -64,18 +68,19 @@ export const DuxTableLayout = defineComponent({
     },
   },
   setup(props, { slots }) {
-    const filters = toRef(props.filter || {})
+    const filters = toRef(props, 'filter', {})
+    const tableColumns = toRef(props, 'columns', [])
     const { t } = useI18n()
     const { renderAction } = useAction()
 
     const result = useTable({
       path: props.path,
       filters: filters.value,
-      columns: props.columns || [],
+      columns: tableColumns,
       pagination: props.pagination,
     })
 
-    const { meta, columns, tablePagination, table, onUpdateColumnSelected, onUpdateChecked, columnSelected, autoRefetch, autoCountdown, onAutoRefetch, isExporting, isExportingRows, isImporting, onExport, onExportRows, onImport } = result
+    const { columns, tablePagination, table, onUpdateColumnSelected, onUpdateChecked, columnSelected, autoRefetch, autoCountdown, onAutoRefetch, isExporting, isExportingRows, isImporting, onExport, onExportRows, onImport } = result
 
     const columnConfig = computed<SelectOption[]>(() => {
       return (columns.value as DataTableBaseColumn[]).filter(column => 'title' in column && 'key' in column).map((column) => {
@@ -97,28 +102,23 @@ export const DuxTableLayout = defineComponent({
 
     const filterOptions = reactive({
       show: false,
-      collapse: false,
     })
 
-    const filterEl = ref<HTMLDivElement>()
-    const { height: filterHeight } = useElementSize(filterEl)
+    const sideLeft = reactive({
+      show: false,
+    })
 
-    watch(filterHeight, (v) => {
-      if (v > 35) {
-        filterOptions.show = true
-      }
-      else {
-        filterOptions.show = false
-      }
-    }, { immediate: true, deep: true })
+    const sideRight = reactive({
+      show: false,
+    })
 
     const filterSchema = computed(() => {
       return (props.filterSchema || []).map((item) => {
-        const { title, ...rest } = item
+        const { label, ...rest } = item
         return {
           tag: DuxTableFilter,
           attrs: {
-            label: title,
+            label,
           },
           children: rest,
         }
@@ -127,16 +127,10 @@ export const DuxTableLayout = defineComponent({
 
     const { render: filterRender } = useJsonSchema({
       data: filterSchema.value?.slice(1),
-      components: {
-        NInput,
-      },
     })
 
     const { render: filterRenderCollapse } = useJsonSchema({
       data: filterSchema.value?.slice(0, 1),
-      components: {
-        NInput,
-      },
     })
 
     const tools = computed(() => {
@@ -148,16 +142,14 @@ export const DuxTableLayout = defineComponent({
       }
     })
 
-    const { show } = useDrawer()
-
     return () => (
       <DuxPage actions={props.actions} scrollbar={false}>
         {{
           sideLeft: () => slots?.sideLeft && width.value >= 1024 ? slots?.sideLeft?.() : undefined,
           sideRight: () => slots?.sideRight && width.value >= 1024 ? slots?.sideRight?.() : undefined,
           default: () => (
-            <div class="flex flex-col gap-3 h-full relative">
-              <div class="flex gap-3 justify-between flex-col lg:flex-row">
+            <div class="flex flex-col gap-2 h-full relative">
+              <div class="flex gap-2 justify-between flex-col lg:flex-row">
                 {props.tabs && (
                   <div class="flex flex-none">
 
@@ -181,21 +173,14 @@ export const DuxTableLayout = defineComponent({
                 )}
                 <div class={[
                   'overflow-hidden flex-1 flex gap-2',
-                  filterOptions.collapse ? 'h-auto' : 'h-8.5',
                 ]}
                 >
                   {slots?.sideLeft && width.value < 1024 && (
                     <NButton
                       class="flex-none"
                       secondary
-                      loading={isExporting.value}
                       onClick={() => {
-                        show({
-                          title: props.sideLeftTitle,
-                          component: () => <div>{slots?.sideLeft?.()}</div>,
-                          width: 300,
-                          placement: 'left',
-                        })
+                        sideLeft.show = !sideLeft.show
                       }}
                     >
                       {{
@@ -205,7 +190,6 @@ export const DuxTableLayout = defineComponent({
                   )}
 
                   <div
-                    ref={filterEl}
                     class={[
                       'flex-1 lg:flex gap-2 flex-wrap',
                       props.tabs ? 'justify-end' : 'justify-start',
@@ -218,14 +202,8 @@ export const DuxTableLayout = defineComponent({
                     <NButton
                       class="flex-none"
                       secondary
-                      loading={isExporting.value}
                       onClick={() => {
-                        show({
-                          title: props.sideRightTitle,
-                          component: () => <div>{slots?.sideRight?.()}</div>,
-                          width: 300,
-                          placement: 'right',
-                        })
+                        sideRight.show = !sideRight.show
                       }}
                     >
                       {{
@@ -237,39 +215,26 @@ export const DuxTableLayout = defineComponent({
                 </div>
                 <div class="flex gap-2 justify-between lg:justify-end">
 
-                  {filterSchema.value.length > 1 && (
-
-                    <NPopover trigger="click" displayDirective="show">
-                      {{
-                        trigger: () => (
-                          <NButton
-                            iconPlacement="right"
-                            onClick={() => {
-                              filterOptions.collapse = !filterOptions.collapse
-                            }}
-                          >
-                            {{
-                              default: () => t('components.button.filter'),
-                              icon: () => (
-                                <div class={[
-                                  'i-tabler:chevrons-down size-4 transition-all',
-                                ]}
-                                />
-                              ),
-                            }}
-                          </NButton>
-                        ),
-                        default: () => (
-                          <div class="flex flex-col gap-2 py-1">
-                            {h(filterRender)}
-                          </div>
-                        ),
-                      }}
-                    </NPopover>
-
-                  )}
-
                   <div class="flex gap-2 items-center">
+
+                    {filterSchema.value.length > 1 && (
+                      <NButton
+                        iconPlacement="right"
+                        onClick={() => {
+                          filterOptions.show = !filterOptions.show
+                        }}
+                      >
+                        {{
+                          default: () => t('components.button.filter'),
+                          icon: () => (
+                            <div class={[
+                              'i-tabler:chevrons-down size-4 transition-all',
+                            ]}
+                            />
+                          ),
+                        }}
+                      </NButton>
+                    )}
 
                     {slots?.tools?.()}
 
@@ -378,7 +343,7 @@ export const DuxTableLayout = defineComponent({
                         prefix: () => (
                           <div>
                             {t('components.list.total', {
-                              total: meta?.value?.total || 0,
+                              total: result.total.value || 0,
                             })}
                           </div>
                         ),
@@ -413,6 +378,42 @@ export const DuxTableLayout = defineComponent({
                   ],
                 ]}
               />
+
+              <NModal draggable class="bg-white rounded dark:shadow-gray-950/80  dark:bg-gray-800/60 backdrop-blur" show={filterOptions.show} onUpdateShow={v => filterOptions.show = v}>
+                {{
+                  default: ({ draggableClass }) => {
+                    return (
+                      <DuxModalPage title={t('components.button.filter')} handle={draggableClass} onClose={() => filterOptions.show = false}>
+                        <DuxFilterLayout showLabel labelPlacement="top">
+                          {h(filterRender)}
+                        </DuxFilterLayout>
+                      </DuxModalPage>
+                    )
+                  },
+                }}
+              </NModal>
+
+              <NDrawer
+                show={sideLeft.show}
+                onUpdateShow={v => sideLeft.show = v}
+                autoFocus={false}
+                placement="left"
+              >
+                <DuxDrawerPage title={props.sideLeftTitle || t('components.button.sideLeft')} onClose={() => sideLeft.show = false} scrollbar={false}>
+                  {slots?.sideLeft?.()}
+                </DuxDrawerPage>
+              </NDrawer>
+
+              <NDrawer
+                show={sideRight.show}
+                onUpdateShow={v => sideRight.show = v}
+                autoFocus={false}
+                placement="right"
+              >
+                <DuxDrawerPage title={props.sideRightTitle || t('components.button.sideRight')} onClose={() => sideRight.show = false} scrollbar={false}>
+                  {slots?.sideRight?.()}
+                </DuxDrawerPage>
+              </NDrawer>
             </div>
           ),
         }}

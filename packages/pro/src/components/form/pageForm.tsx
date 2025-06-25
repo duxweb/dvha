@@ -1,9 +1,12 @@
 import type { IDataProviderError, IDataProviderResponse } from '@duxweb/dvha-core'
 import type { MaybeRef, PropType } from 'vue'
-import { useExtendForm, useI18n } from '@duxweb/dvha-core'
-import { NButton, useMessage } from 'naive-ui'
+import { useExtendForm, useI18n, useTabStore } from '@duxweb/dvha-core'
+import { NButton, NScrollbar, useMessage } from 'naive-ui'
 import { defineComponent, toRef } from 'vue'
+import { useRouter } from 'vue-router'
 import { DuxPage } from '../../pages'
+import { DuxCard } from '../card'
+import { DuxFormLayout } from './formLayout'
 
 export const DuxPageForm = defineComponent({
   name: 'DuxPageForm',
@@ -13,6 +16,12 @@ export const DuxPageForm = defineComponent({
     },
     action: {
       type: String as PropType<'create' | 'edit'>,
+    },
+    title: {
+      type: String as PropType<string>,
+    },
+    description: {
+      type: String as PropType<string>,
     },
     path: {
       type: String as PropType<string>,
@@ -36,6 +45,8 @@ export const DuxPageForm = defineComponent({
     const form = toRef(props, 'data', {})
 
     const message = useMessage()
+    const router = useRouter()
+    const tab = useTabStore()
 
     const result = useExtendForm({
       id: props.id,
@@ -49,33 +60,54 @@ export const DuxPageForm = defineComponent({
       onSuccess: (data) => {
         message.success(t('components.form.success') as string)
         props.onSuccess?.(data)
+
+        if (!result.isEdit.value && tab.current) {
+          tab.delTab(tab.current, v => router.push(v.path || ''))
+        }
       },
     })
 
+    const tabInfo = tab.tabs.find(v => v.path === tab.current)
+
     return () => (
-      <DuxPage card={false}>
-        {{
-          default: () => slots?.default?.(result),
-          actions: () => (
-            <div class="flex gap-6 items-center">
-              {slots?.actions?.(result)}
-              <div class="flex gap-2">
-                <NButton>
-                  {{
-                    default: () => t('components.button.reset'),
-                    icon: () => <i class="i-tabler:refresh" />,
-                  }}
-                </NButton>
-                <NButton type="primary">
-                  {{
-                    default: () => t('components.button.submit'),
-                    icon: () => <i class="i-tabler:send" />,
-                  }}
-                </NButton>
+      <DuxPage card={false} scrollbar={false}>
+        <DuxCard
+          title={props?.title || tabInfo?.label || (result.isEdit.value ? t('components.form.edit') : t('components.form.create'))}
+          description={props?.description}
+          class="h-full flex flex-col"
+          contentClass="flex-1 min-h-0"
+          contentSize="none"
+          header-bordered
+        >
+          {{
+            default: () => (
+              <NScrollbar>
+                <DuxFormLayout label-placement="page">
+                  {slots?.default?.(result)}
+                </DuxFormLayout>
+              </NScrollbar>
+            ),
+            headerExtra: () => (
+              <div class="flex gap-6 items-center">
+                {slots?.actions?.(result)}
+                <div class="flex gap-2">
+                  <NButton onClick={() => result.onReset()}>
+                    {{
+                      default: () => t('components.button.reset'),
+                      icon: () => <i class="i-tabler:refresh" />,
+                    }}
+                  </NButton>
+                  <NButton type="primary" onClick={() => result.onSubmit()}>
+                    {{
+                      default: () => t('components.button.submit'),
+                      icon: () => <i class="i-tabler:device-floppy" />,
+                    }}
+                  </NButton>
+                </div>
               </div>
-            </div>
-          ),
-        }}
+            ),
+          }}
+        </DuxCard>
       </DuxPage>
     )
   },

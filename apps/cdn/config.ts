@@ -1,5 +1,6 @@
 import type { IConfig } from '@duxweb/dvha-core'
 import { i18nProvider, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
+import * as DuxNaiveUI from '@duxweb/dvha-naiveui'
 import { enUS, zhCN } from '@duxweb/dvha-pro'
 import * as DuxPro from '@duxweb/dvha-pro'
 import * as NaiveUI from 'naive-ui'
@@ -34,9 +35,7 @@ declare global {
 }
 
 const config = {
-  defaultManage: 'admin',
   theme: {},
-  copyright: 'Dux Pro',
   manages: [
   ],
   dataProvider: simpleDataProvider({
@@ -55,14 +54,27 @@ const config = {
     packages: {
       'naive-ui': NaiveUI,
       '@duxweb/dvha-pro': DuxPro,
+      '@duxweb/dvha-naiveui': DuxNaiveUI,
     },
   },
   jsonSchema: {
-    components: NaiveUI as any,
+    components: [
+      ...Object.values(DuxPro).filter(comp => comp?.name?.startsWith?.('Dux')),
+      ...Object.values(DuxNaiveUI).filter(comp => comp?.name?.startsWith?.('Dux')),
+      ...Object.entries(NaiveUI)
+        .filter(([key, _comp]) => {
+          return key.startsWith?.('N')
+        })
+        .map((comp) => {
+          const component = comp[1] as any
+          component.name = comp[0]
+          return component
+        }),
+    ],
   },
 }
 
-function injectConfig(config): IConfig {
+function injectConfig(config: IConfig): IConfig {
   if (typeof window == 'undefined' || !window.duxConfig) {
     throw new Error('config not found')
   }

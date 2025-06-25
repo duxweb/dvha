@@ -1,11 +1,13 @@
+import type { IDataProviderResponse, IS3SignData } from '@duxweb/dvha-core'
 import type { PropType } from 'vue'
-import { useI18n, useManage, useUpload } from '@duxweb/dvha-core'
+import { useI18n, useUpload } from '@duxweb/dvha-core'
 import { useVModel } from '@vueuse/core'
 import clsx from 'clsx'
 import { NButton, NImage, NProgress, useMessage } from 'naive-ui'
 import { computed, defineComponent, watch } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
 import { useImagePreview, useModal } from '../../hooks'
+import { useUploadConfig } from './config'
 
 export const DuxImageUpload = defineComponent({
   name: 'DuxImageUpload',
@@ -14,12 +16,24 @@ export const DuxImageUpload = defineComponent({
       type: String,
       default: 'upload',
     },
+    signPath: {
+      type: String,
+      default: '',
+    },
+    signCallback: Function as PropType<(response: IDataProviderResponse) => IS3SignData>,
     managePath: {
       type: String,
       default: '',
     },
+    driver: {
+      type: String as PropType<'local' | 's3'>,
+      default: 'local',
+    },
     maxNum: Number,
-    maxSize: Number,
+    maxSize: {
+      type: Number,
+      default: 0,
+    },
     multiple: Boolean,
     manager: Boolean,
     value: [String, Array<string>],
@@ -47,11 +61,15 @@ export const DuxImageUpload = defineComponent({
       progressBar: 'absolute left-2 right-2 bottom-2',
     }
 
-    const manage = useManage()
+    const maxSize = computed(() => props.maxSize)
 
-    const maxSize = computed(() => props.maxSize || 5)
-    const uploadPath = computed(() => props.path || manage.config?.apiPath?.upload)
-    const managePath = computed(() => props.managePath || manage.config?.apiPath?.uploadManage)
+    const { uploadPath, managePath, driver } = useUploadConfig({
+      driver: props?.driver,
+      signPath: props?.signPath,
+      signCallback: props?.signCallback,
+      uploadPath: props?.path,
+      managePath: props?.managePath,
+    })
 
     const upload = useUpload({
       path: uploadPath.value,
@@ -63,6 +81,7 @@ export const DuxImageUpload = defineComponent({
       onError: (error) => {
         message.error(error.message || t('components.upload.error') as string)
       },
+      driver: driver.value,
     })
 
     watch(upload.dataFiles, (v) => {

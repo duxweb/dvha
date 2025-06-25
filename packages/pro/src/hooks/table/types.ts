@@ -25,6 +25,7 @@ export interface DrawerActionItem extends BaseActionItem {
   component: AsyncComponentLoader<any>
   componentProps?: Record<string, any> | ((data: any) => Record<string, any>)
   width?: number
+  maxWidth?: number
 }
 
 // 链接类型

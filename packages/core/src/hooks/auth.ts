@@ -88,7 +88,10 @@ export function useLogout(props?: IAuthLogoutParams) {
     if (result?.success) {
       props?.onSuccess?.(result)
       authStore.logout()
-      router.push(manage.getRoutePath(result.redirectTo || '/login'))
+      await router.replace(manage.getRoutePath(result.redirectTo || '/login'))
+      setTimeout(() => {
+        window.location.reload()
+      }, 100)
       return
     }
     props?.onError?.(result)
@@ -225,7 +228,7 @@ export function useError(onCallback?: (data?: IAuthErrorResponse) => void) {
   const { config: manage, getRoutePath } = useManage()
   const router = useRouter()
 
-  const mutate = async (error: IDataProviderError) => {
+  const mutate = async (error?: IDataProviderError) => {
     const result = await manage.authProvider?.onError(error)
     onCallback?.(result)
     if (result?.logout) {

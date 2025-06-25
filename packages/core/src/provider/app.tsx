@@ -121,19 +121,22 @@ export const DuxAppProvider = defineComponent({
 
         // loading remote route
         if (manage.config?.apiRoutePath) {
-          try {
-            await (manage.config?.dataProvider as Record<string, IDataProvider>)?.default?.custom({
-              path: manage.config.apiRoutePath,
-              meta: {
-                timeout: 5000,
-              },
-            }, manage, authStore.getUser()).then((res) => {
-              routeStore.appendRoutes(formatMenus(res.data || []))
+          await (manage.config?.dataProvider as Record<string, IDataProvider>)?.default?.custom({
+            path: manage.config.apiRoutePath,
+            meta: {
+              timeout: 5000,
+            },
+          }, manage, authStore.getUser()).then((res) => {
+            routeStore.appendRoutes(formatMenus(res.data || []))
+          }).catch((error) => {
+            manage.config?.authProvider?.onError?.(error).then((err) => {
+              if (err?.logout) {
+                authStore.logout()
+                router.push(manage.getRoutePath(err.redirectTo || '/login'))
+              }
             })
-          }
-          catch (error) {
-            console.error(error)
-          }
+            throw error
+          })
         }
 
         // init common routes

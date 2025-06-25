@@ -10,6 +10,8 @@ import {
   DuxCardPage,
   DuxCarousel,
   DuxChart,
+  DuxCodeEditor,
+  DuxCollapsePanel,
   DuxDashboardHello,
   DuxDashboardHelloBig,
   DuxDashboardQuick,
@@ -24,6 +26,7 @@ import {
   DuxFileUpload,
   DuxFormItem,
   DuxFormLayout,
+  DuxIconPicker,
   DuxImageCrop,
   DuxImageCropModal,
   DuxImageUpload,
@@ -48,6 +51,7 @@ import {
   DuxTableLayout,
   DuxTablePage,
   DuxTableTools,
+  DuxTreeFilter,
   DuxWidgetConnect,
 } from './components'
 // 导入pages中的所有Dux组件
@@ -103,6 +107,10 @@ export default {
     app.component('DuxModalTab', DuxModalTab)
     app.component('DuxFileUpload', DuxFileUpload)
     app.component('DuxImageUpload', DuxImageUpload)
+    app.component('DuxTreeFilter', DuxTreeFilter)
+    app.component('DuxIconPicker', DuxIconPicker)
+    app.component('DuxCollapsePanel', DuxCollapsePanel)
+    app.component('DuxCodeEditor', DuxCodeEditor)
 
     app.component('DuxDashboardHello', DuxDashboardHello)
     app.component('DuxDashboardHelloBig', DuxDashboardHelloBig)

@@ -4,6 +4,7 @@ import type { TablePageSlotProps } from '../layout/table'
 import { NDataTable } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
 import { DuxTableLayout } from '../layout/table'
+import { DuxListEmpty } from '../status'
 
 export const DuxTablePage = defineComponent({
   name: 'DuxTablePage',
@@ -32,7 +33,8 @@ export const DuxTablePage = defineComponent({
         {{
           default: result => (
             <NDataTable
-              remote
+              {...result.table.value}
+              {...props.tableProps}
               class="h-full"
               minHeight={200}
               tableLayout="fixed"
@@ -40,9 +42,11 @@ export const DuxTablePage = defineComponent({
               rowKey={row => row.id}
               bordered={false}
               scrollX={result.width}
-              {...result.table.value}
-              {...props.tableProps}
-            />
+            >
+              {{
+                empty: () => <DuxListEmpty bordered={false} />,
+              }}
+            </NDataTable>
           ),
           bottom: slots?.bottom,
           tools: slots?.tools,

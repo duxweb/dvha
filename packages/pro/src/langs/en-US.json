@@ -110,6 +110,7 @@
       "docs": "Documents",
       "upload": "Upload",
       "empty": "No files",
+      "emptyDesc": "No more files, please upload files",
       "back": "Back to parent",
       "parentLevel": "Parent Level",
       "namePlaceholder": "Please enter name",
@@ -142,6 +143,9 @@
       "lightMode": "Light",
       "darkMode": "Dark",
       "logout": "Logout"
+    },
+    "iconPicker": {
+      "title": "Icon Picker"
     }
   },
   "hooks": {

@@ -1,6 +1,6 @@
 import { DuxLogoIcon, useI18n, useManage } from '@duxweb/dvha-core'
 import { useNaiveMenu } from '@duxweb/dvha-naiveui'
-import { NMenu, NTag } from 'naive-ui'
+import { NMenu, NScrollbar, NTag } from 'naive-ui'
 import { defineComponent } from 'vue'
 import { useUI } from '../../hooks'
 import { DuxMenuAvatar, DuxMenuButton } from './'
@@ -64,15 +64,17 @@ export const DuxMenuMain = defineComponent({
           menuMobileCollapsed.value ? 'border-t border-muted' : '',
         ]}
         >
-          <NMenu
-            options={options.value}
-            value={active.value as any}
-            collapsed={menuCollapsed.value && !menuMobileCollapsed.value}
-            indent={20}
-            collapsedWidth={60}
-            collapsedIconSize={20}
+          <NScrollbar>
+            <NMenu
+              options={options.value}
+              value={active.value as any}
+              collapsed={menuCollapsed.value && !menuMobileCollapsed.value}
+              indent={20}
+              collapsedWidth={60}
+              collapsedIconSize={20}
 
-          />
+            />
+          </NScrollbar>
         </div>
 
         <div class="flex-none hidden lg:flex flex-col items-center gap-2 p-2 border-t border-muted/50">

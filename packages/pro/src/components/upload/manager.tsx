@@ -1,14 +1,19 @@
+import type { IDataProviderResponse, IS3SignData } from '@duxweb/dvha-core'
 import type { PropType } from 'vue'
-import { useClient, useI18n, useInfiniteList, useManage, useUpload } from '@duxweb/dvha-core'
+import { useClient, useI18n, useInfiniteList, useUpload } from '@duxweb/dvha-core'
 import { cloneDeep } from 'lodash-es'
 import { NButton, NDropdown, NInfiniteScroll, NInput, NSpin, NTab, NTabs, NTooltip, useMessage } from 'naive-ui'
 import { computed, defineComponent, nextTick, ref } from 'vue'
 import { useDialog, useDownload } from '../../hooks'
 import { DuxDrawEmpty } from '../draw'
+import { useUploadConfig } from './config'
 import { DuxFileManageItem } from './manage/item'
 
 export interface IUploadParams {
   path?: string
+  driver?: 'local' | 's3'
+  signPath?: string
+  signCallback?: (response: IDataProviderResponse) => IS3SignData
   accept?: string
   multiple?: boolean
   maxNum?: number
@@ -25,7 +30,7 @@ const DuxFileManage = defineComponent({
     multiple: Boolean,
     page: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     handle: String,
     uploadParams: Object as PropType<IUploadParams>,
@@ -43,19 +48,18 @@ const DuxFileManage = defineComponent({
     const message = useMessage()
     const download = useDownload()
 
-    const manage = useManage()
     const form = ref<Record<string, any>>({
       type: props.type || 'all',
+      folder: null,
     })
     const currentData = ref<Record<string, any>>()
 
-    const pathManage = computed(() => props.path || manage.config?.apiPath?.uploadManager || 'uploadManage')
-    const pathUpload = computed(() => props.uploadParams?.path || manage.config?.apiPath?.upload || 'upload')
-
-    const upload = useUpload({
-      ...props.uploadParams,
-      path: pathUpload.value,
-      autoUpload: true,
+    const { uploadPath, managePath, driver } = useUploadConfig({
+      driver: props.uploadParams?.driver,
+      signPath: props.uploadParams?.signPath,
+      signCallback: props.uploadParams?.signCallback,
+      uploadPath: props.uploadParams?.path,
+      managePath: props.path,
     })
 
     const pagination = ref({
@@ -64,9 +68,28 @@ const DuxFileManage = defineComponent({
     })
 
     const list = useInfiniteList({
-      path: pathManage.value,
+      path: managePath.value,
       pagination: pagination.value,
       filters: form.value,
+    })
+
+    const uploadParams = computed(() => {
+      const { driver, signPath, signCallback, ...rest } = props.uploadParams || {}
+      return rest
+    })
+
+    const upload = useUpload({
+      ...uploadParams.value,
+      path: uploadPath.value,
+      autoUpload: true,
+      driver: driver.value,
+      onSuccess: () => {
+        selectValues.value = []
+        list.refetch()
+      },
+      onError: (err) => {
+        message.error(err?.message || t('components.uploadManage.uploadError') || '')
+      },
     })
 
     const createFolder = (name?: string) => {
@@ -75,7 +98,7 @@ const DuxFileManage = defineComponent({
         return
       }
       client.request({
-        path: pathManage.value,
+        path: managePath.value,
         method: 'POST',
         payload: {
           name,
@@ -95,7 +118,7 @@ const DuxFileManage = defineComponent({
         return
       }
       client.request({
-        path: pathManage.value,
+        path: managePath.value,
         method: 'PUT',
         payload: {
           name,
@@ -112,10 +135,10 @@ const DuxFileManage = defineComponent({
 
     const deleteFile = (type: 'folder' | 'file', id?: any) => {
       client.request({
-        path: `${pathManage.value}/batch`,
+        path: `${managePath.value}/batch`,
         method: 'DELETE',
         payload: {
-          ids: Array.isArray(id) ? id : [id],
+          data: Array.isArray(id) ? id : [id],
           type,
         },
       }).then(() => {
@@ -131,7 +154,11 @@ const DuxFileManage = defineComponent({
     })
 
     return () => (
-      <div class="flex flex-col gap-2 h-500px max-h-500px">
+      <div class={[
+        'flex flex-col gap-2',
+        !props.page ? 'h-500px max-h-500px' : 'h-full',
+      ]}
+      >
         <div class={[
           'flex-none flex justify-between items-center border-b border-muted p-3',
           props.handle,
@@ -176,7 +203,7 @@ const DuxFileManage = defineComponent({
                   ],
                 }).then((res: any) => {
                   createFolder(res?.name)
-                })
+                }).catch(() => {})
               }}
               renderIcon={() => <div class="i-tabler:plus"></div>}
             >
@@ -197,7 +224,7 @@ const DuxFileManage = defineComponent({
               </div>
             </NButton>
 
-            {props.page && (
+            {!props.page && (
               <NButton
                 type="default"
                 ghost
@@ -213,114 +240,122 @@ const DuxFileManage = defineComponent({
         </div>
 
         <div class="flex-1 min-h-1">
-          <NInfiniteScroll
-            distance={10}
-            onLoad={() => {
-              if (list.hasNextPage.value) {
-                list.fetchNextPage()
-              }
-            }}
-            scrollbarProps={{
-              contentClass: 'p-4',
-            }}
-          >
-            {list.isLoading.value && <NSpin class="h-full absolute w-full bg-gray-1/50" />}
-            {list.data?.value?.data?.length > 0
-              ? (
-                  <div class="grid grid-cols-3 lg:grid-cols-[repeat(auto-fit,minmax(150px,1fr))] text-sm items-start justify-start">
-                    {form.value?.folder && form.value?.folder !== list.data.value?.meta?.folder && (
-                      <DuxFileManageItem
-                        key={`parent-${list.data.value?.meta?.folder}`}
-                        type="folder"
-                        name={t('components.uploadManage.parentLevel')}
-                        onSelect={() => {
-                          selectValues.value = []
-                          form.value.folder = list.data.value?.meta?.folder
-                        }}
-                      />
-                    )}
-                    {list.data.value?.data?.map(item => (
-                      <NTooltip placement="bottom" key={`${item.url ? 'file' : 'folder'}-${item.id}`} trigger={item.url ? 'hover' : 'manual'}>
-                        {{
-                          default: () => item.filesize,
-                          trigger: () => (
-                            <DuxFileManageItem
-                              onContextmenu={(e) => {
-                                currentData.value = item
-                                showDropdown.value = false
-                                nextTick().then(() => {
-                                  showDropdown.value = true
-                                  xRef.value = e.clientX
-                                  yRef.value = e.clientY
-                                })
-                                e.preventDefault()
-                              }}
-                              value={props.page ? !!selectValues.value?.find?.(v => v.id === item.id) : false}
-                              type={item.url ? 'file' : 'folder'}
-                              mime={item.filetype}
-                              name={item.filename}
-                              url={item.url}
-                              time={item.created_at}
-                              onSelect={(v) => {
-                                if (!item.url) {
-                                  selectValues.value = []
-                                  form.value.folder = item.id
-                                  return
-                                }
+          {list.data?.value?.data?.length > 0
+            && (
+              <NInfiniteScroll
+                distance={10}
+                onLoad={() => {
+                  if (list.hasNextPage.value) {
+                    list.fetchNextPage()
+                  }
+                }}
+                scrollbarProps={{
+                  contentClass: 'p-4',
+                }}
+              >
+                <div class={[
+                  'grid grid-cols-3 md:grid-cols-4 text-sm items-start justify-start',
+                  list.data.value?.data?.length >= 4 && !props.page ? ' lg:grid-cols-[repeat(auto-fit,minmax(150px,1fr))]' : 'lg:grid-cols-[repeat(auto-fit,minmax(150px,150px))]',
+                ]}
+                >
+                  {form.value?.folder && form.value?.folder !== list.data.value?.meta?.folder && (
+                    <DuxFileManageItem
+                      key={`parent-${list.data.value?.meta?.folder}`}
+                      type="folder"
+                      name={t('components.uploadManage.parentLevel')}
+                      onSelect={() => {
+                        selectValues.value = []
+                        form.value.folder = list.data.value?.meta?.folder
+                      }}
+                    />
+                  )}
+                  {list.data.value?.data?.map(item => (
+                    <NTooltip placement="bottom" key={`${item.url ? 'file' : 'folder'}-${item.id}`} trigger={item.url ? 'hover' : 'manual'}>
+                      {{
+                        default: () => item.filesize,
+                        trigger: () => (
+                          <DuxFileManageItem
+                            onContextmenu={(e) => {
+                              currentData.value = item
+                              showDropdown.value = false
+                              nextTick().then(() => {
+                                showDropdown.value = true
+                                xRef.value = e.clientX
+                                yRef.value = e.clientY
+                              })
+                              e.preventDefault()
+                            }}
+                            value={!props.page ? !!selectValues.value?.find?.(v => v.id === item.id) : false}
+                            type={item.url ? 'file' : 'folder'}
+                            mime={item.filetype}
+                            name={item.filename}
+                            url={item.url}
+                            time={item.time}
+                            onSelect={(v) => {
+                              if (!item.url) {
+                                selectValues.value = []
+                                list.data.value = undefined
+                                form.value.folder = item.id
+                                return
+                              }
 
-                                if (!props.page) {
-                                  return
-                                }
+                              if (props.page) {
+                                return
+                              }
 
-                                if (v) {
-                                  if (props.multiple) {
-                                    selectValues.value?.push(item)
-                                  }
-                                  else {
-                                    selectValues.value = [item]
-                                  }
+                              if (v) {
+                                if (props.multiple) {
+                                  selectValues.value?.push(item)
                                 }
                                 else {
-                                  if (props.multiple) {
-                                    selectValues.value?.splice(selectValues.value?.indexOf(item), 1)
-                                  }
-                                  else {
-                                    selectValues.value = []
-                                  }
+                                  selectValues.value = [item]
                                 }
-                              }}
-                            />
-                          ),
-                        }}
-                      </NTooltip>
-                    )) }
-                  </div>
-                )
-              : (
-                  <div class="w-full h-100 flex flex-justify-center justify-center items-center text-sm text-gray-6">
-                    <div class="flex flex-col  items-center gap-2">
-                      <div class="w-26">
-                        <DuxDrawEmpty />
-                      </div>
-                      <div>{t('components.uploadManage.empty')}</div>
-                      {form.value?.folder && form.value?.folder !== list.data.value?.meta?.folder && (
-                        <div class="text-xs text-gray-6">
-                          <NButton
-                            type="default"
-                            ghost
-                            onClick={() => {
-                              selectValues.value = []
-                              form.value.folder = list.data.value?.meta?.folder
+                              }
+                              else {
+                                if (props.multiple) {
+                                  selectValues.value?.splice(selectValues.value?.indexOf(item), 1)
+                                }
+                                else {
+                                  selectValues.value = []
+                                }
+                              }
                             }}
-                          >
-                            {t('components.uploadManage.back')}
-                          </NButton>
-                        </div>
-                      )}
+                          />
+                        ),
+                      }}
+                    </NTooltip>
+                  )) }
+                </div>
+              </NInfiniteScroll>
+            )}
+
+          {list.isLoading.value
+            ? <NSpin class="h-full absolute w-full bg-gray-1/50" />
+            : !list.data.value?.data?.length && (
+                <div class="size-full flex justify-center items-center text-sm text-gray-6">
+                  <div class="flex flex-col  items-center">
+                    <div class="w-26 mb-2">
+                      <DuxDrawEmpty />
                     </div>
+                    <div class="text-base">{t('components.uploadManage.empty')}</div>
+                    <div class="text-sm text-muted">{t('components.uploadManage.emptyDesc')}</div>
+                    {form.value?.folder && form.value?.folder !== list.data.value?.meta?.folder && (
+                      <div class="text-xs text-gray-6">
+                        <NButton
+                          type="default"
+                          ghost
+                          onClick={() => {
+                            selectValues.value = []
+                            form.value.folder = list.data.value?.meta?.folder
+                          }}
+                        >
+                          {t('components.uploadManage.back')}
+                        </NButton>
+                      </div>
+                    )}
                   </div>
-                )}
-          </NInfiniteScroll>
+                </div>
+              )}
         </div>
 
         <NDropdown
@@ -390,7 +425,7 @@ const DuxFileManage = defineComponent({
           ].filter(v => v)}
         />
 
-        {props.page && (
+        {!props.page && (
           <div class="flex justify-end gap-2 border-t border-muted p-3">
             <div>
               {selectValues.value?.length > 0 && (

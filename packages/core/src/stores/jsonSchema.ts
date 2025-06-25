@@ -26,10 +26,9 @@ export interface JsonSchemaStoreState {
 /**
  * 生成组件缓存键
  */
-function generateCacheKey(component: Component, name: string): string {
-  // 使用组件名和组件引用的字符串化来生成唯一键
-  const componentId = component.toString ? component.toString() : String(component)
-  return `${name}-${componentId.slice(0, 32)}`
+function generateCacheKey(name: string): string {
+  // 组件名本身就是唯一的，直接使用
+  return name
 }
 
 /**
@@ -65,7 +64,7 @@ function createJsonSchemaStore(manageName: string) {
      * 添加组件到缓存
      */
     const addComponent = (component: Component, name: string, originalName?: string): string => {
-      const cacheKey = generateCacheKey(component, name)
+      const cacheKey = generateCacheKey(name)
 
       if (!componentCache.value.has(cacheKey)) {
         componentCache.value.set(cacheKey, {

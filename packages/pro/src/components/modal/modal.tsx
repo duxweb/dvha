@@ -32,6 +32,7 @@ export const DuxModal = defineComponent({
     })
 
     const params = props?.componentProps || {}
+    params.title = props.title
     params.onConfirm = resolve
     params.onClose = reject
 

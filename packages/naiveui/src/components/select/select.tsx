@@ -91,25 +91,25 @@ export const DuxSelect = defineComponent<DuxSelectProps>({
                 }}
               >
                 {imageField.value && (
-                  <NImage src={item?.raw[imageField.value]} objectFit="cover" width={32} height={32} />
+                  <NImage src={item?.raw?.[imageField.value]} objectFit="cover" width={32} height={32} />
                 )}
                 {avatarField.value && (
                   <NAvatar
                     round
-                    src={item?.raw[avatarField.value]}
+                    src={item?.raw?.[avatarField.value]}
                     size={32}
                   >
-                    {item?.raw[labelField.value]?.charAt?.(0)}
+                    {item?.raw?.[labelField.value]?.charAt?.(0)}
                   </NAvatar>
                 )}
                 <NSpace vertical size={0} wrapItem={false}>
-                  <div>{item?.raw[labelField.value]}</div>
+                  <div>{item?.raw?.[labelField.value]}</div>
                   {descField.value && (
                     <div style={{
                       opacity: 0.6,
                     }}
                     >
-                      {item?.raw[descField.value]}
+                      {item?.raw?.[descField.value]}
                     </div>
                   )}
                 </NSpace>
@@ -117,7 +117,7 @@ export const DuxSelect = defineComponent<DuxSelectProps>({
             )
           }
           else {
-            return item?.raw[labelField.value]
+            return item?.raw?.[labelField.value]
           }
         }}
         renderTag={({ option, handleClose }): VNodeChild => {
@@ -175,21 +175,21 @@ function renderTag(option: Record<string, any>, labelField: string, imageField?:
           wrapItem={false}
         >
           {imageField && (
-            <NImage src={option?.raw[imageField]} objectFit="cover" width={22} height={22} />
+            <NImage src={option?.raw?.[imageField]} objectFit="cover" width={22} height={22} />
           )}
           {avatarField && (
             <NAvatar
               round
-              src={option?.raw[avatarField] as string || ''}
+              src={option?.raw?.[avatarField] as string || ''}
               size={22}
             >
-              {option?.raw[labelField]?.charAt?.(0)}
+              {option?.raw?.[labelField]?.charAt?.(0)}
             </NAvatar>
           )}
           <div>
-            {option?.raw[labelField]}
+            {option?.raw?.[labelField]}
           </div>
         </NSpace>
       )
-    : option?.raw[labelField]
+    : option?.raw?.[labelField] || ''
 }

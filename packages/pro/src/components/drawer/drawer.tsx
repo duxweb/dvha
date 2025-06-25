@@ -1,6 +1,6 @@
 import type { AsyncComponentLoader, Component, PropType } from 'vue'
 import { useExtendOverlay } from '@overlastic/vue'
-import { NButton, NDrawer, NSpin } from 'naive-ui'
+import { NDrawer, NSpin } from 'naive-ui'
 import { defineAsyncComponent, defineComponent, Suspense } from 'vue'
 
 export default defineComponent({
@@ -8,6 +8,7 @@ export default defineComponent({
   props: {
     title: String,
     width: [Number, String],
+    maxWidth: [Number],
     placement: {
       type: String as PropType<'left' | 'right' | 'top' | 'bottom'>,
       default: 'right',
@@ -24,6 +25,7 @@ export default defineComponent({
     })
 
     const params = props?.componentProps || {}
+    params.title = props.title
     params.onConfirm = resolve
     params.onClose = reject
 
@@ -35,7 +37,8 @@ export default defineComponent({
       <NDrawer
         closeOnEsc={false}
         maskClosable={false}
-        minWidth={400}
+        minWidth={200}
+        maxWidth={props?.maxWidth || 800}
         defaultWidth={props?.width || 400}
         resizable={true}
         placement={props.placement}
@@ -47,16 +50,9 @@ export default defineComponent({
         onEsc={() => {
           reject()
         }}
+        autoFocus={false}
       >
-        <div class="h-full flex flex-col">
-          <div class="flex justify-between items-center px-4 py-3 border-b border-default">
-            <div class="text-base">{props?.title}</div>
-            <div>
-              <NButton quaternary size="small" color="default" class="!px-1 h-6" onClick={() => reject()}>
-                <div class="i-tabler:x w-5 h-5"></div>
-              </NButton>
-            </div>
-          </div>
+        <div class="h-full">
           <Suspense>
             {{
               default: () => <Page {...params} />,

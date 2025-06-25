@@ -4,9 +4,10 @@ import { cloneDeep } from 'lodash-es'
 import { computed, ref, toRef, watch } from 'vue'
 import { useCreate, useOne, useUpdate } from './data'
 
+type Key = string | number | undefined
 export interface IUseFormProps {
   path?: string
-  id?: string | number
+  id?: MaybeRef<Key>
   form?: MaybeRef<Record<string, any>>
   onSuccess?: (data: IDataProviderResponse) => void
   onError?: (error: IDataProviderError) => void
@@ -16,42 +17,61 @@ export interface IUseFormProps {
 
 export function useForm(props: IUseFormProps) {
   const form = toRef(props, 'form', {})
-  const initData = ref(cloneDeep(props.form || {}))
+  const id = toRef(props, 'id', undefined)
+
+  // 初始化数据，用于重置表单数据
+  const editResetData = ref(cloneDeep(form.value || {}))
+  // 首次初始化数据，用于创建时，设置表单数据
+  const createResetData = ref(cloneDeep(form.value || {}))
 
   const isEdit = computed(() => {
-    return props.action === 'edit' || props.id
+    return props.action === 'edit' || !!id.value
   })
 
   const { data: oneData, isLoading: isLoadingOne, refetch } = useOne({
-    path: props.path || '',
-    id: props.id,
+    get path() {
+      return props.path || ''
+    },
+    get id() {
+      return id.value as Key
+    },
     options: {
-      enabled: !!props.id,
+      enabled: isEdit.value,
     },
     providerName: props.providerName,
   })
 
-  watch([() => props.action, () => props.id], async () => {
+  // 重置表单数据
+  const onReset = () => {
+    let resetData = {}
+    if (isEdit.value) {
+      resetData = cloneDeep(editResetData.value)
+    }
+    else {
+      resetData = cloneDeep(createResetData.value)
+    }
+    Object.assign(form.value, resetData)
+  }
+
+  // 初始化表单数据
+  watch([id, isEdit], async () => {
     if (!isEdit.value) {
+      onReset()
       return
     }
     await refetch()
     const data = cloneDeep(oneData.value?.data || {})
     Object.assign(form.value as object, data)
-    Object.assign(initData.value as object, data)
+    Object.assign(editResetData.value as object, data)
   }, {
     immediate: true,
   })
-
-  const onReset = () => {
-    const resetData = cloneDeep(initData.value)
-    Object.assign(form.value, resetData)
-  }
 
   const create = useCreate({
     path: props.path ?? '',
     data: form.value,
     onSuccess: (data) => {
+      onReset()
       props.onSuccess?.(data)
     },
     onError: (error) => {
@@ -61,8 +81,12 @@ export function useForm(props: IUseFormProps) {
   })
 
   const update = useUpdate({
-    path: props.path ?? '',
-    id: props.id,
+    get path() {
+      return props.path ?? ''
+    },
+    get id() {
+      return id.value as Key
+    },
     data: form.value,
     onSuccess: (data) => {
       props.onSuccess?.(data)
@@ -74,14 +98,14 @@ export function useForm(props: IUseFormProps) {
   })
 
   const onSubmit = (data?: Record<string, any>) => {
-    if (props.action === 'create') {
+    if (!isEdit.value) {
       create.mutate({
         data: data || form.value,
       })
     }
     else {
       update.mutate({
-        id: props.id,
+        id: id.value as Key,
         data: data || form.value,
       })
     }
@@ -91,7 +115,7 @@ export function useForm(props: IUseFormProps) {
 
   return {
     form,
-    initData,
+    initData: isEdit.value ? editResetData.value : createResetData.value,
     isLoading,
     isEdit,
     onSubmit,

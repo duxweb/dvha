@@ -69,11 +69,11 @@ export const DuxCard = defineComponent({
     const computedSize = (size: string) => {
       switch (size) {
         case 'small':
-          return 'p-2'
+          return 'px-3 py-2'
         case 'large':
-          return 'p-6'
+          return 'px-6 py-5'
         case 'medium':
-          return 'p-4'
+          return 'px-4 py-3'
         case 'none':
         default:
           return ''
@@ -108,7 +108,7 @@ export const DuxCard = defineComponent({
       <div class={[
         'rounded  flex flex-col dark:border dark:border-muted',
         props.divide && 'divide-y divide-muted',
-        props.shadow && 'shadow-sm',
+        props.shadow && 'shadow-xs',
         props.bordered && 'border border-muted',
         typeClass.value,
         sizeClass.value,
