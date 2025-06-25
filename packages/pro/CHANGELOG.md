@@ -1,5 +1,17 @@
 # @duxweb/dvha-pro
 
+## 1.0.20
+
+### Patch Changes
+
+- fix: 数据导入修正数据
+  fix(pro): 修正用户头像昵称
+  chore(core): 默认不限制导出页面数
+  chore(core): 默认关闭数据导入
+- Updated dependencies
+  - @duxweb/dvha-core@1.0.20
+  - @duxweb/dvha-naiveui@1.0.20
+
 ## 1.0.19
 
 ### Patch Changes

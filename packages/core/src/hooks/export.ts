@@ -1,12 +1,11 @@
-import type { InfiniteData } from '@tanstack/vue-query'
 import type { IDataProviderPagination, IDataProviderResponse } from '../types'
 import type { IInfiniteListParams } from './data'
 import { computed, ref } from 'vue'
 import { useInfiniteList } from './data'
 
 export interface IUseExportProps extends IInfiniteListParams {
-  onSuccess?: (data: InfiniteData<IDataProviderResponse | undefined> | undefined) => void
-  onProgress?: (data: IDataProviderPagination) => void
+  onSuccess?: (data?: IDataProviderResponse) => void
+  onProgress?: (data?: IDataProviderPagination) => void
   interval?: number
   maxPage?: number | (() => number)
 }
@@ -49,9 +48,13 @@ export function useExport(props: IUseExportProps) {
 
       await refetch()
 
-      const max = typeof props.maxPage === 'function' ? props.maxPage() : props.maxPage || 100
+      const max = typeof props.maxPage === 'function' ? props.maxPage() : (props.maxPage || 0)
 
-      while (hasNextPage.value && pagination.value.page < max) {
+      while (hasNextPage.value) {
+        if (max > 0 && pagination.value.page >= max) {
+          break
+        }
+
         if (interval.value > 0) {
           await sleep(interval.value)
         }

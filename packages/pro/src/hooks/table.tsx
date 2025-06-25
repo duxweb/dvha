@@ -19,7 +19,7 @@ export function useTable(props: UseTableProps) {
       nRef.value = null
       notification.success({
         title: t('hooks.table.exportSuccess'),
-        content: t('hooks.table.exportSuccessContent', { count: data?.pages?.reduce((acc, item) => acc + item?.data?.length, 0) || 0 }),
+        content: t('hooks.table.exportSuccessContent', { count: data?.data?.length || 0 }),
         duration: 6000,
       })
     },

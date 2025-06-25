@@ -38,19 +38,8 @@ export function useExportCsv(props: IUseExportCsvProps) {
 
   const res = useExport({
     ...exportProps.value,
-    onSuccess: async (data) => {
-      if (!data?.pages) {
-        props.onError?.({
-          message: 'No data to export',
-          status: 400,
-        })
-        return
-      }
-
-      // 合并所有页面的数据
-      const allData = data.pages.flatMap(page => Array.isArray(page?.data) ? page.data : [])
-
-      if (!allData || !allData?.length) {
+    onSuccess: async (res) => {
+      if (!res?.data || !res?.data?.length) {
         props.onError?.({
           message: 'No data to export',
           status: 400,
@@ -59,7 +48,7 @@ export function useExportCsv(props: IUseExportCsvProps) {
       }
 
       try {
-        const csvString = await json2csv(allData, csvOptions.value)
+        const csvString = await json2csv(res.data, csvOptions.value)
 
         const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' })
         const url = URL.createObjectURL(blob)
@@ -75,7 +64,7 @@ export function useExportCsv(props: IUseExportCsvProps) {
         document.body.removeChild(link)
         URL.revokeObjectURL(url)
 
-        props.onSuccess?.(data)
+        props.onSuccess?.(res)
       }
       catch (error) {
         props.onError?.({

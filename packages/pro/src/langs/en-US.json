@@ -210,5 +210,12 @@
         "login": "Login"
       }
     }
+  },
+  "locale": {
+    "zh-CN": "Chinese",
+    "en-US": "English",
+    "ja-JP": "Japanese",
+    "ko-KR": "Korean",
+    "ru-RU": "Russian"
   }
 }

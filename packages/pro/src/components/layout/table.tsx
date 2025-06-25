@@ -1,5 +1,5 @@
 import type { JsonSchemaNode } from '@duxweb/dvha-core'
-import type { TableColumn, TablePagination, UseNaiveTableReturn } from '@duxweb/dvha-naiveui'
+import type { TableColumn, TablePagination, UseNaiveTableReturn, UseTableProps } from '@duxweb/dvha-naiveui'
 import type { DataTableBaseColumn, SelectOption } from 'naive-ui'
 import type { PropType } from 'vue'
 import type { UseActionItem } from '../../hooks'
@@ -66,6 +66,9 @@ export const DuxTableLayout = defineComponent({
       type: String,
       default: '',
     },
+    hookTableProps: {
+      type: Object as PropType<UseTableProps>,
+    },
   },
   setup(props, { slots }) {
     const filters = toRef(props, 'filter', {})
@@ -78,6 +81,7 @@ export const DuxTableLayout = defineComponent({
       filters: filters.value,
       columns: tableColumns,
       pagination: props.pagination,
+      ...props.hookTableProps,
     })
 
     const { columns, tablePagination, table, onUpdateColumnSelected, onUpdateChecked, columnSelected, autoRefetch, autoCountdown, onAutoRefetch, isExporting, isExportingRows, isImporting, onExport, onExportRows, onImport } = result
@@ -135,7 +139,7 @@ export const DuxTableLayout = defineComponent({
 
     const tools = computed(() => {
       return {
-        import: true,
+        import: false,
         export: true,
         refresh: true,
         ...props.tools,

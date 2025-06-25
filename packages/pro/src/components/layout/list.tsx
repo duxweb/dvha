@@ -1,4 +1,4 @@
-import type { JsonSchemaNode } from '@duxweb/dvha-core'
+import type { JsonSchemaNode, UseExtendListProps } from '@duxweb/dvha-core'
 import type { PropType } from 'vue'
 import type { UseActionItem } from '../../hooks'
 
@@ -67,6 +67,9 @@ export const DuxListLayout = defineComponent({
       type: String,
       default: '',
     },
+    hookListProps: {
+      type: Object as PropType<UseExtendListProps>,
+    },
   },
   setup(props, { slots }) {
     const filters = toRef(props.filter || {})
@@ -89,6 +92,7 @@ export const DuxListLayout = defineComponent({
       path: props.path,
       filters: tableFilter.value,
       pagination: pagination.value,
+      ...props.hookListProps,
     })
 
     const { meta, list, isLoading, autoRefetch, autoCountdown, onAutoRefetch, isExporting, isExportingRows, isImporting, onExport, onExportRows, onImport } = result
@@ -198,7 +202,7 @@ export const DuxListLayout = defineComponent({
 
     const tools = computed(() => {
       return {
-        import: true,
+        import: false,
         export: true,
         refresh: true,
         ...props.tools,

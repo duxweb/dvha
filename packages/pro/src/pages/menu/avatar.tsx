@@ -81,14 +81,10 @@ export default defineComponent({
         key: 'locale',
         icon: () => iconRender('i-tabler:language'),
         children: [
-          {
-            label: () => labelCheckRender(t('components.menu.chinese'), i18n.getLocale() === 'zh-CN'),
-            key: 'locale.zh-CN',
-          },
-          {
-            label: () => labelCheckRender(t('components.menu.english'), i18n.getLocale() === 'en-US'),
-            key: 'locale.en-US',
-          },
+          ...(i18n.getLocales() || []).map(locale => ({
+            label: () => labelCheckRender(t(`locale.${locale}`), i18n.getLocale() === locale),
+            key: `locale.${locale}`,
+          })),
         ],
       },
       {
@@ -212,8 +208,8 @@ export default defineComponent({
             ),
             default: () => (
               <div class="flex flex-col">
-                <div class="text-sm font-medium">admin</div>
-                <div class="text-xs text-muted">admin@example.com</div>
+                <div class="text-sm font-medium">{auth.info?.nickname}</div>
+                <div class="text-xs text-muted">{auth.info?.username}</div>
               </div>
             ),
 

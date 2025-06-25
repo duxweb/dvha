@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-template",
   "type": "module",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "Create DVHA project from template",
   "author": "DuxWeb",
   "license": "MIT",

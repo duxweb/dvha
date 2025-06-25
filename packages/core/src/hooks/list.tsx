@@ -153,7 +153,7 @@ export function useExtendList(props: UseExtendListProps) {
     filters: filters.value || {},
     sorters: sorters.value || {},
     maxPage: () => {
-      return pagination.value.pageSize || props.exportMaxPage || 10
+      return props.exportMaxPage || 0
     },
     pagination: exportPagination.value,
     filename: props.exportFilename || 'data.csv',

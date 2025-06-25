@@ -8,4 +8,5 @@ export interface I18nProvider {
   loadLocale: (lang: string, files: Record<string, unknown>) => Promise<any>
   mergeLocale: (lang: string, messages: Record<string, unknown>) => void
   getLocale: () => string
+  getLocales: () => string[]
 }

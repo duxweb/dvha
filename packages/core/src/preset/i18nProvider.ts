@@ -38,5 +38,8 @@ export function i18nProvider(props?: I18nOptions): I18nProvider {
     getLocale: () => {
       return i18n.global.locale.value
     },
+    getLocales: () => {
+      return i18n.global.availableLocales.map(locale => locale)
+    },
   }
 }
