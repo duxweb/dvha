@@ -19,6 +19,7 @@ export const DuxFileManageItem = defineComponent({
     value: Boolean,
     onContextmenu: Function as PropType<(e: MouseEvent) => void>,
     onSelect: Function,
+    page: Boolean,
   },
   setup(props) {
     const dialog = useDialog()
@@ -141,7 +142,7 @@ export const DuxFileManageItem = defineComponent({
           props.value ? 'block' : 'hidden group-hover:block',
         ])}
         >
-          {props.type === 'file' && <NCheckbox checked={props.value} />}
+          {props.type === 'file' && !props.page && <NCheckbox checked={props.value} />}
         </div>
       </div>
     )

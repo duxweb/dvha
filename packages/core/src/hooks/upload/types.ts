@@ -1,7 +1,7 @@
 import type { IDataProviderCustomOptions, IDataProviderResponse } from '../../types'
 
 export interface IUploadDriver {
-  upload(file: File, options: IUploadDriverOptions): Promise<IDataProviderResponse>
+  upload: (file: File, options: IUploadDriverOptions) => Promise<IDataProviderResponse>
 }
 
 export interface IUploadDriverOptions extends Omit<IDataProviderCustomOptions, 'onUploadProgress' | 'onDownloadProgress'> {

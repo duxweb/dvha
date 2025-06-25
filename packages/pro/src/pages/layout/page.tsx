@@ -1,6 +1,7 @@
-import { DuxTabRouterView, useManage } from '@duxweb/dvha-core'
+import { DuxTabRouterView, useCheck, useManage } from '@duxweb/dvha-core'
+import { useIntervalFn } from '@vueuse/core'
 import { NButton } from 'naive-ui'
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted, onUnmounted } from 'vue'
 import { useUI } from '../../hooks'
 import { DuxMenuAvatar } from '../menu'
 import { DuxPageTab } from './tab'
@@ -11,8 +12,23 @@ export const DuxLayoutPage = defineComponent({
   },
   setup() {
     const { menuMobileCollapsed, setMenuMobileCollapsed } = useUI()
-
     const { config } = useManage()
+
+    const { mutate: check } = useCheck()
+
+    const { pause, resume } = useIntervalFn(() => {
+      check()
+    }, 1000 * 60 * 10)
+
+    onMounted(() => {
+      check()
+      resume()
+    })
+
+    onUnmounted(() => {
+      pause()
+    })
+
     return () => (
       <div class="flex-1 min-w-0 flex flex-col">
         <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center lg:h-13">

@@ -36,16 +36,22 @@ export function simpleAuthProvider(props?: ISimpleAuthProviderProps): IAuthProvi
         }
       })
     },
-    check: async (_params?: any, manage?: IManageHook): Promise<IAuthCheckResponse> => {
-      return await axios.get(manage?.getApiUrl(props?.apiPath?.check || '/check', props?.dataProviderName) || '').then((res: any) => {
+    check: async (_params?: any, manage?: IManageHook, auth?: IUserState): Promise<IAuthCheckResponse> => {
+      return await axios.get(manage?.getApiUrl(props?.apiPath?.check || '/check', props?.dataProviderName) || '', {
+        headers: {
+          Authorization: auth?.token || '',
+        },
+      }).then((res: any) => {
         return {
           success: true,
+          logout: false,
           message: res?.data?.message,
           data: res?.data?.data as IUserState,
         }
       }).catch((error) => {
         return {
           success: false,
+          logout: true,
           message: error?.response?.data?.message || error?.message,
         }
       })

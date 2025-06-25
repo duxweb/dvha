@@ -115,7 +115,7 @@ export function useCheck(props?: IAuthCheckParams) {
   const router = useRouter()
 
   const mutate = async (params?: any) => {
-    const result = await manage.config.authProvider?.check(params, manage)
+    const result = await manage.config.authProvider?.check?.(params, manage, authStore.getUser())
     if (result?.success) {
       props?.onSuccess?.(result)
       if (!result?.data) {
@@ -125,9 +125,13 @@ export function useCheck(props?: IAuthCheckParams) {
       return
     }
     props?.onError?.(result)
-    if (result?.logout) {
-      router.push(manage.getRoutePath(result.redirectTo || '/login'))
+    if (!result?.logout) {
+      return
     }
+    await router.replace(manage.getRoutePath(result.redirectTo || '/login'))
+    setTimeout(() => {
+      window.location.reload()
+    }, 100)
   }
 
   return {
@@ -154,7 +158,7 @@ export function useRegister(props?: IAuthLoginParams) {
         throw new Error('Register response data is undefined')
       }
       authStore.login(result.data)
-      router.push(manage.getRoutePath(result.redirectTo || ''))
+      router.push(manage.getRoutePath(result.redirectTo || '/'))
       return
     }
     props?.onError?.(result)
@@ -179,7 +183,7 @@ export function useForgotPassword(props?: IAuthActionParams) {
     if (result?.success) {
       props?.onSuccess?.(result)
       if (result.redirectTo) {
-        router.push(manage.getRoutePath(result.redirectTo))
+        router.push(manage.getRoutePath(result.redirectTo || '/'))
       }
       return
     }
@@ -206,7 +210,7 @@ export function useUpdatePassword(props?: IAuthActionParams) {
     if (result?.success) {
       props?.onSuccess?.(result)
       if (result.redirectTo) {
-        router.push(manage.getRoutePath(result.redirectTo))
+        router.push(manage.getRoutePath(result.redirectTo || '/'))
       }
       return
     }
@@ -227,12 +231,17 @@ export function useUpdatePassword(props?: IAuthActionParams) {
 export function useError(onCallback?: (data?: IAuthErrorResponse) => void) {
   const { config: manage, getRoutePath } = useManage()
   const router = useRouter()
+  const authStore = useAuthStore()
 
   const mutate = async (error?: IDataProviderError) => {
     const result = await manage.authProvider?.onError(error)
     onCallback?.(result)
     if (result?.logout) {
-      router.push(getRoutePath(result.redirectTo || '/login'))
+      authStore.logout()
+      await router.replace(getRoutePath(result.redirectTo || '/login'))
+      setTimeout(() => {
+        window.location.reload()
+      }, 100)
     }
   }
   return {

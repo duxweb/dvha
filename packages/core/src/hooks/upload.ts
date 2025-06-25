@@ -13,6 +13,7 @@ export interface IUseUploadProps extends Omit<IDataProviderCustomOptions, 'onUpl
   accept?: string
   multiple?: boolean
   autoUpload?: boolean
+  params?: Record<string, string>
 
   // 驱动实例
   driver?: IUploadDriver
@@ -78,7 +79,7 @@ export function useUpload(props?: IUseUploadProps) {
   const uploadDriver = props.driver || createLocalUploadDriver()
 
   const params = computed(() => {
-    const { onProgress, onDataCallback, onCancel, onComplete, maxFileSize, maxFileCount, accept, multiple, autoUpload, options, onSuccess, onError, method, driver, ...rest } = props
+    const { onProgress, onDataCallback, onCancel, onComplete, maxFileSize, maxFileCount, accept, multiple, autoUpload, options, onSuccess, onError, method, driver, params, ...rest } = props
     return rest
   })
 
@@ -297,6 +298,7 @@ export function useUpload(props?: IUseUploadProps) {
       ...params.value,
       method: method.value,
       signal: abortController.signal,
+      params: props.params,
       onUploadProgress: (progressData) => {
         const currentTime = Date.now()
         const elapsedTimeMs = currentTime - fileStartTime

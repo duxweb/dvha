@@ -37,6 +37,9 @@ export const DuxImageCrop = defineComponent({
     const message = useMessage()
     const upload = useUpload({
       path: props.path || config.apiPath?.upload || 'upload',
+      params: {
+        mime: 'image/png',
+      },
       autoUpload: true,
       onSuccess: (res) => {
         data.value = res.data?.url

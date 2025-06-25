@@ -9,13 +9,13 @@ import type { IDataProviderError } from './data'
 export interface IAuthProvider {
 
   login: (params: any, manage: IManageHook) => Promise<IAuthLoginResponse>
-  check: (params?: any, manage?: IManageHook) => Promise<IAuthCheckResponse>
   logout: (params?: any, manage?: IManageHook) => Promise<IAuthLogoutResponse>
 
   register?: (params: any, manage?: IManageHook) => Promise<IAuthLoginResponse>
   forgotPassword?: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
   updatePassword?: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
 
+  check?: (params?: any, manage?: IManageHook, auth?: IUserState) => Promise<IAuthCheckResponse>
   can?: (name: string, params?: any, manage?: IManageHook, auth?: IUserState) => boolean
 
   onError: (error?: IDataProviderError) => Promise<IAuthErrorResponse>

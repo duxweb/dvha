@@ -16,6 +16,10 @@ export const DuxPanelCard = defineComponent({
     padding: {
       type: String as PropType<'none' | 'small' | 'medium' | 'large'>,
     },
+    bordered: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props, { slots }) {
     return () => (
@@ -36,7 +40,7 @@ export const DuxPanelCard = defineComponent({
           </div>
         </div>
 
-        <DuxCard size={props.padding} bordered shadow={false}>
+        <DuxCard size={props.padding} shadow={false} bordered={props.bordered}>
           {slots.default?.()}
         </DuxCard>
       </div>

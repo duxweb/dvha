@@ -1,2 +1,2 @@
-export * from './tablePage'
 export * from './table'
+export * from './tablePage'

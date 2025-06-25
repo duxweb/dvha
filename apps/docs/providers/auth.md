@@ -30,23 +30,43 @@ const config: IConfig = {
 // 或者使用自定义配置
 const authProvider = simpleAuthProvider({
   apiPath: {
-    login: '/auth/login', // 自定义登录接口路径
-    check: '/auth/check', // 自定义认证检查路径
-    logout: '/auth/logout', // 自定义登出接口路径
-    register: '/auth/register', // 自定义注册接口路径
-    forgotPassword: '/auth/forgot', // 自定义忘记密码路径
-    updatePassword: '/auth/reset' // 自定义重置密码路径
+    login: '/login', // 默认登录接口路径
+    check: '/check', // 默认认证检查路径
+    logout: '/logout', // 默认登出接口路径
+    register: '/register', // 默认注册接口路径
+    forgotPassword: '/forgot-password', // 默认忘记密码路径
+    updatePassword: '/update-password' // 默认重置密码路径
   },
   routePath: {
     login: '/login', // 登录页面路径
-    index: '/dashboard' // 登录成功后跳转路径
+    index: '/' // 登录成功后跳转路径
   },
   dataProviderName: 'default' // 指定使用的数据提供者名称
 })
 ```
 
+### 简单认证提供者配置选项
+
+```typescript
+interface ISimpleAuthProviderProps {
+  apiPath?: {
+    login?: string // 登录接口路径
+    check?: string // 认证检查路径
+    logout?: string // 登出接口路径
+    register?: string // 注册接口路径
+    forgotPassword?: string // 忘记密码路径
+    updatePassword?: string // 重置密码路径
+  }
+  routePath?: {
+    login?: string // 登录页面路径
+    index?: string // 登录成功后跳转路径
+  }
+  dataProviderName?: string // 数据提供者名称
+}
+```
+
 ::: tip
-`simpleAuthProvider` 是一个基于标准认证流程的简单实现，支持基本的登录、登出和认证检查功能，适合快速开始和原型开发。在开发环境中，它会接受任意用户名和密码的登录。
+`simpleAuthProvider` 是一个基于 Axios 和标准认证流程的实现，支持基本的登录、登出和认证检查功能，适合快速开始和原型开发。它会自动处理 401 错误并触发登出，支持权限数组和对象两种格式。
 :::
 
 ## 认证提供者接口
@@ -55,25 +75,31 @@ const authProvider = simpleAuthProvider({
 interface IAuthProvider {
   // 用户登录
   login: (params: any, manage: IManageHook) => Promise<IAuthLoginResponse>
-  // 认证检查
-  check: (params?: any, manage?: IManageHook) => Promise<IAuthCheckResponse>
   // 用户登出
   logout: (params?: any, manage?: IManageHook) => Promise<IAuthLogoutResponse>
+
   // 用户注册（可选）
   register?: (params: any, manage?: IManageHook) => Promise<IAuthLoginResponse>
   // 忘记密码（可选）
   forgotPassword?: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
   // 重置密码（可选）
   updatePassword?: (params: any, manage?: IManageHook) => Promise<IAuthActionResponse>
+
+  // 认证检查（可选）
+  check?: (params?: any, manage?: IManageHook, auth?: IUserState) => Promise<IAuthCheckResponse>
   // 权限检查（可选）
   can?: (name: string, params?: any, manage?: IManageHook, auth?: IUserState) => boolean
+
   // 错误处理
   onError: (error?: IDataProviderError) => Promise<IAuthErrorResponse>
 }
 ```
 
 ::: tip 接口变更
-在最新版本中，`register`、`forgotPassword` 和 `updatePassword` 方法是可选的。如果不需要这些功能，可以不实现这些方法。
+在最新版本中：
+1. `check` 方法现在接受 `auth` 参数，可以基于当前用户状态进行认证检查
+2. `register`、`forgotPassword`、`updatePassword` 和 `can` 方法都是可选的
+3. 如果不需要某些功能，可以不实现对应的方法
 :::
 
 ## 参数说明
@@ -84,6 +110,7 @@ interface IAuthProvider {
 
 - **params**: 请求参数对象，包含具体的操作数据
 - **manage**: 当前管理端实例，提供 API URL 构建等功能
+- **auth**: （仅 check 和 can 方法）当前用户认证状态
 
 ### 登录参数
 
@@ -180,8 +207,9 @@ interface IAuthErrorResponse {
 ```typescript
 interface IUserState {
   token?: string // 认证令牌
-  permission?: string[] | Record<string, any> // 用户权限列表或权限对象
+  id?: number // 用户 ID
   info?: Record<string, any> // 用户信息
+  permission?: any // 用户权限（数组或对象格式）
   [key: string]: any // 其他自定义字段
 }
 ```
@@ -197,9 +225,9 @@ interface IUserState {
   "redirectTo": "/admin",
   "data": {
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "id": 1,
     "permission": ["user.read", "user.write"],
     "info": {
-      "id": 1,
       "name": "John Doe",
       "email": "john@example.com",
       "avatar": "https://example.com/avatar.jpg"
@@ -223,10 +251,11 @@ interface IUserState {
 {
   "success": true,
   "message": "认证有效",
+  "logout": false,
   "data": {
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "id": 1,
     "info": {
-      "id": 1,
       "name": "John Doe",
       "email": "john@example.com"
     }
@@ -251,8 +280,7 @@ interface IUserState {
 {
   "success": true,
   "message": "登出成功",
-  "redirectTo": "/login",
-  "logout": true
+  "redirectTo": "/login"
 }
 ```
 
@@ -262,7 +290,7 @@ interface IUserState {
 
 ```typescript
 import type { IConfig } from '@duxweb/dvha-core'
-import { createDux, simpleAuthProvider } from '@duxweb/dvha-core'
+import { simpleAuthProvider } from '@duxweb/dvha-core'
 
 const config: IConfig = {
   manages: [
@@ -289,18 +317,21 @@ const customAuthProvider: IAuthProvider = {
     return {
       success: true,
       message: '登录成功',
-      redirectTo: '/admin',
+      redirectTo: '/',
       data: {
         token: 'your-token',
+        id: 1,
         info: { /* 用户信息 */ }
       }
     }
   },
 
-  check: async (params, manage) => {
+  check: async (params, manage, auth) => {
     // 您的认证检查逻辑
+    // 可以使用当前用户状态 auth 进行检查
     return {
       success: true,
+      logout: false,
       data: { /* 用户状态 */ }
     }
   },
@@ -309,8 +340,7 @@ const customAuthProvider: IAuthProvider = {
     // 您的登出逻辑
     return {
       success: true,
-      redirectTo: '/login',
-      logout: true
+      redirectTo: '/login'
     }
   },
 
@@ -320,9 +350,10 @@ const customAuthProvider: IAuthProvider = {
     return {
       success: true,
       message: '注册成功',
-      redirectTo: '/admin',
+      redirectTo: '/',
       data: {
         token: 'new-user-token',
+        id: 2,
         info: { /* 新用户信息 */ }
       }
     }
@@ -333,7 +364,8 @@ const customAuthProvider: IAuthProvider = {
     // 您的忘记密码逻辑
     return {
       success: true,
-      message: '重置邮件已发送'
+      message: '重置邮件已发送',
+      redirectTo: '/login'
     }
   },
 
@@ -351,7 +383,7 @@ const customAuthProvider: IAuthProvider = {
   can: (name, params, manage, auth) => {
     // 您的权限检查逻辑
     if (!auth?.permission) {
-      return false
+      return true // 如果没有权限配置，默认允许访问
     }
 
     // 数组形式的权限检查
@@ -361,10 +393,10 @@ const customAuthProvider: IAuthProvider = {
 
     // 对象形式的权限检查
     if (typeof auth.permission === 'object') {
-      return auth.permission[name] === true
+      return auth.permission[name] !== false
     }
 
-    return false
+    return true
   },
 
   onError: async (error) => {
@@ -396,15 +428,7 @@ const minimalAuthProvider: IAuthProvider = {
     // 实现登录逻辑
     return {
       success: true,
-      data: { token: 'user-token' }
-    }
-  },
-
-  check: async (params, manage) => {
-    // 实现认证检查逻辑
-    return {
-      success: true,
-      data: { token: 'user-token' }
+      data: { token: 'user-token', id: 1 }
     }
   },
 
@@ -412,7 +436,7 @@ const minimalAuthProvider: IAuthProvider = {
     // 实现登出逻辑
     return {
       success: true,
-      logout: true
+      redirectTo: '/login'
     }
   },
 
@@ -420,11 +444,12 @@ const minimalAuthProvider: IAuthProvider = {
     // 实现错误处理逻辑
     return {
       logout: error?.status === 401,
+      redirectTo: error?.status === 401 ? '/login' : undefined,
       error
     }
   }
 
-  // 注意：register、forgotPassword、updatePassword 和 can 方法是可选的
+  // 注意：check、register、forgotPassword、updatePassword 和 can 方法是可选的
   // 如果不需要这些功能，可以不实现
 }
 ```
@@ -475,11 +500,11 @@ const config: IConfig = {
 
 ```typescript
 // 登录接口
-const loginUrl = manage.getApiUrl('/login')
+const loginUrl = manage.getApiUrl('/login', 'default')
 // 结果: https://api.example.com/admin/login
 
 // 认证检查接口
-const checkUrl = manage.getApiUrl('/check')
+const checkUrl = manage.getApiUrl('/check', 'default')
 // 结果: https://api.example.com/admin/check
 ```
 
@@ -587,6 +612,33 @@ can?: (name: string, params?: any, manage?: IManageHook, auth?: IUserState) => b
     "user.delete": false,
     "post.manage": true
   }
+}
+```
+
+### 简单认证提供者的权限检查
+
+内置的 `simpleAuthProvider` 实现了以下权限检查逻辑：
+
+```typescript
+can: (name: string, params?: any, manage?: IManageHook, auth?: IUserState): boolean => {
+  // 如果没有权限配置或权限为空，默认允许访问
+  if (!auth?.permission
+    || (Array.isArray(auth?.permission) && auth?.permission?.length === 0)
+    || (typeof auth?.permission === 'object' && Object.keys(auth?.permission).length === 0)) {
+    return true
+  }
+
+  // 数组形式权限检查 - 检查权限列表中是否包含指定权限
+  if (Array.isArray(auth?.permission) && !auth?.permission?.includes(name)) {
+    return false
+  }
+
+  // 对象形式权限检查 - 检查权限对象中指定权限是否为 false
+  if (typeof auth?.permission === 'object' && auth?.permission[name] === false) {
+    return false
+  }
+
+  return true
 }
 ```
 

@@ -1,5 +1,14 @@
 # @duxweb/dvha-core
 
+## 1.0.21
+
+### Patch Changes
+
+- chore(pro): 修正设置面板样式配置
+  feat(pro): 增加手册检测登录和定时检测
+  feat(core): 增加上传请求附加参数
+  feat(pro): 增加文件管理器上传参数
+
 ## 1.0.20
 
 ### Patch Changes

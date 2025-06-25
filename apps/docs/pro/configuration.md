@@ -19,7 +19,15 @@ import {
 } from '@duxweb/dvha-core'
 import {
   createDuxPro,
-  DuxApp
+  DuxApp,
+  DuxAuthLayout,
+  DuxLayout,
+  DuxLoginPage,
+  DuxPage404,
+  DuxPage500,
+  DuxPageLoading,
+  enUS,
+  zhCN
 } from '@duxweb/dvha-pro'
 import NaiveUI from 'naive-ui'
 import { createApp } from 'vue'
@@ -77,7 +85,10 @@ const config: IConfig = {
 
       // 路由配置
       routePrefix: '/admin', // 路由前缀
-      apiRoutePath: '/admin/routes', // 远程路由 API 路径
+      apiRoutePath: '/routes', // 远程路由 API 路径
+
+      // API 配置 - 使用新的 apiBasePath
+      apiBasePath: '/admin', // API 基础路径
 
       // 布局组件配置
       components: {
@@ -87,11 +98,6 @@ const config: IConfig = {
         loading: DuxPageLoading, // 加载页面
         error: DuxPage500, // 错误页面
       },
-
-      // 路由配置
-      // API 路由配置
-      apiUrl: '/admin', // API 基础路径
-      apiRoutePath: '/routes', // 远程路由API路径
 
       routes: [
         {
@@ -162,12 +168,25 @@ const config: IConfig = {
     {
       name: 'admin',
       title: 'DVHA Pro',
+      apiBasePath: '/admin',
 
       // Pro 版特有的 API 路径配置
       apiPath: {
         upload: '/api/upload', // 文件上传 API
         uploadManager: '/api/upload/manager', // 文件管理 API
         ai: '/api/ai', // AI 功能 API
+        [key: string]: any // 支持自定义 API 路径
+      },
+
+      // 上传配置
+      upload: {
+        driver: 'local', // 上传驱动：'local' | 's3'
+        signPath: '/api/upload/sign', // S3 签名路径（仅 S3 驱动需要）
+        signCallback: (response: IDataProviderResponse) => ({
+          uploadUrl: response.data?.uploadUrl,
+          url: response.data?.url,
+          params: response.data?.params,
+        }),
       },
 
       // 远程组件配置
@@ -194,12 +213,40 @@ const config: IConfig = {
 app.use(createDuxPro())
 ```
 
-**注意**: 根据实际代码，`createDuxPro()` 函数目前不接受任何配置参数，它会自动初始化以下功能：
+**重要说明**: 根据最新代码，`createDuxPro()` 函数不接受任何配置参数，它会自动初始化以下功能：
 
-1. **UnoCSS 运行时**：原子化 CSS 支持
-2. **ECharts 组件**：注册为全局 `v-chart` 组件
-3. **表单验证**：VeeValidate 国际化配置
-4. **业务组件**：注册所有 Pro 版业务组件
+1. **表单验证**：VeeValidate 国际化配置
+2. **UnoCSS 运行时**：原子化 CSS 支持
+3. **ECharts 组件**：注册为全局 `v-chart` 组件
+4. **业务组件**：自动注册所有 Pro 版业务组件
+5. **样式主题**：自动加载 css 主题样式
+
+### Pro 插件自动化配置
+
+Pro 插件会自动处理以下配置：
+
+```typescript
+// 这些功能无需手动配置，Pro 插件会自动初始化
+export function createDuxPro() {
+  // 1. 初始化表单验证
+  initVeeValidate()
+
+  // 2. 初始化 UnoCSS 运行时
+  initUnocssRuntime({
+    defaults: unoConfig(false),
+    bypassDefined: true,
+  })
+
+  return {
+    install(app: App) {
+      // 3. 注册 ECharts 组件
+      app.component('v-chart', VueECharts)
+      // 4. 注册所有业务组件
+      app.use(component)
+    },
+  }
+}
+```
 
 ## 🎯 主题配置详解
 
@@ -252,6 +299,54 @@ const config: IConfig = {
     apiMethod: 'POST', // 请求方法
     apiRoutePath: '/api/remote/components', // 远程组件 API 路径
   },
+}
+```
+
+## 📁 上传配置详解
+
+### 本地上传配置
+
+```typescript
+const config: IConfig = {
+  manages: [
+    {
+      name: 'admin',
+
+      // API 路径配置
+      apiPath: {
+        upload: '/api/upload', // 上传接口路径
+        uploadManager: '/api/upload/manager', // 文件管理接口路径
+      },
+
+      // 本地上传配置
+      upload: {
+        driver: 'local', // 使用本地上传驱动
+      },
+    },
+  ],
+}
+```
+
+### S3 云存储配置
+
+```typescript
+const config: IConfig = {
+  manages: [
+    {
+      name: 'admin',
+
+      // S3 上传配置
+      upload: {
+        driver: 's3', // 使用 S3 上传驱动
+        signPath: '/api/upload/sign', // S3 签名接口路径
+        signCallback: (response: IDataProviderResponse) => ({
+          uploadUrl: response.data?.uploadUrl, // S3 上传地址
+          url: response.data?.url, // 文件最终访问地址
+          params: response.data?.params, // 额外的上传参数
+        }),
+      },
+    },
+  ],
 }
 ```
 
@@ -369,6 +464,32 @@ DVHA Pro 支持完全自定义的提供者配置，实现高度定制化的功�
 
 ```typescript
 // main.ts 生产环境配置示例
+import type { IConfig } from '@duxweb/dvha-core'
+import {
+  createDux,
+  i18nProvider,
+  simpleAuthProvider,
+  simpleDataProvider
+} from '@duxweb/dvha-core'
+import {
+  createDuxPro,
+  DuxApp,
+  DuxAuthLayout,
+  DuxLayout,
+  DuxLoginPage,
+  DuxPage404,
+  DuxPage500,
+  DuxPageLoading,
+  enUS,
+  zhCN
+} from '@duxweb/dvha-pro'
+import NaiveUI from 'naive-ui'
+import { createApp } from 'vue'
+
+import '@duxweb/dvha-pro/style.css'
+
+const app = createApp(DuxApp)
+
 const config: IConfig = {
   title: 'DVHA Pro 企业管理系统',
   defaultManage: 'admin',
@@ -385,6 +506,7 @@ const config: IConfig = {
       updatePassword: true,
 
       routePrefix: '/admin',
+      apiBasePath: '/admin', // 使用新的 apiBasePath
 
       components: {
         authLayout: DuxAuthLayout,
@@ -401,12 +523,38 @@ const config: IConfig = {
         ai: '/api/ai',
       },
 
+      // 上传配置
+      upload: {
+        driver: 's3', // 生产环境推荐使用 S3
+        signPath: '/api/upload/sign',
+        signCallback: response => ({
+          uploadUrl: response.data?.uploadUrl,
+          url: response.data?.url,
+          params: response.data?.params,
+        }),
+      },
+
       routes: [
         {
           name: 'admin.login',
           path: 'login',
           component: DuxLoginPage,
           meta: { authorization: false },
+        },
+      ],
+
+      userMenus: [
+        {
+          key: 'profile',
+          label: '个人资料',
+          icon: 'i-tabler:user',
+          path: 'profile',
+        },
+        {
+          key: 'setting',
+          label: '系统设置',
+          icon: 'i-tabler:settings',
+          path: 'setting',
         },
       ],
 
@@ -424,7 +572,7 @@ const config: IConfig = {
 
   // 提供者配置
   dataProvider: simpleDataProvider({
-    apiUrl: process.env.VITE_API_URL || 'https://api.example.com/admin',
+    apiUrl: process.env.VITE_API_URL || 'https://api.example.com',
   }),
 
   authProvider: simpleAuthProvider(),
@@ -451,7 +599,22 @@ const config: IConfig = {
       gray: 'zinc',
     },
   },
+
+  // 远程组件配置
+  remote: {
+    packages: {
+      'naive-ui': NaiveUI,
+      '@duxweb/dvha-pro': DuxPro,
+    },
+  },
 }
+
+// 插件安装
+app.use(createDux(config))
+app.use(NaiveUI)
+app.use(createDuxPro()) // 不接受任何参数
+
+app.mount('#app')
 ```
 
 ## ⚡ 性能优化
@@ -488,16 +651,34 @@ VITE_APP_TITLE=DVHA Pro 生产环境
 - [快速开始](/pro/getting-started) - 了解如何创建项目
 - [组件文档](/pro/components/) - 学习可用组件
 - [Hooks 文档](/pro/hooks/) - 探索实用工具
+- [数据提供者](/providers/data) - 配置数据接口
+- [认证提供者](/providers/auth) - 配置认证系统
+- [国际化提供者](/providers/i18n) - 配置多语言
 
 ## ❓ 常见问题
 
-### 配置不生效
+### 样式加载问题
 
-如果配置修改后不生效，请检查：
+如果样式不生效，请检查：
 
-1. 插件安装顺序是否正确
-2. 配置对象是否有语法错误
+1. 确保使用了正确的样式导入：`@duxweb/dvha-pro/style.css`
 3. 重启开发服务器
+
+### API 配置问题
+
+如果 API 请求失败：
+
+1. 确保使用了 `apiBasePath` 而不是 `apiUrl`
+2. 检查数据提供者配置
+3. 查看控制台网络请求
+
+### 上传功能问题
+
+如果上传不工作：
+
+1. 检查 `apiPath.upload` 配置
+2. 确认后端接口格式
+3. 检查文件大小和类型限制
 
 ### 主题配置问题
 

@@ -110,7 +110,7 @@ export const DuxFormItem = defineComponent({
         <div class={[
           'flex flex-col gap-1',
           labelPlacement.value !== 'left' ? 'md:mt-1' : '',
-          labelPlacement.value === 'setting' ? 'flex-none min-w-200px' : 'flex-1',
+          labelPlacement.value === 'setting' ? 'flex-none md:w-50%' : 'flex-1',
           labelPlacement.value === 'page' ? 'col-span-3' : '',
         ]}
         >

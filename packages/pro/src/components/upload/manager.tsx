@@ -49,6 +49,7 @@ const DuxFileManage = defineComponent({
     const download = useDownload()
 
     const form = ref<Record<string, any>>({
+      manager: true,
       type: props.type || 'all',
       folder: null,
     })
@@ -83,6 +84,7 @@ const DuxFileManage = defineComponent({
       path: uploadPath.value,
       autoUpload: true,
       driver: driver.value,
+      params: form.value,
       onSuccess: () => {
         selectValues.value = []
         list.refetch()
@@ -263,6 +265,7 @@ const DuxFileManage = defineComponent({
                       key={`parent-${list.data.value?.meta?.folder}`}
                       type="folder"
                       name={t('components.uploadManage.parentLevel')}
+                      page={props.page}
                       onSelect={() => {
                         selectValues.value = []
                         form.value.folder = list.data.value?.meta?.folder
@@ -275,6 +278,7 @@ const DuxFileManage = defineComponent({
                         default: () => item.filesize,
                         trigger: () => (
                           <DuxFileManageItem
+                            page={props.page}
                             onContextmenu={(e) => {
                               currentData.value = item
                               showDropdown.value = false
@@ -374,6 +378,7 @@ const DuxFileManage = defineComponent({
           }}
           onSelect={(v) => {
             const itemData = cloneDeep(currentData.value)
+            showDropdown.value = false
             switch (v) {
               case 'download':
                 download.url(itemData?.url)
