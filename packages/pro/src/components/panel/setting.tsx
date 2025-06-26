@@ -24,7 +24,7 @@ export const DuxPanelCard = defineComponent({
   setup(props, { slots }) {
     return () => (
       <div class="flex flex-col gap-4">
-        <div class="flex items-center">
+        <div class="flex items-center px-2">
           <div class="flex-1 flex flex-col">
             <div class="text-base">
               {props.title}

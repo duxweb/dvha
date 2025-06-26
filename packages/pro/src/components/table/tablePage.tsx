@@ -42,6 +42,9 @@ export const DuxTablePage = defineComponent({
               rowKey={row => row.id}
               bordered={false}
               scrollX={result.width}
+              renderCell={(value) => {
+                return value === undefined || value === null || value === '' ? '-' : value
+              }}
             >
               {{
                 empty: () => <DuxListEmpty bordered={false} />,

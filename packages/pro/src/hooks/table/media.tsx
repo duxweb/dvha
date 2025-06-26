@@ -5,7 +5,7 @@ import { DuxMedia } from '../../components'
 export interface UseTableColumnMediaProps {
   image?: string | string[] | ((rowData: Record<string, any>) => VNode | string | string[])
   avatar?: boolean
-  title?: string | ((rowData: Record<string, any>) => VNode)
+  title?: string | ((rowData: Record<string, any>) => VNode | string)
   desc?: string | string[] | ((rowData: Record<string, any>) => VNode | string | string[])
   imageWidth?: number
   imageHeight?: number

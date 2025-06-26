@@ -1,3 +1,4 @@
+import { useTheme } from '@duxweb/dvha-core'
 import { useVModel } from '@vueuse/core'
 import { defineComponent } from 'vue'
 import { VAceEditor } from 'vue3-ace-editor'
@@ -11,7 +12,6 @@ import 'ace-builds/src-noconflict/theme-tomorrow'
 import 'ace-builds/src-noconflict/ext-searchbox'
 import 'ace-builds/src-noconflict/ext-language_tools'
 import 'ace-builds/src-noconflict/mode-snippets'
-import { useTheme } from '@duxweb/dvha-core'
 
 export const DuxCodeEditor = defineComponent({
   name: 'DuxCodeEditor',

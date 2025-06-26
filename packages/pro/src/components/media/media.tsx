@@ -59,7 +59,7 @@ export const DuxMedia = defineComponent({
               <div
                 onClick={() => props.onClick?.()}
                 class={clsx([
-                  'transition-all truncate text-default',
+                  'transition-all truncate',
                   props?.onClick && 'hover:text-primary cursor-pointer',
                 ])}
               >

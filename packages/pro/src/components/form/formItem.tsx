@@ -13,20 +13,41 @@ export const DuxFormItem = defineComponent({
     labelPlacement: {
       type: String as PropType<'left' | 'top' | 'setting' | 'page'>,
     },
+    labelAlign: {
+      type: String as PropType<'left' | 'right'>,
+    },
     labelWidth: {
       type: Number,
+    },
+    required: {
+      type: Boolean,
+      default: false,
     },
     rule: [String, Object] as PropType<RuleExpression<any>>,
     message: [String, Object] as PropType<string | Record<string, string>>,
   },
   setup(props, { slots }) {
     const message = toRef(props.message)
-
-    const { errorMessage, value, setErrors, validate } = useField(props.path || '', props.rule || {}, {
+    const rule = computed(() => {
+      if (typeof props.rule === 'object') {
+        return {
+          ...props.rule,
+          required: !!props.required,
+        }
+      }
+      if (typeof props.rule === 'string') {
+        return props.rule?.includes('required') ? props.rule : `${props.rule}|required`
+      }
+      return props.rule
+    })
+    const { errorMessage, value, setErrors, validate } = useField(props.path || '', rule.value || {}, {
       label: props.label,
     })
 
     const isRequired = computed(() => {
+      if (props.required)
+        return true
+
       if (!props.rule)
         return false
 
@@ -59,6 +80,7 @@ export const DuxFormItem = defineComponent({
 
     const form = inject('dux.form', {
       labelPlacement: 'left',
+      labelAlign: 'left',
       labelWidth: 70,
       divider: false,
     })
@@ -81,15 +103,16 @@ export const DuxFormItem = defineComponent({
 
     return () => (
       <div class={[
-        labelPlacement.value !== 'top' ? 'md:flex-row gap-2' : 'gap-1',
+        labelPlacement.value !== 'top' ? 'md:flex-row gap-2 lg:items-center' : 'gap-1',
         divider.value ? 'py-6' : '',
         labelPlacement.value === 'setting' ? 'md:justify-between md:items-start md:gap-4' : '',
-        labelPlacement.value === 'page' ? 'grid grid-cols-1 lg:grid-cols-4 px-4' : 'flex flex-col lg:items-center',
+        labelPlacement.value === 'page' ? 'grid grid-cols-1 lg:grid-cols-4 px-4' : 'flex flex-col',
       ]}
       >
         <div
           class={[
             labelPlacement.value === 'left' ? 'flex lg:items-center' : '',
+            labelPlacement.value === 'left' && form.labelAlign === 'right' ? 'justify-end' : '',
           ]}
           style={{ width: labelWidth.value }}
         >
@@ -100,7 +123,7 @@ export const DuxFormItem = defineComponent({
                 {isRequired.value && <span class="text-error font-mono text-xs">*</span>}
               </span>
             </div>
-            {props.description && typeof props.description === 'string' && (
+            {props.description && (labelPlacement.value === 'setting' || labelPlacement.value === 'page') && (
               <div class="text-sm text-muted">
                 {props.description}
               </div>
@@ -110,14 +133,14 @@ export const DuxFormItem = defineComponent({
         <div class={[
           'flex flex-col gap-1',
           labelPlacement.value !== 'left' ? 'md:mt-1' : '',
-          labelPlacement.value === 'setting' ? 'flex-none md:w-50%' : 'flex-1',
+          labelPlacement.value === 'setting' ? 'flex-none md:w-40%' : 'flex-1',
           labelPlacement.value === 'page' ? 'col-span-3' : '',
         ]}
         >
-          <div>
+          <div class={labelPlacement.value === 'setting' ? 'flex-1 lg:flex lg:justify-end' : ''}>
             {slots?.default?.()}
           </div>
-          {props.description && typeof props.description !== 'string' && (
+          {props.description && (labelPlacement.value === 'left') && (
             <div class="text-sm text-muted">
               {props.description}
             </div>

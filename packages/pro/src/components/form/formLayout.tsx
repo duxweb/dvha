@@ -8,6 +8,10 @@ export const DuxFormLayout = defineComponent({
       type: String as PropType<'left' | 'top' | 'setting' | 'page'>,
       default: 'left',
     },
+    labelAlign: {
+      type: String as PropType<'left' | 'right'>,
+      default: 'left',
+    },
     labelWidth: {
       type: Number,
     },
@@ -23,6 +27,7 @@ export const DuxFormLayout = defineComponent({
   setup(props, { slots }) {
     provide('dux.form', {
       labelPlacement: props.labelPlacement,
+      labelAlign: props.labelAlign,
       labelWidth: props.labelWidth,
       divider: props.divider,
     })

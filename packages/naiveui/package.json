@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-naiveui",
   "type": "module",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "author": "DuxWeb",
   "license": "MIT",
   "exports": {

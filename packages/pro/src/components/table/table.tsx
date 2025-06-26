@@ -55,6 +55,9 @@ export const DuxTable = defineComponent({
           flexHeight
           rowKey={row => row.id}
           bordered={false}
+          renderCell={(value) => {
+            return value === undefined || value === null || value === '' ? '-' : value
+          }}
         >
           {{
             empty: () => <DuxListEmpty bordered={false} />,

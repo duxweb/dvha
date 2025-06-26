@@ -147,7 +147,7 @@ export const DuxCard = defineComponent({
             {slots.headerExtra?.()}
           </div>
         )}
-        <div class={[(props.title || slots.header || slots.footer) && contentSizeClass.value, props.contentClass]}>
+        <div class={['flex-1 min-h-0', (props.title || slots.header || slots.footer) && contentSizeClass.value, props.contentClass]}>
           {slots.default?.()}
         </div>
         {slots.footer && (

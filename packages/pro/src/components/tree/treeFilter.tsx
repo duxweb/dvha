@@ -48,7 +48,7 @@ export const DuxTreeFilter = defineComponent<TreeFilterProps>({
     draggable: Boolean,
     bordered: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   extends: NTree,
@@ -198,7 +198,7 @@ export const DuxTreeFilter = defineComponent<TreeFilterProps>({
     })
 
     return () => (
-      <DuxCard class="h-full" bordered={props.bordered}>
+      <DuxCard class="h-full" contentClass="flex flex-col" bordered={props.bordered}>
         {props?.title && (
           <div class="px-2 py-3 pb-1 text-base font-bold">
             {props.title}

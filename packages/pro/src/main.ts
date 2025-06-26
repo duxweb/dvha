@@ -1,16 +1,16 @@
-import type { App } from 'vue'
+import type { IDataProviderResponse, IS3SignData } from '@duxweb/dvha-core'
 
+import type { App } from 'vue'
 import initUnocssRuntime from '@unocss/runtime'
 import VueECharts from 'vue-echarts'
 import component from './component'
 import { initVeeValidate } from './config'
-import { config as unoConfig } from './config/uno'
 
+import { config as unoConfig } from './config/uno'
 import 'echarts'
 import 'vue-cropper/dist/index.css'
 import 'aieditor/dist/style.css'
 import './theme/style.scss'
-import { IDataProviderResponse, IS3SignData } from '@duxweb/dvha-core'
 
 export function createDuxPro() {
   initVeeValidate()

@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.0.22
+
+### Patch Changes
+
+- chore(pro): 优化部分样式
+  - @duxweb/dvha-core@1.0.22
+  - @duxweb/dvha-naiveui@1.0.22
+
 ## 1.0.21
 
 ### Patch Changes

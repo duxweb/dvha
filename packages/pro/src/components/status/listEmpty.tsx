@@ -13,7 +13,7 @@ export const DuxListEmpty = defineComponent({
     const { t } = useI18n()
     return () => (
       <div class="flex flex-col items-center justify-center gap-2 h-full">
-        <DuxDrawEmptyForm />
+        <DuxDrawEmptyForm class="max-h-120px" />
         <div class="text-lg text-default font-bold">
           { props?.title || t('pages.empty.title') }
         </div>

@@ -72,6 +72,7 @@ const config = {
         }),
     ],
   },
+
 }
 
 function injectConfig(config: IConfig): IConfig {
