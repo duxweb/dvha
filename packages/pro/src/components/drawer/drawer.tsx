@@ -57,7 +57,7 @@ export default defineComponent({
             {{
               default: () => <Page {...params} />,
               fallback: () => (
-                <NSpin show>
+                <NSpin show class="h-full">
                   <div class="flex-1 min-h-1"></div>
                 </NSpin>
               ),

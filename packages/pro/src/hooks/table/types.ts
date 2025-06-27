@@ -45,7 +45,7 @@ export interface ConfirmActionItem extends BaseActionItem {
 export interface RequestActionItem extends BaseActionItem {
   type: 'request'
   method?: 'get' | 'post' | 'put' | 'patch' | 'delete'
-  path?: string
+  path: string | ((id?: unknown, item?: Record<string, any>) => string)
   data?: Record<string, any> | ((id?: unknown, item?: Record<string, any>) => Record<string, any>)
   content?: string
 }
@@ -54,7 +54,7 @@ export interface RequestActionItem extends BaseActionItem {
 export interface DeleteActionItem extends BaseActionItem {
   type: 'delete'
   content?: string
-  path?: string
+  path: string | ((id?: unknown, item?: Record<string, any>) => string)
 }
 
 // 回调类型

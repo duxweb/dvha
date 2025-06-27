@@ -1,5 +1,6 @@
+import type { PropType } from 'vue'
 import { NButton, NScrollbar } from 'naive-ui'
-import { defineComponent, nextTick, PropType, ref, watch } from 'vue'
+import { defineComponent, nextTick, ref, watch } from 'vue'
 
 export const DuxDrawerPage = defineComponent({
   name: 'DuxDrawerPage',
@@ -13,7 +14,6 @@ export const DuxDrawerPage = defineComponent({
     },
   },
   setup(props, { slots }) {
-
     const closeRef = ref()
 
     watch(closeRef, (val) => {
@@ -38,12 +38,14 @@ export const DuxDrawerPage = defineComponent({
         <div class="flex-1 min-h-1">
           {props.scrollbar ? <NScrollbar>{slots.default?.()}</NScrollbar> : slots.default?.()}
         </div>
-        {slots.actions && <div class="flex-none border-t border-muted p-4 flex justify-end gap-2">
-          {slots.actions?.({
-            onClose: props.onClose,
-            onConfirm: props.onConfirm,
-          })}
-        </div>}
+        {slots.footer && (
+          <div class="flex-none border-t border-muted p-4 flex justify-end gap-2">
+            {slots.footer?.({
+              onClose: props.onClose,
+              onConfirm: props.onConfirm,
+            })}
+          </div>
+        )}
       </div>
     )
   },

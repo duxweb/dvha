@@ -36,7 +36,7 @@ export const DuxFormItem = defineComponent({
         }
       }
       if (typeof props.rule === 'string') {
-        return props.rule?.includes('required') ? props.rule : `${props.rule}|required`
+        return props.rule?.includes('required') ? props.rule : (props.rule ? `${props.rule}|required` : 'required')
       }
       return props.rule
     })

@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.0.23
+
+### Patch Changes
+
+- fix: 修正侧栏面板固定滚动,增加 Action 的 Path 函数
+  - @duxweb/dvha-core@1.0.23
+  - @duxweb/dvha-naiveui@1.0.23
+
 ## 1.0.22
 
 ### Patch Changes

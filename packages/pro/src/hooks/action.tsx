@@ -46,8 +46,6 @@ export function useAction(action?: UseActionProps) {
     const title = t(props.item.title || '', {}, props.item.title)
     const label = t(props.item.label || '', {}, props.item.label)
 
-
-
     if (props.item.type === 'modal') {
       const item = props.item
       const componentProps = typeof item.componentProps === 'function' ? item.componentProps(props.data) : item.componentProps
@@ -98,7 +96,7 @@ export function useAction(action?: UseActionProps) {
       }).then(() => {
         const data = typeof item.data === 'function' ? item.data(props.id, props.data) : item.data
         const methodName = (item.method || 'post').toLowerCase()
-        const path = item.path || actionPath
+        const path = typeof item.path === 'function' ? item.path(props.id, props.data) : item.path || actionPath
         mutation.mutate({
           path,
           method: methodName,
@@ -115,7 +113,7 @@ export function useAction(action?: UseActionProps) {
       }).then(() => {
         deleteMutation.mutate({
           id: props.id as string,
-          path: item.path || actionPath,
+          path: typeof item.path === 'function' ? item.path(props.id, props.data) : item.path || actionPath,
         })
       })
     }
