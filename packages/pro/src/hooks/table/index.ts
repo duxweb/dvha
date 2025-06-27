@@ -1,3 +1,4 @@
+export * from './color'
 export * from './column'
 export * from './image'
 export * from './map'

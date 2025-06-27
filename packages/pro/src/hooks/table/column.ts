@@ -1,4 +1,5 @@
 import { useManage } from '@duxweb/dvha-core'
+import { useTableColumnColor } from './color'
 import { useTableColumnCopy } from './copy'
 import { useTableColumnHidden } from './hidden'
 import { useTableColumnImage } from './image'
@@ -27,6 +28,7 @@ export function useTableColumn(props?: UseTableColumnProps) {
   })
 
   const columnStatus = useTableColumnStatus()
+  const columnColor = useTableColumnColor()
   const columnMap = useTableColumnMap()
   const columnInput = useTableColumnInput({
     path,
@@ -44,5 +46,6 @@ export function useTableColumn(props?: UseTableColumnProps) {
     renderInput: columnInput.render,
     renderCopy: columnCopy.render,
     renderHidden: columnHidden.render,
+    renderColor: columnColor.render,
   }
 }

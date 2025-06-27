@@ -33,7 +33,7 @@ export function useTableColumnMap() {
                 {item.label}
 
               </div>
-              <div>{item?.render ? item.render(get(rowData, item.key || '')) : get(rowData, item.key || '')}</div>
+              <div>{item?.render ? item.render(get(rowData, item.key || '')) : get(rowData, item.key || '') || '-'}</div>
             </div>
           ))}
         </div>

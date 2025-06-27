@@ -1,6 +1,6 @@
 import type { IDataProviderError, IDataProviderResponse } from '@duxweb/dvha-core'
 import type { MaybeRef, PropType } from 'vue'
-import { useExtendForm, useI18n } from '@duxweb/dvha-core'
+import { useExtendForm, useI18n, useInvalidate } from '@duxweb/dvha-core'
 import { NTabs, useMessage } from 'naive-ui'
 import { computed, defineComponent, ref, toRef } from 'vue'
 import { DuxPage } from '../../pages'
@@ -38,6 +38,9 @@ export const DuxSettingForm = defineComponent({
       type: String as PropType<'small' | 'medium' | 'large'>,
       default: 'medium',
     },
+    invalidate: {
+      type: String as PropType<string>,
+    },
   },
   setup(props, { slots }) {
     const activeTab = ref(props.defaultTab)
@@ -45,6 +48,7 @@ export const DuxSettingForm = defineComponent({
     const { t } = useI18n()
 
     const message = useMessage()
+    const { invalidate } = useInvalidate()
 
     const result = useExtendForm({
       id: props.id,
@@ -58,6 +62,9 @@ export const DuxSettingForm = defineComponent({
       onSuccess: (data) => {
         message.success(t('components.form.success') as string)
         props.onSuccess?.(data)
+        if (props.invalidate) {
+          invalidate(props.invalidate)
+        }
       },
     })
 

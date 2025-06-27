@@ -1,6 +1,6 @@
 import type { IDataProviderError, IDataProviderResponse } from '@duxweb/dvha-core'
 import type { MaybeRef, PropType } from 'vue'
-import { useExtendForm, useI18n } from '@duxweb/dvha-core'
+import { useExtendForm, useI18n, useInvalidate } from '@duxweb/dvha-core'
 import { NButton, useMessage } from 'naive-ui'
 import { computed, defineComponent, toRef } from 'vue'
 import { DuxModalPage } from '../../components'
@@ -27,6 +27,9 @@ export const DuxModalForm = defineComponent({
     title: {
       type: String as PropType<string>,
     },
+    invalidate: {
+      type: String as PropType<string>,
+    },
     onSuccess: {
       type: Function as PropType<(data?: IDataProviderResponse) => void>,
     },
@@ -44,6 +47,8 @@ export const DuxModalForm = defineComponent({
     const form = toRef(props, 'data', {})
     const message = useMessage()
 
+    const { invalidate } = useInvalidate()
+
     const { isLoading, onSubmit, onReset, isEdit } = useExtendForm({
       id: props.id,
       path: props.path,
@@ -54,6 +59,9 @@ export const DuxModalForm = defineComponent({
         props.onError?.(error)
       },
       onSuccess: (data) => {
+        if (props.invalidate) {
+          invalidate(props.invalidate)
+        }
         message.success(t('components.form.success') as string)
         props.onSuccess?.(data)
         props.onClose?.()

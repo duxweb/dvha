@@ -1,6 +1,6 @@
 import type { IDataProviderError, IDataProviderResponse } from '@duxweb/dvha-core'
 import type { MaybeRef, PropType } from 'vue'
-import { useExtendForm, useI18n } from '@duxweb/dvha-core'
+import { useExtendForm, useI18n, useInvalidate } from '@duxweb/dvha-core'
 import { NButton, NScrollbar, useMessage } from 'naive-ui'
 import { computed, defineComponent, toRef } from 'vue'
 import { DuxDrawerPage } from '..'
@@ -33,6 +33,9 @@ export const DuxDrawerForm = defineComponent({
     onError: {
       type: Function as PropType<(error?: IDataProviderError) => void>,
     },
+    invalidate: {
+      type: String as PropType<string>,
+    },
   },
   extends: DuxFormLayout,
   setup(props, { slots }) {
@@ -43,6 +46,7 @@ export const DuxDrawerForm = defineComponent({
     })
     const form = toRef(props, 'data', {})
     const message = useMessage()
+    const { invalidate } = useInvalidate()
 
     const { isLoading, onSubmit, onReset, isEdit } = useExtendForm({
       id: props.id,
@@ -57,6 +61,9 @@ export const DuxDrawerForm = defineComponent({
         message.success(t('components.form.success') as string)
         props.onSuccess?.(data)
         props.onClose?.()
+        if (props.invalidate) {
+          invalidate(props.invalidate)
+        }
       },
     })
 

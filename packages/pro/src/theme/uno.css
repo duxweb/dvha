@@ -1,5 +1,5 @@
 /* layer: properties */
-@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))){*, ::before, ::after, ::backdrop{--un-text-opacity:100%;--un-bg-opacity:100%;--un-from-opacity:100%;--un-divide-y-reverse:0;--un-border-style:solid;--un-divide-x-reverse:0;--un-divide-opacity:100%;--un-shadow-opacity:100%;--un-border-opacity:100%;--un-translate-x:0;--un-translate-y:0;--un-translate-z:0;--un-to-opacity:100%;--un-outline-style:solid;--un-fill-opacity:100%;}}
+@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))){*, ::before, ::after, ::backdrop{--un-text-opacity:100%;--un-bg-opacity:100%;--un-from-opacity:100%;--un-divide-y-reverse:initial;--un-border-style:solid;--un-divide-x-reverse:initial;--un-divide-opacity:100%;--un-shadow-opacity:100%;--un-ease:initial;--un-translate-x:initial;--un-translate-y:initial;--un-translate-z:initial;--un-border-opacity:100%;--un-fill-opacity:100%;--un-to-opacity:100%;--un-outline-style:solid;}}
 @property --un-text-opacity{syntax:"<percentage>";inherits:false;initial-value:100%;}
 @property --un-outline-style{syntax:"*";inherits:false;initial-value:solid;}
 @property --un-border-opacity{syntax:"<percentage>";inherits:false;initial-value:100%;}
@@ -1187,6 +1187,7 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .min-h-0{min-height:calc(var(--spacing) * 0);}
 .min-h-1{min-height:calc(var(--spacing) * 1);}
 .min-w-0{min-width:calc(var(--spacing) * 0);}
+.min-w-110{min-width:calc(var(--spacing) * 110);}
 .min-w-60{min-width:calc(var(--spacing) * 60);}
 .w-120{width:calc(var(--spacing) * 120);}
 .w-120px{width:120px;}

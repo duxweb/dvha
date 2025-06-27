@@ -22,8 +22,8 @@ export function useTableColumnImage() {
                 <NImage
                   key={index}
                   src={item}
-                  width={props.imageWidth}
-                  height={props.imageHeight}
+                  width={props.imageWidth || 40}
+                  height={props.imageHeight || 40}
                   objectFit="cover"
                   fallbackSrc="data:image/svg+xml;base64,"
                 >

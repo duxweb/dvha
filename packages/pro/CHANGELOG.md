@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.0.24
+
+### Patch Changes
+
+- feat: 更新表格列 color 方法,升级到 vite 7
+  - @duxweb/dvha-core@1.0.24
+  - @duxweb/dvha-naiveui@1.0.24
+
 ## 1.0.23
 
 ### Patch Changes

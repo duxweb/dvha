@@ -31,14 +31,14 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^4.13.1",
-    "@tanstack/eslint-plugin-query": "^5.78.0",
-    "@types/node": "^22.15.21",
-    "@vitejs/plugin-vue": "^5.2.4",
-    "@vitejs/plugin-vue-jsx": "^4.2.0",
-    "eslint": "^9.27.0",
-    "typescript": "^5.8.2",
-    "vite": "^6.3.5",
+    "@antfu/eslint-config": "^4.16.1",
+    "@tanstack/eslint-plugin-query": "^5.81.2",
+    "@types/node": "^22.15.33",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "@vitejs/plugin-vue-jsx": "^5.0.0",
+    "eslint": "^9.29.0",
+    "typescript": "^5.8.3",
+    "vite": "^7.0.0",
     "vitest": "^3.1.4"
   }
 }

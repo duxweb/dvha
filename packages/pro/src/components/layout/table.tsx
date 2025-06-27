@@ -38,6 +38,10 @@ export const DuxTableLayout = defineComponent({
     filterSchema: {
       type: Array as PropType<JsonSchemaNode[]>,
     },
+    filterNumber: {
+      type: Number,
+      default: 1,
+    },
     columns: {
       type: Array as PropType<TableColumn[]>,
     },
@@ -130,11 +134,11 @@ export const DuxTableLayout = defineComponent({
     })
 
     const { render: filterRender } = useJsonSchema({
-      data: filterSchema.value?.slice(1),
+      data: filterSchema.value?.slice(props.filterNumber),
     })
 
     const { render: filterRenderCollapse } = useJsonSchema({
-      data: filterSchema.value?.slice(0, 1),
+      data: filterSchema.value?.slice(0, props.filterNumber),
     })
 
     const tools = computed(() => {
@@ -195,7 +199,7 @@ export const DuxTableLayout = defineComponent({
 
                   <div
                     class={[
-                      'flex-1 lg:flex gap-2 flex-wrap',
+                      'flex-1 flex flex-col lg:flex-row gap-2 flex-wrap',
                       props.tabs ? 'justify-end' : 'justify-start',
                     ]}
                   >
@@ -221,7 +225,7 @@ export const DuxTableLayout = defineComponent({
 
                   <div class="flex gap-2 items-center">
 
-                    {filterSchema.value.length > 1 && (
+                    {filterSchema.value.length > props.filterNumber && (
                       <NButton
                         iconPlacement="right"
                         onClick={() => {
@@ -383,7 +387,7 @@ export const DuxTableLayout = defineComponent({
                 ]}
               />
 
-              <NModal draggable class="bg-white rounded dark:shadow-gray-950/80  dark:bg-gray-800/60 backdrop-blur" show={filterOptions.show} onUpdateShow={v => filterOptions.show = v}>
+              <NModal draggable class="bg-white rounded dark:shadow-gray-950/80  dark:bg-gray-800/60 backdrop-blur min-w-110" show={filterOptions.show} onUpdateShow={v => filterOptions.show = v}>
                 {{
                   default: ({ draggableClass }) => {
                     return (

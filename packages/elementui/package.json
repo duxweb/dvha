@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-elementui",
   "type": "module",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "author": "DuxWeb",
   "license": "MIT",
   "exports": {

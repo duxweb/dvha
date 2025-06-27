@@ -15,11 +15,11 @@ export const DuxMedia = defineComponent({
     onClick: Function,
     imageWidth: {
       type: Number,
-      default: 48,
+      default: 42,
     },
     imageHeight: {
       type: Number,
-      default: 48,
+      default: 42,
     },
   },
   setup(props, { slots }) {
@@ -33,14 +33,16 @@ export const DuxMedia = defineComponent({
     return () => (
       <div class="flex gap-2 items-center">
         {slots?.image && <div class="flex-none flex items-center gap-2">{slots?.image?.()}</div>}
-        {images?.value.length > 0 && (
+        {(props.avatar || images?.value.length > 0) && (
           <div class="flex-none flex items-center gap-2">
             {props.avatar
               ? (
                   <>
-                    { images.value.map((item, key) => (
-                      <DuxAvatar key={key} src={item} round size={props.imageWidth} />
-                    ))}
+                    {images.value.length > 0
+                      ? images.value.map((item, key) => (
+                          <DuxAvatar key={key} src={item} round size={props.imageWidth} />
+                        ))
+                      : <DuxAvatar round size={props.imageWidth} />}
                   </>
                 )
               : (

@@ -1,6 +1,6 @@
 import type { IDataProviderError, IDataProviderResponse } from '@duxweb/dvha-core'
 import type { MaybeRef, PropType } from 'vue'
-import { useExtendForm, useI18n, useTabStore } from '@duxweb/dvha-core'
+import { useExtendForm, useI18n, useInvalidate, useTabStore } from '@duxweb/dvha-core'
 import { NButton, NScrollbar, useMessage } from 'naive-ui'
 import { defineComponent, toRef } from 'vue'
 import { useRouter } from 'vue-router'
@@ -39,6 +39,9 @@ export const DuxPageForm = defineComponent({
       type: String as PropType<'small' | 'medium' | 'large'>,
       default: 'medium',
     },
+    invalidate: {
+      type: String as PropType<string>,
+    },
   },
   setup(props, { slots }) {
     const { t } = useI18n()
@@ -47,6 +50,7 @@ export const DuxPageForm = defineComponent({
     const message = useMessage()
     const router = useRouter()
     const tab = useTabStore()
+    const { invalidate } = useInvalidate()
 
     const result = useExtendForm({
       id: props.id,
@@ -63,6 +67,9 @@ export const DuxPageForm = defineComponent({
 
         if (!result.isEdit.value && tab.current) {
           tab.delTab(tab.current, v => router.push(v.path || ''))
+        }
+        if (props.invalidate) {
+          invalidate(props.invalidate)
         }
       },
     })
