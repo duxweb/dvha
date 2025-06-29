@@ -24,6 +24,7 @@ const circleElement: ElementConfig = {
     strokeWidth: 0,
     strokeDashArray: null,
     opacity: 1,
+    label: '',
   },
 
   createFabricObject: (props) => {
@@ -45,6 +46,9 @@ const circleElement: ElementConfig = {
       strokeUniform: true,
       lockUniScaling: true, // 强制等比例缩放，确保圆形始终占满容器
     })
+
+    // 保存label到自定义属性
+    ;(circle as any).label = props.label
 
     return circle
   },
@@ -72,10 +76,18 @@ const circleElement: ElementConfig = {
       strokeWidth: Math.round(circle.strokeWidth || 0),
       strokeDashArray: circle.strokeDashArray || null,
       opacity: circle.opacity || 1,
+      label: (circle as any).label || '',
     }
   },
 
   getToolbarControls: (props): ToolbarControl[] => [
+    {
+      key: 'label',
+      label: '标签',
+      type: 'text',
+      value: props.label,
+      options: { placeholder: '请输入标签' },
+    },
     {
       key: 'radius',
       label: '半径',
@@ -120,6 +132,8 @@ const circleElement: ElementConfig = {
       strokeWidth: props.strokeWidth,
       opacity: props.opacity,
     })
+    // 保存label到自定义属性
+    ;(circle as any).label = props.label
   },
 }
 

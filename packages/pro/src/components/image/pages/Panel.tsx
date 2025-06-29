@@ -17,7 +17,7 @@ export const Panel = defineComponent({
         </div>
         <div class=" flex-1 min-h-0">
           <NScrollbar>
-            <div class="p-4 flex flex-col gap-2">
+            <div class="p-3 flex flex-col gap-2">
               {slots.default?.()}
             </div>
           </NScrollbar>

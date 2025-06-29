@@ -46,14 +46,15 @@ const styles = {
   },
 }
 
+type IUploadValue = Record<string, any>[] | Record<string, any>
 export interface IUploadProps extends IUploadParams {
   driver?: 'local' | 's3'
   signPath?: string
   signCallback?: (response: IDataProviderResponse) => IS3SignData
   managePath?: string
-  value?: string | string[]
-  defaultValue?: string | string[]
-  onUpdateValue?: (value?: string | string[]) => void
+  value?: IUploadValue
+  defaultValue?: IUploadValue
+  onUpdateValue?: (value?: IUploadValue) => void
   manager?: boolean
 }
 
@@ -119,7 +120,7 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
     })
 
     watch(upload.dataFiles, (v) => {
-      const files = props.multiple ? v?.map(file => file.url as string) : v?.[0]?.url as string
+      const files = props.multiple ? v : v[0]
       model.value = files
       props.onUpdateValue?.(files)
     })
@@ -159,6 +160,18 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
     const tableClass = computed(() => [
       upload.uploadFiles.value.length === 0 && 'border-b border-muted',
     ])
+
+    const once = ref(false)
+    watch(model, (v) => {
+      if (!v || !v?.length || once.value) {
+        return
+      }
+      once.value = true
+      const data = Array.isArray(v) ? v : [v]
+      upload.addDataFiles(data)
+    }, {
+      immediate: true
+    })
 
     return () => (
       <div class={styles.container}>

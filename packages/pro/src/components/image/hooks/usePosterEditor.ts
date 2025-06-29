@@ -2,7 +2,7 @@ import type { Canvas, FabricObject } from 'fabric'
 import type { ComputedRef, Ref } from 'vue'
 import type { AlignType, CanvasData, ElementConfig, ElementData } from '../elements/types'
 import { useThrottleFn } from '@vueuse/core'
-import { Canvas as FabricCanvas } from 'fabric'
+import { Canvas as FabricCanvas, FabricImage } from 'fabric'
 import { computed, markRaw, nextTick, ref, watch } from 'vue'
 import { getElementConfig } from '../elements'
 
@@ -10,12 +10,13 @@ interface PosterEditorOptions {
   width?: number
   height?: number
   backgroundColor?: string
+  backgroundImage?: string
 }
 
 export interface PosterEditorReturn {
   initCanvas: (element: HTMLCanvasElement, container?: HTMLElement) => void
   destroy: () => void
-  setCallbacks: (callbacks: { onDataChange: (data: string) => void }) => void
+  setCallbacks: (callbacks: { onDataChange?: (data?: string) => void }) => void
   addElement: (type: string, customProps?: Record<string, any>) => Promise<string | undefined>
   deleteSelectedElements: () => void
   updateElementProperty: (elementId: string, key: string, value: any) => void
@@ -25,7 +26,7 @@ export interface PosterEditorReturn {
   canMoveToFront: ComputedRef<boolean>
   canMoveToBack: ComputedRef<boolean>
   clearCanvas: () => void
-  loadData: (data: string) => void
+  loadData: (data?: string) => void
   updateData: () => void
   canvas: Ref<any>
   canvasData: Ref<CanvasData>
@@ -43,6 +44,7 @@ export interface PosterEditorReturn {
   syncAllFabricObjectsToData: () => void
   updateCanvasSettings: (width: number, height: number) => void
   updateCanvasBackground: (color: string) => void
+  updateCanvasBackgroundImage: (imageUrl: string) => void
   saveData: () => void
   exportJson: () => void
 }
@@ -54,6 +56,7 @@ export function usePosterEditor(options: PosterEditorOptions = {}): PosterEditor
     width: options.width || 750,
     height: options.height || 1000,
     backgroundColor: options.backgroundColor || '#ffffff',
+    backgroundImage: options.backgroundImage || '',
     elements: [],
   })
   const selectedElements = ref<any[]>([])
@@ -61,6 +64,7 @@ export function usePosterEditor(options: PosterEditorOptions = {}): PosterEditor
   const canvasScale = ref(1)
   const containerWidth = ref(0)
   const containerHeight = ref(0)
+  let containerElement: HTMLElement | null = null
 
   let onDataChange: (data: string) => void = () => {}
   let elementIdCounter = 0
@@ -151,6 +155,9 @@ export function usePosterEditor(options: PosterEditorOptions = {}): PosterEditor
         const newRadius = Math.round((obj.radius || 50) * maxScale)
         obj.set({ radius: newRadius, scaleX: 1, scaleY: 1 })
       }
+      else if (elementType === 'image') {
+
+      }
       else {
         const newWidth = Math.round(obj.width * scaleX)
         const newHeight = Math.round(obj.height * scaleY)
@@ -183,6 +190,20 @@ export function usePosterEditor(options: PosterEditorOptions = {}): PosterEditor
     }
 
     if (elementData.type === 'rect') {
+      const corner = obj.__corner
+      const isCornerDrag = corner && ['tl', 'tr', 'bl', 'br'].includes(corner)
+
+      if (isCornerDrag) {
+        const scale = Math.max(Math.abs(obj.scaleX || 1), Math.abs(obj.scaleY || 1))
+        obj.set({
+          scaleX: obj.scaleX >= 0 ? scale : -scale,
+          scaleY: obj.scaleY >= 0 ? scale : -scale,
+        })
+        obj.setCoords()
+      }
+    }
+
+    if (elementData.type === 'image') {
       const corner = obj.__corner
       const isCornerDrag = corner && ['tl', 'tr', 'bl', 'br'].includes(corner)
 
@@ -243,28 +264,33 @@ export function usePosterEditor(options: PosterEditorOptions = {}): PosterEditor
     canvas.value.getObjects().forEach(obj => obj.setCoords())
   }
 
-  const setupAutoResize = (container: HTMLElement) => {
-    const updateScale = () => {
-      const containerRect = container.getBoundingClientRect()
-      containerWidth.value = containerRect.width - 40
-      containerHeight.value = containerRect.height - 40
+  const updateScale = () => {
+    if (!containerElement)
+      return
 
-      const scaleX = containerWidth.value / canvasData.value.width
-      const scaleY = containerHeight.value / canvasData.value.height
-      const scale = Math.min(scaleX, scaleY, 1)
+    const containerRect = containerElement.getBoundingClientRect()
+    containerWidth.value = containerRect.width - 40
+    containerHeight.value = containerRect.height - 40
 
-      canvasScale.value = scale
+    const scaleX = containerWidth.value / canvasData.value.width
+    const scaleY = containerHeight.value / canvasData.value.height
+    const scale = Math.min(scaleX, scaleY, 1)
 
-      if (canvas.value) {
-        canvas.value.setZoom(scale)
-        canvas.value.setDimensions({
-          width: canvasData.value.width * scale,
-          height: canvasData.value.height * scale,
-        })
-        canvas.value.renderAll()
-        canvas.value.getObjects().forEach(obj => obj.setCoords())
-      }
+    canvasScale.value = scale
+
+    if (canvas.value) {
+      canvas.value.setZoom(scale)
+      canvas.value.setDimensions({
+        width: canvasData.value.width * scale,
+        height: canvasData.value.height * scale,
+      })
+      canvas.value.renderAll()
+      canvas.value.getObjects().forEach(obj => obj.setCoords())
     }
+  }
+
+  const setupAutoResize = (container: HTMLElement) => {
+    containerElement = container
 
     nextTick(updateScale)
     const resizeObserver = new ResizeObserver(updateScale)
@@ -626,13 +652,17 @@ export function usePosterEditor(options: PosterEditorOptions = {}): PosterEditor
     // 数据更新通过事件监听自动触发
   }
 
-  const loadData = (data: string) => {
+  const loadData = async (data?: string) => {
+    if (!data) {
+      return
+    }
     try {
       const parsedData = JSON.parse(data) as CanvasData
       canvasData.value = {
         width: parsedData.width || 750,
         height: parsedData.height || 1000,
         backgroundColor: parsedData.backgroundColor || '#ffffff',
+        backgroundImage: parsedData.backgroundImage || '',
         elements: parsedData.elements || [],
       }
 
@@ -643,6 +673,11 @@ export function usePosterEditor(options: PosterEditorOptions = {}): PosterEditor
           height: canvasData.value.height,
         })
         canvas.value.backgroundColor = canvasData.value.backgroundColor
+
+        // 设置背景图
+        if (canvasData.value.backgroundImage) {
+          setCanvasBackgroundImage(canvasData.value.backgroundImage)
+        }
 
         const loadPromises = canvasData.value.elements.map(async (elementData) => {
           const elementConfig = getElementConfig(elementData.type)
@@ -669,8 +704,8 @@ export function usePosterEditor(options: PosterEditorOptions = {}): PosterEditor
     }
   }
 
-  const setCallbacks = (callbacks: { onDataChange: (data: string) => void }) => {
-    onDataChange = callbacks.onDataChange
+  const setCallbacks = (callbacks: { onDataChange?: (data: string) => void }) => {
+    onDataChange = callbacks?.onDataChange || (() => {})
   }
 
   const destroy = () => {
@@ -723,7 +758,7 @@ export function usePosterEditor(options: PosterEditorOptions = {}): PosterEditor
 
     if (canvas.value) {
       canvas.value.setDimensions({ width, height })
-      updateCanvasSize()
+      updateScale() // 重新计算缩放比例
       canvas.value.renderAll()
     }
 
@@ -742,11 +777,42 @@ export function usePosterEditor(options: PosterEditorOptions = {}): PosterEditor
     updateData()
   }
 
+  // 设置画布背景图
+  const setCanvasBackgroundImage = (imageUrl: string) => {
+    if (!canvas.value || !imageUrl) return
+
+    FabricImage.fromURL(imageUrl, {
+      crossOrigin: 'anonymous'
+    }).then((img) => {
+      if (canvas.value) {
+        // 设置背景图并重新渲染
+        canvas.value.backgroundImage = img
+        canvas.value.renderAll()
+      }
+    }).catch((error) => {
+      console.error('Failed to load background image:', error)
+    })
+  }
+
+  // 更新画布背景图
+  const updateCanvasBackgroundImage = (imageUrl: string) => {
+    canvasData.value.backgroundImage = imageUrl
+
+    if (imageUrl) {
+      setCanvasBackgroundImage(imageUrl)
+    } else if (canvas.value) {
+      // 清除背景图
+      canvas.value.backgroundImage = undefined
+      canvas.value.renderAll()
+    }
+
+    updateData()
+  }
+
   // 保存数据
   const saveData = () => {
     syncAllFabricObjectsToData()
     updateData()
-    // 保存数据逻辑
   }
 
   // 导出 JSON
@@ -803,6 +869,7 @@ export function usePosterEditor(options: PosterEditorOptions = {}): PosterEditor
     syncAllFabricObjectsToData,
     updateCanvasSettings,
     updateCanvasBackground,
+    updateCanvasBackgroundImage,
     saveData,
     exportJson,
   }

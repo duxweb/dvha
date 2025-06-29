@@ -2,6 +2,7 @@ import type { PropType } from 'vue'
 import type { ElementData, ToolbarControl } from '../elements/types'
 import { NButton, NColorPicker, NInputNumber, NTooltip } from 'naive-ui'
 import { defineComponent } from 'vue'
+import { DuxImageUpload } from '../../upload'
 import { Panel } from './Panel'
 import { PanelItem } from './PanelItem'
 
@@ -20,6 +21,7 @@ export interface RightPanelProps {
   canvasWidth: number
   canvasHeight: number
   canvasBackgroundColor: string
+  canvasBackgroundImage?: string
 
   // 事件处理
   onDeleteSelectedElements: () => void
@@ -27,6 +29,7 @@ export interface RightPanelProps {
   onUpdateElementProperty: (id: string, key: string, value: any) => void
   onUpdateCanvasSize: (width: number, height: number) => void
   onUpdateCanvasBackground: (color: string) => void
+  onUpdateCanvasBackgroundImage: (imageUrl: string) => void
   onSaveData: () => void
   onExportJson: () => void
   onRenderToolbarControl: (control: ToolbarControl) => any
@@ -81,6 +84,9 @@ export const RightPanel = defineComponent({
       type: String,
       required: true,
     },
+    canvasBackgroundImage: {
+      type: String,
+    },
     onDeleteSelectedElements: {
       type: Function as PropType<() => void>,
       required: true,
@@ -99,6 +105,10 @@ export const RightPanel = defineComponent({
     },
     onUpdateCanvasBackground: {
       type: Function as PropType<(color: string) => void>,
+      required: true,
+    },
+    onUpdateCanvasBackgroundImage: {
+      type: Function as PropType<(imageUrl: string) => void>,
       required: true,
     },
     onSaveData: {
@@ -373,6 +383,14 @@ export const RightPanel = defineComponent({
 
                       onUpdate:value={(val: string) =>
                         props.onUpdateCanvasBackground(val)}
+                    />
+                  </PanelItem>
+
+                  <PanelItem title="背景图片">
+                    <DuxImageUpload
+                      value={props.canvasBackgroundImage || ''}
+                      onUpdateValue={(val?: string | string[]) =>
+                        props.onUpdateCanvasBackgroundImage(typeof val === 'string' ? val : (Array.isArray(val) ? val[0] || '' : ''))}
                     />
                   </PanelItem>
                 </>

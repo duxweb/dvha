@@ -26,6 +26,7 @@ const rectElement: ElementConfig = {
     rx: 0,
     ry: 0,
     opacity: 1,
+    label: '',
   },
 
   createFabricObject: (props) => {
@@ -55,15 +56,18 @@ const rectElement: ElementConfig = {
     // 添加自定义控制点，支持等比例缩放
     rect.setControlsVisibility({
       mtr: true, // 旋转控制点
-      mt: true,  // 顶部中间
-      mb: true,  // 底部中间
-      ml: true,  // 左侧中间
-      mr: true,  // 右侧中间
-      tl: true,  // 左上角 - 支持等比例缩放
-      tr: true,  // 右上角 - 支持等比例缩放
-      bl: true,  // 左下角 - 支持等比例缩放
-      br: true,  // 右下角 - 支持等比例缩放
+      mt: true, // 顶部中间
+      mb: true, // 底部中间
+      ml: true, // 左侧中间
+      mr: true, // 右侧中间
+      tl: true, // 左上角 - 支持等比例缩放
+      tr: true, // 右上角 - 支持等比例缩放
+      bl: true, // 左下角 - 支持等比例缩放
+      br: true, // 右下角 - 支持等比例缩放
     })
+
+    // 保存label到自定义属性
+    ;(rect as any).label = props.label
 
     return rect
   },
@@ -91,10 +95,18 @@ const rectElement: ElementConfig = {
       rx: Math.round(rect.rx || 0),
       ry: Math.round(rect.ry || 0),
       opacity: rect.opacity || 1,
+      label: (rect as any).label || '',
     }
   },
 
   getToolbarControls: (props): ToolbarControl[] => [
+    {
+      key: 'label',
+      label: '标签',
+      type: 'text',
+      value: props.label,
+      options: { placeholder: '请输入标签' },
+    },
     {
       key: 'width',
       label: '宽度',
@@ -156,6 +168,8 @@ const rectElement: ElementConfig = {
       ry: props.rx, // 让ry跟随rx
       opacity: props.opacity,
     })
+    // 保存label到自定义属性
+    ;(rect as any).label = props.label
   },
 }
 

@@ -4,7 +4,7 @@ import { useI18n, useUpload } from '@duxweb/dvha-core'
 import { useVModel } from '@vueuse/core'
 import clsx from 'clsx'
 import { NButton, NImage, NProgress, useMessage } from 'naive-ui'
-import { computed, defineComponent, watch } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
 import { useImagePreview, useModal } from '../../hooks'
 import { useUploadConfig } from './config'
@@ -111,6 +111,18 @@ export const DuxImageUpload = defineComponent({
     })
 
     const modal = useModal()
+
+    const once = ref(false)
+    watch(model, (v) => {
+      if (!v || !v?.length || once.value) {
+        return
+      }
+      once.value = true
+      const urls = typeof v === 'string' ? [v] : Array.isArray(v) ? v : []
+      upload.addDataFiles(urls.map(url => ({ url })))
+    }, {
+      immediate: true
+    })
 
     return () => (
       <div>

@@ -1,29 +1,26 @@
 import type { PropType } from 'vue'
 import type { ToolbarControl } from './elements/types'
 import { NColorPicker, NInput, NInputNumber, NSelect, NSlider, NSwitch } from 'naive-ui'
-import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
+import { defineComponent, onMounted, onUnmounted, ref, watch } from 'vue'
+import { DuxCard } from '../card'
+import { DuxImageUpload } from '../upload'
 import { CanvasRuler } from './components/CanvasRuler'
 import { usePosterEditor } from './hooks/usePosterEditor'
 import { LeftToolbar, RightPanel } from './pages'
-import { DuxCard } from '../card'
 
-// 组件 Props 接口
 export interface PosterEditorProps {
-  value?: string
+  data?: string
   width?: number
   height?: number
   backgroundColor?: string
+  backgroundImage?: string
 }
 
-// 组件 Emits 接口
-export interface PosterEditorEmits {
-  'update:value': (value: string) => void
-}
 
 export const DuxPosterEditor = defineComponent({
   name: 'DuxPosterEditor',
   props: {
-    value: {
+    data: {
       type: String as PropType<string>,
       default: '',
     },
@@ -39,13 +36,17 @@ export const DuxPosterEditor = defineComponent({
       type: String as PropType<string>,
       default: '#ffffff',
     },
+    backgroundImage: {
+      type: String as PropType<string>,
+      default: '',
+    },
+    onDataUpdate: Function as PropType<(data?: string) => void>,
+    onSave: Function as PropType<(data?: string) => void>,
   },
-  emits: ['update:value'],
-  setup(props, { emit }) {
+  setup(props) {
     const canvasElement = ref<HTMLCanvasElement>()
     const containerElement = ref<HTMLElement>()
 
-    // 使用海报编辑器Hook
     const {
       initCanvas,
       destroy,
@@ -63,23 +64,24 @@ export const DuxPosterEditor = defineComponent({
       canvasData,
       selectedElements,
       canvasScale,
-      // currentElement,
       currentElementData,
       currentElementConfig,
       hasMultipleSelection,
       updateCanvasSettings,
       updateCanvasBackground,
+      updateCanvasBackgroundImage,
       saveData,
       exportJson,
     } = usePosterEditor({
       width: props.width,
       height: props.height,
       backgroundColor: props.backgroundColor,
+      backgroundImage: props.backgroundImage,
     })
 
     // 设置回调
     setCallbacks({
-      onDataChange: (data: string) => emit('update:value', data),
+      onDataChange: props?.onDataUpdate,
     })
 
     // 渲染工具栏控件
@@ -141,19 +143,32 @@ export const DuxPosterEditor = defineComponent({
               onUpdate:value={updateValue}
             />
           )
+        case 'image':
+          return (
+            <DuxImageUpload
+              value={control.value}
+              onUpdateValue={updateValue}
+            />
+          )
         default:
           return null
       }
     }
 
+    watch(
+      () => props.data,
+      (newData) => {
+        if (newData) {
+          loadData(newData)
+        }
+      },
+      { immediate: false }
+    )
+
     onMounted(() => {
       if (canvasElement.value && containerElement.value) {
         initCanvas(canvasElement.value, containerElement.value)
-
-        // 加载初始数据
-        if (props.value) {
-          loadData(props.value)
-        }
+        loadData(props.data)
       }
     })
 
@@ -162,56 +177,58 @@ export const DuxPosterEditor = defineComponent({
     })
 
     return () => (
-      <DuxCard class='h-full' shadow>
+      <DuxCard class="h-full" shadow>
         <div class="h-full flex">
-        {/* 左侧工具栏 - 元素添加 */}
-        <LeftToolbar
-          onAddElement={addElement}
-          canvasWidth={canvasData.value.width}
-          canvasHeight={canvasData.value.height}
-        />
-
-        {/* 画布区域 */}
-        <div
-          ref={containerElement}
-          class="flex-1 p-6  pl-12 pt-12 flex items-center justify-center overflow-hidden relative"
-          style="background: linear-gradient(45deg, rgba(0,0,0, 0.1) 25%, transparent 25%), linear-gradient(-45deg, rgba(0,0,0, 0.1) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgba(0,0,0, 0.1) 75%), linear-gradient(-45deg, transparent 75%, rgba(0,0,0, 0.1) 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px;"
-        >
-          <CanvasRuler
-            canvasScale={canvasScale.value}
+          <LeftToolbar
+            onAddElement={addElement}
             canvasWidth={canvasData.value.width}
             canvasHeight={canvasData.value.height}
           />
 
-          <div class="bg-default shadow-lg" style="position: relative;">
-            <canvas ref={canvasElement} style="display: block;" />
-          </div>
-        </div>
+          <div
+            ref={containerElement}
+            class="flex-1 p-6  pl-12 pt-12 flex items-center justify-center overflow-hidden relative"
+            style="background: linear-gradient(45deg, rgba(0,0,0, 0.1) 25%, transparent 25%), linear-gradient(-45deg, rgba(0,0,0, 0.1) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgba(0,0,0, 0.1) 75%), linear-gradient(-45deg, transparent 75%, rgba(0,0,0, 0.1) 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px;"
+          >
+            <CanvasRuler
+              canvasScale={canvasScale.value}
+              canvasWidth={canvasData.value.width}
+              canvasHeight={canvasData.value.height}
+            />
 
-        {/* 右侧属性面板 */}
-        <RightPanel
-          onClearCanvas={clearCanvas}
-          hasMultipleSelection={hasMultipleSelection.value}
-          selectedElementsCount={selectedElements.value.length}
-          currentElementData={currentElementData.value || undefined}
-          currentElementConfig={currentElementConfig.value || undefined}
-          canMoveUp={canMoveUp.value}
-          canMoveDown={canMoveDown.value}
-          canMoveToFront={canMoveToFront.value}
-          canMoveToBack={canMoveToBack.value}
-          canvasWidth={canvasData.value.width}
-          canvasHeight={canvasData.value.height}
-          canvasBackgroundColor={canvasData.value.backgroundColor}
-          onDeleteSelectedElements={deleteSelectedElements}
-          onAlignElements={(type: string) => alignElements(type as any)}
-          onUpdateElementProperty={updateElementProperty}
-          onUpdateCanvasSize={(width: number, height: number) => updateCanvasSettings(width, height)}
-          onUpdateCanvasBackground={updateCanvasBackground}
-          onSaveData={saveData}
-          onExportJson={exportJson}
-          onRenderToolbarControl={renderToolbarControl}
-          canvasScale={canvasScale.value}
-        />
+            <div class="bg-default shadow-lg" style="position: relative;">
+              <canvas ref={canvasElement} style="display: block;" />
+            </div>
+          </div>
+
+          <RightPanel
+            onClearCanvas={clearCanvas}
+            hasMultipleSelection={hasMultipleSelection.value}
+            selectedElementsCount={selectedElements.value.length}
+            currentElementData={currentElementData.value || undefined}
+            currentElementConfig={currentElementConfig.value || undefined}
+            canMoveUp={canMoveUp.value}
+            canMoveDown={canMoveDown.value}
+            canMoveToFront={canMoveToFront.value}
+            canMoveToBack={canMoveToBack.value}
+            canvasWidth={canvasData.value.width}
+            canvasHeight={canvasData.value.height}
+            canvasBackgroundColor={canvasData.value.backgroundColor}
+            canvasBackgroundImage={canvasData.value.backgroundImage}
+            onDeleteSelectedElements={deleteSelectedElements}
+            onAlignElements={(type: string) => alignElements(type as any)}
+            onUpdateElementProperty={updateElementProperty}
+            onUpdateCanvasSize={(width: number, height: number) => updateCanvasSettings(width, height)}
+            onUpdateCanvasBackground={updateCanvasBackground}
+            onUpdateCanvasBackgroundImage={updateCanvasBackgroundImage}
+            onSaveData={async () => {
+              await saveData()
+              await props?.onSave?.()
+            }}
+            onExportJson={exportJson}
+            onRenderToolbarControl={renderToolbarControl}
+            canvasScale={canvasScale.value}
+          />
         </div>
       </DuxCard>
     )

@@ -16,7 +16,7 @@ export interface BaseElementProps {
 }
 
 // 工具栏控件类型
-export type ToolbarControlType = 'number' | 'text' | 'color' | 'select' | 'switch' | 'slider'
+export type ToolbarControlType = 'number' | 'text' | 'color' | 'select' | 'switch' | 'slider' | 'image'
 
 // 工具栏控件配置
 export interface ToolbarControl {
@@ -78,5 +78,6 @@ export interface CanvasData {
   width: number
   height: number
   backgroundColor: string
+  backgroundImage?: string
   elements: ElementData[]
 }
