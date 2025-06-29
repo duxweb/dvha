@@ -35,7 +35,6 @@ export const DuxLoginPage = defineComponent({
 
     return () => (
       <div
-        un-cloak
         class={clsx([
           'h-screen w-screen flex items-start justify-center text-secondary md:items-center',
           themeStore.isDark.value ? 'app-login-dark-bg' : 'app-login-bg',
@@ -88,7 +87,7 @@ export const DuxLoginPage = defineComponent({
                 </div>
               </NForm>
             </div>
-            <div class="text-center text-sm text-gray-5">
+            <div class="text-center text-sm text-muted">
               {manage.config?.copyright || 'All rights reserved © duxweb 2024'}
             </div>
           </div>

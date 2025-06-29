@@ -59,8 +59,10 @@
     "colorizr": "^3.0.8",
     "dayjs": "^1.11.13",
     "echarts": "^5.6.0",
+    "fabric": "^6.7.0",
     "jinrishici": "^1.0.6",
     "jsep": "^1.4.0",
+    "konva": "^9.3.20",
     "lodash-es": "^4.17.21",
     "mathjs": "^14.5.2",
     "mime": "^4.0.7",
@@ -74,6 +76,7 @@
     "vue-cropper": "^1.1.4",
     "vue-draggable-plus": "^0.6.0",
     "vue-echarts": "^7.0.3",
+    "vue-konva": "^3.2.1",
     "vue-router": "^4.5.1",
     "vue3-ace-editor": "^2.2.4"
   },

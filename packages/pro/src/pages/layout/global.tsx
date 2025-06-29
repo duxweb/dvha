@@ -7,7 +7,6 @@ import { darkTheme, dateEnUS, dateZhCN, enUS, lightTheme, NConfigProvider, NDial
 import { computed, defineComponent, inject, onBeforeMount, onMounted, watch } from 'vue'
 import { generateRainbowFromColor, getTheme } from '../../config'
 import { themeOverrides } from '../../theme'
-import 'echarts'
 
 export const DuxGlobalLayout = defineComponent({
   name: 'DuxGlobalLayout',

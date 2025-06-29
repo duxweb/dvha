@@ -168,6 +168,13 @@ const config: IConfig = {
           },
 
         },
+        {
+          name: 'poster',
+          path: 'poster',
+          icon: 'i-tabler:image',
+          label: '图像',
+          component: () => import('./pages/posterEditor.vue'),
+        },
       ],
     },
   ],
