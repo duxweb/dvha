@@ -1,5 +1,14 @@
 # @duxweb/dvha-pro
 
+## 1.0.25
+
+### Patch Changes
+
+- feat(pro): 增加图像编辑器
+- Updated dependencies
+  - @duxweb/dvha-core@1.0.25
+  - @duxweb/dvha-naiveui@1.0.25
+
 ## 1.0.24
 
 ### Patch Changes

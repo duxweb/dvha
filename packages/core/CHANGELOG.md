@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 1.0.25
+
+### Patch Changes
+
+- feat(pro): 增加图像编辑器
+
 ## 1.0.24
 
 ## 1.0.23
