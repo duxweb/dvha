@@ -134,11 +134,11 @@ export const DuxTableLayout = defineComponent({
     })
 
     const { render: filterRender } = useJsonSchema({
-      data: filterSchema.value?.slice(props.filterNumber),
+      data: computed(() => filterSchema.value?.slice(props.filterNumber)),
     })
 
     const { render: filterRenderCollapse } = useJsonSchema({
-      data: filterSchema.value?.slice(0, props.filterNumber),
+      data: computed(() => filterSchema.value?.slice(0, props.filterNumber)),
     })
 
     const tools = computed(() => {
@@ -331,6 +331,7 @@ export const DuxTableLayout = defineComponent({
                   </div>
                 </div>
               </div>
+              {slots?.header?.()}
               <div class="flex-1 min-h-0">
                 {slots?.default?.({
                   ...result,

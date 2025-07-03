@@ -31,7 +31,7 @@ export interface DrawerActionItem extends BaseActionItem {
 // 链接类型
 export interface LinkActionItem extends BaseActionItem {
   type: 'link'
-  path: string | ((id?: unknown, item?: Record<string, any>) => string)
+  path?: string | ((id?: unknown, item?: Record<string, any>) => string)
 }
 
 // 确认框类型
@@ -54,7 +54,7 @@ export interface RequestActionItem extends BaseActionItem {
 export interface DeleteActionItem extends BaseActionItem {
   type: 'delete'
   content?: string
-  path: string | ((id?: unknown, item?: Record<string, any>) => string)
+  path?: string | ((id?: unknown, item?: Record<string, any>) => string)
 }
 
 // 回调类型

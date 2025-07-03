@@ -21,6 +21,7 @@ export const DuxTablePage = defineComponent({
     actions: () => any
     sideLeft: () => any
     sideRight: () => any
+    header: () => any
   }>,
   setup(props, { slots }) {
     const tableProps = computed(() => {
@@ -56,6 +57,7 @@ export const DuxTablePage = defineComponent({
           actions: slots?.actions,
           sideLeft: slots?.sideLeft,
           sideRight: slots?.sideRight,
+          header: slots?.header,
         }}
       </DuxTableLayout>
     )

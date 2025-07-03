@@ -1,5 +1,14 @@
 # @duxweb/dvha-pro
 
+## 1.0.28
+
+### Patch Changes
+
+- feat(pro): 增加表格 header 插槽
+- Updated dependencies
+  - @duxweb/dvha-core@1.0.28
+  - @duxweb/dvha-naiveui@1.0.28
+
 ## 1.0.27
 
 ### Patch Changes

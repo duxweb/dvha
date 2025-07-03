@@ -78,7 +78,9 @@ export function useJsonSchema(props?: UseJsonSchemaProps) {
   if (props?.components) {
     loadComponentsToStore(props.components, jsonSchemaStore)
   }
-  const data = computed(() => isRef(props?.data) ? props?.data.value : props?.data)
+  const data = computed(() => {
+    return isRef(props?.data) ? props?.data.value : props?.data
+  })
 
   function getGlobalContext(): Record<string, any> {
     const ctx = isRef(props?.context) ? props?.context.value : props?.context

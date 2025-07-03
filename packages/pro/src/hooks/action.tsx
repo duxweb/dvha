@@ -120,7 +120,12 @@ export function useAction(action?: UseActionProps) {
 
     if (props.item.type === 'link') {
       const item = props.item
-      const path = typeof item.path === 'function' ? manage.getRoutePath(item.path?.(props.id, props.data)) : manage.getRoutePath(props.id ? `${item.path || actionPath}${props.data === undefined ? '' : `/${props.id}`}` : item.path || actionPath)
+      let path = typeof item.path === 'function' ? item.path?.(props.id, props.data) : props.id ? `${item.path || actionPath}${props.data === undefined ? '' : `/${props.id}`}` : item.path || actionPath
+
+      if (!path.startsWith('/')) {
+        path = manage.getRoutePath(path)
+      }
+
       router.push(path)
     }
 
