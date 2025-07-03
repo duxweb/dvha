@@ -22,7 +22,6 @@ export function useTableColumnCopy() {
             ? (
                 <div
                   class="flex justify-start items-center gap-1"
-
                 >
                   <div>
                     {value}

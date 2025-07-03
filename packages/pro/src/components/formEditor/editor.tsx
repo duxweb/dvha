@@ -5,6 +5,7 @@ import { computed, defineComponent } from 'vue'
 import { useModal } from '../../hooks'
 import { DuxDesignEditor } from '../designEditor'
 import { DuxFormLayout } from '../form/formLayout'
+import { DuxFormEditorSettingPage } from './base'
 import {
   duxFormEditorAIEditor,
   duxFormEditorCascader,
@@ -28,7 +29,6 @@ import {
   duxFormEditorTreeSelect,
   duxFormEditorTreeSelectAsync,
 } from './components'
-import { DuxFormEditorSettingPage } from './base'
 
 export const DuxFormEditor = defineComponent({
   name: 'DuxFormEditor',
@@ -37,6 +37,7 @@ export const DuxFormEditor = defineComponent({
   },
   extends: DuxDesignEditor,
   setup(props) {
+    const { t } = useI18n()
     const modal = useModal()
     const groups = computed<PageEditorGroup[]>(() => {
       return [
@@ -57,8 +58,6 @@ export const DuxFormEditor = defineComponent({
         },
       ] as PageEditorGroup[]
     })
-
-    const { t } = useI18n()
 
     const components = computed<PageEditorComponent[]>(() => {
       return [
@@ -106,42 +105,48 @@ export const DuxFormEditor = defineComponent({
         actionRender={(edit?: UseEditorResult) => {
           return (
             <div class="flex flex-col gap-2">
-                <NButton
-                  type="primary"
-                  secondary
-                  block
-                  onClick={() => {
-                    modal.show({
-                      title: t('components.formEditor.main.actions.jsonOutput'),
-                      component: () => import('./json'),
-                      componentProps: {
-                        value: edit?.value?.value.data || [],
-                      },
-                    })
-                  }}
-                >
-                  {t('components.formEditor.main.actions.jsonOutput')}
-                </NButton>
-                <NButton
-                  type="info"
-                  secondary
-                  block
-                  onClick={() => {
-                    modal.show({
-                      title: t('common.preview'),
-                      component: () => import('./preview'),
-                      componentProps: {
-                        data: edit?.value?.value.data || [],
-                        config: edit?.value?.value.config || {},
-                      },
-                    })
-                  }}
-                >
-                  {t('common.preview')}
-                </NButton>
-                <NButton type="primary" block onClick={() => props.onSave?.(edit)}>
-                  {t('components.formEditor.main.actions.save')}
-                </NButton>
+              <NButton
+                type="primary"
+                secondary
+                block
+                onClick={() => {
+                  modal.show({
+                    title: t('components.formEditor.main.actions.jsonOutput'),
+                    component: () => import('./json'),
+                    componentProps: {
+                      value: edit?.value?.value.data || [],
+                    },
+                  })
+                }}
+              >
+                {t('components.formEditor.main.actions.jsonOutput')}
+              </NButton>
+              <NButton
+                type="info"
+                secondary
+                block
+                onClick={() => {
+                  modal.show({
+                    title: t('common.preview'),
+                    component: () => import('./preview'),
+                    componentProps: {
+                      data: edit?.value?.value.data || [],
+                      config: edit?.value?.value.config || {},
+                    },
+                  })
+                }}
+              >
+                {t('common.preview')}
+              </NButton>
+              <NButton
+                type="primary"
+                block
+                onClick={() => {
+                  props.onSave?.(edit?.value?.value || {})
+                }}
+              >
+                {t('components.formEditor.main.actions.save')}
+              </NButton>
             </div>
           )
         }}

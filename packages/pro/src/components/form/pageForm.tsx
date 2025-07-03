@@ -23,6 +23,10 @@ export const DuxPageForm = defineComponent({
     description: {
       type: String as PropType<string>,
     },
+    labelPlacement: {
+      type: String as PropType<'left' | 'top' | 'setting' | 'page'>,
+      default: 'left',
+    },
     path: {
       type: String as PropType<string>,
     },
@@ -89,7 +93,7 @@ export const DuxPageForm = defineComponent({
           {{
             default: () => (
               <NScrollbar>
-                <DuxFormLayout label-placement="page">
+                <DuxFormLayout labelPlacement={props.labelPlacement} class="p-4">
                   {slots?.default?.(result)}
                 </DuxFormLayout>
               </NScrollbar>
@@ -98,13 +102,13 @@ export const DuxPageForm = defineComponent({
               <div class="flex gap-6 items-center">
                 {slots?.actions?.(result)}
                 <div class="flex gap-2">
-                  <NButton onClick={() => result.onReset()}>
+                  <NButton onClick={() => result.onReset()} loading={result.isLoading.value}>
                     {{
                       default: () => t('components.button.reset'),
                       icon: () => <i class="i-tabler:refresh" />,
                     }}
                   </NButton>
-                  <NButton type="primary" onClick={() => result.onSubmit()}>
+                  <NButton type="primary" onClick={() => result.onSubmit()} loading={result.isLoading.value}>
                     {{
                       default: () => t('components.button.submit'),
                       icon: () => <i class="i-tabler:device-floppy" />,

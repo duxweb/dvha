@@ -67,14 +67,11 @@ export const DuxDesignEditor = defineComponent({
       } as any
     }
 
-    watch(() => props.data, (newData) => {
+    watch(() => props.data, (v) => {
       const defaultConfig = props.settingPage?.default || {}
-      editor.value.value = newData || {
-        config: defaultConfig,
-        data: [],
-      }
-      if (newData && newData.config) {
-        editor.value.value.config = { ...defaultConfig, ...newData.config }
+      editor.value.value = {
+        config: { ...defaultConfig, ...cloneDeep(v?.config || {}) },
+        data: cloneDeep(v?.data || []),
       }
     }, { deep: true, immediate: true })
 

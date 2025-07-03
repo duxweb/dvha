@@ -31,9 +31,9 @@ export const WidgetEditorSetting = defineComponent({
           },
         })
         || (
-          <div class='flex flex-col gap-2 h-full'>
+          <div class="flex flex-col gap-2 h-full">
 
-            <div class='flex-1 min-h-0'>
+            <div class="flex-1 min-h-0">
               {editor?.settingPage?.component?.({
                 'value': editor.value.value.config,
                 'update:modelValue': (v) => {
@@ -63,9 +63,9 @@ export const WidgetEditorSettingCard = defineComponent({
           <div>{props.title}</div>
         </div>
         <div class="py-4 flex-1">
-        <DuxFormLayout labelPlacement='top'>
-          {slots.default?.()}
-        </DuxFormLayout>
+          <DuxFormLayout labelPlacement="top">
+            {slots.default?.()}
+          </DuxFormLayout>
         </div>
       </div>
     )

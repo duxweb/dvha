@@ -141,7 +141,7 @@ export const DuxFormItem = defineComponent({
           <div class={labelPlacement.value === 'setting' ? 'flex-1 lg:flex lg:justify-end' : ''}>
             {slots?.default?.()}
           </div>
-          {props.description && (labelPlacement.value === 'left') && (
+          {props.description && (labelPlacement.value === 'left' || labelPlacement.value === 'top') && (
             <div class="text-sm text-muted">
               {props.description}
             </div>

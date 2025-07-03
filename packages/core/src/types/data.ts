@@ -68,7 +68,7 @@ export interface IDataProviderListOptions {
 
 export interface IDataProviderCreateOptions {
   path?: string
-  data: any
+  data?: any
   meta?: Record<string, any>
 }
 

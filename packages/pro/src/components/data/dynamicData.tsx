@@ -16,7 +16,7 @@ export interface DuxDynamicDataColumn {
     cell: Record<string, any>,
     rowIndex: number,
   ) => VNode
-  schema?: JsonSchemaNode | JsonSchemaNode[]
+  schema?: JsonSchemaNode | JsonSchemaNode[] | ((cell: Record<string, any>, rowIndex: number) => JsonSchemaNode | JsonSchemaNode[])
 }
 
 export const DuxDynamicData = defineComponent({
@@ -151,20 +151,24 @@ export const DuxDynamicData = defineComponent({
                       <td>
                         <div class="sort-handle i-tabler:grid-dots size-4 cursor-move"></div>
                       </td>
-                      {props.columns?.map((column, columnIndex) => (
-                        <td key={columnIndex}>
-                          {column.schema
-                            ? h(renderAsync({
-                                data: Array.isArray(column.schema) ? column.schema : [column.schema],
-                                context: {
-                                  rowIndex,
-                                  model: model.value,
-                                  row,
-                                },
-                              }))
-                            : column.render?.(row, rowIndex) || row[column.key]}
-                        </td>
-                      ))}
+                      {props.columns?.map((column, columnIndex) => {
+                        const schema = typeof column.schema === 'function' ? column.schema(row, rowIndex) : column.schema
+
+                        return (
+                          <td key={columnIndex}>
+                            {column.schema
+                              ? h(renderAsync({
+                                  data: (Array.isArray(schema) ? schema : [schema]) as JsonSchemaNode[],
+                                  context: {
+                                    rowIndex,
+                                    model: model.value,
+                                    row,
+                                  },
+                                }))
+                              : column.render?.(row, rowIndex) || row[column.key]}
+                          </td>
+                        )
+                      })}
                       {(props.createAction || props.deleteAction) && (
                         <td class="w-15">
                           {props.deleteAction && (

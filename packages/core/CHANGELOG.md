@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 1.0.27
+
+### Patch Changes
+
+- feat: 修正部分设计器问题
+
 ## 1.0.26
 
 ### Patch Changes

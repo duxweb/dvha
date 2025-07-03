@@ -36,7 +36,7 @@ export function useForm(props: IUseFormProps) {
       return id.value as Key
     },
     options: {
-      enabled: isEdit.value,
+      enabled: false,
     },
     providerName: props.providerName,
   })
@@ -65,6 +65,7 @@ export function useForm(props: IUseFormProps) {
     Object.assign(editResetData.value as object, data)
   }, {
     immediate: true,
+    deep: true,
   })
 
   const create = useCreate({
