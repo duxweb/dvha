@@ -2,7 +2,7 @@ import type { RuleExpression } from 'vee-validate'
 import type { PropType, VNode } from 'vue'
 import { watchThrottled } from '@vueuse/core'
 import { useField } from 'vee-validate'
-import { computed, defineComponent, inject, toRef, watch } from 'vue'
+import { computed, defineComponent, inject, ref, toRef, watch } from 'vue'
 
 export const DuxFormItem = defineComponent({
   name: 'DuxFormItem',
@@ -79,18 +79,18 @@ export const DuxFormItem = defineComponent({
     }, { throttle: 300, deep: true })
 
     const form = inject('dux.form', {
-      labelPlacement: 'left',
-      labelAlign: 'left',
-      labelWidth: 70,
-      divider: false,
+      labelPlacement: ref('left'),
+      labelAlign: ref('left'),
+      labelWidth: ref(70),
+      divider: ref(false),
     })
 
     const labelPlacement = computed(() => {
-      return props.labelPlacement || form.labelPlacement
+      return props.labelPlacement || form.labelPlacement.value
     })
 
     const labelWidth = computed(() => {
-      let width: string | number = props.labelWidth || form.labelWidth || 70
+      let width: string | number = props.labelWidth || form.labelWidth.value || 70
       if (typeof width === 'number') {
         width = `${width}px`
       }
@@ -98,7 +98,7 @@ export const DuxFormItem = defineComponent({
     })
 
     const divider = computed(() => {
-      return form.divider || labelPlacement.value === 'page'
+      return form.divider.value || labelPlacement.value === 'page'
     })
 
     return () => (
@@ -109,30 +109,31 @@ export const DuxFormItem = defineComponent({
         labelPlacement.value === 'page' ? 'grid grid-cols-1 lg:grid-cols-4 px-4' : 'flex flex-col',
       ]}
       >
-        <div
-          class={[
-            labelPlacement.value === 'left' ? 'flex lg:items-center' : '',
-            labelPlacement.value === 'left' && form.labelAlign === 'right' ? 'justify-end' : '',
-          ]}
-          style={{ width: labelWidth.value }}
-        >
-          <div class="flex flex-col">
-            <div>
-              <span class="relative flex items-center gap-1">
-                {props.label}
-                {isRequired.value && <span class="text-error font-mono text-xs">*</span>}
-              </span>
-            </div>
-            {props.description && (labelPlacement.value === 'setting' || labelPlacement.value === 'page') && (
-              <div class="text-sm text-muted">
-                {props.description}
+        {props.label && (
+          <div
+            class={[
+              labelPlacement.value === 'left' ? 'flex lg:items-center' : 'md:mb-1',
+              labelPlacement.value === 'left' && form.labelAlign.value === 'right' ? 'justify-end' : '',
+            ]}
+            style={{ width: labelWidth.value }}
+          >
+            <div class="flex flex-col">
+              <div>
+                <span class="relative flex items-center gap-1">
+                  {props.label}
+                  {isRequired.value && <span class="text-error font-mono text-xs">*</span>}
+                </span>
               </div>
-            )}
+              {props.description && (labelPlacement.value === 'setting' || labelPlacement.value === 'page') && (
+                <div class="text-sm text-muted">
+                  {props.description}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
         <div class={[
           'flex flex-col gap-1',
-          labelPlacement.value !== 'left' ? 'md:mt-1' : '',
           labelPlacement.value === 'setting' ? 'flex-none md:w-40%' : 'flex-1',
           labelPlacement.value === 'page' ? 'col-span-3' : '',
         ]}

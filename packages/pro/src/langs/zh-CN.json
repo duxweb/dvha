@@ -11,7 +11,8 @@
     "success": "操作成功",
     "error": "操作失败",
     "unknownError": "未知错误",
-    "keyword": "请输入关键字"
+    "keyword": "请输入关键字",
+    "preview": "预览"
   },
   "components": {
     "tab": {
@@ -151,6 +152,217 @@
     },
     "iconPicker": {
       "title": "图标选择"
+    },
+    "designEditor": {
+      "layout": "布局",
+      "all": "全部",
+      "grid": {
+        "label": "网格",
+        "title": "网格设置",
+        "columns": "列数",
+        "spacing": "间距",
+        "columnsPlaceholder": "请输入列数",
+        "spacingPlaceholder": "请输入间距"
+      }
+    },
+    "formEditor": {
+      "config": "组件配置",
+      "options": "选项配置",
+      "data": "数据",
+      "common": {
+        "componentConfig": "组件配置",
+        "optionConfig": "选项配置",
+        "optionData": "选项数据",
+        "dataConfig": "数据配置",
+        "dataEdit": "数据编辑",
+        "label": "标签",
+        "disabled": "禁用",
+        "clearable": "可清除",
+        "readonly": "只读",
+        "showCount": "显示字数",
+        "placeholder": "占位符",
+        "prefix": "前缀",
+        "suffix": "后缀",
+        "status": "状态",
+        "defaultValue": "默认值",
+        "minLength": "最小长度",
+        "maxLength": "最大长度",
+        "minValue": "最小值",
+        "maxValue": "最大值",
+        "labelField": "标签字段",
+        "valueField": "值字段",
+        "optionLabel": "选项标签",
+        "optionValue": "选项值",
+        "dataInterface": "数据接口",
+        "multiple": "多选",
+        "cascade": "级联",
+        "showPath": "显示路径",
+        "minCount": "最小数量",
+        "maxCount": "最大数量",
+        "uploadUrl": "上传地址",
+        "showAlpha": "显示透明度",
+        "timeFormat": "时间格式",
+        "hour12": "12小时制",
+        "dateType": "日期类型",
+        "inputType": "输入类型",
+        "formDirection": "表单方向",
+        "leftAlign": "左对齐",
+        "topAlign": "上对齐",
+        "settingAlign": "设置布局",
+        "pageAlign": "页面布局",
+        "name": "名称",
+        "desc": "描述"
+      },
+      "setting": {
+        "title": "表单设置"
+      },
+      "validation": "验证规则",
+      "componentConfig": "组件配置",
+      "input": {
+        "label": "文本",
+        "types": {
+          "text": "文本",
+          "textarea": "多行文本",
+          "password": "密码"
+        }
+      },
+      "inputNumber": {
+        "label": "数字"
+      },
+      "select": {
+        "label": "选择",
+        "configDesc": "配置选项数据"
+      },
+      "radio": {
+        "label": "单选",
+        "configDesc": "配置单选框选项数据"
+      },
+      "checkbox": {
+        "label": "复选",
+        "configDesc": "配置复选框选项数据"
+      },
+      "switch": {
+        "label": "开关"
+      },
+      "date": {
+        "label": "日期",
+        "placeholder": "选择日期",
+        "dateType": "日期类型",
+        "date": "日期",
+        "daterange": "日期范围",
+        "datetime": "日期时间",
+        "datetimerange": "日期时间范围",
+        "month": "月份",
+        "monthrange": "月份范围",
+        "year": "年份",
+        "yearrange": "年份范围",
+        "quarter": "季度",
+        "quarterrange": "季度范围",
+        "week": "周"
+      },
+      "time": {
+        "label": "时间",
+        "placeholder": "选择时间",
+        "timeFormat": "格式",
+        "use12Hours": "12小时制"
+      },
+      "color": {
+        "label": "颜色",
+        "showAlpha": "显示透明度"
+      },
+      "cascader": {
+        "label": "级联",
+        "desc": "级联选择器选项数据，格式为 JSON 数组",
+        "configDesc": "配置选项",
+        "optionDesc": "JSON 数组格式",
+        "optionsDescription": "配置级联选择器选项数据",
+        "cascade": "级联",
+        "showPath": "显示路径"
+      },
+      "cascaderAsync": {
+        "label": "级联",
+        "dataApi": "数据接口",
+        "apiPlaceholder": "输入接口地址",
+        "cascade": "级联",
+        "showPath": "显示路径"
+      },
+      "dynamicInput": {
+        "label": "动态"
+      },
+      "editor": {
+        "label": "编辑器",
+        "placeholder": "输入内容",
+        "uploadUrlDesc": "编辑器图片上传地址"
+      },
+      "aiEditor": {
+        "label": "编辑器",
+        "uploadUrl": "上传地址",
+        "uploadUrlFeedback": "编辑器图片上传地址"
+      },
+      "sider": {
+        "name": "滑块",
+        "step": "步长",
+        "min": "最小",
+        "max": "最大"
+      },
+      "dynamicTags": {
+        "name": "标签",
+        "max": "最大数量"
+      },
+      "mentionAsync": {
+        "name": "提及",
+        "clearable": "可清除",
+        "path": "数据接口",
+        "labelField": "标签字段",
+        "valueField": "值字段"
+      },
+      "region": {
+        "name": "地区",
+        "Path": "数据接口",
+        "labelField": "标签字段",
+        "valueField": "值字段"
+      },
+      "selectAsync": {
+        "name": "选择",
+        "pagination": "分页",
+        "path": "数据接口",
+        "labelField": "标签字段",
+        "valueField": "值字段",
+        "imageField": "图片字段",
+        "descField": "描述字段"
+      },
+      "transferAsync": {
+        "name": "穿梭框"
+      },
+      "treeSelect": {
+        "name": "树选择"
+      },
+      "treeSelectAsync": {
+        "name": "异步树选择",
+        "path": "数据接口",
+        "labelField": "标签字段",
+        "keyField": "键字段"
+      },
+      "tree": {
+        "disabled": "禁用"
+      },
+      "groups": {
+        "form": "表单",
+        "select": "选择器",
+        "async": "异步"
+      },
+      "main": {
+        "label": "主要内容",
+        "categories": {
+          "form": "表单",
+          "select": "选择器",
+          "async": "异步"
+        },
+        "actions": {
+          "jsonOutput": "Json 输出",
+          "save": "保存"
+        }
+      }
     }
   },
   "hooks": {

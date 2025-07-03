@@ -1,5 +1,5 @@
 import type { PropType } from 'vue'
-import { defineComponent, provide } from 'vue'
+import { defineComponent, provide, toRef } from 'vue'
 
 export const DuxFormLayout = defineComponent({
   name: 'DuxFormLayout',
@@ -26,10 +26,10 @@ export const DuxFormLayout = defineComponent({
   },
   setup(props, { slots }) {
     provide('dux.form', {
-      labelPlacement: props.labelPlacement,
-      labelAlign: props.labelAlign,
-      labelWidth: props.labelWidth,
-      divider: props.divider,
+      labelPlacement: toRef(props, 'labelPlacement'),
+      labelAlign: toRef(props, 'labelAlign'),
+      labelWidth: toRef(props, 'labelWidth'),
+      divider: toRef(props, 'divider'),
     })
 
     return () => (

@@ -1,5 +1,6 @@
 import type { IConfig } from '@duxweb/dvha-core'
 import { createDux, i18nProvider, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
+import * as DuxNaiveUI from '@duxweb/dvha-naiveui'
 import * as DuxPro from '@duxweb/dvha-pro'
 import * as NaiveUI from 'naive-ui'
 import { createApp } from 'vue'
@@ -25,7 +26,6 @@ const config: IConfig = {
         authLayout: DuxAuthLayout,
         noAuthLayout: DuxLayout,
         notFound: DuxPage404,
-        loading: DuxPageLoading,
         error: DuxPage500,
       },
       userMenus: [
@@ -171,9 +171,16 @@ const config: IConfig = {
         {
           name: 'poster',
           path: 'poster',
-          icon: 'i-tabler:image',
+          icon: 'i-tabler:photo',
           label: '图像',
           component: () => import('./pages/posterEditor.vue'),
+        },
+        {
+          name: 'design',
+          path: 'design',
+          icon: 'i-tabler:code',
+          label: '设计',
+          component: () => import('./pages/designEditor.vue'),
         },
       ],
     },
@@ -197,7 +204,19 @@ const config: IConfig = {
     },
   },
   jsonSchema: {
-    components: NaiveUI as any,
+    components: [
+      ...Object.values(DuxPro).filter(comp => comp?.name?.startsWith?.('Dux')),
+      ...Object.values(DuxNaiveUI).filter(comp => comp?.name?.startsWith?.('Dux')),
+      ...Object.entries(NaiveUI)
+        .filter(([key, _comp]) => {
+          return key.startsWith?.('N')
+        })
+        .map((comp) => {
+          const component = comp[1] as any
+          component.name = comp[0]
+          return component
+        }),
+    ],
   },
 }
 

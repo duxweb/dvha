@@ -114,8 +114,11 @@ export function useJsonSchema(props?: UseJsonSchemaProps) {
       return processSlotContent(slotContent(slotProps), slotProps, context)
     if (Array.isArray(slotContent))
       return slotContent.flatMap(item => processSlotContent(item, slotProps, context)).filter(Boolean)
-    if (slotContent?.tag)
-      return processNode(slotContent, true, context)
+    if (slotContent?.tag) {
+      // 将插槽参数注入到上下文中
+      const slotContext = { ...context, ...slotProps }
+      return processNode(slotContent, true, slotContext)
+    }
     return slotContent
   }
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { DuxPosterEditor } from '@duxweb/dvha-pro'
 import { ref, watch } from 'vue'
-import { DuxPosterEditor } from '../../../packages/pro/src/components/image/posterEditor'
 
 const posterData = ref('')
 

@@ -29,7 +29,7 @@ export const vOnAdaptor: IJsonAdaptor = {
             event.stopPropagation?.()
           try {
             if (typeof value === 'function') {
-              value(event, ...args)
+              return value(event, ...args)
             }
             else {
               console.warn(`Invalid event handler type: ${typeof value}`)

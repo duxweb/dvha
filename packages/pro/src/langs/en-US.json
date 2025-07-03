@@ -10,7 +10,8 @@
     "loading": "Loading...",
     "success": "Success",
     "error": "Error",
-    "unknownError": "Unknown error"
+    "unknownError": "Unknown error",
+    "preview": "Preview"
   },
   "components": {
     "tab": {
@@ -146,6 +147,217 @@
     },
     "iconPicker": {
       "title": "Icon Picker"
+    },
+    "designEditor": {
+      "layout": "Layout",
+      "all": "All",
+      "grid": {
+        "label": "Grid",
+        "title": "Grid Settings",
+        "columns": "Columns",
+        "spacing": "Spacing",
+        "columnsPlaceholder": "Enter columns",
+        "spacingPlaceholder": "Enter spacing"
+      }
+    },
+    "formEditor": {
+      "config": "Component Config",
+      "options": "Option Config",
+      "data": "Data",
+      "common": {
+        "componentConfig": "Component Config",
+        "optionConfig": "Option Config",
+        "optionData": "Option Data",
+        "dataConfig": "Data Config",
+        "dataEdit": "Data Edit",
+        "label": "Label",
+        "placeholder": "Placeholder",
+        "disabled": "Disabled",
+        "clearable": "Clearable",
+        "multiple": "Multiple",
+        "defaultValue": "Default Value",
+        "readonly": "Readonly",
+        "showCount": "Show Count",
+        "prefix": "Prefix",
+        "suffix": "Suffix",
+        "status": "Status",
+        "minLength": "Min Length",
+        "maxLength": "Max Length",
+        "minValue": "Min Value",
+        "maxValue": "Max Value",
+        "minCount": "Min Count",
+        "maxCount": "Max Count",
+        "optionLabel": "Option Label",
+        "optionValue": "Option Value",
+        "labelField": "Label Field",
+        "valueField": "Value Field",
+        "dataInterface": "Data Interface",
+        "cascade": "Cascade",
+        "showPath": "Show Path",
+        "uploadUrl": "Upload URL",
+        "showAlpha": "Show Alpha",
+        "timeFormat": "Time Format",
+        "hour12": "12 Hours",
+        "dateType": "Date Type",
+        "inputType": "Input Type",
+        "formDirection": "Form Direction",
+        "leftAlign": "Left Align",
+        "topAlign": "Top Align",
+        "settingAlign": "Setting Layout",
+        "pageAlign": "Page Layout",
+        "name": "Name",
+        "desc": "Description"
+      },
+      "setting": {
+        "title": "Form Settings"
+      },
+      "validation": "Validation Rules",
+      "componentConfig": "Component Config",
+      "input": {
+        "label": "Text",
+        "types": {
+          "text": "Text",
+          "textarea": "Textarea",
+          "password": "Password"
+        }
+      },
+      "inputNumber": {
+        "label": "Number"
+      },
+      "select": {
+        "label": "Select",
+        "configDesc": "Config options"
+      },
+      "radio": {
+        "label": "Radio",
+        "configDesc": "Config options"
+      },
+      "checkbox": {
+        "label": "Checkbox",
+        "configDesc": "Config options"
+      },
+      "switch": {
+        "label": "Switch"
+      },
+      "date": {
+        "label": "Date",
+        "placeholder": "Select date",
+        "dateType": "Date Type",
+        "date": "Date",
+        "daterange": "Date Range",
+        "datetime": "DateTime",
+        "datetimerange": "DateTime Range",
+        "month": "Month",
+        "monthrange": "Month Range",
+        "year": "Year",
+        "yearrange": "Year Range",
+        "quarter": "Quarter",
+        "quarterrange": "Quarter Range",
+        "week": "Week"
+      },
+      "time": {
+        "label": "Time",
+        "placeholder": "Select time",
+        "timeFormat": "Format",
+        "use12Hours": "12 Hours"
+      },
+      "color": {
+        "label": "Color",
+        "showAlpha": "Show Alpha"
+      },
+      "cascader": {
+        "label": "Cascader",
+        "desc": "Cascader options data in JSON array format",
+        "configDesc": "Config options",
+        "optionDesc": "JSON array format",
+        "optionsDescription": "Config cascader options",
+        "cascade": "Cascade",
+        "showPath": "Show Path"
+      },
+      "cascaderAsync": {
+        "label": "Cascader",
+        "dataApi": "Data API",
+        "apiPlaceholder": "Enter API URL",
+        "cascade": "Cascade",
+        "showPath": "Show Path"
+      },
+      "dynamicInput": {
+        "label": "Dynamic"
+      },
+      "editor": {
+        "label": "Editor",
+        "placeholder": "Enter content",
+        "uploadUrlDesc": "Editor image upload URL"
+      },
+      "aiEditor": {
+        "label": "Editor",
+        "uploadUrl": "Upload URL",
+        "uploadUrlFeedback": "Image upload URL"
+      },
+      "sider": {
+        "name": "Slider",
+        "step": "Step",
+        "min": "Min",
+        "max": "Max"
+      },
+      "dynamicTags": {
+        "name": "Tags",
+        "max": "Max Count"
+      },
+      "mentionAsync": {
+        "name": "Mention",
+        "clearable": "Clearable",
+        "path": "Data API",
+        "labelField": "Label Field",
+        "valueField": "Value Field"
+      },
+      "region": {
+        "name": "Region",
+        "Path": "Data API",
+        "labelField": "Label Field",
+        "valueField": "Value Field"
+      },
+      "selectAsync": {
+        "name": "Select",
+        "pagination": "Pagination",
+        "path": "Data API",
+        "labelField": "Label Field",
+        "valueField": "Value Field",
+        "imageField": "Image Field",
+        "descField": "Desc Field"
+      },
+      "transferAsync": {
+        "name": "Transfer"
+      },
+      "treeSelect": {
+        "name": "Tree"
+      },
+      "treeSelectAsync": {
+        "name": "Tree Select",
+        "path": "Data API",
+        "labelField": "Label Field",
+        "keyField": "Key Field"
+      },
+      "tree": {
+        "disabled": "Disabled"
+      },
+      "groups": {
+        "form": "Form",
+        "select": "Selector",
+        "async": "Async"
+      },
+      "main": {
+        "label": "Main Content",
+        "categories": {
+          "form": "Form",
+          "select": "Selector",
+          "async": "Async"
+        },
+        "actions": {
+          "jsonOutput": "Json Output",
+          "save": "Save"
+        }
+      }
     }
   },
   "hooks": {
