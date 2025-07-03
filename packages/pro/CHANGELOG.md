@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.0.29
+
+### Patch Changes
+
+- feat(pro): 增加表单元素 tooltip
+  - @duxweb/dvha-core@1.0.29
+  - @duxweb/dvha-naiveui@1.0.29
+
 ## 1.0.28
 
 ### Patch Changes

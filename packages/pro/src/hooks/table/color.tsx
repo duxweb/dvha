@@ -30,7 +30,7 @@ export function useTableColumnColor() {
       return item
         ? (
             <div class={[
-              'flex gap-1',
+              'flex gap-1 items-center',
               `text-${type}`,
             ]}
             >

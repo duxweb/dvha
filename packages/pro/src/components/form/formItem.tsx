@@ -1,6 +1,7 @@
 import type { RuleExpression } from 'vee-validate'
 import type { PropType, VNode } from 'vue'
 import { watchThrottled } from '@vueuse/core'
+import { NTooltip } from 'naive-ui'
 import { useField } from 'vee-validate'
 import { computed, defineComponent, inject, ref, toRef, watch } from 'vue'
 
@@ -9,6 +10,7 @@ export const DuxFormItem = defineComponent({
   props: {
     label: String,
     description: [String, Object] as PropType<string | VNode>,
+    tooltip: String,
     path: String,
     labelPlacement: {
       type: String as PropType<'left' | 'top' | 'setting' | 'page'>,
@@ -121,6 +123,14 @@ export const DuxFormItem = defineComponent({
               <div>
                 <span class="relative flex items-center gap-1">
                   {props.label}
+                  {props.tooltip && (
+                    <NTooltip trigger="hover">
+                      {{
+                        trigger: () => <div class="i-tabler:help size-4"></div>,
+                        default: () => props.tooltip,
+                      }}
+                    </NTooltip>
+                  )}
                   {isRequired.value && <span class="text-error font-mono text-xs">*</span>}
                 </span>
               </div>
