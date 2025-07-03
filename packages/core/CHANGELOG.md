@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 1.0.26
+
+### Patch Changes
+
+- feat: 增加表单设计器组件
+
 ## 1.0.25
 
 ### Patch Changes

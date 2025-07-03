@@ -1,5 +1,14 @@
 # @duxweb/dvha-pro
 
+## 1.0.26
+
+### Patch Changes
+
+- feat: 增加表单设计器组件
+- Updated dependencies
+  - @duxweb/dvha-core@1.0.26
+  - @duxweb/dvha-naiveui@1.0.26
+
 ## 1.0.25
 
 ### Patch Changes
