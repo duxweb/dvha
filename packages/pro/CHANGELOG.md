@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.0.30
+
+### Patch Changes
+
+- fix: 修正FormItem 组件 tooltip 色彩
+  - @duxweb/dvha-core@1.0.30
+  - @duxweb/dvha-naiveui@1.0.30
+
 ## 1.0.29
 
 ### Patch Changes

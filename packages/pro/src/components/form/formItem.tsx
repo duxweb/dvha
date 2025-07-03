@@ -126,7 +126,7 @@ export const DuxFormItem = defineComponent({
                   {props.tooltip && (
                     <NTooltip trigger="hover">
                       {{
-                        trigger: () => <div class="i-tabler:help size-4"></div>,
+                        trigger: () => <div class="i-tabler:help size-4 text-muted"></div>,
                         default: () => props.tooltip,
                       }}
                     </NTooltip>
