@@ -106,7 +106,15 @@
         "type": "类型",
         "status": "状态"
       },
-      "actions": "操作"
+      "actions": "操作",
+      "selectUpload": {
+        "clickOrDrag": "点击选择文件或拖拽到此处",
+        "selectedFiles": "已选择 {count} 个文件",
+        "multipleSupport": "支持多文件选择",
+        "defaultDesc": "支持上传指定类型文件",
+        "acceptDesc": "仅支持上传 {accept} 格式文件",
+        "maxFiles": "最多 {max} 个文件"
+      }
     },
     "uploadManage": {
       "title": "文件管理",

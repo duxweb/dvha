@@ -2,8 +2,7 @@ import type { IDataProviderResponse, IS3SignData } from '@duxweb/dvha-core'
 import type { PropType } from 'vue'
 import type { IUploadParams } from './manager'
 import { useI18n, useUpload } from '@duxweb/dvha-core'
-import { useVModel } from '@vueuse/core'
-import { useDropZone } from '@vueuse/core'
+import { useDropZone, useVModel } from '@vueuse/core'
 import mime from 'mime'
 import { NButton, NDataTable, NProgress, useMessage } from 'naive-ui'
 import { computed, defineComponent, ref, watch } from 'vue'
@@ -170,7 +169,7 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
       const data = Array.isArray(v) ? v : [v]
       upload.addDataFiles(data)
     }, {
-      immediate: true
+      immediate: true,
     })
 
     return () => (

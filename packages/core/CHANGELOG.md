@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 1.0.31
+
+### Patch Changes
+
+- feat: 增加文件选择器
+
 ## 1.0.30
 
 ## 1.0.29

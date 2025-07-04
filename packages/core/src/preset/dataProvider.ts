@@ -11,6 +11,53 @@ export interface ISimpleDataProviderProps {
   getTotal?: (options: IDataProviderResponse) => number
 }
 
+// 检查对象是否包含File类型
+function hasFileInObject(obj: any): boolean {
+  return Object.values(obj).some((value) => {
+    if (value instanceof File)
+      return true
+    if (Array.isArray(value))
+      return value.some(item => item instanceof File)
+    if (value && typeof value === 'object')
+      return hasFileInObject(value)
+    return false
+  })
+}
+
+// 将包含File的对象转换为FormData
+function convertToFormData(data: any): FormData {
+  const formData = new FormData()
+
+  const append = (obj: any, prefix = '') => {
+    Object.entries(obj).forEach(([key, value]) => {
+      const fieldName = prefix ? `${prefix}[${key}]` : key
+
+      if (value instanceof File) {
+        formData.append(fieldName, value)
+      }
+      else if (Array.isArray(value)) {
+        value.forEach((item, index) => {
+          if (item instanceof File) {
+            formData.append(`${fieldName}[${index}]`, item)
+          }
+          else if (item != null) {
+            formData.append(`${fieldName}[${index}]`, String(item))
+          }
+        })
+      }
+      else if (value && typeof value === 'object') {
+        append(value, fieldName)
+      }
+      else if (value != null) {
+        formData.append(fieldName, String(value))
+      }
+    })
+  }
+
+  append(data)
+  return formData
+}
+
 export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvider {
   const apiUrl = (path?: string, basePath?: string): string => {
     const prefixUrl = `${trim(props.apiUrl, '/')}${basePath ? `/${trim(basePath, '/')}` : ''}`
@@ -44,7 +91,15 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
       })
     },
     create: (options: IDataProviderCreateOptions, manage?: IManageHook, auth?: IUserState) => {
-      return axios.post(apiUrl(options.path, manage?.config.apiBasePath) || '', options.data, {
+      // 检查并转换包含File的数据
+      let requestData = options.data
+      if (options.data && typeof options.data === 'object' && !Array.isArray(options.data) && !(options.data instanceof FormData)) {
+        if (hasFileInObject(options.data)) {
+          requestData = convertToFormData(options.data)
+        }
+      }
+
+      return axios.post(apiUrl(options.path, manage?.config.apiBasePath) || '', requestData, {
         headers: {
           Authorization: auth?.token,
         },
@@ -56,7 +111,14 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
       })
     },
     update: (options: IDataProviderUpdateOptions, manage?: IManageHook, auth?: IUserState) => {
-      return axios.put(apiUrl(options.id ? `${options.path}/${options.id}` : options.path, manage?.config.apiBasePath) || '', options.data, {
+      let requestData = options.data
+      if (options.data && typeof options.data === 'object' && !Array.isArray(options.data) && !(options.data instanceof FormData)) {
+        if (hasFileInObject(options.data)) {
+          requestData = convertToFormData(options.data)
+        }
+      }
+
+      return axios.put(apiUrl(options.id ? `${options.path}/${options.id}` : options.path, manage?.config.apiBasePath) || '', requestData, {
         headers: {
           Authorization: auth?.token,
         },

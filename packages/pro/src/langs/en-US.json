@@ -101,7 +101,15 @@
         "type": "Type",
         "status": "Status"
       },
-      "actions": "Actions"
+      "actions": "Actions",
+      "selectUpload": {
+        "clickOrDrag": "Click to select files or drag here",
+        "selectedFiles": "Selected {count} files",
+        "multipleSupport": "Support multiple file selection",
+        "defaultDesc": "Support uploading specified file types",
+        "acceptDesc": "Only support uploading {accept} format files",
+        "maxFiles": "Max {max} files"
+      }
     },
     "uploadManage": {
       "title": "File Manager",

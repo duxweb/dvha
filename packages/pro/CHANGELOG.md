@@ -1,5 +1,14 @@
 # @duxweb/dvha-pro
 
+## 1.0.31
+
+### Patch Changes
+
+- feat: 增加文件选择器
+- Updated dependencies
+  - @duxweb/dvha-core@1.0.31
+  - @duxweb/dvha-naiveui@1.0.31
+
 ## 1.0.30
 
 ### Patch Changes
