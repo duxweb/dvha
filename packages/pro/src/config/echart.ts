@@ -7,8 +7,8 @@ export function generateRainbowFromColor(hsl: HSL, numColors: number) {
   const colors: string[] = []
 
   const harmonicIntervals = [0, 144, 72, 216, 36, 180, 108, 252, 18, 162]
-  const targetSaturation = 60
-  const targetLightness = 50
+  const targetSaturation = 50
+  const targetLightness = 55
 
   if (numColors <= harmonicIntervals.length) {
     for (let i = 0; i < numColors; i++) {
