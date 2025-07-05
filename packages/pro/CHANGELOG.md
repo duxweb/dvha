@@ -1,5 +1,14 @@
 # @duxweb/dvha-pro
 
+## 1.0.32
+
+### Patch Changes
+
+- fix: 修正部分显示问题
+- Updated dependencies
+  - @duxweb/dvha-naiveui@1.0.32
+  - @duxweb/dvha-core@1.0.32
+
 ## 1.0.31
 
 ### Patch Changes

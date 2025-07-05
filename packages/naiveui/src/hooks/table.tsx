@@ -1,7 +1,7 @@
 import type { UseExtendListProps } from '@duxweb/dvha-core'
 import type { DataTableBaseColumn, DataTableExpandColumn, DataTableFilterState, DataTableProps, DataTableRowKey, DataTableSelectionColumn, DataTableSortState, PaginationProps } from 'naive-ui'
 import type { ComputedRef, MaybeRef, Ref } from 'vue'
-import { useExtendList } from '@duxweb/dvha-core'
+import { treeToArr, useExtendList } from '@duxweb/dvha-core'
 import { watchDebounced } from '@vueuse/core'
 import { cloneDeep } from 'lodash-es'
 import { computed, ref, toRef, watch } from 'vue'
@@ -24,6 +24,7 @@ export type TableColumn = DataTableColumn & TableColumnExtend
 export interface UseTableProps extends Omit<UseExtendListProps, 'key'> {
   key?: TableColumnKey
   columns: MaybeRef<TableColumn[]>
+  expanded?: boolean
 }
 
 export interface UseNaiveTableReturn extends ReturnType<typeof useExtendList> {
@@ -33,6 +34,7 @@ export interface UseNaiveTableReturn extends ReturnType<typeof useExtendList> {
   columns: Ref<TableColumn[]>
   columnSelected: ComputedRef<string[]>
   onUpdateColumnSelected: (v: string[]) => void
+
 }
 
 export function useNaiveTable(props: UseTableProps): UseNaiveTableReturn {
@@ -129,6 +131,13 @@ export function useNaiveTable(props: UseTableProps): UseNaiveTableReturn {
   const onUpdateExpanded = (v: DataTableRowKey[]) => {
     tableExpanded.value = v
   }
+
+  watch([() => props?.expanded, extendListResult.list], ([expanded, list]) => {
+    if (!expanded) {
+      return
+    }
+    tableExpanded.value = treeToArr(list, props.key || 'id', 'children')
+  })
 
   // 分页计算
   const tablePagination = computed(() => {

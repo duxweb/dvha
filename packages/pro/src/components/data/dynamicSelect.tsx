@@ -82,7 +82,7 @@ export const DuxDynamicSelect = defineComponent({
               filterSchema: props.filterSchema,
             },
             width: 1000,
-            title: t('buttons.select'),
+            title: t('components.button.select'),
           }).then((rows: Record<string, any>[]) => {
             once.value = false
             rows?.forEach((row) => {

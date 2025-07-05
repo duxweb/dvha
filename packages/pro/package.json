@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-pro",
   "type": "module",
-  "version": "1.0.31",
+  "version": "1.0.32",
   "author": "DuxWeb",
   "license": "MIT",
   "repository": {
@@ -51,6 +51,7 @@
     "@unocss/runtime": "^66.2.1",
     "@vee-validate/i18n": "^4.15.1",
     "@vee-validate/rules": "^4.15.1",
+    "@visactor/vchart": "^2.0.0",
     "@vueuse/core": "^13.3.0",
     "@vueuse/integrations": "^13.3.0",
     "ace-builds": "^1.43.0",

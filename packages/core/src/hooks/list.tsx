@@ -19,7 +19,6 @@ export interface UseExtendListProps {
   totalField?: string
   filters?: Record<string, any>
   sorters?: Record<string, 'asc' | 'desc'>
-  expanded?: boolean
   pagination?: boolean | IListPagination
   exportFilename?: string
   exportMaxPage?: number

@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 1.0.32
+
+### Patch Changes
+
+- fix: 修正部分显示问题
+
 ## 1.0.31
 
 ### Patch Changes

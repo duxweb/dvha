@@ -246,15 +246,17 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
               width: 120,
               render: row => row.status === 'uploading'
                 ? (
-                    <NProgress
-                      type="line"
-                      style={{ width: '24px', height: '24px' }}
-                      color="rgb(var(--ui-color-primary))"
-                      indicator-placement="inside"
-                      percentage={row.progress?.percent}
-                      showIndicator={false}
-                      height={14}
-                    />
+                    <div class="flex items-center">
+                      <NProgress
+                        type="line"
+                        style={{ width: '24px', height: '24px' }}
+                        color="rgb(var(--ui-color-primary))"
+                        indicator-placement="inside"
+                        percentage={row.progress?.percent}
+                        showIndicator={false}
+                        height={14}
+                      />
+                    </div>
                   )
                 : statusName.value[row.status],
             },

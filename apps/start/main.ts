@@ -9,7 +9,7 @@ import { createApp } from 'vue'
 
 import '@duxweb/dvha-pro/theme/style.scss'
 
-const { createDuxPro, DuxApp, DuxAuthLayout, DuxLayout, DuxLoginPage, DuxPage404, DuxPage500, DuxPageLoading, enUS, zhCN } = DuxPro
+const { createDuxPro, DuxApp, DuxAuthLayout, DuxLayout, DuxLoginPage, DuxPage404, DuxPage500, enUS, zhCN } = DuxPro
 
 const app = createApp(DuxApp)
 

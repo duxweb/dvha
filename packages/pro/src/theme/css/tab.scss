@@ -67,3 +67,23 @@
     }
   }
 }
+
+.app-page-tabs.n-tabs {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  .n-tabs-nav {
+    flex: none;
+  }
+  .n-tab-pane {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 20px;
+  }
+  .n-tabs-tab {
+    font-size: 0.85rem;
+    padding: 1rem;
+  }
+
+}

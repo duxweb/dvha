@@ -3,7 +3,7 @@ import type { TableColumn, TablePagination, UseNaiveTableReturn, UseTableProps }
 import type { DataTableBaseColumn, SelectOption } from 'naive-ui'
 import type { PropType } from 'vue'
 import type { UseActionItem } from '../../hooks'
-import { useI18n, useJsonSchema } from '@duxweb/dvha-core'
+import { useI18n, useJsonSchema, useTabStore } from '@duxweb/dvha-core'
 import { useWindowSize } from '@vueuse/core'
 import { NButton, NDrawer, NModal, NPagination, NPopselect, NProgress, NTab, NTabs, NTooltip } from 'naive-ui'
 import { computed, defineComponent, h, reactive, toRef } from 'vue'
@@ -71,7 +71,7 @@ export const DuxTableLayout = defineComponent({
       default: '',
     },
     hookTableProps: {
-      type: Object as PropType<UseTableProps>,
+      type: Object as PropType<Partial<UseTableProps>>,
     },
   },
   setup(props, { slots }) {
@@ -150,6 +150,10 @@ export const DuxTableLayout = defineComponent({
       }
     })
 
+    const tab = useTabStore()
+
+    const tabInfo = tab.tabs.find(v => v.path === tab.current)
+
     return () => (
       <DuxPage actions={props.actions} scrollbar={false}>
         {{
@@ -203,6 +207,11 @@ export const DuxTableLayout = defineComponent({
                       props.tabs ? 'justify-end' : 'justify-start',
                     ]}
                   >
+                    {!props.tabs && !props.filterSchema?.length && (
+                      <div class="flex flex-none items-center text-base font-medium">
+                        {tabInfo?.label}
+                      </div>
+                    )}
                     {h(filterRenderCollapse)}
                   </div>
 

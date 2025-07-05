@@ -37,7 +37,7 @@ export const DuxCascader = defineComponent<DuxCascaderProps>({
     })
 
     return () => (
-      <NSpin show={loading.value} class="w-full">
+      <NSpin show={loading.value} class="w-full" size={16}>
         <NCascader
           {...cascaderProps.value}
           clearable

@@ -1,15 +1,14 @@
 import type { IDataProviderError, IDataProviderResponse } from '@duxweb/dvha-core'
 import type { MaybeRef, PropType } from 'vue'
 import { useExtendForm, useI18n, useInvalidate, useTabStore } from '@duxweb/dvha-core'
-import { NButton, NScrollbar, useMessage } from 'naive-ui'
+import { NButton, NTabs, useMessage } from 'naive-ui'
 import { defineComponent, toRef } from 'vue'
 import { useRouter } from 'vue-router'
 import { DuxPage } from '../../pages'
 import { DuxCard } from '../card'
-import { DuxFormLayout } from './formLayout'
 
-export const DuxPageForm = defineComponent({
-  name: 'DuxPageForm',
+export const DuxPageTabForm = defineComponent({
+  name: 'DuxPageTabForm',
   props: {
     id: {
       type: [String, Number] as PropType<string | number>,
@@ -19,13 +18,6 @@ export const DuxPageForm = defineComponent({
     },
     title: {
       type: String as PropType<string>,
-    },
-    description: {
-      type: String as PropType<string>,
-    },
-    labelPlacement: {
-      type: String as PropType<'left' | 'top' | 'setting' | 'page'>,
-      default: 'left',
     },
     path: {
       type: String as PropType<string>,
@@ -41,6 +33,10 @@ export const DuxPageForm = defineComponent({
     },
     invalidate: {
       type: String as PropType<string>,
+    },
+    defaultTab: {
+      type: String as PropType<string>,
+      default: '0',
     },
   },
   setup(props, { slots }) {
@@ -74,46 +70,42 @@ export const DuxPageForm = defineComponent({
       },
     })
 
-    const tabInfo = tab.tabs.find(v => v.path === tab.current)
-
     return () => (
       <DuxPage card={false} scrollbar={false}>
-        <DuxCard
-          title={props?.title || tabInfo?.label || (result.isEdit.value ? t('components.form.edit') : t('components.form.create'))}
-          description={props?.description}
-          class="h-full flex flex-col"
-          contentClass="flex-1 min-h-0"
-          contentSize="none"
-          header-bordered
-        >
-          {{
-            default: () => (
-              <NScrollbar>
-                <DuxFormLayout labelPlacement={props.labelPlacement} class="p-4">
-                  {slots?.default?.(result)}
-                </DuxFormLayout>
-              </NScrollbar>
-            ),
-            headerExtra: () => (
-              <div class="flex gap-6 items-center">
-                {slots?.actions?.(result)}
-                <div class="flex gap-2">
-                  <NButton onClick={() => result.onReset()} loading={result.isLoading.value}>
-                    {{
-                      default: () => t('components.button.reset'),
-                      icon: () => <i class="i-tabler:refresh" />,
-                    }}
-                  </NButton>
-                  <NButton type="primary" onClick={() => result.onSubmit()} loading={result.isLoading.value}>
-                    {{
-                      default: () => t('components.button.submit'),
-                      icon: () => <i class="i-tabler:device-floppy" />,
-                    }}
-                  </NButton>
+        <DuxCard class="h-full">
+          <NTabs
+            class="app-page-tabs"
+            type="line"
+            size="large"
+            defaultValue={props.defaultTab}
+          >
+            {{
+              prefix: () => (
+                <div class="w-1">
                 </div>
-              </div>
-            ),
-          }}
+              ),
+              default: () => slots?.default?.(result),
+              suffix: () => (
+                <div class="flex gap-6 items-center px-3">
+                  {slots?.actions?.(result)}
+                  <div class="flex gap-2">
+                    <NButton onClick={() => result.onReset()} loading={result.isLoading.value}>
+                      {{
+                        default: () => t('components.button.reset'),
+                        icon: () => <i class="i-tabler:refresh" />,
+                      }}
+                    </NButton>
+                    <NButton type="primary" onClick={() => result.onSubmit()} loading={result.isLoading.value}>
+                      {{
+                        default: () => t('components.button.submit'),
+                        icon: () => <i class="i-tabler:device-floppy" />,
+                      }}
+                    </NButton>
+                  </div>
+                </div>
+              ),
+            }}
+          </NTabs>
         </DuxCard>
       </DuxPage>
     )

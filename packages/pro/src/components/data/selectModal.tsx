@@ -1,6 +1,7 @@
+import type { JsonSchemaNode } from '@duxweb/dvha-core'
 import type { TableColumn } from '@duxweb/dvha-naiveui'
 import type { PropType } from 'vue'
-import { type JsonSchemaNode, useI18n, useJsonSchema } from '@duxweb/dvha-core'
+import { useI18n, useJsonSchema } from '@duxweb/dvha-core'
 import { NButton, NDataTable } from 'naive-ui'
 import { computed, defineComponent, h, ref, watch } from 'vue'
 import { useTable } from '../../hooks'
@@ -56,7 +57,7 @@ const Select = defineComponent({
     const json = useJsonSchema({
       data: props.filterSchema || [],
       context: {
-        filter,
+        filter: filter.value,
       },
     })
 
