@@ -1,5 +1,14 @@
 # @duxweb/dvha-pro
 
+## 1.0.33
+
+### Patch Changes
+
+- feat: 增加代码高亮组件
+- Updated dependencies
+  - @duxweb/dvha-core@1.0.33
+  - @duxweb/dvha-naiveui@1.0.33
+
 ## 1.0.32
 
 ### Patch Changes

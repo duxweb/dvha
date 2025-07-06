@@ -70,6 +70,9 @@ export function sfcLoader(path: string) {
 
         return () => <JsonRender />
       }
+      if (type === '.mjs') {
+        return undefined
+      }
       return getContentData()
     },
     customBlockHandler(block) {
@@ -96,9 +99,15 @@ export function sfcLoader(path: string) {
         throw new Error(`${err?.message} ${url}`)
       })
 
+      let fileType = res?.type || '.vue'
+
+      if (res?.type?.endsWith('js') || res?.type?.endsWith('ts') || res?.type?.endsWith('jsx') || res?.type?.endsWith('tsx')) {
+        fileType = '.mjs'
+      }
+
       return {
-        getContentData: () => res?.content,
-        type: `${res?.type || 'vue'}`,
+        content: res?.content,
+        type: fileType,
       }
     },
     getResource({ refPath, relPath }, options: Options): Resource {
@@ -128,9 +137,11 @@ export function sfcLoader(path: string) {
           if (isPackage(path)) {
             throw new Error(`Package ${path} not imported`)
           }
-          const { getContentData, type } = await getFile(path)
+
+          const { content, type } = await getFile(path)
+
           return {
-            getContentData: async (asBinary: boolean) => processContentThroughLoaders(await getContentData(asBinary), path, type, options),
+            getContentData: async (_asBinary: boolean) => processContentThroughLoaders(content, path, type, options),
             type,
           }
         },

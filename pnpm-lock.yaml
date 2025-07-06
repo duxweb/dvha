@@ -360,6 +360,9 @@ importers:
       fabric:
         specifier: ^6.7.0
         version: 6.7.0
+      highlight.js:
+        specifier: ^11.11.1
+        version: 11.11.1
       jinrishici:
         specifier: ^1.0.6
         version: 1.0.6

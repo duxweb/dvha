@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 1.0.33
+
+### Patch Changes
+
+- feat: 增加代码高亮组件
+
 ## 1.0.32
 
 ### Patch Changes

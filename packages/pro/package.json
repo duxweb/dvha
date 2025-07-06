@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-pro",
   "type": "module",
-  "version": "1.0.32",
+  "version": "1.0.33",
   "author": "DuxWeb",
   "license": "MIT",
   "repository": {
@@ -61,6 +61,7 @@
     "dayjs": "^1.11.13",
     "echarts": "^5.6.0",
     "fabric": "^6.7.0",
+    "highlight.js": "^11.11.1",
     "jinrishici": "^1.0.6",
     "jsep": "^1.4.0",
     "konva": "^9.3.20",

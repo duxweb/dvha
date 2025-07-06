@@ -1,7 +1,6 @@
 import type { App } from 'vue'
 
 import { DuxApp } from './app'
-
 // 导入components中的所有Dux组件
 import {
   DuxAiEditor,
