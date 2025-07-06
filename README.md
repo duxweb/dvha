@@ -254,6 +254,15 @@ const config: IConfig = {
 | `@duxweb/dvha-naiveui`   | 🎨 Naive UI 增强包 - 集成 Naive UI         |   [![npm](https://img.shields.io/npm/v/@duxweb/dvha-naiveui.svg)](https://www.npmjs.com/package/@duxweb/dvha-naiveui)   |
 | `@duxweb/dvha-elementui` | 🎨 Element Plus 增强包 - 集成 Element Plus | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-elementui.svg)](https://www.npmjs.com/package/@duxweb/dvha-elementui) |
 
+## AI 开发
+
+本项目已索引 LLM 数据：
+
+- [@duxweb/dvha-core](https://github.com/duxweb/dvha/raw/refs/heads/main/packages/core/llms-full.txt) - 核心功能包
+- [@duxweb/dvha-pro](https://github.com/duxweb/dvha/raw/refs/heads/main/packages/pro/llms-full.txt) - 专业版组件包
+- [@duxweb/dvha-naiveui](https://github.com/duxweb/dvha/raw/refs/heads/main/packages/naiveui/llms-full.txt) - Naive UI 集成包
+- [完整项目](https://github.com/duxweb/dvha/raw/refs/heads/main/llms-full.txt) - 整个项目的完整索引
+
 ## 💬 加入社区
 
 ### 微信交流群
