@@ -75,10 +75,8 @@ export const DuxDesignEditor = defineComponent({
       }
     }, { deep: true, immediate: true })
 
-    watch(() => editor.value.value, (newValue) => {
-      if (newValue !== props.data) {
-        props.onUpdateData?.(newValue)
-      }
+    watch(editor.value, (v) => {
+      props.onUpdateData?.(v)
     }, { deep: true })
 
     return () => (

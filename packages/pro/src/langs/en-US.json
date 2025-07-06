@@ -354,6 +354,22 @@
         "select": "Selector",
         "async": "Async"
       },
+      "imageUpload": {
+        "label": "Image Upload",
+        "maxSize": "Max File Size (MB)",
+        "maxSizePlaceholder": "Enter max file size",
+        "maxNumPlaceholder": "Enter max file count",
+        "manager": "File Manager"
+      },
+      "fileUpload": {
+        "label": "File Upload",
+        "accept": "Accept File Types",
+        "acceptPlaceholder": "Enter accepted file types, e.g.: image/*,video/*",
+        "maxSize": "Max File Size (MB)",
+        "maxSizePlaceholder": "Enter max file size",
+        "maxNumPlaceholder": "Enter max file count",
+        "manager": "File Manager"
+      },
       "main": {
         "label": "Main Content",
         "categories": {

@@ -359,6 +359,22 @@
         "select": "选择器",
         "async": "异步"
       },
+      "imageUpload": {
+        "label": "图片上传",
+        "maxSize": "最大文件大小(MB)",
+        "maxSizePlaceholder": "请输入最大文件大小",
+        "maxNumPlaceholder": "请输入最大文件数量",
+        "manager": "文件管理器"
+      },
+      "fileUpload": {
+        "label": "文件上传",
+        "accept": "接受文件类型",
+        "acceptPlaceholder": "请输入接受的文件类型，如：image/*,video/*",
+        "maxSize": "最大文件大小(MB)",
+        "maxSizePlaceholder": "请输入最大文件大小",
+        "maxNumPlaceholder": "请输入最大文件数量",
+        "manager": "文件管理器"
+      },
       "main": {
         "label": "主要内容",
         "categories": {

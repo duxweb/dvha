@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.0.34
+
+### Patch Changes
+
+- feat: 增加表单设计器的文件上传
+  - @duxweb/dvha-core@1.0.34
+  - @duxweb/dvha-naiveui@1.0.34
+
 ## 1.0.33
 
 ### Patch Changes

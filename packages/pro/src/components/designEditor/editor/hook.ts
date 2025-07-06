@@ -231,10 +231,12 @@ export function useEditor({ settingPage }: { settingPage?: PageEditorSettingPage
       }
     }
     else {
-      value.value.data?.splice(index, 1)
+      value.value.data.splice(index, 1)
     }
 
     selected.value = undefined
+
+    value.value = { ...value.value }
   }
 
   return {
