@@ -1,5 +1,4 @@
-import { useClient } from '@duxweb/dvha-core'
-import { useI18n } from '@duxweb/dvha-core'
+import { useClient, useI18n } from '@duxweb/dvha-core'
 import dayjs from 'dayjs'
 import mime from 'mime'
 import { useMessage } from 'naive-ui'

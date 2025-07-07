@@ -18,6 +18,7 @@ export interface IUploadParams {
   multiple?: boolean
   maxNum?: number
   maxSize?: number
+  method?: 'POST' | 'PUT'
 }
 
 const DuxFileManage = defineComponent({
@@ -55,12 +56,13 @@ const DuxFileManage = defineComponent({
     })
     const currentData = ref<Record<string, any>>()
 
-    const { uploadPath, managePath, driver } = useUploadConfig({
+    const { uploadPath, managePath, driver, method } = useUploadConfig({
       driver: props.uploadParams?.driver,
       signPath: props.uploadParams?.signPath,
       signCallback: props.uploadParams?.signCallback,
       uploadPath: props.uploadParams?.path,
       managePath: props.path,
+      method: props.uploadParams?.method,
     })
 
     const pagination = ref({
@@ -85,6 +87,7 @@ const DuxFileManage = defineComponent({
       autoUpload: true,
       driver: driver.value,
       params: form.value,
+      method: method.value,
       onSuccess: () => {
         selectValues.value = []
         list.refetch()

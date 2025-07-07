@@ -1,5 +1,12 @@
 # @duxweb/dvha-core
 
+## 1.0.35
+
+### Patch Changes
+
+- fix: 修正 S3
+- pnpm changeset:version
+
 ## 1.0.34
 
 ## 1.0.33

@@ -1,7 +1,7 @@
 import type { IDataProviderResponse } from '../../types'
-import { useClient } from '../data'
 import type { IUploadDriver, IUploadDriverOptions } from './types'
 import axios from 'axios'
+import { useClient } from '../data'
 
 export interface IS3SignData {
   uploadUrl: string
@@ -14,12 +14,10 @@ export function createS3UploadDriver(config: {
   signCallback?: (response: IDataProviderResponse) => IS3SignData
   [key: string]: any
 }): IUploadDriver {
-
   const client = useClient()
 
   return {
     async upload(file: File, options: IUploadDriverOptions): Promise<IDataProviderResponse> {
-
       const signResponse = await client.request({
         method: 'GET',
         path: config.signPath,
@@ -36,7 +34,7 @@ export function createS3UploadDriver(config: {
       const signData = config.signCallback?.(signResponse) || {
         uploadUrl: signResponse.data?.uploadUrl,
         url: signResponse.data?.url,
-        params: signResponse.data?.params
+        params: signResponse.data?.params,
       }
 
       if (!signData.uploadUrl) {
@@ -54,15 +52,16 @@ export function createS3UploadDriver(config: {
       if (method === 'PUT') {
         uploadPayload = file
         headers['Content-Type'] = file.type || 'application/octet-stream'
-      } else {
+      }
+      else {
         const formData = new FormData()
-        formData.append('Content-Type', file.type || 'application/octet-stream')
-        formData.append('file', file)
         if (signData.params) {
           Object.entries(signData.params).forEach(([key, value]) => {
             formData.append(key, String(value))
           })
         }
+        formData.append('file', file)
+
         uploadPayload = formData
       }
 
@@ -97,6 +96,6 @@ export function createS3UploadDriver(config: {
         },
         message: 'upload successful',
       }
-    }
+    },
   }
 }

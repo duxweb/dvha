@@ -1,5 +1,16 @@
 # @duxweb/dvha-pro
 
+## 1.0.35
+
+### Patch Changes
+
+- fix: 修正 S3
+- pnpm changeset:version
+- Updated dependencies
+- Updated dependencies
+  - @duxweb/dvha-core@1.0.35
+  - @duxweb/dvha-naiveui@1.0.35
+
 ## 1.0.34
 
 ### Patch Changes

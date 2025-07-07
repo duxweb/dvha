@@ -54,6 +54,7 @@ export interface IUploadProps extends IUploadParams {
   value?: IUploadValue
   defaultValue?: IUploadValue
   onUpdateValue?: (value?: IUploadValue) => void
+  method?: 'POST' | 'PUT'
   manager?: boolean
 }
 
@@ -76,6 +77,7 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
     value: [String, Array<string>],
     defaultValue: [String, Array<string>],
     onUpdateValue: Function as PropType<(value?: string | string[]) => void>,
+    method: String as PropType<'POST' | 'PUT'>,
   },
   setup(props, { emit }) {
     const model = useVModel(props, 'value', emit, {
@@ -91,12 +93,13 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
     const maxSize = computed(() => props.maxSize || 5)
     const modal = useModal()
 
-    const { uploadPath, managePath, driver } = useUploadConfig({
+    const { uploadPath, managePath, driver, method } = useUploadConfig({
       driver: props?.driver,
       signPath: props?.signPath,
       signCallback: props?.signCallback,
       uploadPath: props?.path,
       managePath: props?.managePath,
+      method: props?.method,
     })
 
     const upload = useUpload({
@@ -108,6 +111,7 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
       accept: props.accept,
       onError: error => message.error(error.message || t('components.upload.error') as string),
       driver: driver.value,
+      method: method.value,
     })
 
     const { isOverDropZone } = useDropZone(dropZoneRef, {
@@ -196,6 +200,7 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
                       accept: props.accept,
                       maxNum: props.maxNum,
                       maxSize: maxSize.value,
+                      method: method.value,
                     },
                   },
                 }).then((value: Record<string, any>[]) => {

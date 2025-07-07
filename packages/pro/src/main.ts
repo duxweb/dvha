@@ -33,6 +33,7 @@ declare module '@duxweb/dvha-core' {
   interface IManage {
     // 上传配置
     upload?: {
+      method?: 'POST' | 'PUT'
       driver?: 'local' | 's3'
       signPath?: string
       signCallback?: (response: IDataProviderResponse) => IS3SignData

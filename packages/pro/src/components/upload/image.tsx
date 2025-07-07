@@ -27,7 +27,6 @@ export const DuxImageUpload = defineComponent({
     },
     driver: {
       type: String as PropType<'local' | 's3'>,
-      default: 'local',
     },
     maxNum: Number,
     maxSize: {
@@ -39,6 +38,7 @@ export const DuxImageUpload = defineComponent({
     value: [String, Array<string>],
     defaultValue: [String, Array<string>],
     onUpdateValue: Function as PropType<(value?: string | string[]) => void>,
+    method: String as PropType<'POST' | 'PUT'>,
   },
   setup(props, { emit }) {
     const model = useVModel(props, 'value', emit, {
@@ -63,12 +63,13 @@ export const DuxImageUpload = defineComponent({
 
     const maxSize = computed(() => props.maxSize)
 
-    const { uploadPath, managePath, driver } = useUploadConfig({
+    const { uploadPath, managePath, driver, method } = useUploadConfig({
       driver: props?.driver,
       signPath: props?.signPath,
       signCallback: props?.signCallback,
       uploadPath: props?.path,
       managePath: props?.managePath,
+      method: props?.method,
     })
 
     const upload = useUpload({
@@ -78,6 +79,7 @@ export const DuxImageUpload = defineComponent({
       maxFileSize: maxSize.value * 1024 * 1024,
       autoUpload: true,
       accept: 'image/*',
+      method: method.value,
       onError: (error) => {
         message.error(error.message || t('components.upload.error') as string)
       },
@@ -121,7 +123,7 @@ export const DuxImageUpload = defineComponent({
       const urls = typeof v === 'string' ? [v] : Array.isArray(v) ? v : []
       upload.addDataFiles(urls.map(url => ({ url })))
     }, {
-      immediate: true
+      immediate: true,
     })
 
     return () => (
@@ -196,6 +198,7 @@ export const DuxImageUpload = defineComponent({
                           accept: 'image/*',
                           maxNum: props.maxNum,
                           maxSize: props.maxSize,
+                          method: method.value,
                         },
                       },
                     }).then((value: Record<string, any>[]) => {
