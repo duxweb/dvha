@@ -67,7 +67,7 @@ const { data, isLoading, isError, error, refetch } = useList({
   // 可选参数
   pagination: { // 分页配置
     page: 1,
-    limit: 10
+    pageSize: 10
   },
   filters: { // 筛选条件
     name: 'zhang',
@@ -244,7 +244,7 @@ const { data, isLoading, error } = useList({
   "meta": {
     "total": 100,
     "page": 1,
-    "limit": 10,
+    "pageSize": 10,
     "pages": 10
   }
 }

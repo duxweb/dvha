@@ -137,7 +137,7 @@ interface IDataProviderListOptions {
 // 创建数据选项
 interface IDataProviderCreateOptions {
   path?: string
-  data: any
+  data?: any
   meta?: Record<string, any>
 }
 

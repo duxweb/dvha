@@ -200,14 +200,10 @@ const { uploadFiles, dataFiles, open, addDataFiles, isUploading } = useUpload({
 | `overallProgress` | `ComputedRef<IOverallProgress>`     | 整体上传进度信息     |
 | `open`            | `Function`                          | 打开文件选择对话框   |
 | `resetFiles`      | `Function`                          | 重置文件选择状态     |
-| `files`           | `Ref<FileList \| null>`             | 选中的文件列表       |
 | `trigger`         | `Function`                          | 手动触发上传         |
 | `clearFiles`      | `Function`                          | 清空所有文件         |
-| `removeFile`      | `Function`                          | 删除单个文件         |
 | `removeFiles`     | `Function`                          | 删除多个文件         |
-| `cancelFile`      | `Function`                          | 取消单个文件上传     |
 | `cancelFiles`     | `Function`                          | 取消多个文件上传     |
-| `addFile`         | `Function`                          | 添加单个文件         |
 | `addFiles`        | `Function`                          | 添加多个文件         |
 | `addDataFiles`    | `Function`                          | 添加已存在的文件数据 |
 
@@ -335,9 +331,8 @@ const {
   uploadFiles,
   addFiles,
   addDataFiles,
-  removeFile,
   removeFiles,
-  cancelFile,
+  cancelFiles,
   clearFiles
 } = useUpload({
   path: 'upload',
@@ -347,7 +342,7 @@ const {
 // 通过代码添加不同类型的文件
 async function addFileFromBlob(blob, filename) {
   try {
-    await addFile(blob, 'blob', filename)
+    await addFiles([blob], 'blob')
     console.log('Blob 文件添加成功')
   }
   catch (error) {
@@ -357,7 +352,7 @@ async function addFileFromBlob(blob, filename) {
 
 async function addFileFromBase64(base64Data, filename) {
   try {
-    await addFile(base64Data, 'base64', filename)
+    await addFiles([base64Data], 'base64')
     console.log('Base64 文件添加成功')
   }
   catch (error) {
@@ -385,12 +380,12 @@ function loadExistingFiles() {
 
 // 删除指定文件
 function removeFileById(fileId) {
-  removeFile(fileId)
+  removeFiles([fileId])
 }
 
 // 取消上传中的文件
 function cancelFileById(fileId) {
-  cancelFile(fileId)
+  cancelFiles([fileId])
 }
 
 // 清空所有文件
@@ -457,8 +452,8 @@ const {
   overallProgress,
   open,
   trigger,
-  removeFile,
-  cancelFile,
+  removeFiles,
+  cancelFiles,
   clearFiles
 } = useUpload({
   path: 'upload',
@@ -606,14 +601,14 @@ function getStatusClass(status) {
           <button
             v-if="file.status === 'uploading'"
             class="btn btn-sm btn-warning"
-            @click="cancelFile(file.id)"
+            @click="cancelFiles([file.id])"
           >
             取消
           </button>
           <button
             v-if="file.status !== 'uploading'"
             class="btn btn-sm btn-danger"
-            @click="removeFile(file.id)"
+            @click="removeFiles([file.id])"
           >
             删除
           </button>

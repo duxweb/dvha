@@ -6,9 +6,10 @@
 
 ```typescript
 import {
+  DuxTable,
+  DuxTablePage,
   DuxTableFilter,
   DuxTableLayout,
-  DuxTablePage,
   DuxTableTools
 } from '@duxweb/dvha-pro'
 ```
@@ -17,10 +18,48 @@ import {
 
 DVHA Pro 提供以下表格组件：
 
+- **DuxTable** - 基础表格组件
 - **DuxTablePage** - 完整的表格页面组件
 - **DuxTableLayout** - 表格布局组件
 - **DuxTableFilter** - 表格过滤器组件
 - **DuxTableTools** - 表格工具栏组件
+
+## DuxTable 基础表格
+
+基础表格组件，提供数据绑定和分页功能。
+
+### 属性
+
+| 属性名     | 类型                               | 默认值 | 说明           |
+| ---------- | ---------------------------------- | ------ | -------------- |
+| path       | string                             | -      | 数据接口路径   |
+| filter     | Record<string, any>                | -      | 筛选条件       |
+| columns    | TableColumn[]                      | -      | 表格列配置     |
+| pagination | boolean \| TablePagination         | true   | 分页配置       |
+
+**继承自 NDataTable 的所有属性**
+
+### 基础用法
+
+```vue
+<script setup>
+import { DuxTable } from '@duxweb/dvha-pro'
+
+const columns = [
+  { key: 'id', title: 'ID' },
+  { key: 'name', title: '姓名' },
+  { key: 'email', title: '邮箱' }
+]
+</script>
+
+<template>
+  <DuxTable
+    path="/api/users"
+    :columns="columns"
+    :pagination="{ pageSize: 10 }"
+  />
+</template>
+```
 
 ## DuxTablePage 表格页面
 
