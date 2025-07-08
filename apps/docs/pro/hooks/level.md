@@ -26,7 +26,7 @@ const level = useLevel({
   value: ['110000', '110100', '110101'],
   maxLevel: 4,
   nameField: 'name',
-  labelField: 'name', 
+  labelField: 'name',
   valueField: 'id'
 })
 
@@ -46,13 +46,12 @@ level.reset()
 
 | 属性       | 类型               | 默认值 | 说明                      |
 | ---------- | ------------------ | ------ | ------------------------- |
-| value      | MaybeRef<string[]> | []     | 当前选择的值数组          |
-| path       | MaybeRef<string>   | 'area' | 数据接口路径              |
-| maxLevel   | MaybeRef<number>   | 4      | 最大层级数，0表示无限级   |
+| value      | MaybeRef\<string[]> | []     | 当前选择的值数组          |
+| path       | MaybeRef\<string>   | 'area' | 数据接口路径              |
+| maxLevel   | MaybeRef\<number>   | 4      | 最大层级数，0表示无限级   |
 | nameField  | string             | 'name' | 父级查询字段名            |
 | labelField | string             | 'name' | 显示标签字段名            |
 | valueField | string             | 'id'   | 值字段名                  |
-| labelKey | string   | 'name' | 标签字段名 |
 
 ### UseLevelResult
 
