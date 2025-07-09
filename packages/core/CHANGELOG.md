@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 1.0.36
+
+### Patch Changes
+
+- fix: 修正 crypto-js 异步渲染的导入名称
+
 ## 1.0.35
 
 ### Patch Changes

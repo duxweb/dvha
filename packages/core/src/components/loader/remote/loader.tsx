@@ -23,7 +23,6 @@ function hashString(str: string): string {
 
 export function sfcLoader(path: string) {
   const client = index.useClient()
-
   const { mergeLocale } = index.useI18n()
 
   const { config } = useManage()
@@ -35,7 +34,7 @@ export function sfcLoader(path: string) {
       '@vueuse/core': vueUse,
       '@tanstack/vue-query': vueQuery,
       'axios': axios,
-      'crypto': crypto,
+      'crypto-js': crypto,
       'mime': mime,
       'math': math,
       'mitt': mitt,
