@@ -4,7 +4,7 @@ import type { PropType } from 'vue'
 import { useCustomMutation, useI18n, useTree } from '@duxweb/dvha-core'
 import { useVModel } from '@vueuse/core'
 import clsx from 'clsx'
-import { NDropdown, NInput, NScrollbar, NSpin, NTree } from 'naive-ui'
+import { NButton, NDropdown, NInput, NScrollbar, NSpin, NTree } from 'naive-ui'
 import { computed, defineComponent, ref, toRef, watch } from 'vue'
 import { DuxCard } from '../card'
 
@@ -184,13 +184,42 @@ export const DuxTreeFilter = defineComponent<TreeFilterProps>({
     }
 
     const expandedKeys = ref<unknown[]>([])
+    const isExpanded = ref(false)
 
     watch(expanded, (v) => {
       if (expandedKeys?.value?.length > 0) {
         return
       }
+      isExpanded.value = v.length > 0
       expandedKeys.value = v
     }, { immediate: true })
+
+    const getAllKeys = (nodes: TreeOption[]): unknown[] => {
+      const keys: unknown[] = []
+      const traverse = (items: TreeOption[]) => {
+        items.forEach((item) => {
+          if (item.children && item.children.length > 0) {
+            keys.push(item.key || item.id)
+            traverse(item.children)
+          }
+        })
+      }
+      traverse(nodes)
+      return keys
+    }
+
+    const toggleExpandAll = () => {
+      if (isExpanded.value) {
+        // 收起所有
+        expandedKeys.value = []
+        isExpanded.value = false
+      }
+      else {
+        // 展开所有
+        expandedKeys.value = getAllKeys(data.value)
+        isExpanded.value = true
+      }
+    }
 
     const treeProps = computed(() => {
       const { title, path, sortPath, params, menus, numField, iconField, treeOptions, value, defaultValue, onUpdateValue, bordered, ...rest } = props
@@ -205,6 +234,11 @@ export const DuxTreeFilter = defineComponent<TreeFilterProps>({
           </div>
         )}
         <div class="p-2 flex gap-2 items-center">
+          <NButton onClick={toggleExpandAll}>
+            {{
+              icon: () => <div class={isExpanded.value ? 'i-tabler:fold-up' : 'i-tabler:fold-down'}></div>,
+            }}
+          </NButton>
           <div class="flex-1">
             {slots.header
               ? slots.header()
@@ -223,6 +257,9 @@ export const DuxTreeFilter = defineComponent<TreeFilterProps>({
                 expandedKeys={expandedKeys.value as any}
                 onUpdateExpandedKeys={(v) => {
                   expandedKeys.value = v
+                  // 检查是否为全部展开状态
+                  const allKeys = getAllKeys(data.value)
+                  isExpanded.value = allKeys.length > 0 && allKeys.every(key => (v as unknown[]).includes(key))
                 }}
                 blockLine
                 selectedKeys={model.value}

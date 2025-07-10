@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.0.38
+
+### Patch Changes
+
+- feat: 增加树形筛选的折叠展开
+  - @duxweb/dvha-core@1.0.38
+  - @duxweb/dvha-naiveui@1.0.38
+
 ## 1.0.37
 
 ### Patch Changes
