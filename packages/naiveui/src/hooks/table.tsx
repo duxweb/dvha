@@ -49,6 +49,9 @@ export function useNaiveTable(props: UseTableProps): UseNaiveTableReturn {
     ...filters.value,
     ...tableFilters.value,
   })
+  const dataSorters = ref<Record<string, 'asc' | 'desc'>>({
+    ...sorters.value,
+  })
 
   watchDebounced([filters, tableFilters], ([filtersValue, tableFiltersValue]) => {
     Object.keys(dataFilters.value).forEach((key) => {
@@ -64,7 +67,7 @@ export function useNaiveTable(props: UseTableProps): UseNaiveTableReturn {
   const extendListResult = useExtendList({
     ...props,
     filters: dataFilters.value,
-    sorters: sorters.value,
+    sorters: dataSorters.value,
   })
 
   // 列处理
@@ -113,18 +116,21 @@ export function useNaiveTable(props: UseTableProps): UseNaiveTableReturn {
       }
     })
 
-    extendListResult.onUpdateSorters(newSorter)
+    Object.keys(dataSorters.value).forEach((key) => {
+      delete dataSorters.value[key]
+    })
+    Object.assign(dataSorters.value, newSorter)
   }
 
   // 筛选处理
   const onUpdateFilter = (v: DataTableFilterState) => {
-    const newTablefilter = { ...tableFilters.value }
+    const newTableFilter = { ...tableFilters.value }
 
     Object.entries(v).forEach(([key, value]) => {
-      newTablefilter[key] = value
+      newTableFilter[key] = value
     })
 
-    tableFilters.value = newTablefilter
+    tableFilters.value = newTableFilter
   }
 
   // 展开处理

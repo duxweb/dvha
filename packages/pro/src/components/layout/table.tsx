@@ -42,6 +42,9 @@ export const DuxTableLayout = defineComponent({
       type: Number,
       default: 1,
     },
+    sorter: {
+      type: Object as PropType<Record<string, any>>,
+    },
     columns: {
       type: Array as PropType<TableColumn[]>,
     },
@@ -76,16 +79,18 @@ export const DuxTableLayout = defineComponent({
   },
   setup(props, { slots }) {
     const filters = toRef(props, 'filter', {})
+    const sorters = toRef(props, 'sorter', {})
     const tableColumns = toRef(props, 'columns', [])
     const { t } = useI18n()
     const { renderAction } = useAction()
 
     const result = useTable({
+      ...props.hookTableProps,
       path: props.path,
       filters: filters.value,
+      sorters: sorters.value,
       columns: tableColumns,
       pagination: props.pagination,
-      ...props.hookTableProps,
     })
 
     const { columns, tablePagination, table, onUpdateColumnSelected, onUpdateChecked, columnSelected, autoRefetch, autoCountdown, onAutoRefetch, isExporting, isExportingRows, isImporting, onExport, onExportRows, onImport } = result
