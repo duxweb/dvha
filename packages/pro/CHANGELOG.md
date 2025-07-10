@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.0.37
+
+### Patch Changes
+
+- fix: 修正图片加载失败重复占位
+  - @duxweb/dvha-core@1.0.37
+  - @duxweb/dvha-naiveui@1.0.37
+
 ## 1.0.36
 
 ### Patch Changes
