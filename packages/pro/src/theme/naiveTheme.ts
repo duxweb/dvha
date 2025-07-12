@@ -39,20 +39,6 @@ export function themeOverrides() {
       errorColorPressed: getSceneColor('error', 'pressed'),
       errorColorSuppl: getSceneColor('error'),
 
-      // textColorBase: getSemanticColor('text', 'base'),
-      // textColor1: getSemanticColor('text', 'highlighted'),
-      // textColor2: getSemanticColor('text', 'toned'),
-      // textColor3: getSemanticColor('text', 'muted'),
-      // textColorDisabled: getSemanticColor('text', 'dimmed'),
-
-      // tableColor: getSemanticColor('bg', 'muted'),
-      // actionColor: getSemanticColor('bg', 'muted'),
-      // hoverColor: getSemanticColor('bg', 'muted'),
-
-      // dividerColor: getSemanticColor('border', 'muted'),
-      // borderColor: getSemanticColor('border', 'muted'),
-
-      // placeholderColor: getSemanticColor('text', 'muted'),
       iconColor: getSemanticColor('text', 'muted'),
 
       borderRadius: 'var(--radius-sm)',

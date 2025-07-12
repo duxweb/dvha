@@ -27,7 +27,7 @@ export const DuxMenuMain = defineComponent({
             {{
               icon: () => (
                 <div class="bg-white dark:bg-primary-950 rounded-full p-2 shadow group-hover:shadow-lg">
-                  <DuxLogoIcon highlight="fill-primary" class="size-4" />
+                  {config.theme?.appLogo ? <img class="size-4" src={config.theme?.appLogo} /> : <DuxLogoIcon highlight="fill-primary" class="size-4" />}
                 </div>
               ),
               default: () => (

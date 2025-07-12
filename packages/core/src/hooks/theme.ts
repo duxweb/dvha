@@ -117,11 +117,13 @@ export function useTheme() {
     if (isDark.value) {
       return {
         logo: manage.config?.theme?.darkLogo,
+        appLogo: manage.config?.theme?.appDarkLogo,
         banner: manage.config?.theme?.darkBanner,
       }
     }
     return {
       logo: manage.config?.theme?.logo,
+      appLogo: manage.config?.theme?.appLogo,
       banner: manage.config?.theme?.banner,
     }
   })

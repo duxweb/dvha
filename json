@@ -1,0 +1,73 @@
+{
+  "changesets": [
+    {
+      "releases": [
+        {
+          "name": "@duxweb/dvha-core",
+          "type": "patch"
+        },
+        {
+          "name": "@duxweb/dvha-pro",
+          "type": "patch"
+        }
+      ],
+      "summary": "pnpm changeset:version",
+      "id": "five-items-read"
+    }
+  ],
+  "releases": [
+    {
+      "name": "@duxweb/dvha-core",
+      "type": "patch",
+      "oldVersion": "1.0.39",
+      "changesets": [
+        "five-items-read"
+      ],
+      "newVersion": "1.0.40"
+    },
+    {
+      "name": "@duxweb/dvha-pro",
+      "type": "patch",
+      "oldVersion": "1.0.39",
+      "changesets": [
+        "five-items-read"
+      ],
+      "newVersion": "1.0.40"
+    },
+    {
+      "name": "@duxweb/dvha-cdn",
+      "type": "none",
+      "oldVersion": "0.0.0",
+      "changesets": [],
+      "newVersion": "0.0.0"
+    },
+    {
+      "name": "dvha-start",
+      "type": "none",
+      "oldVersion": "0.0.1",
+      "changesets": [],
+      "newVersion": "0.0.1"
+    },
+    {
+      "name": "@duxweb/dvha-elementui",
+      "type": "patch",
+      "oldVersion": "1.0.39",
+      "changesets": [],
+      "newVersion": "1.0.40"
+    },
+    {
+      "name": "@duxweb/dvha-naiveui",
+      "type": "patch",
+      "oldVersion": "1.0.39",
+      "changesets": [],
+      "newVersion": "1.0.40"
+    },
+    {
+      "name": "@duxweb/dvha-template",
+      "type": "patch",
+      "oldVersion": "1.0.39",
+      "changesets": [],
+      "newVersion": "1.0.40"
+    }
+  ]
+}
