@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 1.0.40
+
+### Patch Changes
+
+- 437361f: pnpm changeset:version
+
 ## 1.0.39
 
 ## 1.0.38

@@ -1,5 +1,14 @@
 # @duxweb/dvha-pro
 
+## 1.0.40
+
+### Patch Changes
+
+- 437361f: pnpm changeset:version
+- Updated dependencies [437361f]
+  - @duxweb/dvha-core@1.0.40
+  - @duxweb/dvha-naiveui@1.0.40
+
 ## 1.0.39
 
 ### Patch Changes
