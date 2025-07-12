@@ -51,7 +51,7 @@ export function simpleAuthProvider(props?: ISimpleAuthProviderProps): IAuthProvi
       }).catch((error) => {
         return {
           success: false,
-          logout: true,
+          logout: error.status === 401,
           message: error?.response?.data?.message || error?.message,
         }
       })

@@ -14,6 +14,7 @@ export interface RouteStoreState {
   clearRoutes: () => void
   getIndexRoute: () => IMenu | undefined
   getRouteInit: () => boolean
+  resetRouteInit: () => void
 }
 
 /**
@@ -151,6 +152,10 @@ function createRouteStore(manageName: string) {
       return init
     }
 
+    const resetRouteInit = () => {
+      routeInit.value = false
+    }
+
     return {
       routes,
       searchRoute,
@@ -162,6 +167,7 @@ function createRouteStore(manageName: string) {
       clearRoutes,
       getIndexRoute,
       getRouteInit,
+      resetRouteInit,
     }
   })
 }

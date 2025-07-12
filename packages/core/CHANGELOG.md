@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 1.0.41
+
+### Patch Changes
+
+- fix: 修正登录失效后重新登录菜单不存在的问题
+
 ## 1.0.40
 
 ### Patch Changes

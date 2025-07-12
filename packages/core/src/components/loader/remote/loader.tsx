@@ -23,6 +23,7 @@ function hashString(str: string): string {
 
 export function sfcLoader(path: string) {
   const client = index.useClient()
+  const { mutate: handleError } = index.useError()
   const { mergeLocale } = index.useI18n()
 
   const { config } = useManage()
@@ -95,8 +96,12 @@ export function sfcLoader(path: string) {
       }).then((res) => {
         return res?.data
       }).catch((err) => {
-        throw new Error(`${err?.message} ${url}`)
+        handleError(err)
       })
+
+      if (!res) {
+        return
+      }
 
       let fileType = res?.type || '.vue'
 
@@ -137,7 +142,9 @@ export function sfcLoader(path: string) {
             throw new Error(`Package ${path} not imported`)
           }
 
-          const { content, type } = await getFile(path)
+          const file = await getFile(path)
+
+          const { content, type } = file || {}
 
           return {
             getContentData: async (_asBinary: boolean) => processContentThroughLoaders(content, path, type, options),

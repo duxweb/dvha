@@ -1,6 +1,7 @@
 import type { IAuthActionResponse, IAuthCheckResponse, IAuthErrorResponse, IAuthLoginResponse, IAuthLogoutResponse, IDataProviderError } from '../types'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useRouteStore } from '../stores'
 import { useAuthStore } from '../stores/auth'
 import { useManage } from './manage'
 
@@ -46,6 +47,7 @@ export interface IAuthActionParams {
 export function useLogin(props?: IAuthLoginParams) {
   const manage = useManage()
   const authStore = useAuthStore()
+  const routeStore = useRouteStore()
   const router = useRouter()
   const loading = ref(false)
 
@@ -57,6 +59,7 @@ export function useLogin(props?: IAuthLoginParams) {
       if (!result?.data) {
         throw new Error('Login response data is undefined')
       }
+      routeStore.resetRouteInit()
       props?.onSuccess?.(result)
       authStore.login(result.data)
       router.push(manage.getRoutePath(result.redirectTo || '/'))
@@ -112,7 +115,7 @@ export function useLogout(props?: IAuthLogoutParams) {
 export function useCheck(props?: IAuthCheckParams) {
   const manage = useManage()
   const authStore = useAuthStore()
-  const router = useRouter()
+  const { mutate: handleError } = useError()
 
   const mutate = async (params?: any) => {
     const result = await manage.config.authProvider?.check?.(params, manage, authStore.getUser())
@@ -124,14 +127,17 @@ export function useCheck(props?: IAuthCheckParams) {
       authStore.update(result.data)
       return
     }
+
     props?.onError?.(result)
     if (!result?.logout) {
       return
     }
-    await router.replace(manage.getRoutePath(result.redirectTo || '/login'))
-    setTimeout(() => {
-      window.location.reload()
-    }, 100)
+
+    // Handle logout
+    handleError({
+      status: 401,
+      message: result.message || 'Unauthorized',
+    })
   }
 
   return {
@@ -231,16 +237,19 @@ export function useUpdatePassword(props?: IAuthActionParams) {
 export function useError(onCallback?: (data?: IAuthErrorResponse) => void) {
   const { config: manage, getRoutePath } = useManage()
   const router = useRouter()
-  const authStore = useAuthStore()
+  const authStore = useAuthStore(manage.name)
+  const routeStore = useRouteStore(manage.name)
 
   const mutate = async (error?: IDataProviderError) => {
     const result = await manage.authProvider?.onError(error)
     onCallback?.(result)
+
     if (result?.logout) {
-      authStore.logout()
+      await authStore.logout()
+      await routeStore.resetRouteInit()
       await router.replace(getRoutePath(result.redirectTo || '/login'))
       setTimeout(() => {
-        window.location.reload()
+        // window.location.reload()
       }, 100)
     }
   }
