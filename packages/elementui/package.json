@@ -31,7 +31,7 @@
     "lint:fix": "eslint . --fix"
   },
   "peerDependencies": {
-    "@duxweb/dvha-core": "^1.0.42",
+    "@duxweb/dvha-core": "workspace:*",
     "element-plus": "^2.9.10",
     "vue": "3.5.17",
     "vue-router": "4.5.1"
