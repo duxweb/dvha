@@ -28,6 +28,39 @@ const Comp = defineComponent({
 function Json(props?: PageEditorJsonProps): JsonSchemaNode {
   const { options, model } = props || {}
 
+  // 根据日期类型设置相应的 value-format
+  const getValueFormat = (type: string) => {
+    switch (type) {
+      case 'date':
+        return 'yyyy-MM-dd'
+      case 'datetime':
+        return 'yyyy-MM-dd HH:mm:ss'
+      case 'daterange':
+        return 'yyyy-MM-dd'
+      case 'datetimerange':
+        return 'yyyy-MM-dd HH:mm:ss'
+      case 'month':
+        return 'yyyy-MM'
+      case 'monthrange':
+        return 'yyyy-MM'
+      case 'year':
+        return 'yyyy'
+      case 'yearrange':
+        return 'yyyy'
+      case 'quarter':
+        return 'yyyy-[Q]Q'
+      case 'quarterrange':
+        return 'yyyy-[Q]Q'
+      case 'week':
+        return 'yyyy-[W]WW'
+      default:
+        return 'yyyy-MM-dd'
+    }
+  }
+
+  const dateType = options?.attr?.type || 'date'
+  const valueFormat = getValueFormat(dateType)
+
   return {
     tag: 'dux-form-item',
     attrs: {
@@ -39,7 +72,8 @@ function Json(props?: PageEditorJsonProps): JsonSchemaNode {
         tag: 'n-date-picker',
         attrs: {
           ...options?.attr,
-          'v-model:value': [model, options?.name],
+          'v-model:formatted-value': [model, options?.name],
+          'value-format': valueFormat,
         },
       },
     ],
@@ -138,7 +172,7 @@ const Setting = defineComponent({
   },
 })
 
-export function duxFormEditorDate(t): PageEditorComponent {
+export function duxFormEditorDate(t: any): PageEditorComponent {
   return {
     name: 'dux-date',
     icon: 'i-tabler:calendar-due',

@@ -1,5 +1,5 @@
 {
-  "name": "@duxweb/dvha-naiveui",
+  "name": "@duxweb/dvha-elementui",
   "type": "module",
   "version": "1.0.42",
   "author": "DuxWeb",
@@ -30,15 +30,15 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "dependencies": {
-    "tslib": "^2.8.1"
+  "peerDependencies": {
+    "@duxweb/dvha-core": "workspace:*",
+    "element-plus": "^2.9.10",
+    "vue": "3.5.17",
+    "vue-router": "4.5.1"
   },
   "devDependencies": {
-    "@duxweb/dvha-core": "workspace:*",
-    "@vueuse/core": "^13.3.0",
-    "lodash-es": "^4.17.21",
-    "naive-ui": "^2.42.0",
-    "pinia": "^3.0.3",
+    "@duxweb/dvha-core": "*",
+    "element-plus": "^2.9.10",
     "vue": "^3.5.0",
     "vue-router": "^4.5.1"
   }

@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-elementui",
   "type": "module",
-  "version": "1.0.41",
+  "version": "1.0.42",
   "author": "DuxWeb",
   "license": "MIT",
   "exports": {
@@ -31,7 +31,7 @@
     "lint:fix": "eslint . --fix"
   },
   "peerDependencies": {
-    "@duxweb/dvha-core": "workspace:*",
+    "@duxweb/dvha-core": "^1.0.42",
     "element-plus": "^2.9.10",
     "vue": "3.5.17",
     "vue-router": "4.5.1"

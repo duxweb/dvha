@@ -126,6 +126,12 @@ export const DuxFormRenderer = defineComponent({
           },
         }
 
+        if (options.name && options.attr?.defaultValue !== undefined) {
+          if (model[options.name] === undefined || model[options.name] === null) {
+            model[options.name] = options.attr.defaultValue
+          }
+        }
+
         if (component?.json) {
           return component.json({
             options: mergedOptions,

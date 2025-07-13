@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.0.42
+
+### Patch Changes
+
+- fix: 修正动态表单默认值渲染\
+  - @duxweb/dvha-core@1.0.42
+  - @duxweb/dvha-naiveui@1.0.42
+
 ## 1.0.41
 
 ### Patch Changes
