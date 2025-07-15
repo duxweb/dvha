@@ -54,7 +54,7 @@ export const DuxSelect = defineComponent<DuxSelectProps>({
     const { onSearch, loading, pagination, options, pageCount } = useSelect({
       path: path.value || '',
       params: params.value,
-      defaultValue: model.value,
+      defaultValue: model,
       pagination: props.pagination,
       optionLabel: labelField.value,
       optionValue: valueField.value,

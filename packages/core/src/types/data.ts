@@ -1,3 +1,4 @@
+import type { MaybeRef } from 'vue'
 import type { IManageHook } from '../hooks'
 import type { IUserState } from '../stores'
 
@@ -61,8 +62,8 @@ export interface IDataProviderPagination {
 export interface IDataProviderListOptions {
   path: string
   pagination?: IDataProviderPagination | boolean
-  sorters?: Record<string, 'asc' | 'desc'>
-  filters?: Record<string, any>
+  sorters?: MaybeRef<Record<string, 'asc' | 'desc'>>
+  filters?: MaybeRef<Record<string, any>>
   meta?: Record<string, any>
 }
 

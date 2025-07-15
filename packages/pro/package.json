@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-pro",
   "type": "module",
-  "version": "1.0.42",
+  "version": "1.0.43",
   "author": "DuxWeb",
   "license": "MIT",
   "repository": {
@@ -41,8 +41,8 @@
   },
   "dependencies": {
     "@ant-design/colors": "^7.2.1",
-    "@duxweb/dvha-core": "^1.0.42",
-    "@duxweb/dvha-naiveui": "^1.0.42",
+    "@duxweb/dvha-core": "^1.0.43",
+    "@duxweb/dvha-naiveui": "^1.0.43",
     "@iconify-json/tabler": "^1.2.18",
     "@overlastic/vue": "^0.8.1",
     "@tanstack/vue-query": "^5.80.7",

@@ -1,5 +1,11 @@
 # @duxweb/dvha-naiveui
 
+## 1.0.43
+
+### Patch Changes
+
+- fix: 修正选择器的预选择请求
+
 ## 1.0.42
 
 ## 1.0.41

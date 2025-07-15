@@ -1,12 +1,13 @@
+import type { MaybeRef } from 'vue'
 import { debounce, isArray } from 'lodash-es'
-import { computed, ref, watch } from 'vue'
+import { computed, ref, toRef, watch } from 'vue'
 import { useList, useMany } from './data'
 
 type SelectValue = Array<string | number> | string | number | null | undefined
 
 export interface IUseSelectProps {
   /** 默认选中值，可以是单个值或数组 */
-  defaultValue?: SelectValue
+  defaultValue?: MaybeRef<SelectValue>
   /** 数据请求路径 */
   path?: string
   /** 请求参数 */
@@ -45,6 +46,7 @@ export interface IUseSelectProps {
 }
 
 export function useSelect(props: IUseSelectProps) {
+  const defaultValue = toRef(props, 'defaultValue')
   const keyword = ref<string>()
   const pagination = ref({
     page: 1,
@@ -53,26 +55,34 @@ export function useSelect(props: IUseSelectProps) {
       : props.pagination ? 20 : 0,
   })
   const selectedOnce = ref(false)
+  const filters = ref<Record<string, any>>({
+    ...props.params,
+    keyword: '',
+  })
 
   const debouncedSearch = debounce((value: string) => {
     keyword.value = value
+    filters.value.keyword = value
   }, props.debounce || 300)
 
   const onSearch = (searchValue: string) => {
     debouncedSearch(searchValue)
   }
 
+  watch(() => props.params, (params) => {
+    filters.value = {
+      keyword: keyword.value,
+      ...params,
+    }
+  }, {
+    deep: true,
+  })
+
   const { data, isLoading, total, pageCount } = useList({
     get path() {
       return props.path || ''
     },
-    get filters() {
-      const filters: Record<string, any> = { ...props.params }
-      if (keyword.value) {
-        filters[props.keywordField || 'keyword'] = keyword.value
-      }
-      return filters
-    },
+    filters,
     get pagination() {
       return props.pagination ? pagination.value : undefined
     },
@@ -150,10 +160,7 @@ export function useSelect(props: IUseSelectProps) {
       return props.path || ''
     },
     get ids() {
-      if (!props.defaultValue) {
-        return []
-      }
-      return isArray(props.defaultValue) ? props.defaultValue as string[] : [props.defaultValue as string]
+      return isArray(defaultValue.value) ? defaultValue.value as string[] : [defaultValue.value as string]
     },
     options: {
       enabled: false,
@@ -161,7 +168,7 @@ export function useSelect(props: IUseSelectProps) {
     providerName: props.providerName,
   })
 
-  watch(() => props.defaultValue, async (value) => {
+  watch(defaultValue, async (value) => {
     if (selectedOnce.value || !value) {
       return
     }
@@ -184,7 +191,7 @@ export function useSelect(props: IUseSelectProps) {
     catch (error) {
       console.warn('Failed to fetch selected items:', error)
     }
-  }, { immediate: true })
+  }, { immediate: true, deep: true })
 
   const loading = computed(() => isLoading.value)
 
