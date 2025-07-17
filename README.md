@@ -311,3 +311,13 @@ const config: IConfig = {
 [📖 文档](https://duxweb.dux.plus/dvha/) • [🐛 报告问题](https://github.com/duxweb/dvha/issues) • [💡 功能建议](https://github.com/duxweb/dvha/discussions)
 
 </div>
+
+<div align="center">
+
+** 本项目 CDN 加速及安全防护由 Tencent EdgeOne 赞助 **
+
+<a href="https://edgeone.ai/zh?from=github">
+<img src="./docs/images/edge-one.png" alt="EdgeOne" width="200" />
+</a>
+
+</div>
