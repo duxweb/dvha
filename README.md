@@ -314,7 +314,7 @@ const config: IConfig = {
 
 <div align="center">
 
-** 本项目 CDN 加速及安全防护由 Tencent EdgeOne 赞助 **
+[本项目 CDN 加速及安全防护由 Tencent EdgeOne 赞助](https://edgeone.ai/zh?from=github)
 
 <a href="https://edgeone.ai/zh?from=github">
 <img src="./docs/images/edge-one.png" alt="EdgeOne" width="200" />
