@@ -5,10 +5,10 @@ import type {
   UseActionRenderProps,
   UseActionTarget,
 } from './table/index'
-import { useCustomMutation, useDelete, useI18n, useManage } from '@duxweb/dvha-core'
+import { useCustomMutation, useDelete, useI18n, useInvalidate, useManage } from '@duxweb/dvha-core'
 import { NButton, NDropdown, useMessage } from 'naive-ui'
 import { h } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useDialog } from './dialog'
 import { useDrawer } from './drawer'
 import { useModal } from './modal'
@@ -21,10 +21,14 @@ export function useAction(action?: UseActionProps) {
   const message = useMessage()
   const manage = useManage()
   const router = useRouter()
+  const route = useRoute()
+
+  const { invalidate } = useInvalidate()
 
   const mutation = useCustomMutation({
     onSuccess: (data) => {
       message.success(data.message || (t('common.success') as string))
+      invalidate(action?.invalidate || route.path)
     },
     onError: (error) => {
       message.error(error.message || (t('common.error') as string))

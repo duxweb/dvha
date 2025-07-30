@@ -80,6 +80,7 @@ export interface UseActionProps {
   text?: boolean
   path?: string
   key?: string
+  invalidate?: string
 }
 
 export interface UseActionTarget {
