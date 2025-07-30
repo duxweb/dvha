@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.0.44
+
+### Patch Changes
+
+- feat: 增加renderTable 的 invalidate 参数
+  - @duxweb/dvha-core@1.0.44
+  - @duxweb/dvha-naiveui@1.0.44
+
 ## 1.0.43
 
 ### Patch Changes
