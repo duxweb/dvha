@@ -103,4 +103,5 @@ export interface UseActionRenderProps {
   text?: boolean
   align?: 'left' | 'center' | 'right'
   target?: (target: UseActionTarget) => void
+  invalidate?: string
 }

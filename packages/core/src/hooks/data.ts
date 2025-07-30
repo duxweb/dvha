@@ -2,6 +2,7 @@
 import type { DefaultError, DefinedInitialDataInfiniteOptions, DefinedInitialQueryOptions, InfiniteData, UseMutationOptions } from '@tanstack/vue-query'
 import type { IDataProviderCreateManyOptions, IDataProviderCreateOptions, IDataProviderCustomOptions, IDataProviderDeleteManyOptions, IDataProviderDeleteOptions, IDataProviderError, IDataProviderGetManyOptions, IDataProviderGetOneOptions, IDataProviderListOptions, IDataProviderPagination, IDataProviderResponse, IDataProviderUpdateManyOptions, IDataProviderUpdateOptions } from '../types'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+import { trimStart } from 'lodash-es'
 import { computed, ref, toRef, watch } from 'vue'
 import { useError, useGetAuth } from './auth'
 import { useManage } from './manage'
@@ -857,7 +858,12 @@ export function useInvalidate() {
     }
 
     for (const mark of marks) {
-      const key = `${manage.config?.name}:${providerName || 'default'}:${mark}`
+      let cleanPath = mark
+      if (manage.config?.apiBasePath && cleanPath.startsWith(manage.config.apiBasePath)) {
+        cleanPath = trimStart(cleanPath.substring(manage.config.apiBasePath.length), '/')
+      }
+
+      const key = `${manage.config?.name}:${providerName || 'default'}:${cleanPath}`
       queryClient.invalidateQueries({
         queryKey: [key],
       })

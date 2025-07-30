@@ -1,5 +1,14 @@
 # @duxweb/dvha-pro
 
+## 1.0.45
+
+### Patch Changes
+
+- fix: 修正useAction 的自动刷新参数
+- Updated dependencies
+  - @duxweb/dvha-core@1.0.45
+  - @duxweb/dvha-naiveui@1.0.45
+
 ## 1.0.44
 
 ### Patch Changes

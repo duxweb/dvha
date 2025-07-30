@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 1.0.45
+
+### Patch Changes
+
+- fix: 修正useAction 的自动刷新参数
+
 ## 1.0.44
 
 ## 1.0.43
