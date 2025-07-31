@@ -137,6 +137,10 @@ DVHA Pro 在基础组件之上，提供了专为中后台系统设计的业务�
 - **[DuxImage](/pro/components/widget)** - 增强图片组件，支持占位符和错误处理
 - **[DuxConnect](/pro/components/widget)** - 连接状态组件
 
+#### 设计器组件
+
+- **[DuxFlowEditor](/pro/components/flow-editor)** - 可视化流程设计器，支持拖拽式节点编辑和连线操作
+
 ## 使用说明
 
 ### 基础组件使用

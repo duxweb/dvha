@@ -168,6 +168,80 @@
         "spacingPlaceholder": "Enter spacing"
       }
     },
+    "flowEditor": {
+      "properties": "Properties",
+      "nodeInfo": "Node Info",
+      "nodeConfig": "Node Config", 
+      "label": "Label",
+      "description": "Description",
+      "descriptionPlaceholder": "Please enter node description",
+      "selectNodeOrEdge": "Select a node or edge to configure",
+      "edgeSettings": "Edge Settings",
+      "edgeDescription": "Configure connection properties between nodes",
+      "editJSON": "Edit JSON",
+      "saveFlow": "Save Flow",
+      "clearFlow": "Clear Flow",
+      "flowCleared": "Flow cleared",
+      "flowSaved": "Flow data saved",
+      "editFlowJSON": "Edit Flow JSON",
+      "deleteEdge": "Delete Edge",
+      "edgeDeleted": "Edge deleted",
+      "from": "From",
+      "to": "To", 
+      "connectionType": "Connection Type",
+      "pass": "Pass",
+      "reject": "Reject",
+      "categories": {
+        "start": "Start",
+        "process": "Process",
+        "condition": "Condition", 
+        "end": "End"
+      },
+      "nodes": {
+        "start": {
+          "label": "Start",
+          "description": "Starting node of the process"
+        },
+        "end": {
+          "label": "End",
+          "description": "Ending node of the process"
+        }
+      },
+      "fieldTypes": {
+        "text": "Text",
+        "number": "Number",
+        "boolean": "Boolean", 
+        "date": "Date",
+        "array": "Array",
+        "object": "Object"
+      },
+      "toolbar": {
+        "releaseToAdd": "Release to add node"
+      },
+      "setting": {
+        "operations": "Operations",
+        "node": "Node",
+        "connection": "Connection"
+      },
+      "nodeCard": {
+        "delete": "Delete",
+        "copy": "Copy"
+      },
+      "jsonEditor": {
+        "copiedToClipboard": "Copied to clipboard",
+        "dataApplied": "Data applied to flow",
+        "jsonFormatError": "JSON format error"
+      },
+      "processNode": {
+        "label": "Process",
+        "description": "Generic process node"
+      },
+      "startNode": {
+        "label": "Start",
+        "description": "Starting node of the process",
+        "configTitle": "Start Node Configuration"
+      }
+    },
     "formEditor": {
       "config": "Component Config",
       "options": "Option Config",

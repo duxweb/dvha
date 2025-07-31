@@ -173,6 +173,80 @@
         "spacingPlaceholder": "请输入间距"
       }
     },
+    "flowEditor": {
+      "properties": "属性",
+      "nodeInfo": "节点信息", 
+      "nodeConfig": "节点配置",
+      "label": "标签",
+      "description": "描述",
+      "descriptionPlaceholder": "请输入节点描述",
+      "selectNodeOrEdge": "选择节点或连接线进行配置",
+      "edgeSettings": "连接线设置",
+      "edgeDescription": "配置节点间的连接属性",
+      "editJSON": "编辑JSON",
+      "saveFlow": "保存流程",
+      "clearFlow": "清空流程",
+      "flowCleared": "流程已清空",
+      "flowSaved": "流程数据已保存",
+      "editFlowJSON": "编辑流程 JSON",
+      "deleteEdge": "删除连接线",
+      "edgeDeleted": "连接线已删除",
+      "from": "从",
+      "to": "到",
+      "connectionType": "连接类型",
+      "pass": "通过",
+      "reject": "退回",
+      "categories": {
+        "start": "开始",
+        "process": "处理", 
+        "condition": "条件",
+        "end": "结束"
+      },
+      "nodes": {
+        "start": {
+          "label": "开始",
+          "description": "流程的起始节点"
+        },
+        "end": {
+          "label": "结束", 
+          "description": "流程的结束节点"
+        }
+      },
+      "fieldTypes": {
+        "text": "文本",
+        "number": "数字", 
+        "boolean": "布尔",
+        "date": "日期",
+        "array": "数组",
+        "object": "对象"
+      },
+      "toolbar": {
+        "releaseToAdd": "释放以添加节点"
+      },
+      "setting": {
+        "operations": "操作",
+        "node": "节点",
+        "connection": "连接"
+      },
+      "nodeCard": {
+        "delete": "删除",
+        "copy": "复制"
+      },
+      "jsonEditor": {
+        "copiedToClipboard": "已复制到剪贴板",
+        "dataApplied": "数据已应用到流程", 
+        "jsonFormatError": "JSON 格式错误"
+      },
+      "processNode": {
+        "label": "处理",
+        "description": "通用处理节点"
+      },
+      "startNode": {
+        "label": "开始",
+        "description": "流程的起始节点",
+        "configTitle": "开始节点配置"
+      }
+    },
     "formEditor": {
       "config": "组件配置",
       "options": "选项配置",

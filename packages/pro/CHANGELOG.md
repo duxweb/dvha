@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.0.46
+
+### Patch Changes
+
+- feat(pro): 增加流程编辑器
+  - @duxweb/dvha-core@1.0.46
+  - @duxweb/dvha-naiveui@1.0.46
+
 ## 1.0.45
 
 ### Patch Changes
