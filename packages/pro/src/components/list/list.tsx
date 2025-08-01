@@ -1,5 +1,5 @@
 import type { SlotsType } from 'vue'
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { DuxListLayout } from '../layout/list'
 
 export interface ListPageSlotProps {
@@ -29,7 +29,9 @@ export const DuxListPage = defineComponent({
     sideLeft: () => any
     sideRight: () => any
   }>,
-  setup(props, { slots }) {
+  setup(props, { slots, expose }) {
+    const listLayoutRef = ref()
+    
     const listProps = computed(() => {
       const { ...rest } = props
       return {
@@ -37,8 +39,12 @@ export const DuxListPage = defineComponent({
       }
     })
 
+    expose({
+      list: listLayoutRef,
+    })
+
     return () => (
-      <DuxListLayout {...listProps.value}>
+      <DuxListLayout ref={listLayoutRef} {...listProps.value}>
         {{
           default: result => (
             <div

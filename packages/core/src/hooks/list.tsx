@@ -2,7 +2,7 @@ import type { IDataProviderError, IDataProviderPagination, IDataProviderResponse
 import type { IImportProgress } from './import'
 import { reactiveComputed, useCountdown } from '@vueuse/core'
 import { computed, ref, toRef, watch } from 'vue'
-import { useList } from './data'
+import { useCustomMutation, useList } from './data'
 import { useExportCsv } from './exportCsv'
 import { useImportCsv } from './importCsv'
 
@@ -22,6 +22,7 @@ export interface UseExtendListProps {
   pagination?: boolean | IListPagination
   exportFilename?: string
   exportMaxPage?: number
+  batchPath?: string
   total?: (data?: IDataProviderResponse) => number
   onExportSuccess?: (data?: IDataProviderResponse) => void
   onExportProgress?: (data?: IDataProviderPagination) => void
@@ -29,6 +30,8 @@ export interface UseExtendListProps {
   onImportSuccess?: (progress?: IImportProgress) => void
   onImportProgress?: (progress?: IImportProgress) => void
   onImportError?: (error?: IDataProviderError) => void
+  onBatchSuccess?: (data?: IDataProviderResponse) => void
+  onBatchError?: (error?: IDataProviderError) => void
 }
 
 export function useExtendList(props: UseExtendListProps) {
@@ -223,6 +226,32 @@ export function useExtendList(props: UseExtendListProps) {
     }
   }
 
+  // 批量操作 hook
+  const { mutate: batchMutate, isLoading: batchLoading } = useCustomMutation({
+    path: props.batchPath || `${props.path}/batch`,
+    method: 'POST',
+    onSuccess: (data) => {
+      props?.onBatchSuccess?.(data)
+      checkeds.value = []
+      onRefresh()
+    },
+    onError: (error) => {
+      props?.onBatchError?.(error)
+      onRefresh()
+    },
+  })
+
+  // 批量操作封装函数
+  const onBatch = (type: string, data?: Record<string, any>) => {
+    batchMutate({
+      payload: {
+        type,
+        ids: checkeds.value,
+        ...data || {},
+      },
+    })
+  }
+
   return {
     // 数据
     list,
@@ -267,5 +296,9 @@ export function useExtendList(props: UseExtendListProps) {
     autoRefetch,
     onAutoRefetch,
     autoCountdown: remaining,
+
+    // 批量操作
+    onBatch,
+    isBatching: batchLoading,
   }
 }

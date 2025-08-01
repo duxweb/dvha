@@ -80,6 +80,12 @@ export function useTable(props: UseTableProps) {
       nRef.value = null
       message.error(t('hooks.table.importFailedContent', { error: error?.message || t('common.unknownError') }) as string)
     },
+    onBatchSuccess: (data) => {
+      message.success(data?.message || t('common.success') || '')
+    },
+    onBatchError: (error) => {
+      message.error(error?.message || t('common.error') || '')
+    },
   })
 
   return result

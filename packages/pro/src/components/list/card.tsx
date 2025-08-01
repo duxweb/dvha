@@ -42,9 +42,10 @@ export const DuxCardPage = defineComponent({
     sideLeft: () => any
     sideRight: () => any
   }>,
-  setup(props, { slots }) {
+  setup(props, { slots, expose }) {
     // 网格容器引用
     const gridContainerRef = ref<HTMLElement>()
+    const listLayoutRef = ref()
     const { width } = useElementSize(gridContainerRef)
     const { width: windowWidth } = useWindowSize()
 
@@ -104,8 +105,12 @@ export const DuxCardPage = defineComponent({
       }
     })
 
+    expose({
+      list: listLayoutRef,
+    })
+
     return () => (
-      <DuxListLayout {...listProps.value}>
+      <DuxListLayout ref={listLayoutRef} {...listProps.value}>
         {{
           default: result => (
             <div

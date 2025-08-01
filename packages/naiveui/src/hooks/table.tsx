@@ -184,5 +184,6 @@ export function useNaiveTable(props: UseTableProps): UseNaiveTableReturn {
     columns,
     columnSelected,
     onUpdateColumnSelected,
+
   }
 }

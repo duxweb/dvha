@@ -1,5 +1,11 @@
 # @duxweb/dvha-naiveui
 
+## 1.0.47
+
+### Patch Changes
+
+- feat: 增加表格列表批量操作与提交方法
+
 ## 1.0.46
 
 ## 1.0.45

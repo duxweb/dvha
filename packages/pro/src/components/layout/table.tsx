@@ -3,6 +3,7 @@ import type { TableColumn, TablePagination, UseNaiveTableReturn, UseTableProps }
 import type { DataTableBaseColumn, SelectOption } from 'naive-ui'
 import type { PropType } from 'vue'
 import type { UseActionItem } from '../../hooks'
+import type { DuxToolOptionItem } from './tools'
 import { useI18n, useJsonSchema, useTabStore } from '@duxweb/dvha-core'
 import { useWindowSize } from '@vueuse/core'
 import { NButton, NDrawer, NModal, NPagination, NPopselect, NProgress, NTab, NTabs, NTooltip } from 'naive-ui'
@@ -73,11 +74,14 @@ export const DuxTableLayout = defineComponent({
       type: String,
       default: '',
     },
+    batchOptions: {
+      type: Array as PropType<DuxToolOptionItem[]>,
+    },
     hookTableProps: {
       type: Object as PropType<Partial<UseTableProps>>,
     },
   },
-  setup(props, { slots }) {
+  setup(props, { slots, expose }) {
     const filters = toRef(props, 'filter', {})
     const sorters = toRef(props, 'sorter', {})
     const tableColumns = toRef(props, 'columns', [])
@@ -92,6 +96,8 @@ export const DuxTableLayout = defineComponent({
       columns: tableColumns,
       pagination: props.pagination,
     })
+
+    expose(result)
 
     const { columns, tablePagination, table, onUpdateColumnSelected, onUpdateChecked, columnSelected, autoRefetch, autoCountdown, onAutoRefetch, isExporting, isExportingRows, isImporting, onExport, onExportRows, onImport } = result
 
@@ -376,6 +382,9 @@ export const DuxTableLayout = defineComponent({
                 </div>
               </div>
               <DuxTableTools
+                isLoading={result.isBatching.value}
+                onBatch={result.onBatch}
+                selecteds={table.value.checkedRowKeys}
                 number={table.value.checkedRowKeys?.length || 0 || 0}
                 group={[
                   [
@@ -393,11 +402,7 @@ export const DuxTableLayout = defineComponent({
                       loading: isExportingRows.value,
                       onClick: onExportRows,
                     },
-                    {
-                      label: t('components.button.delete'),
-                      type: 'error',
-                      icon: 'i-tabler:trash',
-                    },
+                    ...props.batchOptions || [],
                   ],
                 ]}
               />

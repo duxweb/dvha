@@ -3,11 +3,13 @@ import type { PropType } from 'vue'
 import { useI18n } from '@duxweb/dvha-core'
 import { NButton, NDropdown } from 'naive-ui'
 import { computed, defineComponent, Transition } from 'vue'
+import { useDialog } from '../../hooks'
 
 export interface DuxToolOptionItem {
   label?: string
   icon?: string
-  onClick?: () => void
+  key?: string
+  onClick?: (ids: unknown[]) => void
   loading?: boolean
   disabled?: boolean
   type?: 'default' | 'error' | 'success' | 'warning'
@@ -16,6 +18,17 @@ export interface DuxToolOptionItem {
 export const DuxTableTools = defineComponent({
   name: 'DuxTableTools',
   props: {
+    selecteds: {
+      type: Array as PropType<unknown[]>,
+      default: [],
+    },
+    isLoading: {
+      type: Boolean,
+      default: false,
+    },
+    onBatch: {
+      type: Function as PropType<(type: string, data?: Record<string, any>) => void>,
+    },
     number: {
       type: Number,
     },
@@ -42,6 +55,8 @@ export const DuxTableTools = defineComponent({
       return props.number && props.number > 0
     })
 
+    const dialog = useDialog()
+
     return () => (
       <div class="absolute  bottom-0 left-0 right-0 pointer-events-none">
         <Transition
@@ -56,21 +71,40 @@ export const DuxTableTools = defineComponent({
         >
           {hasSelectedItems.value
             ? (
-                <div class="flex h-12 px-1 justify-between lg:justify-center gap-2 pointer-events-auto backdrop-blur">
+                <div class="flex h-12 px-1 justify-between lg:justify-center gap-2 pointer-events-auto">
                   {group.value?.map((options, index) => (
-                    <div class="h-10 mt-1 bg-gray-800 rounded px-4 py-1 shadow-lg flex items-center gap-4">
+                    <div class="h-10 mt-1 bg-default rounded px-4 py-1 shadow flex items-center gap-4">
 
                       {index === group.value.length - 1 && (
                         <>
-                          <span class="text-gray-300">
+                          <span class=" ">
                             {t('components.list.selectedItems', { num: props.number || 0 })}
                           </span>
-                          <div class="w-px h-4 bg-gray-600"></div>
+                          <div class="w-px h-4 bg-elevated"></div>
                         </>
                       )}
 
                       {options?.map(item => (
-                        <NButton text onClick={item.onClick} class="text-gray-300" loading={item.loading} disabled={item.disabled} type={item.type}>
+                        <NButton
+                          text
+                          onClick={() => {
+                            if (item.onClick) {
+                              item.onClick?.(props.selecteds)
+                            }
+                            else if (item.key) {
+                              dialog.confirm({
+                                title: t('components.list.batchTitle'),
+                                content: t('components.list.batchContent'),
+                              }).then(() => {
+                                props.onBatch?.('delivery')
+                              }).catch(() => {
+                              })
+                            }
+                          }}
+                          loading={item.loading || props.isLoading}
+                          disabled={item.disabled || item.loading || props.isLoading}
+                          type={item.type}
+                        >
                           {{
                             default: () => item.label,
                             icon: () => <div class={item.icon} />,
@@ -82,7 +116,7 @@ export const DuxTableTools = defineComponent({
                         <NDropdown
                           options={props.dropdown}
                         >
-                          <NButton text class="text-gray-300">
+                          <NButton text>
                             {{
                               icon: () => <div class="i-tabler:dots-vertical size-4" />,
                             }}

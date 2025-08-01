@@ -1,5 +1,14 @@
 # @duxweb/dvha-pro
 
+## 1.0.47
+
+### Patch Changes
+
+- feat: 增加表格列表批量操作与提交方法
+- Updated dependencies
+  - @duxweb/dvha-naiveui@1.0.47
+  - @duxweb/dvha-core@1.0.47
+
 ## 1.0.46
 
 ### Patch Changes

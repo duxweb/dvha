@@ -73,7 +73,9 @@
       "selectAll": "全选",
       "columnSetting": "列设置",
       "selectedItems": "选中项: {num}",
-      "total": "共 {total} 条"
+      "total": "共 {total} 条",
+      "batchTitle": "批量操作确认",
+      "batchContent": "确定要执行此批量操作吗？"
     },
     "editor": {
       "placeholder": "请输入内容"

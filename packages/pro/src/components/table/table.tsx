@@ -26,7 +26,7 @@ export const DuxTable = defineComponent({
     },
   },
   extends: NDataTable,
-  setup(props) {
+  setup(props, { expose }) {
     const tableProps = computed(() => {
       const { path, filter, columns, pagination, ...rest } = props
       return rest
@@ -40,6 +40,8 @@ export const DuxTable = defineComponent({
       columns: props.columns || [],
       pagination: props.pagination,
     })
+
+    expose(result)
 
     const { width } = useWindowSize()
     const { t } = useI18n()

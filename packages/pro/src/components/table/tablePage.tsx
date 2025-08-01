@@ -2,7 +2,7 @@ import type { DataTableProps } from 'naive-ui'
 import type { PropType, SlotsType } from 'vue'
 import type { TablePageSlotProps } from '../layout/table'
 import { NDataTable } from 'naive-ui'
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { DuxTableLayout } from '../layout/table'
 import { DuxListEmpty } from '../status'
 
@@ -23,14 +23,20 @@ export const DuxTablePage = defineComponent({
     sideRight: () => any
     header: () => any
   }>,
-  setup(props, { slots }) {
+  setup(props, { slots, expose }) {
+    const tableLayoutRef = ref()
+
     const tableProps = computed(() => {
       const { tableProps, ...rest } = props
       return rest
     })
 
+    expose({
+      table: tableLayoutRef,
+    })
+
     return () => (
-      <DuxTableLayout {...tableProps.value}>
+      <DuxTableLayout ref={tableLayoutRef} {...tableProps.value}>
         {{
           default: result => (
             <NDataTable

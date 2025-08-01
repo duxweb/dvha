@@ -1,11 +1,7 @@
 import type { JsonSchemaNode, UseExtendListProps } from '@duxweb/dvha-core'
 import type { PropType } from 'vue'
 import type { UseActionItem } from '../../hooks'
-
-export interface TablePagination {
-  page: number
-  pageSize: number
-}
+import type { DuxToolOptionItem } from './'
 import { useExtendList, useI18n, useJsonSchema } from '@duxweb/dvha-core'
 import { useWindowSize } from '@vueuse/core'
 import { NButton, NCheckbox, NDrawer, NModal, NPagination, NProgress, NSpin, NTab, NTabs, NTooltip } from 'naive-ui'
@@ -15,6 +11,11 @@ import { DuxPage, DuxPageEmpty } from '../../pages'
 import { DuxDrawerPage } from '../drawer'
 import { DuxModalPage } from '../modal'
 import { DuxFilterLayout, DuxTableFilter, DuxTableTools } from './'
+
+export interface TablePagination {
+  page: number
+  pageSize: number
+}
 
 export interface ListPageTools {
   import?: boolean
@@ -67,11 +68,14 @@ export const DuxListLayout = defineComponent({
       type: String,
       default: '',
     },
+    batchOptions: {
+      type: Array as PropType<DuxToolOptionItem[]>,
+    },
     hookListProps: {
       type: Object as PropType<UseExtendListProps>,
     },
   },
-  setup(props, { slots }) {
+  setup(props, { slots, expose }) {
     const filters = toRef(props.filter || {})
     const { t } = useI18n()
     const { renderAction } = useAction()
@@ -94,6 +98,8 @@ export const DuxListLayout = defineComponent({
       pagination: pagination.value,
       ...props.hookListProps,
     })
+
+    expose(result)
 
     const { meta, list, isLoading, autoRefetch, autoCountdown, onAutoRefetch, isExporting, isExportingRows, isImporting, onExport, onExportRows, onImport } = result
 
@@ -453,6 +459,9 @@ export const DuxListLayout = defineComponent({
               </div>
 
               <DuxTableTools
+                isLoading={result.isBatching.value}
+                onBatch={result.onBatch}
+                selecteds={result.checkeds.value}
                 number={result.checkeds.value.length}
                 group={[
                   [

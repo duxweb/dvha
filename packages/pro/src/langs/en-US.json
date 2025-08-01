@@ -68,7 +68,9 @@
       "selectAll": "Select All",
       "columnSetting": "Column Setting",
       "selectedItems": "Selected Items: {num}",
-      "total": "Total: {total}"
+      "total": "Total: {total}",
+      "batchTitle": "Batch Operation Confirmation",
+      "batchContent": "Are you sure you want to execute this batch operation?"
     },
     "editor": {
       "placeholder": "Please enter content"
