@@ -46,7 +46,7 @@ export function useMenu(props?: UseMenuProps) {
   const subKey = ref(route.name)
 
   const mainMenu = computed(() => {
-    if (props?.doubleMenu) {
+    if (!props?.doubleMenu) {
       return list.value
     }
     const appList = cloneDeep(list.value)
@@ -57,7 +57,7 @@ export function useMenu(props?: UseMenuProps) {
   })
 
   const subMenu = computed(() => {
-    if (props?.doubleMenu) {
+    if (!props?.doubleMenu) {
       return []
     }
     const subList = list.value?.find(item => item.name === appKey.value)?.children
@@ -93,7 +93,7 @@ export function useMenu(props?: UseMenuProps) {
     if (!props?.doubleMenu) {
       return true
     }
-    return (props?.doubleMenu || subMenu.value.length > 0)
+    return subMenu.value.length > 0
   })
 
   watch([route, originalList, () => props?.doubleMenu], () => {
@@ -116,7 +116,7 @@ export function useMenu(props?: UseMenuProps) {
 
     allKey.value = paths?.[subIndex]?.name
 
-    if (props?.doubleMenu) {
+    if (!props?.doubleMenu) {
       appKey.value = paths?.[subIndex]?.name
       subKey.value = paths?.[subIndex]?.name
     }

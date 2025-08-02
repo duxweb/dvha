@@ -93,25 +93,28 @@ export const DuxPageTab = defineComponent({
           barWidth={100}
           {...tabsProps.value}
         >
-          {tabs?.value?.map(tab => (
-            <NTab key={tab.path} name={tab.path || ''}>
-              <div class="flex items-center gap-2 py-2 px-3" onContextmenu={e => handleContextMenu(e, tab)}>
-                <div class="flex-1">
-                  {tab.label}
-                </div>
-                <div class="flex items-center flex-none">
-                  {tab.meta?.lock
-                    ? <div class="i-tabler:pinned size-4" />
-                    : (
+          {{
+            default: () => tabs?.value?.map(tab => (
+              <NTab key={tab.path} name={tab.path || ''}>
+                <div class="flex items-center gap-2 py-2 px-3" onContextmenu={e => handleContextMenu(e, tab)}>
+                  <div class="flex-1">
+                    {tab.label}
+                  </div>
+                  <div class="flex items-center flex-none">
+                    {tab.meta?.lock
+                      ? <div class="i-tabler:pinned size-4" />
+                      : (
 
-                        <div onClick={() => tabsProps.value?.onClose?.(tab.path)} class="text-muted hover:text-primary cursor-pointer">
-                          <div class="i-tabler:x size-4" />
-                        </div>
-                      )}
+                          <div onClick={() => tabsProps.value?.onClose?.(tab.path)} class="text-muted hover:text-primary cursor-pointer">
+                            <div class="i-tabler:x size-4" />
+                          </div>
+                        )}
+                  </div>
                 </div>
-              </div>
-            </NTab>
-          ))}
+              </NTab>
+            )),
+          }}
+
         </NTabs>
 
         <NDropdown

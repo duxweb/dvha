@@ -1,4 +1,7 @@
 export { default as DuxMenuAvatar } from './avatar'
 export { default as DuxMenuButton } from './button'
 export * from './cmd'
-export * from './main'
+export { default as DuxMenuDark } from './dark'
+export * from './menuApp'
+export * from './menuMain'
+export { default as DuxMenuNotice } from './notice'

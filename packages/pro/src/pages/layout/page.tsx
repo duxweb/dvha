@@ -44,7 +44,7 @@ export const DuxLayoutPage = defineComponent({
             </div>
           </div>
 
-          <div class="flex-1 py-2">
+          <div class="flex-1 py-2 min-w-0">
             <DuxPageTab />
           </div>
         </div>

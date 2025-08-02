@@ -14,6 +14,14 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    btnClass: {
+      type: String,
+      default: '',
+    },
+    btnLabelClass: {
+      type: String,
+      default: '',
+    }
   },
   setup(props) {
     const { t } = useI18n()
@@ -201,20 +209,20 @@ export default defineComponent({
         width={200}
 
       >
-        <DuxMenuButton collapsed={props.collapsed}>
+        <DuxMenuButton class={props.btnClass} labelClass={props.btnLabelClass} collapsed={props.collapsed}>
           {{
             icon: () => (
               <DuxAvatar class="group-hover:shadow-lg" round size={28} src={auth.info?.avatar} />
             ),
             default: () => (
-              <div class="flex flex-col">
+              <div class='flex justify-between'>
+                <div class="flex flex-col">
                 <div class="text-sm font-medium">{auth.info?.nickname}</div>
                 <div class="text-xs text-muted">{auth.info?.username}</div>
               </div>
+              </div>
             ),
-
           }}
-
         </DuxMenuButton>
 
       </NDropdown>

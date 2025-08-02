@@ -1,6 +1,6 @@
 import type { IDataProviderResponse, IS3SignData } from '@duxweb/dvha-core'
-
 import type { App } from 'vue'
+
 import initUnocssRuntime from '@unocss/runtime'
 import VueECharts from 'vue-echarts'
 import component from './component'
@@ -46,6 +46,20 @@ declare module '@duxweb/dvha-core' {
       uploadManager?: string
       ai?: string
       [key: string]: any
+    }
+    // 通知配置
+    notice?: {
+      status?: false
+      path?: string
+      route?: string
+      titleField?: string
+      descField?: string
+      readField?: string
+      action: {
+        label?: string
+        url?: string
+      }
+
     }
   }
 }

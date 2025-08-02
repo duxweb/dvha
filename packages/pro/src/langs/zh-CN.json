@@ -158,7 +158,12 @@
       "followSystem": "跟随系统",
       "lightMode": "亮色",
       "darkMode": "暗色",
-      "logout": "退出登录"
+      "logout": "退出登录",
+      "notice": "通知",
+      "noNotice": "暂无通知",
+      "markAllRead": "一键已读",
+      "viewAllNotices": "查看全部消息",
+      "themeToggle": "主题切换"
     },
     "iconPicker": {
       "title": "图标选择"

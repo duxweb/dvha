@@ -153,7 +153,12 @@
       "followSystem": "Follow System",
       "lightMode": "Light",
       "darkMode": "Dark",
-      "logout": "Logout"
+      "logout": "Logout",
+      "notice": "Notice",
+      "noNotice": "No notices",
+      "markAllRead": "Mark all read",
+      "viewAllNotices": "View all notices",
+      "themeToggle": "Theme Toggle"
     },
     "iconPicker": {
       "title": "Icon Picker"

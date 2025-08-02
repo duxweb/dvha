@@ -1,5 +1,14 @@
 # @duxweb/dvha-pro
 
+## 1.0.48
+
+### Patch Changes
+
+- feat: 增加双栏菜单布局
+- Updated dependencies
+  - @duxweb/dvha-core@1.0.48
+  - @duxweb/dvha-naiveui@1.0.48
+
 ## 1.0.47
 
 ### Patch Changes

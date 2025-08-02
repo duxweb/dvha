@@ -8,6 +8,10 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    labelClass: {
+      type: String,
+      default: '',
+    },
     onClick: {
       type: Function,
       default: () => {},
@@ -16,30 +20,24 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    inverted: {
-      type: Boolean,
-      default: false,
-    },
   },
   setup(props, { slots }) {
-    const { menuCollapsed, menuMobileCollapsed } = useUI()
+    const { menuCollapsed } = useUI()
     return () => (
       <div
         onClick={() => {
           props.onClick?.()
         }}
         class={[
-          'flex items-center gap-1 justify-center py-1 px-2 cursor-pointer gap-2',
+          'flex items-center gap-1 justify-center py-1 px-2 cursor-pointer gap-2 flex-1 w-full',
           props.class,
-          menuCollapsed.value && !menuMobileCollapsed.value ? 'group' : 'hover:shadow-xs hover:bg-default flex-1 w-full',
-          props.inverted ? 'transition-all duration-300 bg-inverted/5 rounded-full hover:bg-default hover:shadow-xs' : ' rounded-md',
         ]}
       >
         {slots.icon?.()}
-        {props.collapsed === false && (!menuCollapsed.value && !menuMobileCollapsed.value) && (
+        {props.collapsed === false && (!menuCollapsed.value) && (
           <div class={[
             'overflow-hidden ease-in-out whitespace-nowrap text-left min-w-0 flex-1',
-            props.inverted ? 'text-default' : '',
+            props.labelClass,
           ]}
           >
             {slots.default?.()}
