@@ -8,6 +8,3 @@ export * from './main'
 export * from './pages'
 export * from './stores'
 export * from './theme'
-
-// 导出 vue-konva 供应用使用
-export { default as VueKonva } from 'vue-konva'

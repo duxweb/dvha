@@ -1,11 +1,14 @@
-import { defineComponent, onErrorCaptured, ref } from 'vue'
+import { defineComponent, h, onErrorCaptured, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { useManage } from '../../hooks'
 
 export const DuxException = defineComponent({
   name: 'DuxException',
   setup(_props, { slots }) {
     const data = ref<Record<string, any> | null>(null)
     const route = useRoute()
+
+    const { config } = useManage()
 
     onErrorCaptured((err) => {
       console.error(err)
@@ -25,12 +28,15 @@ export const DuxException = defineComponent({
     })
 
     return () => data.value
-      ? (
-          <div>
-            <h1>{data.value?.title || 'Unknown'}</h1>
-            <p>{data.value?.desc || 'Unknown Description'}</p>
-            <p>Use config.components.exception to configure the exception layout</p>
-          </div>
+      ? (config.components?.exception
+          ? h(config.components.exception, { data: data.value })
+          : (
+              <div>
+                <h1>{data.value?.title || 'Unknown'}</h1>
+                <p>{data.value?.desc || 'Unknown Description'}</p>
+                <p>Use config.components.exception to configure the exception layout</p>
+              </div>
+            )
         )
       : slots.default?.()
   },

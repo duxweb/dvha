@@ -516,6 +516,10 @@
       "title": "Loading",
       "desc": "Data is loading, please try again later"
     },
+    "exception": {
+      "title": "System Exception",
+      "desc": "A system exception occurred. Please check the console for details"
+    },
     "login": {
       "success": "Login success",
       "error": "Login failed, please check your username and password",

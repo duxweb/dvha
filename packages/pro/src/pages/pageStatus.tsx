@@ -14,7 +14,7 @@ export const DuxPageStatus = defineComponent({
   setup(props, { slots }) {
     return () => (
       <DuxCard class="size-full flex items-center justify-center" bordered={props.bordered}>
-        <div class="flex flex-col gap-6 justify-center items-center py-10">
+        <div class="flex flex-col gap-6 justify-center items-center py-10 h-full">
           <div class="w-40">
             {slots.default?.()}
           </div>

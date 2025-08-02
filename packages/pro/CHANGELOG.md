@@ -1,5 +1,14 @@
 # @duxweb/dvha-pro
 
+## 1.0.49
+
+### Patch Changes
+
+- feat: 增加异常页面与异步加载异常页面加载
+- Updated dependencies
+  - @duxweb/dvha-core@1.0.49
+  - @duxweb/dvha-naiveui@1.0.49
+
 ## 1.0.48
 
 ### Patch Changes
