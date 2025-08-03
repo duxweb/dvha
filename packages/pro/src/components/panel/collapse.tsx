@@ -19,7 +19,8 @@ export const DuxCollapsePanel = defineComponent({
       >
         <div class={clsx([
           'px-4 py-3 flex justify-between items-center',
-          props.highlight ? 'bg-primary/10' : 'bg-gray/5',
+          props.highlight ? 'bg-primary/10' : 'bg-default dark:bg-elevated',
+          show.value ? 'rounded-t-sm' : 'rounded-sm',
         ])}
         >
           <div class="flex gap-2 items-start">

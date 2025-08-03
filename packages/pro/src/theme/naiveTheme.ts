@@ -57,18 +57,6 @@ export function themeOverrides() {
       thTextColor: getSemanticColor('text', 'base'),
     },
 
-    Select: {
-      peers: {
-        InternalSelection: {
-          border: '1px solid rgb(var(--ui-border-accented))',
-        },
-      },
-    },
-
-    Button: {
-
-    },
-
     Tabs: {
       tabTextColorCard: getSemanticColor('text', 'toned'),
       colorSegment: `rgba(${color2rgb(getSemanticColor('bg', 'elevated'))})`,
@@ -77,10 +65,6 @@ export function themeOverrides() {
       tabTextColorSegment: getSemanticColor('text', 'toned'),
       tabTextColorActiveSegment: getSemanticColor('text', 'inverted'),
       tabTextColorHoverSegment: getSemanticColor('text', 'muted'),
-    },
-
-    Card: {
-
     },
 
   }))

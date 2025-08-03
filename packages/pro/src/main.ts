@@ -55,10 +55,7 @@ declare module '@duxweb/dvha-core' {
       titleField?: string
       descField?: string
       readField?: string
-      action: {
-        label?: string
-        url?: string
-      }
+      urlField?: string
 
     }
   }

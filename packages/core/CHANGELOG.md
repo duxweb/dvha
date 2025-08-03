@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 1.0.50
+
+### Patch Changes
+
+- fix: 修正部分样色和色彩区分
+
 ## 1.0.49
 
 ### Patch Changes

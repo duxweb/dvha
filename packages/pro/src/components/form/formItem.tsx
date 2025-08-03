@@ -105,7 +105,7 @@ export const DuxFormItem = defineComponent({
 
     return () => (
       <div class={[
-        labelPlacement.value !== 'top' ? 'md:flex-row gap-2 lg:items-center' : 'gap-1',
+        labelPlacement.value !== 'top' ? 'md:flex-row gap-2 lg:items-start' : 'gap-1',
         divider.value ? 'py-6' : '',
         labelPlacement.value === 'setting' ? 'md:justify-between md:items-start md:gap-4' : '',
         labelPlacement.value === 'page' ? 'grid grid-cols-1 lg:grid-cols-4 px-4' : 'flex flex-col',
@@ -114,7 +114,7 @@ export const DuxFormItem = defineComponent({
         {props.label && (
           <div
             class={[
-              labelPlacement.value === 'left' ? 'flex lg:items-center' : 'md:mb-1',
+              labelPlacement.value === 'left' ? 'flex lg:items-center lg:pt-1.5' : 'md:mb-1',
               labelPlacement.value === 'left' && form.labelAlign.value === 'right' ? 'justify-end' : '',
             ]}
             style={{ width: labelWidth.value }}

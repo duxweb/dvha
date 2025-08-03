@@ -66,7 +66,7 @@ export const DuxTable = defineComponent({
           }}
         </NDataTable>
         {props.pagination && (
-          <div class="flex justify-end">
+          <div class="flex justify-end p-4 border-t border-muted">
             <NPagination
               {...result.tablePagination.value}
               simple={width.value < 768}

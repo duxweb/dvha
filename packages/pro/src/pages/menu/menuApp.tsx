@@ -76,7 +76,7 @@ export const DuxMenuApp = defineComponent({
     })
 
     return () => (
-      <div class="flex h-screen gap-2  p-2">
+      <div class="flex h-screen gap-2  pl-2 pr-4 py-2">
 
         <DuxCard class="bg-primary-950 w-16 text-inverted z-1">
           <div class="h-full flex-none flex flex-col">
@@ -86,7 +86,7 @@ export const DuxMenuApp = defineComponent({
               </div>
             </div>
 
-            <div class="flex-1">
+            <div class="flex-1 min-h-0">
               <NScrollbar>
                 <NMenu
                   inverted
@@ -116,36 +116,38 @@ export const DuxMenuApp = defineComponent({
           leaveToClass="opacity-0 translate-x-[-50%]"
         >
           {isSubMenu.value && (
-            <DuxCard class="w-160px overflow-hidden flex flex-col gap-2">
-
-              <div class="p-2  flex-none">
-                <DuxMenuButton collapsed={false} class="rounded relative py-1.5 px-3 bg-inverted/5" onClick={() => setCmdVisible(true)}>
-                  {{
-                    icon: () => <div class="i-tabler:search size-4 icon-gradient"></div>,
-                    default: () => (
-                      <div class="text-muted text-sm">
-                        { t('common.search') }
-                        <div class="flex items-center gap-1 absolute right-2.5 top-1.3">
-                          <NTag size="small" bordered={false} type="primary">⌘</NTag>
-                          <NTag size="small" bordered={false} type="primary">K</NTag>
+            <DuxCard>
+              <div class="w-160px overflow-hidden flex flex-col h-full">
+                <div class="p-2  flex-none">
+                  <DuxMenuButton collapsed={false} class="rounded relative py-1.5 px-3 bg-inverted/5" onClick={() => setCmdVisible(true)}>
+                    {{
+                      icon: () => <div class="i-tabler:search size-4 icon-gradient"></div>,
+                      default: () => (
+                        <div class="text-muted text-sm">
+                          { t('common.search') }
+                          <div class="flex items-center gap-1 absolute right-2.5 top-1.3">
+                            <NTag size="small" bordered={false} type="primary">⌘</NTag>
+                            <NTag size="small" bordered={false} type="primary">K</NTag>
+                          </div>
                         </div>
-                      </div>
-                    ),
-                  }}
-                </DuxMenuButton>
+                      ),
+                    }}
+                  </DuxMenuButton>
+                </div>
 
+                <div class="flex-1 min-h-0">
+                  <NScrollbar>
+                    <NMenu
+                      rootIndent={20}
+                      indent={15}
+                      options={subOptions.value}
+                      value={subActive.value as any}
+                      collapsed={false}
+                      onUpdateValue={(key: string) => subActive.value = key}
+                    />
+                  </NScrollbar>
+                </div>
               </div>
-
-              <NScrollbar class="flex-1 min-h-0">
-                <NMenu
-                  rootIndent={20}
-                  indent={15}
-                  options={subOptions.value}
-                  value={subActive.value as any}
-                  collapsed={false}
-                  onUpdateValue={(key: string) => subActive.value = key}
-                />
-              </NScrollbar>
             </DuxCard>
           )}
         </Transition>

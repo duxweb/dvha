@@ -22,7 +22,7 @@ export const DuxBlockEmpty = defineComponent({
       <div class="flex justify-center p-2">
         <div class={clsx([
           'flex flex-row items-center',
-          props.simple ? 'flex-col' : 'gap-2',
+          props.simple ? 'flex-col gap-2' : 'gap-2',
         ])}
         >
           <div>
@@ -78,8 +78,7 @@ export const DuxBlockEmpty = defineComponent({
 
           <div class="flex flex-col gap-0">
             <div class={clsx([
-              'text-default',
-              props.simple ? 'text-center' : '',
+              props.simple ? 'text-center text-muted' : 'text-default',
             ])}
             >
               {props.text || t('pages.empty.title')}
