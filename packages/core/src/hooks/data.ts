@@ -146,7 +146,7 @@ export function useInfiniteList(params: IInfiniteListParams) {
   })
 
   const req = useInfiniteQuery({
-    queryKey: [`${manage.config?.name}:${providerName}:${params.path}`, queryProps.value],
+    queryKey: [`${manage.config?.name}:${providerName}:infinite:${params.path}`, queryProps.value],
     queryFn: ({ pageParam }) => {
       pagination.value.page = pageParam
       return manage.config?.dataProvider?.[providerName]?.getList({
