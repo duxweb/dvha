@@ -41,7 +41,7 @@ export default defineComponent({
     const handleNotice = (notice: any) => {
       markRead({
         payload: {
-          type: 'all_read',
+          type: 'read',
           id: notice.id,
         },
       })

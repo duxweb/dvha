@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.0.51
+
+### Patch Changes
+
+- fix: 通知点击类型处理
+  - @duxweb/dvha-core@1.0.51
+  - @duxweb/dvha-naiveui@1.0.51
+
 ## 1.0.50
 
 ### Patch Changes
