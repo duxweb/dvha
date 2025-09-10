@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.1.1
+
+### Patch Changes
+
+- fix(pro): 修正菜单样式与卡片色彩
+  - @duxweb/dvha-core@1.1.1
+  - @duxweb/dvha-naiveui@1.1.1
+
 ## 1.1.0
 
 ### Major Changes

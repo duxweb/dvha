@@ -94,7 +94,7 @@ export const DuxMenuApp = defineComponent({
                       key={index}
                       class={[
                         'flex flex-col gap-1 justify-center items-center py-1.5 cursor-pointer rounded transition-all',
-                        item.key === appActive.value ? 'bg-primary/50 text-primary-200' : 'text-inverted/80 hover:text-inverted',
+                        item.key === appActive.value ? 'bg-primary/50 text-primary-200' : 'text-white/60 hover:text-white',
                       ]}
                       onClick={() => {
                         appActive.value = item.key as string

@@ -104,13 +104,13 @@ export const DuxCard = defineComponent({
         case 'inverted':
           return 'bg-inverted'
         default:
-          return 'bg-default dark:bg-muted/80'
+          return 'bg-default dark:bg-muted'
       }
     })
 
     return () => (
       <div class={[
-        'flex flex-col dark:border dark:border-muted/80',
+        'flex flex-col dark:border dark:border-muted',
         props.rounded && 'rounded',
         props.divide && 'divide-y divide-muted',
         props.shadow && 'shadow-xs',
