@@ -1,5 +1,17 @@
 # @duxweb/dvha-pro
 
+## 1.1.0
+
+### Major Changes
+
+- fix(pro): 修正上传重复文件
+  feat(pro): 优化 UI 布局与菜单色彩搭配
+
+### Patch Changes
+
+- @duxweb/dvha-core@1.1.0
+- @duxweb/dvha-naiveui@1.1.0
+
 ## 1.0.52
 
 ### Patch Changes

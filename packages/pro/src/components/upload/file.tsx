@@ -5,7 +5,7 @@ import { useI18n, useUpload } from '@duxweb/dvha-core'
 import { useDropZone, useVModel } from '@vueuse/core'
 import mime from 'mime'
 import { NButton, NDataTable, NProgress, useMessage } from 'naive-ui'
-import { computed, defineComponent, ref, watch } from 'vue'
+import { computed, defineComponent, nextTick, ref, watch } from 'vue'
 import { useModal } from '../../hooks'
 import { DuxMedia } from '../media'
 import { useUploadConfig } from './config'
@@ -122,10 +122,17 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
       },
     })
 
+    // Avoid echoing back into upload list when syncing model from upload
+    const syncingFromUpload = ref(false)
     watch(upload.dataFiles, (v) => {
       const files = props.multiple ? v : v[0]
+      syncingFromUpload.value = true
       model.value = files
       props.onUpdateValue?.(files)
+      // Defer reset to ensure any watchers on model see the syncing flag
+      nextTick(() => {
+        syncingFromUpload.value = false
+      })
     })
 
     const supportedExtensions = computed(() => {
@@ -166,6 +173,10 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
 
     const once = ref(false)
     watch(model, (v) => {
+      if (syncingFromUpload.value) {
+        // Ignore changes originating from internal upload sync to prevent duplicates
+        return
+      }
       if (!v || !v?.length || once.value) {
         return
       }

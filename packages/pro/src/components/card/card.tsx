@@ -52,6 +52,10 @@ export const DuxCard = defineComponent({
       type: Boolean,
       default: true,
     },
+    rounded: {
+      type: Boolean,
+      default: true,
+    },
     headerBordered: {
       type: Boolean,
       default: false,
@@ -106,7 +110,8 @@ export const DuxCard = defineComponent({
 
     return () => (
       <div class={[
-        'rounded  flex flex-col dark:border dark:border-muted/80',
+        'flex flex-col dark:border dark:border-muted/80',
+        props.rounded && 'rounded',
         props.divide && 'divide-y divide-muted',
         props.shadow && 'shadow-xs',
         props.bordered && 'border border-muted',

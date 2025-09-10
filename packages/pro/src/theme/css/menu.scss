@@ -5,3 +5,8 @@
 .app-menu.n-menu.n-menu--collapsed .n-menu-item-content .n-menu-item-content__arrow {
   display: none;
 }
+
+.app-menu.n-menu .n-menu-item-content::before {
+  left: 0px;
+  right: 0px;
+}

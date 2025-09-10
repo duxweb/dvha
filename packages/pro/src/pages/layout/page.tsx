@@ -31,7 +31,7 @@ export const DuxLayoutPage = defineComponent({
 
     return () => (
       <div class="flex-1 min-w-0 flex flex-col">
-        <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center lg:h-13">
+        <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center">
           <div class="flex lg:hidden justify-between items-center px-2 py-2 bg-default dark:bg-muted shadow-xs relative">
             <NButton text onClick={() => setMenuMobileCollapsed(!menuMobileCollapsed.value)}>
               <div class="i-tabler:menu-2 size-6" />
@@ -44,7 +44,7 @@ export const DuxLayoutPage = defineComponent({
             </div>
           </div>
 
-          <div class="flex-1 py-2 min-w-0">
+          <div class="flex-1 min-w-0">
             <DuxPageTab />
           </div>
         </div>

@@ -3,9 +3,8 @@ import { DuxLogoIcon, useI18n, useManage, useMenu } from '@duxweb/dvha-core'
 import { cloneDeep } from 'lodash-es'
 import { NMenu, NScrollbar, NTag } from 'naive-ui'
 import { computed, defineComponent, h, onMounted, Transition } from 'vue'
-import { RouterLink } from 'vue-router'
-import { DuxMenuAvatar, DuxMenuButton, DuxMenuDark, DuxMenuNotice } from '.'
-import { DuxCard } from '../../components'
+import { RouterLink, useRouter } from 'vue-router'
+import { DuxMenuAvatar, DuxMenuDark, DuxMenuNotice } from '.'
 import { useUI } from '../../hooks'
 
 export const DuxMenuApp = defineComponent({
@@ -20,6 +19,7 @@ export const DuxMenuApp = defineComponent({
     const { setCmdVisible, setMenuCollapsed } = useUI()
     const { config } = useManage()
     const { t } = useI18n()
+    const router = useRouter()
 
     const { mainMenu, subMenu, appActive, subActive, isSubMenu } = useMenu({
       doubleMenu: true,
@@ -76,9 +76,9 @@ export const DuxMenuApp = defineComponent({
     })
 
     return () => (
-      <div class="flex h-screen gap-2  pl-2 pr-4 py-2">
+      <div class="flex h-screen gap-2 pr-2">
 
-        <DuxCard class="bg-primary-950 w-16 text-inverted z-1">
+        <div class="bg-primary-950 dark:bg-gray-900 w-18 text-inverted z-1 border-r dark:border-muted">
           <div class="h-full flex-none flex flex-col">
             <div class="py-4 px-2 hidden lg:flex justify-center items-center">
               <div class="bg-white dark:bg-primary-950 rounded-full p-2 shadow group-hover:shadow-lg">
@@ -88,7 +88,27 @@ export const DuxMenuApp = defineComponent({
 
             <div class="flex-1 min-h-0">
               <NScrollbar>
-                <NMenu
+                <div class="flex flex-col px-2 gap-2">
+                  {mainOptions.value.map((item, index) => (
+                    <div
+                      key={index}
+                      class={[
+                        'flex flex-col gap-1 justify-center items-center py-1.5 cursor-pointer rounded transition-all',
+                        item.key === appActive.value ? 'bg-primary/50 text-primary-200' : 'text-inverted/80 hover:text-inverted',
+                      ]}
+                      onClick={() => {
+                        appActive.value = item.key as string
+                        if (item?.path) {
+                          router.push(item.path)
+                        }
+                      }}
+                    >
+                      <div>{item.icon?.()}</div>
+                      <div class="text-xs">{typeof item.label === 'function' ? item.label?.() : item.label}</div>
+                    </div>
+                  ))}
+                </div>
+                {/* <NMenu
                   inverted
                   options={mainOptions.value}
                   value={appActive.value as any}
@@ -96,7 +116,7 @@ export const DuxMenuApp = defineComponent({
                   collapsedWidth={64}
                   collapsedIconSize={22}
                   onUpdateValue={(key: string) => appActive.value = key}
-                />
+                /> */}
               </NScrollbar>
             </div>
             <div class="flex-none hidden lg:flex flex-col items-center gap-2 p-2">
@@ -105,7 +125,7 @@ export const DuxMenuApp = defineComponent({
               <DuxMenuAvatar collapsed={true} />
             </div>
           </div>
-        </DuxCard>
+        </div>
         <Transition
           name="submenu-slide"
           enterActiveClass="transition-all duration-150 ease-out"
@@ -116,30 +136,30 @@ export const DuxMenuApp = defineComponent({
           leaveToClass="opacity-0 translate-x-[-50%]"
         >
           {isSubMenu.value && (
-            <DuxCard>
+            <div>
               <div class="w-160px overflow-hidden flex flex-col h-full">
-                <div class="p-2  flex-none">
-                  <DuxMenuButton collapsed={false} class="rounded relative py-1.5 px-3 bg-inverted/5" onClick={() => setCmdVisible(true)}>
-                    {{
-                      icon: () => <div class="i-tabler:search size-4 icon-gradient"></div>,
-                      default: () => (
-                        <div class="text-muted text-sm">
-                          { t('common.search') }
-                          <div class="flex items-center gap-1 absolute right-2.5 top-1.3">
-                            <NTag size="small" bordered={false} type="primary">⌘</NTag>
-                            <NTag size="small" bordered={false} type="primary">K</NTag>
-                          </div>
-                        </div>
-                      ),
-                    }}
-                  </DuxMenuButton>
+                <div class="py-2 flex-none">
+
+                  <div class="rounded-md relative py-2 px-3 bg-white dark:bg-elevated shadow-xs hover:shadow flex items-center gap-2 cursor-pointer transition-all" onClick={() => setCmdVisible(true)}>
+                    <div class="i-tabler:search size-4 icon-gradient"></div>
+                    <div class="text-muted text-sm flex-1">
+                      { t('common.search') }
+                    </div>
+                    <div class="flex items-center gap-1 absolute right-2.5">
+                      <NTag size="small" bordered={false} type="primary">⌘</NTag>
+                      <NTag size="small" bordered={false} type="primary">K</NTag>
+                    </div>
+                  </div>
+
                 </div>
 
                 <div class="flex-1 min-h-0">
                   <NScrollbar>
                     <NMenu
+
                       rootIndent={20}
                       indent={15}
+                      class="app-menu"
                       options={subOptions.value}
                       value={subActive.value as any}
                       collapsed={false}
@@ -148,7 +168,7 @@ export const DuxMenuApp = defineComponent({
                   </NScrollbar>
                 </div>
               </div>
-            </DuxCard>
+            </div>
           )}
         </Transition>
       </div>
