@@ -1,5 +1,4 @@
-import { useManage, useUpload } from '@duxweb/dvha-core'
-import { useI18n } from '@duxweb/dvha-core'
+import { useI18n, useManage, useUpload } from '@duxweb/dvha-core'
 import { useVModel } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
 import { defineComponent } from 'vue'

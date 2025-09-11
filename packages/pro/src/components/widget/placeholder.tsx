@@ -20,31 +20,42 @@ export const DuxPlaceholder = defineComponent({
       }
 
       return (
-        <svg viewBox="0 0 200 120" style={style}>
-          <defs>
-            <linearGradient id="placeholderBg" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:rgb(var(--ui-color-primary));stop-opacity:0.08" />
-              <stop offset="100%" style="stop-color:rgb(var(--ui-color-primary));stop-opacity:0.03" />
-            </linearGradient>
-          </defs>
+        <svg viewBox="0 0 100 100" style={style}>
+          <rect
+            x="1"
+            y="1"
+            width="98"
+            height="98"
+            rx="8"
+            fill="rgb(var(--ui-color-primary))"
+            fill-opacity="0.06"
+          />
 
-          <rect width="200" height="120" fill="url(#placeholderBg)" rx="8" />
+          <rect
+            x="1"
+            y="1"
+            width="98"
+            height="98"
+            rx="8"
+            fill="none"
+            stroke="rgb(var(--ui-color-primary))"
+            stroke-opacity="0.25"
+            stroke-width="1.5"
+            stroke-dasharray="5 5"
+          />
 
-          <g fill="rgb(var(--ui-color-primary))" fill-opacity="0.4">
-            <circle cx="60" cy="40" r="12" />
-            <path d="M 40 70 L 80 70 L 100 50 L 140 70 L 160 50 L 200 70 L 200 120 L 40 120 Z" />
+          <g
+            fill="none"
+            stroke="rgb(var(--ui-color-primary))"
+            stroke-opacity="0.45"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="30" y="34" width="40" height="32" rx="3" />
+            <circle cx="62" cy="40" r="3" />
+            <path d="M34 60 L46 48 L54 56 L58 52 L70 60" />
           </g>
-
-          <g fill="rgb(var(--ui-color-primary))" fill-opacity="0.25">
-            <circle cx="150" cy="25" r="1.5">
-              <animate attributeName="opacity" values="0.25;0.5;0.25" dur="3s" repeatCount="indefinite" />
-            </circle>
-            <circle cx="170" cy="35" r="1">
-              <animate attributeName="opacity" values="0.2;0.4;0.2" dur="4s" repeatCount="indefinite" />
-            </circle>
-          </g>
-
-          <rect x="40" y="40" width="120" height="1" fill="rgb(var(--ui-color-primary))" fill-opacity="0.15" />
         </svg>
       )
     }

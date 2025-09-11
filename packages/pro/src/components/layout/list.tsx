@@ -1,16 +1,17 @@
 import type { JsonSchemaNode, UseExtendListProps } from '@duxweb/dvha-core'
+import type { TabsInst } from 'naive-ui'
 import type { PropType } from 'vue'
 import type { UseActionItem } from '../../hooks'
 import type { DuxToolOptionItem } from './'
 import { useExtendList, useI18n, useJsonSchema } from '@duxweb/dvha-core'
 import { useWindowSize } from '@vueuse/core'
-import { NButton, NCheckbox, NDrawer, NModal, NPagination, NProgress, NSpin, NTab, NTabs, NTooltip } from 'naive-ui'
-import { computed, defineComponent, h, onMounted, reactive, ref, toRef, watch } from 'vue'
+import { NButton, NCheckbox, NDrawer, NPagination, NProgress, NSpin, NTab, NTabs, NTooltip } from 'naive-ui'
+import { computed, defineComponent, h, nextTick, onMounted, reactive, ref, toRef, watch } from 'vue'
 import { useAction } from '../../hooks'
 import { DuxPage, DuxPageEmpty } from '../../pages'
 import { DuxDrawerPage } from '../drawer'
-import { DuxModalPage } from '../modal'
-import { DuxFilterLayout, DuxTableFilter, DuxTableTools } from './'
+// import { DuxModalPage } from '../modal'
+import { DuxTableFilter, DuxTableTools } from './'
 
 export interface TablePagination {
   page: number
@@ -76,7 +77,7 @@ export const DuxListLayout = defineComponent({
     },
   },
   setup(props, { slots, expose }) {
-    const filters = toRef(props.filter || {})
+    const filters = toRef(props, 'filter', {})
     const { t } = useI18n()
     const { renderAction } = useAction()
 
@@ -87,14 +88,9 @@ export const DuxListLayout = defineComponent({
           pageSize: 20,
         })
 
-    const tableFilter = ref<Record<string, any>>({})
-    const handleFilter = () => {
-      Object.assign(tableFilter.value, filters.value)
-    }
-
     const result = useExtendList({
       path: props.path,
-      filters: tableFilter.value,
+      filters: filters.value,
       pagination: pagination.value,
       ...props.hookListProps,
     })
@@ -118,10 +114,7 @@ export const DuxListLayout = defineComponent({
       }
     })
 
-    // 筛选处理
-    const filterOptions = reactive({
-      show: false,
-    })
+    // 筛选处理（不再使用折叠与弹窗，内联展示全部筛选项）
 
     const sideLeft = reactive({
       show: false,
@@ -131,79 +124,23 @@ export const DuxListLayout = defineComponent({
       show: false,
     })
 
-    const visibleFieldCount = ref(props.filterSchema?.length || 0)
     const { width: windowWidth } = useWindowSize()
 
-    const calculateVisibleFields = () => {
-      if (!props.filterSchema?.length)
-        return 0
-
-      const totalFields = props.filterSchema.length
-
-      if (totalFields <= 3) {
-        return totalFields
-      }
-
-      const screenWidth = windowWidth.value || 1024
-
-      let maxFields = 3
-
-      if (screenWidth >= 1280) {
-        maxFields = 4
-      }
-      else if (screenWidth >= 1024) {
-        maxFields = 3
-      }
-      else if (screenWidth >= 768) {
-        maxFields = 2
-      }
-      else {
-        maxFields = 1
-      }
-
-      return Math.min(totalFields, maxFields)
-    }
-
-    watch(windowWidth, () => {
-      visibleFieldCount.value = calculateVisibleFields()
-    })
-
-    onMounted(() => {
-      visibleFieldCount.value = calculateVisibleFields()
-    })
-
-    const primaryFilterSchema = computed(() => {
-      return (props.filterSchema || []).slice(0, visibleFieldCount.value)
-    })
-
-    const advancedFilterSchema = computed(() => {
-      return (props.filterSchema || []).slice(visibleFieldCount.value)
-    })
-
-    const showAdvancedFilter = computed(() => {
-      return advancedFilterSchema.value.length > 0
-    })
-
-    const formatSchema = (schema: JsonSchemaNode[]) => {
-      return schema.map((item) => {
-        const { title, ...rest } = item
+    const filterSchema = computed(() => {
+      return (props.filterSchema || []).map((item) => {
+        const { label, ...rest } = item
         return {
           tag: DuxTableFilter,
           attrs: {
-            label: title,
-            class: 'flex-1 min-w-0',
+            label,
           },
           children: rest,
         }
       })
-    }
-
-    const { render: filterRenderPrimary } = useJsonSchema({
-      data: computed(() => formatSchema(primaryFilterSchema.value)),
     })
 
-    const { render: filterRenderAdvanced } = useJsonSchema({
-      data: computed(() => formatSchema(advancedFilterSchema.value)),
+    const { render: filterRenderCollapse } = useJsonSchema({
+      data: computed(() => filterSchema.value),
     })
 
     const tools = computed(() => {
@@ -215,58 +152,90 @@ export const DuxListLayout = defineComponent({
       }
     })
 
+    const tabsInstRef = ref<TabsInst | null>(null)
+
+    const activeTab = computed(() => {
+      const values = props.tabs?.map(t => t.value) || []
+      const current = filters.value?.tab
+      return values.includes(current as any) ? current : values[0]
+    })
+
+    watch(
+      () => props.tabs?.map(t => t.value),
+      () => {
+        const values = props.tabs?.map(t => t.value) || []
+        if (filters.value?.tab === undefined) {
+          const first = values[0]
+          if (first !== undefined) {
+            filters.value.tab = first
+          }
+        }
+        nextTick(() => tabsInstRef.value?.syncBarPosition())
+      },
+      { deep: true },
+    )
+
+    watch(() => windowWidth.value, () => {
+      nextTick(() => tabsInstRef.value?.syncBarPosition())
+    })
+
+    onMounted(() => {
+      nextTick(() => tabsInstRef.value?.syncBarPosition())
+    })
+
+    // 移动端筛选显隐
+    const mobileFiltersShow = ref(false)
+
     return () => (
-      <DuxPage padding={false} scrollbar={false}>
+      <DuxPage actions={props.actions} scrollbar={false}>
         {{
           sideLeft: () => slots?.sideLeft && windowWidth.value >= 1024 ? slots?.sideLeft?.() : undefined,
           sideRight: () => slots?.sideRight && windowWidth.value >= 1024 ? slots?.sideRight?.() : undefined,
           default: () => (
-            <div class="flex flex-col h-full relative">
-              <div class="lg:justify-between gap-2 p-3">
-                <div class="flex flex-col lg:flex-row lg:items-center gap-2">
-                  {props.checkable && (
-                    <div class="hidden lg:flex items-center pl-2">
-                      <NTooltip>
-                        {{
-                          trigger: () => (
-                            <div
-                              class="flex items-center"
-                            >
-                              <NCheckbox
-                                checked={result.isAllChecked.value}
-                                indeterminate={result.isIndeterminate.value}
-                                onUpdateChecked={result.toggleSelectAll}
-                              >
-                              </NCheckbox>
-                            </div>
-                          ),
-                          default: () => t('components.list.selectAll'),
-                        }}
-                      </NTooltip>
-                    </div>
-                  )}
+            <div class="flex flex-col gap-3 h-full relative">
+              <div class="flex gap-2 justify-between flex-row border-b border-muted">
+                <div class="relative top-1.5px">
                   {props.tabs && (
-                    <div>
-                      <NTabs
-                        type="segment"
-                        size="small"
-                        style={{
-                          '--n-tab-padding': '4px 10px',
-                        }}
-                        default-value={props.tabs?.[0]?.value}
-                        value={tableFilter.value?.tab}
-                        onUpdateValue={(v) => {
-                          tableFilter.value.tab = v
-                        }}
-                      >
-                        {props.tabs?.map(tab => (
-                          <NTab name={tab.value} tab={tab.label} />
-                        ))}
-                      </NTabs>
-                    </div>
+                    <NTabs
+                      ref={tabsInstRef}
+                      type="bar"
+                      size="small"
+                      style={{
+                        '--n-tab-padding': '5px 20px 15px 20px',
+                        '--n-tab-gap': '20px',
+                      }}
+                      default-value={props.tabs?.[0]?.value || ''}
+                      value={activeTab.value}
+                      onUpdateValue={(v) => {
+                        filters.value.tab = v
+                        nextTick(() => tabsInstRef.value?.syncBarPosition())
+                      }}
+                    >
+                      {props.tabs?.map(tab => (
+                        <NTab name={tab.value} tab={tab.label} />
+                      ))}
+                    </NTabs>
                   )}
+                </div>
+                <div class="flex gap-2 justify-end">
+                  {slots.actions?.()}
+                  {props.actions?.length > 0 && renderAction({
+                    type: windowWidth.value < 1024 ? 'dropdown' : 'button',
+                    text: windowWidth.value < 1024,
+                    items: props.actions,
+                  })}
+                </div>
+              </div>
 
-                  <div class="flex gap-2">
+              <div class="flex gap-2 justify-between flex-col-reverse lg:flex-row">
+                {(windowWidth.value >= 1024 || mobileFiltersShow.value) && (
+                  <div class={['flex-1 flex flex-col lg:flex-row gap-2 flex-wrap']}>
+                    {h(filterRenderCollapse)}
+                  </div>
+                )}
+
+                <div class="flex justify-between gap-2">
+                  <div class={['flex-1 flex gap-2']}>
                     {slots?.sideLeft && windowWidth.value < 1024 && (
                       <NButton
                         class="flex-none"
@@ -280,20 +249,6 @@ export const DuxListLayout = defineComponent({
                         }}
                       </NButton>
                     )}
-
-                    <div
-                      class="flex flex-wrap gap-2 items-center flex-1 lg:flex-none"
-                    >
-                      {h(filterRenderPrimary)}
-                    </div>
-
-                    <NButton type="primary" secondary onClick={handleFilter}>
-                      {{
-                        icon: () => <div class="i-tabler:search size-4" />,
-                        default: () => t('components.button.search'),
-                      }}
-                    </NButton>
-
                     {slots?.sideRight && windowWidth.value < 1024 && (
                       <NButton
                         class="flex-none"
@@ -307,88 +262,28 @@ export const DuxListLayout = defineComponent({
                         }}
                       </NButton>
                     )}
-
-                    {showAdvancedFilter.value && (
+                    <div class="flex-none lg:hidden">
                       <NButton
-                        iconPlacement="right"
+                        secondary
                         onClick={() => {
-                          filterOptions.show = !filterOptions.show
+                          mobileFiltersShow.value = !mobileFiltersShow.value
                         }}
                       >
                         {{
-                          default: () => t('components.button.advanced'),
-                          icon: () => (
-                            <div class={[
-                              'i-tabler:chevrons-down size-4 transition-all',
-                            ]}
-                            />
-                          ),
+                          icon: () => <div class="i-tabler:filter size-4" />,
                         }}
                       </NButton>
-                    )}
-                  </div>
-                </div>
-
-                <div class="flex gap-2">
-                  {slots.actions?.()}
-                  {props.actions?.length > 0 && renderAction({
-                    type: windowWidth.value < 1024 ? 'dropdown' : 'button',
-                    text: windowWidth.value < 1024,
-                    items: props.actions,
-                  })}
-                </div>
-
-              </div>
-
-              <NSpin show={isLoading.value} class="flex-1 min-h-0" contentClass="h-full">
-                <div
-                  class={[
-                    'h-full overflow-auto rounded-lg px-3',
-                  ]}
-                >
-                  {!isLoading.value && list.value.length === 0 && (
-                    <div class="flex justify-center items-center h-full">
-                      <DuxPageEmpty />
                     </div>
-                  )}
-                  {list.value.length > 0 && slots?.default?.(result)}
-                </div>
-              </NSpin>
+                  </div>
 
-              <div class="flex justify-between px-3 py-2 gap-2">
-                <div>
-
-                  <div class="flex gap-1 items-center">
-
-                    {props.checkable && (
-                      <NTooltip>
-                        {{
-                          trigger: () => (
-                            <NButton
-                              loading={isImporting.value}
-                              circle
-                              quaternary
-                            >
-                              <NCheckbox
-                                checked={result.isAllChecked.value}
-                                indeterminate={result.isIndeterminate.value}
-                                onUpdateChecked={result.toggleSelectAll}
-                              >
-                              </NCheckbox>
-                            </NButton>
-                          ),
-                          default: () => t('components.list.selectAll'),
-                        }}
-                      </NTooltip>
-                    )}
-
+                  <div class="flex gap-2 items-center">
                     {slots?.tools?.()}
 
                     {tools.value.export && (
                       <NTooltip>
                         {{
                           trigger: () => (
-                            <NButton loading={isExporting.value} onClick={onExport} circle quaternary>
+                            <NButton secondary loading={isExporting.value} onClick={onExport}>
                               {{
                                 icon: () => <div class="i-tabler:database-export size-4" />,
                               }}
@@ -402,7 +297,7 @@ export const DuxListLayout = defineComponent({
                       <NTooltip>
                         {{
                           trigger: () => (
-                            <NButton loading={isImporting.value} onClick={onImport} circle quaternary>
+                            <NButton secondary loading={isImporting.value} onClick={onImport}>
                               {{
                                 icon: () => <div class="i-tabler:database-import size-4" />,
                               }}
@@ -416,7 +311,7 @@ export const DuxListLayout = defineComponent({
                       <NTooltip>
                         {{
                           trigger: () => (
-                            <NButton onClick={onAutoRefetch} circle quaternary>
+                            <NButton secondary onClick={onAutoRefetch}>
                               {{
                                 icon: () => (
                                   autoRefetch.value
@@ -437,8 +332,44 @@ export const DuxListLayout = defineComponent({
                   </div>
 
                 </div>
+              </div>
+
+              <NSpin show={isLoading.value} class="flex-1 min-h-0" contentClass="h-full">
+                <div
+                  class={[
+                    'h-full overflow-auto',
+                  ]}
+                >
+                  {!isLoading.value && list.value.length === 0 && (
+                    <div class="flex justify-center items-center h-full">
+                      <DuxPageEmpty />
+                    </div>
+                  )}
+                  {list.value.length > 0 && slots?.default?.(result)}
+                </div>
+              </NSpin>
+
+              <div class="flex justify-between">
                 <div class="flex items-center gap-2">
+                  {props.checkable && (
+                    <NTooltip>
+                      {{
+                        trigger: () => (
+                          <NButton circle quaternary>
+                            <NCheckbox
+                              checked={result.isAllChecked.value}
+                              indeterminate={result.isIndeterminate.value}
+                              onUpdateChecked={result.toggleSelectAll}
+                            />
+                          </NButton>
+                        ),
+                        default: () => t('components.list.selectAll'),
+                      }}
+                    </NTooltip>
+                  )}
                   {slots?.bottom?.()}
+                </div>
+                <div class="flex items-center gap-2">
                   {props.pagination && (
                     <NPagination
                       {...paginationProps.value}
@@ -488,20 +419,6 @@ export const DuxListLayout = defineComponent({
                   ],
                 ]}
               />
-
-              <NModal draggable class="bg-white rounded dark:shadow-gray-950/80  dark:bg-gray-800/60 backdrop-blur" show={filterOptions.show} onUpdateShow={v => filterOptions.show = v}>
-                {{
-                  default: ({ draggableClass }) => {
-                    return (
-                      <DuxModalPage title={t('components.button.filter')} handle={draggableClass} onClose={() => filterOptions.show = false}>
-                        <DuxFilterLayout showLabel labelPlacement="top">
-                          {h(filterRenderAdvanced)}
-                        </DuxFilterLayout>
-                      </DuxModalPage>
-                    )
-                  },
-                }}
-              </NModal>
 
               <NDrawer
                 show={sideLeft.show}

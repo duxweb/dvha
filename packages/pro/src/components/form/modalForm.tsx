@@ -80,8 +80,8 @@ export const DuxModalForm = defineComponent({
           ),
           footer: () => (
             <>
-              <NButton onClick={onReset} loading={isLoading.value}>
-                {t('components.button.reset')}
+              <NButton onClick={() => props.onClose?.()}>
+                {t('components.button.cancel')}
               </NButton>
               <NButton type="primary" loading={isLoading.value} onClick={() => onSubmit()}>
                 {t('components.button.submit')}

@@ -1,19 +1,19 @@
 import type { JsonSchemaNode } from '@duxweb/dvha-core'
 import type { TableColumn, TablePagination, UseNaiveTableReturn, UseTableProps } from '@duxweb/dvha-naiveui'
-import type { DataTableBaseColumn, SelectOption } from 'naive-ui'
+import type { DataTableBaseColumn, SelectOption, TabsInst } from 'naive-ui'
 import type { PropType } from 'vue'
 import type { UseActionItem } from '../../hooks'
 import type { DuxToolOptionItem } from './tools'
 import { useI18n, useJsonSchema, useTabStore } from '@duxweb/dvha-core'
 import { useWindowSize } from '@vueuse/core'
-import { NButton, NDrawer, NModal, NPagination, NPopselect, NProgress, NTab, NTabs, NTooltip } from 'naive-ui'
-import { computed, defineComponent, h, reactive, toRef } from 'vue'
+import { NButton, NDrawer, NPagination, NPopselect, NProgress, NTab, NTabs, NTooltip } from 'naive-ui'
+import { computed, defineComponent, h, nextTick, onMounted, reactive, ref, toRef, watch } from 'vue'
 import { useAction, useTable } from '../../hooks'
 import { DuxPage } from '../../pages'
 import { DuxDrawerPage } from '../drawer'
-import { DuxModalPage } from '../modal'
+
 import { DuxTableFilter } from './filter'
-import { DuxFilterLayout } from './filterLayout'
+
 import { DuxTableTools } from './tools'
 
 export interface TablePageTools {
@@ -119,10 +119,6 @@ export const DuxTableLayout = defineComponent({
       return width
     })
 
-    const filterOptions = reactive({
-      show: false,
-    })
-
     const sideLeft = reactive({
       show: false,
     })
@@ -130,6 +126,8 @@ export const DuxTableLayout = defineComponent({
     const sideRight = reactive({
       show: false,
     })
+    // Mobile filter visibility toggle
+    const mobileFiltersShow = ref(false)
 
     const filterSchema = computed(() => {
       return (props.filterSchema || []).map((item) => {
@@ -144,12 +142,8 @@ export const DuxTableLayout = defineComponent({
       })
     })
 
-    const { render: filterRender } = useJsonSchema({
-      data: computed(() => filterSchema.value?.slice(props.filterNumber)),
-    })
-
     const { render: filterRenderCollapse } = useJsonSchema({
-      data: computed(() => filterSchema.value?.slice(0, props.filterNumber)),
+      data: computed(() => filterSchema.value),
     })
 
     const tools = computed(() => {
@@ -161,9 +155,41 @@ export const DuxTableLayout = defineComponent({
       }
     })
 
+    const tabsInstRef = ref<TabsInst | null>(null)
+
+    watch(
+      () => props.tabs?.map(t => t.value),
+      () => {
+        const values = props.tabs?.map(t => t.value) || []
+        if (filters.value?.tab === undefined) {
+          const first = values[0]
+          if (first !== undefined) {
+            filters.value.tab = first
+          }
+        }
+        nextTick(() => tabsInstRef.value?.syncBarPosition())
+      },
+      { deep: true },
+    )
+
+    // 当窗口宽度变化时，同步一次指示条位置，避免断行/滚动后偏移
+    watch(() => width.value, () => {
+      nextTick(() => tabsInstRef.value?.syncBarPosition())
+    })
+
     const tab = useTabStore()
 
     const tabInfo = tab.tabs.find(v => v.path === tab.current)
+
+    const activeTab = computed(() => {
+      const values = props.tabs?.map(t => t.value) || []
+      const current = filters.value?.tab
+      return values.includes(current as any) ? current : values[0]
+    })
+
+    onMounted(() => {
+      nextTick(() => tabsInstRef.value?.syncBarPosition())
+    })
 
     return () => (
       <DuxPage actions={props.actions} scrollbar={false}>
@@ -171,98 +197,103 @@ export const DuxTableLayout = defineComponent({
           sideLeft: () => slots?.sideLeft && width.value >= 1024 ? slots?.sideLeft?.() : undefined,
           sideRight: () => slots?.sideRight && width.value >= 1024 ? slots?.sideRight?.() : undefined,
           default: () => (
-            <div class="flex flex-col gap-2 h-full relative">
-              <div class="flex gap-2 justify-between flex-col lg:flex-row">
-                {props.tabs && (
-                  <div class="flex flex-none">
-
+            <div class="flex flex-col gap-3 h-full relative">
+              <div class="flex gap-2 justify-between flex-row border-b border-muted">
+                <div class="relative top-1.5px">
+                  {!props.tabs && <div class="pt-1 text-base">{tabInfo?.label}</div>}
+                  {props.tabs && (
                     <NTabs
-                      type="segment"
+                      ref={tabsInstRef}
+                      type="bar"
                       size="small"
                       style={{
-                        '--n-tab-padding': '4px 10px',
+                        '--n-tab-padding': '5px 20px 15px 20px',
+                        '--n-tab-gap': '20px',
                       }}
-                      default-value={props.tabs?.[0]?.value}
-                      value={filters.value?.tab}
+                      default-value={props.tabs?.[0]?.value || ''}
+                      value={activeTab.value}
                       onUpdateValue={(v) => {
                         filters.value.tab = v
+                        nextTick(() => tabsInstRef.value?.syncBarPosition())
                       }}
                     >
                       {props.tabs?.map(tab => (
                         <NTab name={tab.value} tab={tab.label} />
                       ))}
                     </NTabs>
-                  </div>
-                )}
-                <div class={[
-                  'overflow-hidden flex-1 flex gap-2',
-                ]}
-                >
-                  {slots?.sideLeft && width.value < 1024 && (
-                    <NButton
-                      class="flex-none"
-                      secondary
-                      onClick={() => {
-                        sideLeft.show = !sideLeft.show
-                      }}
-                    >
-                      {{
-                        icon: () => <div class="i-tabler:layout-sidebar-inactive size-4" />,
-                      }}
-                    </NButton>
                   )}
+                </div>
+                <div class="flex gap-2 justify-end pb-2">
+                  {slots.actions?.()}
 
+                  {props.actions?.length > 0 && renderAction({
+                    type: width.value < 1024 ? 'dropdown' : 'button',
+                    items: props.actions,
+                  })}
+                </div>
+              </div>
+
+              <div class="flex gap-2 justify-between flex-col-reverse lg:flex-row items-stretch lg:items-start">
+
+                {(width.value >= 1024 || mobileFiltersShow.value) && (
                   <div
                     class={[
                       'flex-1 flex flex-col lg:flex-row gap-2 flex-wrap',
-                      props.tabs ? 'justify-end' : 'justify-start',
                     ]}
                   >
-                    {!props.tabs && !props.filterSchema?.length && (
-                      <div class="flex flex-none items-center text-base font-medium">
-                        {tabInfo?.label}
-                      </div>
-                    )}
                     {h(filterRenderCollapse)}
+
                   </div>
+                )}
 
-                  {slots?.sideRight && width.value < 1024 && (
-                    <NButton
-                      class="flex-none"
-                      secondary
-                      onClick={() => {
-                        sideRight.show = !sideRight.show
-                      }}
-                    >
-                      {{
-                        icon: () => <div class="i-tabler:layout-sidebar-right-inactive size-4" />,
-                      }}
-                    </NButton>
-                  )}
-
-                </div>
-                <div class="flex gap-2 justify-between lg:justify-end">
-
-                  <div class="flex gap-2 items-center">
-
-                    {filterSchema.value.length > props.filterNumber && (
+                <div class="flex justify-between gap-2">
+                  <div class={[
+                    'flex-1 flex gap-2',
+                  ]}
+                  >
+                    {slots?.sideLeft && width.value < 1024 && (
                       <NButton
-                        iconPlacement="right"
+                        class="flex-none"
+                        secondary
                         onClick={() => {
-                          filterOptions.show = !filterOptions.show
+                          sideLeft.show = !sideLeft.show
                         }}
                       >
                         {{
-                          default: () => t('components.button.filter'),
-                          icon: () => (
-                            <div class={[
-                              'i-tabler:chevrons-down size-4 transition-all',
-                            ]}
-                            />
-                          ),
+                          icon: () => <div class="i-tabler:layout-sidebar-inactive size-4" />,
                         }}
                       </NButton>
                     )}
+
+                    {slots?.sideRight && width.value < 1024 && (
+                      <NButton
+                        class="flex-none"
+                        secondary
+                        onClick={() => {
+                          sideRight.show = !sideRight.show
+                        }}
+                      >
+                        {{
+                          icon: () => <div class="i-tabler:layout-sidebar-right-inactive size-4" />,
+                        }}
+                      </NButton>
+                    )}
+
+                    <div class="flex-none lg:hidden">
+                      <NButton
+                        secondary
+                        onClick={() => {
+                          mobileFiltersShow.value = !mobileFiltersShow.value
+                        }}
+                      >
+                        {{
+                          icon: () => <div class="i-tabler:filter size-4" />,
+                        }}
+                      </NButton>
+                    </div>
+                  </div>
+
+                  <div class="flex gap-2 items-center">
 
                     {slots?.tools?.()}
 
@@ -341,16 +372,10 @@ export const DuxTableLayout = defineComponent({
                       </NTooltip>
                     )}
                   </div>
-                  <div class="flex gap-2 justify-end">
-                    {slots.actions?.()}
 
-                    {props.actions?.length > 0 && renderAction({
-                      type: width.value < 1024 ? 'dropdown' : 'button',
-                      items: props.actions,
-                    })}
-                  </div>
                 </div>
               </div>
+
               {slots?.header?.()}
               <div class="flex-1 min-h-0">
                 {slots?.default?.({
@@ -406,20 +431,6 @@ export const DuxTableLayout = defineComponent({
                   ],
                 ]}
               />
-
-              <NModal draggable class="bg-white rounded dark:shadow-gray-950/80  dark:bg-gray-800/60 backdrop-blur min-w-110" show={filterOptions.show} onUpdateShow={v => filterOptions.show = v}>
-                {{
-                  default: ({ draggableClass }) => {
-                    return (
-                      <DuxModalPage title={t('components.button.filter')} handle={draggableClass} onClose={() => filterOptions.show = false}>
-                        <DuxFilterLayout showLabel labelPlacement="top">
-                          {h(filterRender)}
-                        </DuxFilterLayout>
-                      </DuxModalPage>
-                    )
-                  },
-                }}
-              </NModal>
 
               <NDrawer
                 show={sideLeft.show}
