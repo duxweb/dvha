@@ -88,10 +88,15 @@ export const DuxTableLayout = defineComponent({
     const { t } = useI18n()
     const { renderAction } = useAction()
 
+    // 已生效筛选：仅在点击查询/重置时同步；tab 立即同步
+    const appliedFilters = reactive({
+      ...(filters.value || {}),
+    })
+
     const result = useTable({
       ...props.hookTableProps,
       path: props.path,
-      filters: filters.value,
+      filters: appliedFilters,
       sorters: sorters.value,
       columns: tableColumns,
       pagination: props.pagination,
@@ -142,6 +147,8 @@ export const DuxTableLayout = defineComponent({
       })
     })
 
+    // 简化：不再检测多行，按钮始终按一行布局
+
     const { render: filterRenderCollapse } = useJsonSchema({
       data: computed(() => filterSchema.value),
     })
@@ -154,6 +161,9 @@ export const DuxTableLayout = defineComponent({
         ...props.tools,
       }
     })
+
+    // 重新挂载筛选渲染器用的 key，用于在重置时强制重建表单控件
+    const filterRenderKey = ref(0)
 
     const tabsInstRef = ref<TabsInst | null>(null)
 
@@ -174,7 +184,9 @@ export const DuxTableLayout = defineComponent({
 
     // 当窗口宽度变化时，同步一次指示条位置，避免断行/滚动后偏移
     watch(() => width.value, () => {
-      nextTick(() => tabsInstRef.value?.syncBarPosition())
+      nextTick(() => {
+        tabsInstRef.value?.syncBarPosition()
+      })
     })
 
     const tab = useTabStore()
@@ -188,7 +200,9 @@ export const DuxTableLayout = defineComponent({
     })
 
     onMounted(() => {
-      nextTick(() => tabsInstRef.value?.syncBarPosition())
+      nextTick(() => {
+        tabsInstRef.value?.syncBarPosition()
+      })
     })
 
     return () => (
@@ -214,6 +228,7 @@ export const DuxTableLayout = defineComponent({
                       value={activeTab.value}
                       onUpdateValue={(v) => {
                         filters.value.tab = v
+                        ;(appliedFilters as any).tab = v
                         nextTick(() => tabsInstRef.value?.syncBarPosition())
                       }}
                     >
@@ -233,7 +248,7 @@ export const DuxTableLayout = defineComponent({
                 </div>
               </div>
 
-              <div class="flex gap-2 justify-between flex-col-reverse lg:flex-row items-stretch lg:items-start">
+              <div class="flex gap-2 justify-between flex-col-reverse lg:flex-row">
 
                 {(width.value >= 1024 || mobileFiltersShow.value) && (
                   <div
@@ -241,14 +256,16 @@ export const DuxTableLayout = defineComponent({
                       'flex-1 flex flex-col lg:flex-row gap-2 flex-wrap',
                     ]}
                   >
-                    {h(filterRenderCollapse)}
+                    <div key={filterRenderKey.value} class="contents">
+                      {h(filterRenderCollapse)}
+                    </div>
 
                   </div>
                 )}
 
                 <div class="flex justify-between gap-2">
                   <div class={[
-                    'flex-1 flex gap-2',
+                    'flex gap-2',
                   ]}
                   >
                     {slots?.sideLeft && width.value < 1024 && (
@@ -293,84 +310,70 @@ export const DuxTableLayout = defineComponent({
                     </div>
                   </div>
 
-                  <div class="flex gap-2 items-center">
-
-                    {slots?.tools?.()}
-
-                    <NPopselect
-                      options={columnConfig.value}
-                      value={columnSelected.value}
-                      onUpdateValue={(v) => {
-                        onUpdateColumnSelected(v)
-                      }}
-                      multiple
-                      placement="bottom-start"
-                      trigger="click"
+                  <div class={[
+                    'flex gap-2 flex-row',
+                  ]}
+                  >
+                    <div class="flex lg:hidden">
+                      <NButton
+                        type="primary"
+                        secondary
+                        onClick={() => {
+                          Object.keys(appliedFilters).forEach((k) => {
+                            delete (appliedFilters as Record<string, unknown>)[k]
+                          })
+                          Object.assign(appliedFilters, JSON.parse(JSON.stringify(filters.value || {})))
+                          result.onUpdatePage?.(1)
+                        }}
+                      >
+                        {{
+                          icon: () => <div class="i-tabler:search size-4" />,
+                        }}
+                      </NButton>
+                    </div>
+                    <div class={[
+                      'hidden lg:flex gap-2',
+                    ]}
                     >
-                      <NTooltip>
-                        {{
-                          trigger: () => (
-                            <NButton secondary icon-placement="right">
-                              {{
-                                icon: () => <div class="i-tabler:columns size-4" />,
-                              }}
-                            </NButton>
-                          ),
-                          default: () => t('components.list.columnSetting'),
+                      <NButton
+                        type="primary"
+                        secondary
+                        onClick={() => {
+                          Object.keys(appliedFilters).forEach(k => delete (appliedFilters as any)[k])
+                          Object.assign(appliedFilters, JSON.parse(JSON.stringify(filters.value || {})))
+                          result.onUpdatePage?.(1)
                         }}
-                      </NTooltip>
-                    </NPopselect>
-
-                    {tools.value.export && (
-                      <NTooltip>
+                      >
                         {{
-                          trigger: () => (
-                            <NButton secondary loading={isExporting.value} onClick={onExport}>
-                              {{
-                                icon: () => <div class="i-tabler:database-export size-4" />,
-                              }}
-                            </NButton>
-                          ),
-                          default: () => t('components.button.export'),
+                          icon: () => <div class="i-tabler:search size-4" />,
+                          default: () => t('components.button.search'),
                         }}
-                      </NTooltip>
-                    )}
-                    {tools.value.import && (
-                      <NTooltip>
+                      </NButton>
+                      <NButton
+                        secondary
+                        onClick={() => {
+                          const keepTab = (filters.value as Record<string, any>).tab
+                          Object.keys(filters.value || {}).forEach((k) => {
+                            if (k !== 'tab') {
+                              delete (filters.value as Record<string, unknown>)[k]
+                            }
+                          })
+                          Object.keys(appliedFilters).forEach((k) => {
+                            delete (appliedFilters as Record<string, unknown>)[k]
+                          })
+                          if (keepTab !== undefined) {
+                            (appliedFilters as Record<string, any>).tab = keepTab
+                          }
+                          result.onUpdatePage?.(1)
+                          filterRenderKey.value++
+                        }}
+                      >
                         {{
-                          trigger: () => (
-                            <NButton secondary loading={isImporting.value} onClick={onImport}>
-                              {{
-                                icon: () => <div class="i-tabler:database-import size-4" />,
-                              }}
-                            </NButton>
-                          ),
-                          default: () => t('components.button.import'),
+                          icon: () => <div class="i-tabler:arrow-back-up size-4" />,
+                          default: () => t('components.button.reset'),
                         }}
-                      </NTooltip>
-                    )}
-                    {tools.value.refresh && (
-                      <NTooltip>
-                        {{
-                          trigger: () => (
-                            <NButton secondary onClick={onAutoRefetch}>
-                              {{
-                                icon: () => (
-                                  autoRefetch.value
-                                    ? (
-                                        <NProgress class="size-4" type="circle" percentage={autoCountdown.value * 10} strokeWidth={20} color="rgba(var(--ui-color-primary))">
-                                          <span class="text-8px">{autoCountdown.value}</span>
-                                        </NProgress>
-                                      )
-                                    : <div class="i-tabler:refresh size-4" />
-                                ),
-                              }}
-                            </NButton>
-                          ),
-                          default: () => t('components.button.autoRefresh'),
-                        }}
-                      </NTooltip>
-                    )}
+                      </NButton>
+                    </div>
                   </div>
 
                 </div>
@@ -384,8 +387,85 @@ export const DuxTableLayout = defineComponent({
                 })}
               </div>
               <div class="flex justify-between">
-                <div>
+                <div class="flex items-center gap-0.5">
                   {slots?.bottom?.()}
+
+                  {slots?.tools?.()}
+
+                  <NPopselect
+                    options={columnConfig.value}
+                    value={columnSelected.value}
+                    onUpdateValue={(v) => {
+                      onUpdateColumnSelected(v)
+                    }}
+                    multiple
+                    placement="bottom-start"
+                    trigger="click"
+                  >
+                    <NTooltip>
+                      {{
+                        trigger: () => (
+                          <NButton quaternary circle icon-placement="right">
+                            {{
+                              icon: () => <div class="i-tabler:columns size-4" />,
+                            }}
+                          </NButton>
+                        ),
+                        default: () => t('components.list.columnSetting'),
+                      }}
+                    </NTooltip>
+                  </NPopselect>
+
+                  {tools.value.export && (
+                    <NTooltip>
+                      {{
+                        trigger: () => (
+                          <NButton quaternary circle loading={isExporting.value} onClick={onExport}>
+                            {{
+                              icon: () => <div class="i-tabler:database-export size-4" />,
+                            }}
+                          </NButton>
+                        ),
+                        default: () => t('components.button.export'),
+                      }}
+                    </NTooltip>
+                  )}
+                  {tools.value.import && (
+                    <NTooltip>
+                      {{
+                        trigger: () => (
+                          <NButton quaternary circle loading={isImporting.value} onClick={onImport}>
+                            {{
+                              icon: () => <div class="i-tabler:database-import size-4" />,
+                            }}
+                          </NButton>
+                        ),
+                        default: () => t('components.button.import'),
+                      }}
+                    </NTooltip>
+                  )}
+                  {tools.value.refresh && (
+                    <NTooltip>
+                      {{
+                        trigger: () => (
+                          <NButton quaternary circle onClick={onAutoRefetch}>
+                            {{
+                              icon: () => (
+                                autoRefetch.value
+                                  ? (
+                                      <NProgress class="size-4" type="circle" percentage={autoCountdown.value * 10} strokeWidth={20} color="rgba(var(--ui-color-primary))">
+                                        <span class="text-8px">{autoCountdown.value}</span>
+                                      </NProgress>
+                                    )
+                                  : <div class="i-tabler:refresh size-4" />
+                              ),
+                            }}
+                          </NButton>
+                        ),
+                        default: () => t('components.button.autoRefresh'),
+                      }}
+                    </NTooltip>
+                  )}
                 </div>
                 <div>
                   {props.pagination && (

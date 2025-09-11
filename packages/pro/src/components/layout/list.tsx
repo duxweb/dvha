@@ -88,9 +88,14 @@ export const DuxListLayout = defineComponent({
           pageSize: 20,
         })
 
+    // 已生效筛选（仅点击查询/重置时更新；tab 仍即时同步）
+    const appliedFilters = reactive<Record<string, unknown>>({
+      ...(filters.value || {}),
+    })
+
     const result = useExtendList({
       path: props.path,
-      filters: filters.value,
+      filters: appliedFilters,
       pagination: pagination.value,
       ...props.hookListProps,
     })
@@ -142,6 +147,8 @@ export const DuxListLayout = defineComponent({
     const { render: filterRenderCollapse } = useJsonSchema({
       data: computed(() => filterSchema.value),
     })
+
+    const filterRenderKey = ref<number>(0)
 
     const tools = computed(() => {
       return {
@@ -227,10 +234,12 @@ export const DuxListLayout = defineComponent({
                 </div>
               </div>
 
-              <div class="flex gap-2 justify-between flex-col-reverse lg:flex-row">
+              <div class="flex gap-2 justify-between flex-col-reverse lg:flex-row items-center">
                 {(windowWidth.value >= 1024 || mobileFiltersShow.value) && (
                   <div class={['flex-1 flex flex-col lg:flex-row gap-2 flex-wrap']}>
-                    {h(filterRenderCollapse)}
+                    <div key={filterRenderKey.value} class="contents">
+                      {h(filterRenderCollapse)}
+                    </div>
                   </div>
                 )}
 
@@ -276,59 +285,62 @@ export const DuxListLayout = defineComponent({
                     </div>
                   </div>
 
-                  <div class="flex gap-2 items-center">
-                    {slots?.tools?.()}
-
-                    {tools.value.export && (
-                      <NTooltip>
-                        {{
-                          trigger: () => (
-                            <NButton secondary loading={isExporting.value} onClick={onExport}>
-                              {{
-                                icon: () => <div class="i-tabler:database-export size-4" />,
-                              }}
-                            </NButton>
-                          ),
-                          default: () => t('components.button.export'),
+                  <div class={['flex gap-2 items-center', 'flex-row']}>
+                    <div class="flex lg:hidden">
+                      <NButton
+                        type="primary"
+                        secondary
+                        onClick={() => {
+                          Object.keys(appliedFilters).forEach(k => delete (appliedFilters as Record<string, unknown>)[k])
+                          Object.assign(appliedFilters, JSON.parse(JSON.stringify(filters.value || {})))
+                          result.onUpdatePage?.(1)
                         }}
-                      </NTooltip>
-                    )}
-                    {tools.value.import && (
-                      <NTooltip>
+                      >
                         {{
-                          trigger: () => (
-                            <NButton secondary loading={isImporting.value} onClick={onImport}>
-                              {{
-                                icon: () => <div class="i-tabler:database-import size-4" />,
-                              }}
-                            </NButton>
-                          ),
-                          default: () => t('components.button.import'),
+                          icon: () => <div class="i-tabler:search size-4" />,
                         }}
-                      </NTooltip>
-                    )}
-                    {tools.value.refresh && (
-                      <NTooltip>
+                      </NButton>
+                    </div>
+                    <div class={['hidden lg:flex gap-2']}>
+                      <NButton
+                        type="primary"
+                        secondary
+                        onClick={() => {
+                          Object.keys(appliedFilters).forEach(k => delete (appliedFilters as Record<string, unknown>)[k])
+                          Object.assign(appliedFilters, JSON.parse(JSON.stringify(filters.value || {})))
+                          result.onUpdatePage?.(1)
+                        }}
+                      >
                         {{
-                          trigger: () => (
-                            <NButton secondary onClick={onAutoRefetch}>
-                              {{
-                                icon: () => (
-                                  autoRefetch.value
-                                    ? (
-                                        <NProgress class="size-4" type="circle" percentage={autoCountdown.value * 10} strokeWidth={20} color="rgba(var(--ui-color-primary))">
-                                          <span class="text-8px">{autoCountdown.value}</span>
-                                        </NProgress>
-                                      )
-                                    : <div class="i-tabler:refresh size-4" />
-                                ),
-                              }}
-                            </NButton>
-                          ),
-                          default: () => t('components.button.autoRefresh'),
+                          icon: () => <div class="i-tabler:search size-4" />,
+                          default: () => t('components.button.search'),
                         }}
-                      </NTooltip>
-                    )}
+                      </NButton>
+                      <NButton
+                        secondary
+                        onClick={() => {
+                          const keepTab = (filters.value as Record<string, any>).tab
+                          Object.keys(filters.value || {}).forEach((k) => {
+                            if (k !== 'tab') {
+                              delete (filters.value as Record<string, unknown>)[k]
+                            }
+                          })
+                          Object.keys(appliedFilters).forEach((k) => {
+                            delete (appliedFilters as Record<string, unknown>)[k]
+                          })
+                          if (keepTab !== undefined) {
+                            (appliedFilters as Record<string, any>).tab = keepTab
+                          }
+                          result.onUpdatePage?.(1)
+                          filterRenderKey.value++
+                        }}
+                      >
+                        {{
+                          icon: () => <div class="i-tabler:arrow-back-up size-4" />,
+                          default: () => t('components.button.reset'),
+                        }}
+                      </NButton>
+                    </div>
                   </div>
 
                 </div>
@@ -350,7 +362,7 @@ export const DuxListLayout = defineComponent({
               </NSpin>
 
               <div class="flex justify-between">
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-0.5">
                   {props.checkable && (
                     <NTooltip>
                       {{
@@ -368,6 +380,58 @@ export const DuxListLayout = defineComponent({
                     </NTooltip>
                   )}
                   {slots?.bottom?.()}
+                  {slots?.tools?.()}
+
+                  {tools.value.export && (
+                    <NTooltip>
+                      {{
+                        trigger: () => (
+                          <NButton quaternary circle loading={isExporting.value} onClick={onExport}>
+                            {{
+                              icon: () => <div class="i-tabler:database-export size-4" />,
+                            }}
+                          </NButton>
+                        ),
+                        default: () => t('components.button.export'),
+                      }}
+                    </NTooltip>
+                  )}
+                  {tools.value.import && (
+                    <NTooltip>
+                      {{
+                        trigger: () => (
+                          <NButton quaternary circle loading={isImporting.value} onClick={onImport}>
+                            {{
+                              icon: () => <div class="i-tabler:database-import size-4" />,
+                            }}
+                          </NButton>
+                        ),
+                        default: () => t('components.button.import'),
+                      }}
+                    </NTooltip>
+                  )}
+                  {tools.value.refresh && (
+                    <NTooltip>
+                      {{
+                        trigger: () => (
+                          <NButton quaternary circle onClick={onAutoRefetch}>
+                            {{
+                              icon: () => (
+                                autoRefetch.value
+                                  ? (
+                                      <NProgress class="size-4" type="circle" percentage={autoCountdown.value * 10} strokeWidth={20} color="rgba(var(--ui-color-primary))">
+                                        <span class="text-8px">{autoCountdown.value}</span>
+                                      </NProgress>
+                                    )
+                                  : <div class="i-tabler:refresh size-4" />
+                              ),
+                            }}
+                          </NButton>
+                        ),
+                        default: () => t('components.button.autoRefresh'),
+                      }}
+                    </NTooltip>
+                  )}
                 </div>
                 <div class="flex items-center gap-2">
                   {props.pagination && (
