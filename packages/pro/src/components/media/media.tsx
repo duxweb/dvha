@@ -24,15 +24,16 @@ export const DuxMedia = defineComponent({
   },
   setup(props, { slots }) {
     const images = computed(() => {
-      return Array.isArray(props.image) ? props.image : props.image ? [props.image] : []
+      return Array.isArray(props.image) ? props.image : props.image !== undefined ? [props.image] : []
     })
     const desc = computed(() => {
-      return Array.isArray(props.desc) ? props.desc : props.desc ? [props.desc] : []
+      return Array.isArray(props.desc) ? props.desc : props.desc !== undefined ? [props.desc] : []
     })
 
     return () => (
       <div class="flex gap-2 items-center">
         {slots?.image && <div class="flex-none flex items-center gap-2">{slots?.image?.()}</div>}
+
         {(props.avatar || images?.value.length > 0) && (
           <div class="flex-none flex items-center gap-2">
             {props.avatar
@@ -71,7 +72,7 @@ export const DuxMedia = defineComponent({
           </div>
           {(desc?.value.length > 0 || slots.desc) && (
             <div class="text-sm text-muted flex flex-col gap-0">
-              {desc?.value.map?.((item, key) => <div key={key} class="truncate">{item}</div>)}
+              {desc?.value.map?.((item, key) => <div key={key} class="truncate">{item !== '' ? item : '-'}</div>)}
               {slots.desc?.() }
             </div>
           )}

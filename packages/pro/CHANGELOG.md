@@ -1,5 +1,22 @@
 # @duxweb/dvha-pro
 
+## 1.1.3
+
+### Patch Changes
+
+- feat(pro): 优化部分样式
+- Updated dependencies
+  - @duxweb/dvha-naiveui@1.1.3
+  - @duxweb/dvha-core@1.1.3
+
+## 1.1.2
+
+### Patch Changes
+
+- feat(pro): 优化表格列表的布局方案, 展开筛选
+  - @duxweb/dvha-core@1.1.2
+  - @duxweb/dvha-naiveui@1.1.2
+
 ## 1.1.1
 
 ### Patch Changes

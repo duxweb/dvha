@@ -1,5 +1,19 @@
 # @duxweb/dvha-elementui
 
+## 1.1.3
+
+### Patch Changes
+
+- feat(pro): 优化部分样式
+- Updated dependencies
+  - @duxweb/dvha-core@1.1.3
+
+## 1.1.2
+
+### Patch Changes
+
+- @duxweb/dvha-core@1.1.2
+
 ## 1.1.1
 
 ### Patch Changes

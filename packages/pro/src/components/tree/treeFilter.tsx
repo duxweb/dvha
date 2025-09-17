@@ -234,18 +234,36 @@ export const DuxTreeFilter = defineComponent<TreeFilterProps>({
           </div>
         )}
         <div class="p-2 flex gap-2 items-center">
-          <NButton onClick={toggleExpandAll}>
-            {{
-              icon: () => <div class={isExpanded.value ? 'i-tabler:fold-up' : 'i-tabler:fold-down'}></div>,
-            }}
-          </NButton>
+
           <div class="flex-1">
             {slots.header
               ? slots.header()
               : (
-                  <NInput v-model:value={keyword.value} placeholder={t('common.keyword')} />
+                  <NInput v-model:value={keyword.value} placeholder={t('common.keyword')}>
+                    {{
+                      prefix: () => (
+                        <NButton
+                          text
+                          onClick={toggleExpandAll}
+                          class="mr-1!"
+                        >
+                          {{
+                            icon: () => (
+                              <div class={[
+                                'i-tabler:fold-down transition-all',
+                                isExpanded.value ? 'rotate-0' : 'rotate-180',
+                              ]}
+                              >
+                              </div>
+                            ),
+                          }}
+                        </NButton>
+                      ),
+                    }}
+                  </NInput>
                 )}
           </div>
+
           {slots.tools?.()}
         </div>
         <NScrollbar class="flex-1 min-h-0" xScrollable>

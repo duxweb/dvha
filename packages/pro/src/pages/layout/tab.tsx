@@ -96,7 +96,7 @@ export const DuxPageTab = defineComponent({
           {{
             default: () => tabs?.value?.map(tab => (
               <NTab key={tab.path} name={tab.path || ''} class="shadow-xs my-2">
-                <div class="flex items-center gap-2 py-2 px-3" onContextmenu={e => handleContextMenu(e, tab)}>
+                <div class="flex items-center gap-2 h-36px px-3" onContextmenu={e => handleContextMenu(e, tab)}>
                   <div class="flex-1">
                     {tab.label}
                   </div>

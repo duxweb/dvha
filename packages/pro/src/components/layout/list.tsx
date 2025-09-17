@@ -234,7 +234,7 @@ export const DuxListLayout = defineComponent({
                 </div>
               </div>
 
-              <div class="flex gap-2 justify-between flex-col-reverse lg:flex-row items-center">
+              <div class="flex gap-2 justify-between flex-col-reverse lg:flex-row">
                 {(windowWidth.value >= 1024 || mobileFiltersShow.value) && (
                   <div class={['flex-1 flex flex-col lg:flex-row gap-2 flex-wrap']}>
                     <div key={filterRenderKey.value} class="contents">

@@ -49,7 +49,7 @@ export const DuxModalForm = defineComponent({
 
     const { invalidate } = useInvalidate()
 
-    const { isLoading, onSubmit, onReset, isEdit } = useExtendForm({
+    const { isLoading, onSubmit, isEdit } = useExtendForm({
       id: props.id,
       path: props.path,
       form,
