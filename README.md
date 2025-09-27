@@ -16,7 +16,7 @@ _一个基于 Vue 3 的无头（Headless）中后台框架_
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
 
-📖 **[查看完整文档](https://duxweb.dux.plus/dvha/)** | 🌟 **[UI集成演示](https://duxweb.dux.plus/dvha/start)** | 🎯 **[快速开始](#快速开始)** | 🇺🇸 **[English](./README.en.md)**
+📖 **[查看完整文档](https://duxweb.dux.plus/dvha/)** | 🌟 **[UI集成演示](https://duxweb.github.io/dvha/start)** | 🎯 **[快速开始](#快速开始)** | 🇺🇸 **[English](./README.en.md)**
 
 </div>
 

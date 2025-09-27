@@ -210,7 +210,7 @@
 ## 📸 在线演示
 
 ::: info 🎮 立即体验完整功能
-**Pro 版演示**: [https://duxweb.dux.plus/dvha/start/](https://duxweb.dux.plus/dvha/start/)
+**Pro 版演示**: [https://duxweb.github.io/dvha/start/](https://duxweb.github.io/dvha/start/)
 
 **账号密码**: 任意输入
 
