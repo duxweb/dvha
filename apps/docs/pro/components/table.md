@@ -61,6 +61,73 @@ const columns = [
 </template>
 ```
 
+### 实时筛选：filterReactive
+
+当需要外部筛选变更即刻生效（无需点击查询按钮）时，使用 `filterReactive`。当该对象的值变化时：
+
+- 将其键浅合并到已生效的筛选条件中；
+- 当某键值为 `null`、`undefined` 或空字符串 `''` 时，会移除该筛选键；
+- 重置页码到 1 并自动刷新数据；
+- 查询/重置按钮会先应用 `filter`，再叠加 `filterReactive`，以确保实时筛选始终有效。
+
+示例：
+
+```vue
+<script setup>
+import { DuxTableLayout } from '@duxweb/dvha-pro'
+import { NDataTable, NInput, NSelect } from 'naive-ui'
+import { ref } from 'vue'
+
+// 需要点击“查询”后才生效的筛选
+const filter = ref({ keyword: '' })
+
+// 实时生效的筛选（例如状态、组织联动等）
+const filterReactive = ref({ status: '', orgId: undefined })
+
+const columns = [
+  { key: 'id', title: 'ID', width: 80 },
+  { key: 'name', title: '姓名', width: 150 },
+]
+
+const filterSchema = [
+  {
+    tag: NInput,
+    title: '关键词',
+    attrs: {
+      'v-model:value': [filter.value, 'keyword'],
+      placeholder: '请输入关键词'
+    }
+  },
+  {
+    tag: NSelect,
+    title: '状态',
+    attrs: {
+      'v-model:value': [filterReactive.value, 'status'],
+      options: [
+        { label: '全部', value: '' },
+        { label: '启用', value: 'active' },
+        { label: '禁用', value: 'inactive' }
+      ]
+    }
+  }
+]
+</script>
+
+<template>
+  <DuxTableLayout
+    path="/api/users"
+    :filter="filter"
+    :filter-reactive="filterReactive"
+    :filter-schema="filterSchema"
+    :columns="columns"
+  >
+    <template #default="{ table, width }">
+      <NDataTable v-bind="table" :scroll-x="width" />
+    </template>
+  </DuxTableLayout>
+</template>
+```
+
 ## DuxTablePage 表格页面
 
 完整的表格页面组件，内置了表格布局、分页、筛选、操作等功能。
@@ -258,18 +325,19 @@ const actions = [
 
 ### 属性
 
-| 属性名         | 类型                | 默认值 | 说明         |
-| -------------- | ------------------- | ------ | ------------ |
-| path           | string              | -      | 数据接口路径 |
-| filter         | Record<string, any> | -      | 筛选条件     |
-| filterSchema   | JsonSchemaNode[]    | -      | 筛选表单配置 |
-| columns        | TableColumn[]       | -      | 表格列配置   |
-| pagination     | boolean/object      | -      | 分页配置     |
-| tabs           | TabItem[]           | -      | 标签页配置   |
-| actions        | UseActionItem[]     | []     | 操作配置     |
-| tools          | TablePageTools      | -      | 工具栏配置   |
-| sideLeftTitle  | string              | ''     | 左侧栏标题   |
-| sideRightTitle | string              | ''     | 右侧栏标题   |
+| 属性名         | 类型                | 默认值 | 说明                                   |
+| -------------- | ------------------- | ------ | -------------------------------------- |
+| path           | string              | -      | 数据接口路径                           |
+| filter         | Record<string, any> | -      | 筛选条件（点击“查询”后生效）           |
+| filterReactive | Record<string, any> | -      | 实时生效的筛选（变更即触发刷新）       |
+| filterSchema   | JsonSchemaNode[]    | -      | 筛选表单配置                           |
+| columns        | TableColumn[]       | -      | 表格列配置                             |
+| pagination     | boolean/object      | -      | 分页配置                               |
+| tabs           | TabItem[]           | -      | 标签页配置                             |
+| actions        | UseActionItem[]     | []     | 操作配置                               |
+| tools          | TablePageTools      | -      | 工具栏配置                             |
+| sideLeftTitle  | string              | ''     | 左侧栏标题                             |
+| sideRightTitle | string              | ''     | 右侧栏标题                             |
 
 ### 接口定义
 

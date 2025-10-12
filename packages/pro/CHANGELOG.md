@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.1.4
+
+### Patch Changes
+
+- feat(pro): 增加表格实时筛选响应选项
+  - @duxweb/dvha-core@1.1.4
+  - @duxweb/dvha-naiveui@1.1.4
+
 ## 1.1.3
 
 ### Patch Changes

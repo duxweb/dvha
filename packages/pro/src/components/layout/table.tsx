@@ -39,6 +39,9 @@ export const DuxTableLayout = defineComponent({
     filterSchema: {
       type: Array as PropType<JsonSchemaNode[]>,
     },
+    filterReactive: {
+      type: Object as PropType<Record<string, any>>,
+    },
     filterNumber: {
       type: Number,
       default: 1,
@@ -84,11 +87,11 @@ export const DuxTableLayout = defineComponent({
   setup(props, { slots, expose }) {
     const filters = toRef(props, 'filter', {})
     const sorters = toRef(props, 'sorter', {})
+    const reactiveFilters = computed<Record<string, any>>(() => props.filterReactive || {})
     const tableColumns = toRef(props, 'columns', [])
     const { t } = useI18n()
     const { renderAction } = useAction()
 
-    // 已生效筛选：仅在点击查询/重置时同步；tab 立即同步
     const appliedFilters = reactive({
       ...(filters.value || {}),
     })
@@ -204,6 +207,24 @@ export const DuxTableLayout = defineComponent({
         tabsInstRef.value?.syncBarPosition()
       })
     })
+
+    watch(
+      () => reactiveFilters.value,
+      (val) => {
+        const next = (val || {}) as Record<string, any>
+        Object.keys(next).forEach((k) => {
+          const v = next[k]
+          if (v === undefined || v === null || v === '') {
+            delete (appliedFilters as Record<string, unknown>)[k]
+          }
+          else {
+            (appliedFilters as Record<string, any>)[k] = v
+          }
+        })
+        result.onUpdatePage?.(1)
+      },
+      { deep: true },
+    )
 
     return () => (
       <DuxPage actions={props.actions} scrollbar={false}>
@@ -323,6 +344,7 @@ export const DuxTableLayout = defineComponent({
                             delete (appliedFilters as Record<string, unknown>)[k]
                           })
                           Object.assign(appliedFilters, JSON.parse(JSON.stringify(filters.value || {})))
+                          Object.assign(appliedFilters, JSON.parse(JSON.stringify(reactiveFilters.value || {})))
                           result.onUpdatePage?.(1)
                         }}
                       >
@@ -341,6 +363,7 @@ export const DuxTableLayout = defineComponent({
                         onClick={() => {
                           Object.keys(appliedFilters).forEach(k => delete (appliedFilters as any)[k])
                           Object.assign(appliedFilters, JSON.parse(JSON.stringify(filters.value || {})))
+                          Object.assign(appliedFilters, JSON.parse(JSON.stringify(reactiveFilters.value || {})))
                           result.onUpdatePage?.(1)
                         }}
                       >
@@ -364,6 +387,8 @@ export const DuxTableLayout = defineComponent({
                           if (keepTab !== undefined) {
                             (appliedFilters as Record<string, any>).tab = keepTab
                           }
+                          // 继续叠加实时筛选
+                          Object.assign(appliedFilters, JSON.parse(JSON.stringify(reactiveFilters.value || {})))
                           result.onUpdatePage?.(1)
                           filterRenderKey.value++
                         }}
