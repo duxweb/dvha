@@ -26,6 +26,8 @@ interface IUseFormProps {
   onError?: (error: IDataProviderError) => void // 错误回调
   action?: 'create' | 'edit' // 操作类型
   providerName?: string // 数据提供者名称
+  meta?: MaybeRef<Record<string, any>> // 支持 Ref；透传给数据提供者（create/update/getOne）
+  params?: MaybeRef<Record<string, any>> // 支持 Ref；仅 getOne 查询时附加到 URL（meta.params）
 }
 
 // 返回值接口
@@ -82,6 +84,8 @@ const { form, isLoading, onSubmit, onReset } = useForm({
 | `form`         | `Record<string, any>`  | ❌   | 初始表单数据                           |
 | `action`       | `'create' \| 'edit'`   | ❌   | 操作类型，默认为 'create'              |
 | `providerName` | `string`               | ❌   | 数据提供者名称，默认为 'default'       |
+| `meta`         | `MaybeRef<Record<string, any>>`  | ❌   | 透传给数据提供者；支持 Ref 动态更新 |
+| `params`       | `MaybeRef<Record<string, any>>`  | ❌   | 仅 getOne 使用；支持 Ref 动态更新（meta.params） |
 | `onSuccess`    | `(data: any) => void`  | ❌   | 成功回调                               |
 | `onError`      | `(error: any) => void` | ❌   | 错误处理回调                           |
 
@@ -277,6 +281,24 @@ const { form, isLoading, onSubmit, onReset } = useForm({
 - 重置操作会将表单恢复到初始状态或获取的数据状态
 - 加载状态包含了数据获取和提交操作的状态
 - 支持多数据提供者配置
+
+### 附加查询与元信息
+
+- 在编辑模式下，`useForm` 会调用 `useOne` 获取详情。
+- 可通过 `params` 为该查询追加 URL 查询参数；内部以 `meta.params` 的形式传递给数据提供者（Axios 配置），数据提供者会将其拼接到 URL。
+- `meta` 将在 `getOne`、`create`、`update` 中透传。
+
+示例：
+
+```ts
+const { form, onSubmit } = useForm({
+  path: 'users',
+  id: 1,
+  action: 'edit',
+  params: ref({ with: 'roles,profile' }), // -> 详情查询时附加 ?with=roles,profile（通过 meta.params）
+  meta: ref({ locale: 'zh-CN' }), // -> 透传给数据提供者
+})
+```
 
 ## 相关链接
 

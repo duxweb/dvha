@@ -1,6 +1,6 @@
 import type { TypedSchema } from 'vee-validate'
 import type { IUseFormProps } from './form'
-import { computed, toRef } from 'vue'
+import { toRef } from 'vue'
 import { useForm } from './form'
 import { useValidateForm } from './formValidate'
 
@@ -16,16 +16,16 @@ export function useExtendForm(props: UseExtendFormProps) {
     rules: props.rules,
   })
 
-  const formProps = computed(() => {
-    const { form, ...rest } = props
-    return {
-      ...rest,
-    }
-  })
-
   const result = useForm({
-    ...formProps.value,
-    form: form.value,
+    id: props.id,
+    path: props.path,
+    form,
+    action: props.action,
+    onSuccess: props.onSuccess,
+    onError: props.onError,
+    providerName: props.providerName,
+    meta: props.meta,
+    params: props.params,
   })
 
   const onSubmit = (data?: Record<string, any>) => {

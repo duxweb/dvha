@@ -13,11 +13,15 @@ export interface IUseFormProps {
   onError?: (error: IDataProviderError) => void
   action?: 'create' | 'edit'
   providerName?: string
+  meta?: MaybeRef<Record<string, any>>
+  params?: MaybeRef<Record<string, any>>
 }
 
 export function useForm(props: IUseFormProps) {
   const form = toRef(props, 'form', {})
   const id = toRef(props, 'id', undefined)
+  const meta = toRef(props, 'meta', {})
+  const params = toRef(props, 'params', {})
 
   // 初始化数据，用于重置表单数据
   const editResetData = ref(cloneDeep(form.value || {}))
@@ -34,6 +38,14 @@ export function useForm(props: IUseFormProps) {
     },
     get id() {
       return id.value as Key
+    },
+    get meta() {
+      return {
+        params: {
+          ...params.value,
+        },
+        ...meta.value,
+      }
     },
     options: {
       enabled: false,
@@ -68,9 +80,22 @@ export function useForm(props: IUseFormProps) {
     deep: true,
   })
 
+  // 当查询参数或 meta 变更时，编辑模式下自动重新获取详情
+  watch([params, meta], async () => {
+    if (!isEdit.value)
+      return
+    await refetch()
+    const data = cloneDeep(oneData.value?.data || {})
+    Object.assign(form.value as object, data)
+    Object.assign(editResetData.value as object, data)
+  }, { deep: true })
+
   const create = useCreate({
     path: props.path ?? '',
     data: form.value,
+    get meta() {
+      return meta.value || {}
+    },
     onSuccess: (data) => {
       onReset()
       props.onSuccess?.(data)
@@ -89,6 +114,9 @@ export function useForm(props: IUseFormProps) {
       return id.value as Key
     },
     data: form.value,
+    get meta() {
+      return meta.value || {}
+    },
     onSuccess: (data) => {
       props.onSuccess?.(data)
     },

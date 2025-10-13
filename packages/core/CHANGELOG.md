@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 1.1.5
+
+### Patch Changes
+
+- feat(core): 增加表单获取内容时的额外参数
+
 ## 1.1.4
 
 ## 1.1.3

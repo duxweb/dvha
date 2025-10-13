@@ -1,5 +1,14 @@
 # @duxweb/dvha-pro
 
+## 1.1.5
+
+### Patch Changes
+
+- feat(core): 增加表单获取内容时的额外参数
+- Updated dependencies
+  - @duxweb/dvha-core@1.1.5
+  - @duxweb/dvha-naiveui@1.1.5
+
 ## 1.1.4
 
 ### Patch Changes

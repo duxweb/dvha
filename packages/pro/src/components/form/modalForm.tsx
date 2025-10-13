@@ -21,6 +21,12 @@ export const DuxModalForm = defineComponent({
     data: {
       type: Object as PropType<MaybeRef<Record<string, any>>>,
     },
+    meta: {
+      type: Object as PropType<MaybeRef<Record<string, any>>>,
+    },
+    params: {
+      type: Object as PropType<MaybeRef<Record<string, any>>>,
+    },
     onClose: {
       type: Function as PropType<() => void>,
     },
@@ -53,6 +59,8 @@ export const DuxModalForm = defineComponent({
       id: props.id,
       path: props.path,
       form,
+      meta: props.meta,
+      params: props.params,
       action: props.action,
       onError: (error) => {
         message.error(error.message || t('components.form.error') as string)
