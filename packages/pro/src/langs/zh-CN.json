@@ -94,7 +94,6 @@
       "maxSize": "最大文件大小: {size}MB",
       "success": "上传成功",
       "failed": "上传失败",
-      "fileExtension": "{ext}文件",
       "status": {
         "pending": "待上传",
         "uploading": "上传中",
@@ -182,7 +181,7 @@
     },
     "flowEditor": {
       "properties": "属性",
-      "nodeInfo": "节点信息", 
+      "nodeInfo": "节点信息",
       "nodeConfig": "节点配置",
       "label": "标签",
       "description": "描述",
@@ -205,7 +204,7 @@
       "reject": "退回",
       "categories": {
         "start": "开始",
-        "process": "处理", 
+        "process": "处理",
         "condition": "条件",
         "end": "结束"
       },
@@ -215,13 +214,13 @@
           "description": "流程的起始节点"
         },
         "end": {
-          "label": "结束", 
+          "label": "结束",
           "description": "流程的结束节点"
         }
       },
       "fieldTypes": {
         "text": "文本",
-        "number": "数字", 
+        "number": "数字",
         "boolean": "布尔",
         "date": "日期",
         "array": "数组",
@@ -241,7 +240,7 @@
       },
       "jsonEditor": {
         "copiedToClipboard": "已复制到剪贴板",
-        "dataApplied": "数据已应用到流程", 
+        "dataApplied": "数据已应用到流程",
         "jsonFormatError": "JSON 格式错误"
       },
       "processNode": {

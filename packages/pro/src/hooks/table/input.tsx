@@ -1,7 +1,7 @@
+import type { IDataProviderCustomOptions } from '@duxweb/dvha-core'
 import type { Component, PropType } from 'vue'
 import type { UseTableColumnProps } from './column'
-import { useCustomMutation } from '@duxweb/dvha-core'
-import { useI18n } from '@duxweb/dvha-core'
+import { useCustomMutation, useI18n } from '@duxweb/dvha-core'
 import { get } from 'lodash-es'
 import { NButton, NInput, useMessage } from 'naive-ui'
 import { defineComponent, h, ref } from 'vue'
@@ -21,6 +21,12 @@ const TableColumnInput = defineComponent({
       type: String,
       required: true,
     },
+    params: {
+      type: [Object, Function] as PropType<Record<string, any> | (() => Record<string, any>)>,
+    },
+    meta: {
+      type: [Object, Function] as PropType<IDataProviderCustomOptions | (() => IDataProviderCustomOptions)>,
+    },
     tag: {
       type: Object as PropType<Component>,
     },
@@ -29,21 +35,42 @@ const TableColumnInput = defineComponent({
     const { t } = useI18n()
     const isEditing = ref(false)
     const inputValue = ref('')
+    const isSaving = ref(false)
 
     const { mutateAsync } = useCustomMutation()
     const message = useMessage()
 
     const saveValue = (v: string) => {
-      mutateAsync({
+      if (isSaving.value)
+        return
+      isSaving.value = true
+      const resolvedMeta: IDataProviderCustomOptions = typeof props.meta === 'function'
+        ? (props.meta as any)()
+        : (props.meta || {})
+
+      const resolvedParams = typeof props.params === 'function'
+        ? (props.params as any)()
+        : props.params
+
+      const options: IDataProviderCustomOptions = {
+        ...resolvedMeta,
         path: props.path,
         method: 'PATCH',
-        payload: {
-          [props.field]: v,
-        },
-      }).then(() => {
+        payload: { [props.field]: v },
+      }
+
+      if (resolvedParams) {
+        options.query = { ...(resolvedMeta?.query || {}), ...resolvedParams }
+      }
+
+      mutateAsync(options).then(() => {
         message.success(t('hooks.table.saveSuccess') as string)
+        props.data[props.field] = v
+        isEditing.value = false
       }).catch((e) => {
         message.error(e.message)
+      }).finally(() => {
+        isSaving.value = false
       })
     }
 
@@ -51,26 +78,42 @@ const TableColumnInput = defineComponent({
       return isEditing.value
         ? (
             <div class="flex gap-2">
-              <div>
-                {h(props.tag || NInput, {
-                  'value': inputValue.value,
-                  'onUpdate:value': (val: string) => inputValue.value = val,
-                  'autofocus': true,
-                })}
-              </div>
-              <NButton
-                type="primary"
-                onClick={() => {
-                  if (inputValue.value !== props.data[props.field]) {
-                    saveValue(inputValue.value)
-                  }
-                  else {
-                    isEditing.value = false
-                  }
-                }}
-                renderIcon={() => <div class="size-4 i-tabler:check"></div>}
-              >
-              </NButton>
+              {h(props.tag || NInput, {
+                'value': inputValue.value,
+                'onUpdate:value': (val: string) => inputValue.value = val,
+                'autofocus': true,
+                'disabled': isSaving.value,
+              }, {
+                suffix: () => (
+                  isSaving.value
+                    ? <div class="n-icon i-tabler:loader-2 animate-spin" />
+                    : (
+                        <>
+                          <NButton
+                            text
+                            type="primary"
+                            disabled={isSaving.value}
+                            onClick={() => {
+                              if (inputValue.value !== props.data[props.field]) {
+                                saveValue(inputValue.value)
+                              }
+                              else {
+                                isEditing.value = false
+                              }
+                            }}
+                            renderIcon={() => <div class="size-4 i-tabler:check"></div>}
+                          />
+                          <NButton
+                            text
+                            type="error"
+                            disabled={isSaving.value}
+                            onClick={() => { isEditing.value = false }}
+                            renderIcon={() => <div class="size-4 i-tabler:x"></div>}
+                          />
+                        </>
+                      )
+                ),
+              })}
             </div>
           )
         : (
@@ -99,6 +142,8 @@ const TableColumnInput = defineComponent({
 export interface UseTableColumnInputProps {
   key?: string
   tag?: Component
+  params?: Record<string, any> | (() => Record<string, any>)
+  meta?: IDataProviderCustomOptions | (() => IDataProviderCustomOptions)
 }
 
 export function useTableColumnInput(columnProps?: UseTableColumnProps) {
@@ -111,6 +156,8 @@ export function useTableColumnInput(columnProps?: UseTableColumnProps) {
           data={rowData}
           field={props.key}
           path={path}
+          params={props.params}
+          meta={props.meta}
           tag={props.tag}
         />
       )

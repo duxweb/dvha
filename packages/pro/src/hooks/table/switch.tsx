@@ -5,6 +5,7 @@ import { NSwitch, useMessage } from 'naive-ui'
 
 export interface useTableColumnSwitchProps {
   key?: string
+  path?: string | ((rowData: Record<string, any>) => string)
 }
 
 export function useTableColumnSwitch(columnProps?: UseTableColumnProps) {
@@ -14,7 +15,10 @@ export function useTableColumnSwitch(columnProps?: UseTableColumnProps) {
   const render = (props: useTableColumnSwitchProps) => {
     return (rowData: Record<string, any>, _rowIndex: number) => {
       const rowKey = props.key || 'status'
-      const path = typeof columnProps?.path === 'function' ? columnProps?.path(rowData) : `${columnProps?.path}/${get(rowData, columnProps?.rowKey || 'id')}`
+      const pathBase = props.path ?? columnProps?.path
+      const path = typeof pathBase === 'function'
+        ? pathBase(rowData)
+        : `${pathBase}/${get(rowData, columnProps?.rowKey || 'id')}`
       return (
         <NSwitch
           value={!!rowData[rowKey]}

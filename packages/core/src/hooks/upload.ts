@@ -192,7 +192,7 @@ export function useUpload(props?: IUseUploadProps) {
       throw new Error(`File size cannot exceed ${formatFileSize(props.maxFileSize)}`)
     }
 
-    if (props.maxFileCount && uploadFiles.value.length >= props.maxFileCount) {
+    if (props.maxFileCount && uploadFiles.value.length > props.maxFileCount) {
       throw new Error(`File count cannot exceed ${props.maxFileCount}`)
     }
   }

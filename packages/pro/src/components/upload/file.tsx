@@ -80,6 +80,7 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
     method: String as PropType<'POST' | 'PUT'>,
   },
   setup(props, { emit }) {
+    console.log('props', props)
     const model = useVModel(props, 'value', emit, {
       passive: true,
       deep: true,
@@ -122,14 +123,12 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
       },
     })
 
-    // Avoid echoing back into upload list when syncing model from upload
     const syncingFromUpload = ref(false)
     watch(upload.dataFiles, (v) => {
       const files = props.multiple ? v : v[0]
       syncingFromUpload.value = true
       model.value = files
       props.onUpdateValue?.(files)
-      // Defer reset to ensure any watchers on model see the syncing flag
       nextTick(() => {
         syncingFromUpload.value = false
       })
@@ -146,7 +145,7 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
             return typeMap[trimmed]
           if (trimmed.includes('*')) {
             const base = trimmed.split('/')[0]
-            return typeMap[trimmed] || t('common.fileExtension', { ext: base.toUpperCase() })
+            return typeMap[trimmed] || base.toUpperCase()
           }
           const ext = mime.getExtension(trimmed)
           return ext ? ext.toUpperCase() : trimmed
@@ -174,7 +173,6 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
     const once = ref(false)
     watch(model, (v) => {
       if (syncingFromUpload.value) {
-        // Ignore changes originating from internal upload sync to prevent duplicates
         return
       }
       if (!v || !v?.length || once.value) {

@@ -23,12 +23,15 @@ export const DuxAiEditor = defineComponent({
   setup(props, { emit }) {
     const divRef = ref()
     let aiEditor: AiEditor | null = null
+    let internalUpdate = false
 
     const theme = useTheme()
     const { config } = useManage()
     const auth = useGetAuth()
     const { t } = useI18n()
     const message = useMessage()
+
+    const initialContent = (props.value ?? props.defaultValue ?? '') as string
 
     const model = useVModel(props, 'value', emit, {
       passive: true,
@@ -44,12 +47,11 @@ export const DuxAiEditor = defineComponent({
     })
 
     watch(model, (value) => {
-      if (!aiEditor) {
+      if (!aiEditor || internalUpdate) {
         return
       }
-      aiEditor.setContent(value || '')
-      props.onUpdateValue?.(model.value || '')
-    }, { immediate: true })
+      aiEditor.setContent((value as string) || '')
+    }, { immediate: true, flush: 'post' })
 
     const editorUpload = (file: File): Promise<Record<string, any>> => {
       return new Promise((resolve, reject) => {
@@ -80,9 +82,11 @@ export const DuxAiEditor = defineComponent({
         theme: theme.isDark.value ? 'dark' : 'light',
         element: divRef.value as Element,
         placeholder: t('components.editor.placeholder'),
-        content: props.defaultValue || '',
-        onBlur: (aiEditor) => {
-          model.value = aiEditor.getHtml()
+        content: initialContent,
+        onBlur: (ed) => {
+          internalUpdate = true;
+          model.value = ed.getHtml()
+          internalUpdate = false;
         },
         image: {
           uploadUrl: uploadPath.value,
@@ -126,6 +130,9 @@ export const DuxAiEditor = defineComponent({
           },
         },
       })
+      if (model.value != null) {
+        aiEditor.setContent((model.value as string) || '')
+      }
     })
 
     onUnmounted(() => {

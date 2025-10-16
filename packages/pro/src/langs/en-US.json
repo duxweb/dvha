@@ -1,6 +1,7 @@
 {
   "common": {
     "search": "Search",
+    "keyword": "Keyword",
     "empty": "No data",
     "menu": "Menu",
     "theme": "Theme",
@@ -89,7 +90,6 @@
       "maxSize": "Max file size: {size}MB",
       "success": "Upload success",
       "failed": "Upload failed",
-      "fileExtension": "{ext} file",
       "status": {
         "pending": "Pending",
         "uploading": "Uploading",
@@ -178,7 +178,7 @@
     "flowEditor": {
       "properties": "Properties",
       "nodeInfo": "Node Info",
-      "nodeConfig": "Node Config", 
+      "nodeConfig": "Node Config",
       "label": "Label",
       "description": "Description",
       "descriptionPlaceholder": "Please enter node description",
@@ -194,14 +194,14 @@
       "deleteEdge": "Delete Edge",
       "edgeDeleted": "Edge deleted",
       "from": "From",
-      "to": "To", 
+      "to": "To",
       "connectionType": "Connection Type",
       "pass": "Pass",
       "reject": "Reject",
       "categories": {
         "start": "Start",
         "process": "Process",
-        "condition": "Condition", 
+        "condition": "Condition",
         "end": "End"
       },
       "nodes": {
@@ -217,7 +217,7 @@
       "fieldTypes": {
         "text": "Text",
         "number": "Number",
-        "boolean": "Boolean", 
+        "boolean": "Boolean",
         "date": "Date",
         "array": "Array",
         "object": "Object"

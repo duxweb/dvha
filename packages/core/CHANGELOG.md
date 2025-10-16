@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 1.1.6
+
+### Patch Changes
+
+- fix: 修正图片重复上传问题,优化部分语言问题
+
 ## 1.1.5
 
 ### Patch Changes

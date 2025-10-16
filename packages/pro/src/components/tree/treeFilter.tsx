@@ -271,6 +271,7 @@ export const DuxTreeFilter = defineComponent<TreeFilterProps>({
             <NSpin show={loading.value} class="h-full">
               <NTree
                 {...treeProps.value}
+                key={JSON.stringify(data.value)}
                 data={data.value || []}
                 expandedKeys={expandedKeys.value as any}
                 onUpdateExpandedKeys={(v) => {
@@ -306,6 +307,9 @@ export const DuxTreeFilter = defineComponent<TreeFilterProps>({
                 nodeProps={({ option }) => {
                   return {
                     onContextmenu: (e) => {
+                      if (!dropdownOptions.value?.length) {
+                        return
+                      }
                       dropdownOption.value = option
                       dropdownShow.value = true
                       x.value = e.clientX
@@ -318,19 +322,21 @@ export const DuxTreeFilter = defineComponent<TreeFilterProps>({
             </NSpin>
           </div>
         </NScrollbar>
-        <NDropdown
-          trigger="manual"
-          placement="bottom-start"
-          show={dropdownShow.value}
-          options={dropdownOptions.value as any}
-          x={x.value}
-          y={y.value}
-          width={100}
-          onSelect={handleSelect}
-          onClickoutside={() => {
-            dropdownShow.value = false
-          }}
-        />
+        {dropdownOptions.value?.length > 0 && (
+          <NDropdown
+            trigger="manual"
+            placement="bottom-start"
+            show={dropdownShow.value}
+            options={dropdownOptions.value as any}
+            x={x.value}
+            y={y.value}
+            width={100}
+            onSelect={handleSelect}
+            onClickoutside={() => {
+              dropdownShow.value = false
+            }}
+          />
+        )}
       </DuxCard>
     )
   },
