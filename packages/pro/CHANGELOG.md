@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.1.7
+
+### Patch Changes
+
+- fix(image): 去掉重复占位图
+  - @duxweb/dvha-core@1.1.7
+  - @duxweb/dvha-naiveui@1.1.7
+
 ## 1.1.6
 
 ### Patch Changes

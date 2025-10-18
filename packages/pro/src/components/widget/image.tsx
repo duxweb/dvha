@@ -18,7 +18,6 @@ export const DuxImage = defineComponent({
               >
                 {{
                   placeholder: () => <DuxPlaceholder width={props.width} height={props.height} />,
-                  error: () => <DuxPlaceholder width={props.width} height={props.height} />,
                 }}
               </NImage>
             )
