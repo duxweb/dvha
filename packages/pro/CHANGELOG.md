@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.1.8
+
+### Patch Changes
+
+- feat(pro): 编辑器增加文件管理器工具
+  - @duxweb/dvha-core@1.1.8
+  - @duxweb/dvha-naiveui@1.1.8
+
 ## 1.1.7
 
 ### Patch Changes

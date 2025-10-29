@@ -80,7 +80,6 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
     method: String as PropType<'POST' | 'PUT'>,
   },
   setup(props, { emit }) {
-    console.log('props', props)
     const model = useVModel(props, 'value', emit, {
       passive: true,
       deep: true,

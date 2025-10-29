@@ -244,7 +244,7 @@ const DuxFileManage = defineComponent({
           </div>
         </div>
 
-        <div class="flex-1 min-h-1">
+        <div class="flex-1 min-h-1 relative">
           {list.data?.value?.data?.length > 0
             && (
               <NInfiniteScroll
@@ -337,7 +337,7 @@ const DuxFileManage = defineComponent({
             )}
 
           {list.isLoading.value
-            ? <NSpin class="h-full absolute w-full bg-gray-1/50" />
+            ? <NSpin class="h-full absolute w-full inset-0 bg-gray-1/50" />
             : !list.data.value?.data?.length && (
                 <div class="size-full flex justify-center items-center text-sm text-gray-6">
                   <div class="flex flex-col  items-center">
