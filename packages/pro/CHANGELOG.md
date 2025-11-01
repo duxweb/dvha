@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.1.9
+
+### Patch Changes
+
+- fix: 修正 pro 的表格标题样式
+  - @duxweb/dvha-core@1.1.9
+  - @duxweb/dvha-naiveui@1.1.9
+
 ## 1.1.8
 
 ### Patch Changes
