@@ -235,7 +235,7 @@ export const DuxTableLayout = defineComponent({
             <div class="flex flex-col gap-3 h-full relative">
               <div class="flex gap-2 justify-between flex-row border-b border-muted">
                 <div class="relative top-1.5px">
-                  {!props.tabs && <div class="py-3 text-base">{tabInfo?.label}</div>}
+                  {!props.tabs && <div class="pb-4 pt-2 text-base">{tabInfo?.label}</div>}
                   {props.tabs && (
                     <NTabs
                       ref={tabsInstRef}
