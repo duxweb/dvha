@@ -1,7 +1,7 @@
 import type { MenuOption } from 'naive-ui'
 import { DuxLogoIcon, useI18n, useManage, useMenu } from '@duxweb/dvha-core'
 import { cloneDeep } from 'lodash-es'
-import { NMenu, NScrollbar, NTag } from 'naive-ui'
+import { NButton, NMenu, NScrollbar, NTag, NTooltip } from 'naive-ui'
 import { computed, defineComponent, h, onMounted, Transition } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { DuxMenuAvatar, DuxMenuDark, DuxMenuNotice } from '.'
@@ -108,21 +108,48 @@ export const DuxMenuApp = defineComponent({
                     </div>
                   ))}
                 </div>
-                {/* <NMenu
-                  inverted
-                  options={mainOptions.value}
-                  value={appActive.value as any}
-                  collapsed={true}
-                  collapsedWidth={64}
-                  collapsedIconSize={22}
-                  onUpdateValue={(key: string) => appActive.value = key}
-                /> */}
               </NScrollbar>
             </div>
             <div class="flex-none hidden lg:flex flex-col items-center gap-2 p-2">
+
+              {config.tools?.map(item => (
+                <NTooltip trigger="hover" placement="right">
+                  {{
+                    default: () => item.label,
+                    trigger: () => (
+                      <NButton
+                        quaternary
+                        onClick={() => {
+                          if (item.callback) {
+                            item.callback()
+                            return
+                          }
+                          if (item.path) {
+                            router.push(item.path)
+                            return
+                          }
+                          if (item.url) {
+                            window.open(item.url, '_blank')
+                          }
+                        }}
+                      >
+                        {{
+                          icon: () => (
+                            <div class="transition-all text-muted p-2 hover:text-white">
+                              <div class={`${item.icon} size-5`} />
+                            </div>
+                          ),
+                        }}
+                      </NButton>
+                    ),
+                  }}
+                </NTooltip>
+              ))}
+
               {config.notice?.status && <DuxMenuNotice collapsed={true} />}
               <DuxMenuDark />
               <DuxMenuAvatar collapsed={true} />
+
             </div>
           </div>
         </div>

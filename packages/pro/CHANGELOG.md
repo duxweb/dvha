@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.1.10
+
+### Patch Changes
+
+- feat(pro): 增加自定义菜单按钮功能
+  - @duxweb/dvha-core@1.1.10
+  - @duxweb/dvha-naiveui@1.1.10
+
 ## 1.1.9
 
 ### Patch Changes

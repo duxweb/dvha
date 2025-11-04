@@ -30,6 +30,15 @@ export function createDuxPro() {
   }
 }
 
+interface ITool {
+  label: string
+  icon: string
+  path?: string
+  url?: string
+  callback?: () => void
+  [key: string]: any
+}
+
 // 声明 Pro 包特有的配置
 declare module '@duxweb/dvha-core' {
   interface IManage {
@@ -56,7 +65,8 @@ declare module '@duxweb/dvha-core' {
       descField?: string
       readField?: string
       urlField?: string
-
     }
+    // 工具配置
+    tools?: ITool[]
   }
 }

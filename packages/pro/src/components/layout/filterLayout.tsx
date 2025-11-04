@@ -1,4 +1,5 @@
-import { defineComponent, PropType, provide } from 'vue'
+import type { PropType } from 'vue'
+import { defineComponent, provide } from 'vue'
 
 export const DuxFilterLayout = defineComponent({
   name: 'DuxFilterLayout',
@@ -17,7 +18,6 @@ export const DuxFilterLayout = defineComponent({
     },
   },
   setup(props, { slots }) {
-
     provide('dux.filter', {
       showLabel: props.showLabel,
       labelPlacement: props.labelPlacement,
@@ -27,7 +27,8 @@ export const DuxFilterLayout = defineComponent({
       <div class={[
         'flex flex-col gap-2',
         props.horizontal ? 'flex-row' : 'flex-col',
-      ]}>
+      ]}
+      >
         {slots.default?.()}
       </div>
     )
