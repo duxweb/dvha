@@ -1,6 +1,6 @@
 import type { ModalProps } from 'naive-ui'
 import type { AsyncComponentLoader, Component } from 'vue'
-import { useOverlayInject } from '@overlastic/vue'
+import { useOverlay as useOverlayInject } from '@overlastic/vue'
 import { DuxModal } from '../components'
 
 export interface UseModalResult {

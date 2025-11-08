@@ -1,4 +1,4 @@
-import { useExtendOverlay } from '@overlastic/vue'
+import { useDisclosure } from '@overlastic/vue'
 import { defineAsyncComponent, defineComponent, Transition } from 'vue'
 
 export const DuxOverlay = defineComponent({
@@ -24,19 +24,19 @@ export const DuxOverlay = defineComponent({
     },
   },
   setup(props) {
-    const { visible, resolve, reject } = useExtendOverlay({
+    const { visible, confirm, cancel } = useDisclosure({
       duration: props.duration,
     })
 
     const params = props?.componentProps || {}
-    params.onConfirm = resolve
-    params.onClose = reject
+    params.onConfirm = confirm
+    params.onClose = cancel
 
     const Modal = defineAsyncComponent(props.component as () => Promise<any>)
 
     const handleMaskClick = () => {
       if (props.maskClosable) {
-        reject()
+        cancel()
       }
     }
     return () => (

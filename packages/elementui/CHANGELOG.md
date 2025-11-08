@@ -1,5 +1,13 @@
 # @duxweb/dvha-elementui
 
+## 1.1.11
+
+### Patch Changes
+
+- fix: 更新依赖到新版本,修正新版本的方法兼容性
+- Updated dependencies
+  - @duxweb/dvha-core@1.1.11
+
 ## 1.1.10
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 import type { JsonSchemaData } from '@duxweb/dvha-core'
 import type { PropType } from 'vue'
 import { useI18n, useJsonSchema } from '@duxweb/dvha-core'
-import { useExtendOverlay } from '@overlastic/vue'
+import { useDisclosure } from '@overlastic/vue'
 import { NButton, NForm, NModal } from 'naive-ui'
 import { defineComponent, h, reactive, ref } from 'vue'
 
@@ -17,7 +17,7 @@ export default defineComponent({
   },
   setup(props) {
     const { t } = useI18n()
-    const { visible, resolve, reject, vanish } = useExtendOverlay({
+    const { visible, confirm, cancel, vanish } = useDisclosure({
       duration: 1000,
     })
 
@@ -69,10 +69,10 @@ export default defineComponent({
           vanish()
         }}
         onClose={() => {
-          reject()
+          cancel()
         }}
         onEsc={() => {
-          reject()
+          cancel()
         }}
         role="dialog"
         aria-modal="true"
@@ -137,7 +137,7 @@ export default defineComponent({
                     aria-label={t('components.button.cancel')}
                     type={data.button as any}
                     onClick={() => {
-                      reject()
+                      cancel()
                     }}
                   >
                     {t('components.button.cancel')}
@@ -147,7 +147,7 @@ export default defineComponent({
                   aria-label={t('components.button.confirm')}
                   type={data.button as any}
                   onClick={() => {
-                    resolve(form.value)
+                    confirm(form.value)
                   }}
                 >
                   {t('components.button.confirm')}

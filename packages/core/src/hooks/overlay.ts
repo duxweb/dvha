@@ -1,4 +1,4 @@
-import { useOverlayInject } from '@overlastic/vue'
+import { useOverlay as useOverlayInject } from '@overlastic/vue'
 import { DuxOverlay } from '../components'
 
 export interface UseOverlayProps {

@@ -1,5 +1,5 @@
 import type { AsyncComponentLoader, Component, PropType } from 'vue'
-import { useExtendOverlay } from '@overlastic/vue'
+import { useDisclosure } from '@overlastic/vue'
 import { NDrawer, NSpin } from 'naive-ui'
 import { defineAsyncComponent, defineComponent, Suspense } from 'vue'
 
@@ -20,14 +20,14 @@ export default defineComponent({
     componentProps: Object,
   },
   setup(props) {
-    const { visible, resolve, reject, vanish } = useExtendOverlay({
+    const { visible, confirm, cancel, vanish } = useDisclosure({
       duration: 1000,
     })
 
     const params = props?.componentProps || {}
     params.title = props.title
-    params.onConfirm = resolve
-    params.onClose = reject
+    params.onConfirm = confirm
+    params.onClose = cancel
 
     const Page = typeof props.component === 'function'
       ? defineAsyncComponent(props.component as AsyncComponentLoader<any>)
@@ -43,12 +43,12 @@ export default defineComponent({
         resizable={true}
         placement={props.placement}
         show={visible.value}
-        onUpdateShow={() => resolve()}
+        onUpdateShow={() => confirm()}
         onAfterLeave={() => {
           vanish()
         }}
         onEsc={() => {
-          reject()
+          cancel()
         }}
         autoFocus={false}
       >

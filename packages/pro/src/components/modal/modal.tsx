@@ -1,6 +1,6 @@
 import type { ModalProps } from 'naive-ui'
 import type { AsyncComponentLoader, Component, PropType } from 'vue'
-import { useExtendOverlay } from '@overlastic/vue'
+import { useDisclosure } from '@overlastic/vue'
 import { NModal, NSpin } from 'naive-ui'
 import { defineAsyncComponent, defineComponent, Suspense } from 'vue'
 
@@ -27,14 +27,14 @@ export const DuxModal = defineComponent({
     },
   },
   setup(props) {
-    const { visible, resolve, reject, vanish } = useExtendOverlay({
+    const { visible, confirm, cancel, vanish } = useDisclosure({
       duration: 1000,
     })
 
     const params = props?.componentProps || {}
     params.title = props.title
-    params.onConfirm = resolve
-    params.onClose = reject
+    params.onConfirm = confirm
+    params.onClose = cancel
 
     const Page = typeof props.component === 'function'
       ? defineAsyncComponent(props.component as AsyncComponentLoader<any>)
@@ -48,10 +48,10 @@ export const DuxModal = defineComponent({
           vanish()
         }}
         onClose={() => {
-          reject()
+          cancel()
         }}
         onEsc={() => {
-          reject()
+          cancel()
         }}
         draggable={props.draggable}
         class="bg-white rounded dark:shadow-gray-950/80  dark:bg-gray-800/60 backdrop-blur"

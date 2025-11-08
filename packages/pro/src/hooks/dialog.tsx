@@ -1,6 +1,6 @@
 import type { JsonSchemaData } from '@duxweb/dvha-core'
 import type { VNode } from 'vue'
-import { useOverlayInject } from '@overlastic/vue'
+import { useOverlay as useOverlayInject } from '@overlastic/vue'
 import { DuxDialog } from '../components'
 
 export interface UseDialogResult {

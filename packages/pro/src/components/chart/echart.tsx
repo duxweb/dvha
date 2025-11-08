@@ -1,4 +1,4 @@
-import { computed, defineComponent } from 'vue'
+import { defineComponent } from 'vue'
 import VChart from 'vue-echarts'
 import { useEchartType } from '../../hooks'
 
@@ -19,20 +19,10 @@ export const DuxChart = defineComponent({
     },
     option: {
       type: Object,
-      default: {},
-    },
-    class: {
-      type: String,
-      default: '',
+      default: () => ({}),
     },
   },
-  extends: VChart,
-  setup(props) {
-    const chartProps = computed(() => {
-      const { min, height, option, ...rest } = props
-      return rest
-    })
-
+  setup(props, { attrs }) {
     const { option: chartOption } = useEchartType(props.type, {
       min: props.min,
       ...props.option,
@@ -43,11 +33,11 @@ export const DuxChart = defineComponent({
         style={{
           minHeight: props.height,
         }}
-        {...chartProps.value}
         option={chartOption.value}
         autoresize
         theme="default"
         initOptions={{ renderer: 'svg' }}
+        {...attrs}
       />
     )
   },
