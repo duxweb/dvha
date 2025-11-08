@@ -21,8 +21,8 @@
     "@duxweb/dvha-pro": "workspace:*"
   },
   "devDependencies": {
-    "naive-ui": "^2.42.0",
-    "vue": "^3.5.0",
-    "vue-router": "^4.5.1"
+    "naive-ui": "^2.43.1",
+    "vue": "^3.5.24",
+    "vue-router": "^4.6.3"
   }
 }
