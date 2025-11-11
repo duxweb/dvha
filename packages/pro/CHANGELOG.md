@@ -1,5 +1,14 @@
 # @duxweb/dvha-pro
 
+## 1.1.12
+
+### Patch Changes
+
+- fix(pro): 编辑器修正编辑保存数据
+- Updated dependencies
+  - @duxweb/dvha-core@1.1.12
+  - @duxweb/dvha-naiveui@1.1.12
+
 ## 1.1.11
 
 ### Patch Changes

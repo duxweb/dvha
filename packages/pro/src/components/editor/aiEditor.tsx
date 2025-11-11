@@ -35,9 +35,15 @@ export const DuxAiEditor = defineComponent({
     },
     onUpdateValue: Function as PropType<(value: string) => void>,
   },
-  setup(props, { emit }) {
+  setup(props, { emit, expose }) {
     const divRef = ref()
     let aiEditor: AiEditor | null = null
+
+    expose({
+      get aiEditor() {
+        return aiEditor
+      },
+    })
     let internalUpdate = false
 
     const theme = useTheme()
@@ -49,9 +55,8 @@ export const DuxAiEditor = defineComponent({
 
     const initialContent = (props.value ?? props.defaultValue ?? '') as string
 
-    const model = useVModel(props, 'value', emit, {
-      passive: true,
-    })
+    // 向外正常触发 update:value
+    const model = useVModel(props, 'value', emit)
 
     const uploadPath = computed(() => {
       return props.uploadPath || config.apiPath?.upload || 'upload'
@@ -64,7 +69,8 @@ export const DuxAiEditor = defineComponent({
 
     const { managePath, method } = useUploadConfig()
 
-    watch(model, (value) => {
+    // 外部 value 变化时覆盖编辑器内容
+    watch(() => props.value, (value) => {
       if (!aiEditor || internalUpdate) {
         return
       }
@@ -119,6 +125,13 @@ export const DuxAiEditor = defineComponent({
         placeholder: t('components.editor.placeholder'),
         content: initialContent,
         contentIsMarkdown: props.editorType === 'markdown',
+
+        onChange: (ed) => {
+          internalUpdate = true
+          model.value = props.editorType === 'markdown' ? ed.getMarkdown() : ed.getHtml()
+          internalUpdate = false
+        },
+
         onBlur: (ed) => {
           internalUpdate = true
           model.value = props.editorType === 'markdown' ? ed.getMarkdown() : ed.getHtml()

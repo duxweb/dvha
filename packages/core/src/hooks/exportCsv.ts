@@ -32,7 +32,8 @@ export function useExportCsv(props: IUseExportCsvProps) {
         wrap: typeof wrapChar === 'string' ? wrapChar : '"',
         eol: options.eol || '\n',
       },
-      excelBOM: options.writeBOM || false,
+      // 默认为 Excel 加上 UTF-8 BOM，避免中文在 Excel 中出现乱码
+      excelBOM: options.writeBOM !== false,
     }
   })
 

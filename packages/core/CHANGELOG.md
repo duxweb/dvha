@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 1.1.12
+
+### Patch Changes
+
+- fix(pro): 编辑器修正编辑保存数据
+
 ## 1.1.11
 
 ### Patch Changes
