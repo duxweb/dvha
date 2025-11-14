@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.1.13
+
+### Patch Changes
+
+- fix(pro): 修正表单布局自适应缩放
+  - @duxweb/dvha-core@1.1.13
+  - @duxweb/dvha-naiveui@1.1.13
+
 ## 1.1.12
 
 ### Patch Changes
