@@ -39,6 +39,22 @@ export const DuxAiEditor = defineComponent({
     const divRef = ref()
     let aiEditor: AiEditor | null = null
 
+    // 是否处于中文等输入法组合输入阶段
+    let isComposing = false
+
+    const handleCompositionStart = () => {
+      isComposing = true
+    }
+
+    const handleCompositionEnd = () => {
+      isComposing = false
+      if (aiEditor) {
+        internalUpdate = true
+        model.value = props.editorType === 'markdown' ? aiEditor.getMarkdown() : aiEditor.getHtml()
+        internalUpdate = false
+      }
+    }
+
     expose({
       get aiEditor() {
         return aiEditor
@@ -119,6 +135,11 @@ export const DuxAiEditor = defineComponent({
     }
 
     onMounted(() => {
+      const element = divRef.value as HTMLElement | undefined
+
+      element?.addEventListener('compositionstart', handleCompositionStart)
+      element?.addEventListener('compositionend', handleCompositionEnd)
+
       aiEditor = new AiEditor({
         theme: theme.isDark.value ? 'dark' : 'light',
         element: divRef.value as Element,
@@ -127,6 +148,9 @@ export const DuxAiEditor = defineComponent({
         contentIsMarkdown: props.editorType === 'markdown',
 
         onChange: (ed) => {
+          if (isComposing) {
+            return
+          }
           internalUpdate = true
           model.value = props.editorType === 'markdown' ? ed.getMarkdown() : ed.getHtml()
           internalUpdate = false
@@ -297,6 +321,9 @@ export const DuxAiEditor = defineComponent({
     })
 
     onUnmounted(() => {
+      const element = divRef.value as HTMLElement | undefined
+      element?.removeEventListener('compositionstart', handleCompositionStart)
+      element?.removeEventListener('compositionend', handleCompositionEnd)
       aiEditor?.destroy()
     })
 
