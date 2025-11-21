@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.1.14
+
+### Patch Changes
+
+- fix(pro): 修复编辑器光标问题
+  - @duxweb/dvha-core@1.1.14
+  - @duxweb/dvha-naiveui@1.1.14
+
 ## 1.1.13
 
 ### Patch Changes

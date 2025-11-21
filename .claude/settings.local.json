@@ -16,7 +16,8 @@
       "Bash(npx eslint:*)",
       "Bash(rm:*)",
       "Bash(ls:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "WebFetch(domain:aieditor.dev)"
     ],
     "deny": []
   }

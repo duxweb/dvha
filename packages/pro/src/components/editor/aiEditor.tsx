@@ -4,7 +4,7 @@ import { useGetAuth, useI18n, useManage, useTheme, useUpload } from '@duxweb/dvh
 import { useVModel } from '@vueuse/core'
 import { AiEditor } from 'aieditor'
 import { useMessage } from 'naive-ui'
-import { computed, defineComponent, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, defineComponent, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useModal } from '../../hooks'
 import { useUploadConfig } from '../upload/config'
 
@@ -15,7 +15,6 @@ export const DuxAiEditor = defineComponent({
     defaultValue: String,
     uploadPath: String,
     uploadHeaders: Object as PropType<Record<string, any>>,
-    // 编辑器类型：富文本 或 Markdown
     editorType: {
       type: String as PropType<'richtext' | 'markdown'>,
       default: 'richtext',
@@ -33,34 +32,11 @@ export const DuxAiEditor = defineComponent({
       type: String,
       default: '500px',
     },
-    onUpdateValue: Function as PropType<(value: string) => void>,
   },
   setup(props, { emit, expose }) {
-    const divRef = ref()
+    const divRef = ref<HTMLElement>()
     let aiEditor: AiEditor | null = null
-
-    // 是否处于中文等输入法组合输入阶段
-    let isComposing = false
-
-    const handleCompositionStart = () => {
-      isComposing = true
-    }
-
-    const handleCompositionEnd = () => {
-      isComposing = false
-      if (aiEditor) {
-        internalUpdate = true
-        model.value = props.editorType === 'markdown' ? aiEditor.getMarkdown() : aiEditor.getHtml()
-        internalUpdate = false
-      }
-    }
-
-    expose({
-      get aiEditor() {
-        return aiEditor
-      },
-    })
-    let internalUpdate = false
+    let isUpdatingFromInternal = false
 
     const theme = useTheme()
     const { config } = useManage()
@@ -69,10 +45,7 @@ export const DuxAiEditor = defineComponent({
     const message = useMessage()
     const modal = useModal()
 
-    const initialContent = (props.value ?? props.defaultValue ?? '') as string
-
-    // 向外正常触发 update:value
-    const model = useVModel(props, 'value', emit)
+    const model = useVModel(props, 'value', emit, { passive: true })
 
     const uploadPath = computed(() => {
       return props.uploadPath || config.apiPath?.upload || 'upload'
@@ -85,18 +58,31 @@ export const DuxAiEditor = defineComponent({
 
     const { managePath, method } = useUploadConfig()
 
-    // 外部 value 变化时覆盖编辑器内容
-    watch(() => props.value, (value) => {
-      if (!aiEditor || internalUpdate) {
-        return
-      }
+    const updateContent = () => {
+      if (!aiEditor || isUpdatingFromInternal) return
+
+      const content = model.value || ''
       if (props.editorType === 'markdown') {
-        aiEditor.setMarkdownContent((value as string) || '')
+        aiEditor.setMarkdownContent(content)
+      } else {
+        aiEditor.setContent(content)
       }
-      else {
-        aiEditor.setContent((value as string) || '')
-      }
-    }, { immediate: true, flush: 'post' })
+    }
+
+    const handleEditorChange = () => {
+      if (!aiEditor) return
+
+      isUpdatingFromInternal = true
+      const content = props.editorType === 'markdown' 
+        ? aiEditor.getMarkdown() 
+        : aiEditor.getHtml()
+      
+      model.value = content
+      
+      nextTick(() => {
+        isUpdatingFromInternal = false
+      })
+    }
 
     const editorUpload = (file: File): Promise<Record<string, any>> => {
       return new Promise((resolve, reject) => {
@@ -134,33 +120,21 @@ export const DuxAiEditor = defineComponent({
       return 'attachment'
     }
 
-    onMounted(() => {
-      const element = divRef.value as HTMLElement | undefined
+    const createEditor = () => {
+      if (!divRef.value) return
 
-      element?.addEventListener('compositionstart', handleCompositionStart)
-      element?.addEventListener('compositionend', handleCompositionEnd)
+      const initialContent = props.value || props.defaultValue || ''
 
       aiEditor = new AiEditor({
+        element: divRef.value,
         theme: theme.isDark.value ? 'dark' : 'light',
-        element: divRef.value as Element,
         placeholder: t('components.editor.placeholder'),
         content: initialContent,
         contentIsMarkdown: props.editorType === 'markdown',
-
-        onChange: (ed) => {
-          if (isComposing) {
-            return
-          }
-          internalUpdate = true
-          model.value = props.editorType === 'markdown' ? ed.getMarkdown() : ed.getHtml()
-          internalUpdate = false
-        },
-
-        onBlur: (ed) => {
-          internalUpdate = true
-          model.value = props.editorType === 'markdown' ? ed.getMarkdown() : ed.getHtml()
-          internalUpdate = false
-        },
+        
+        onChange: handleEditorChange,
+        onBlur: handleEditorChange,
+        
         image: {
           uploadUrl: uploadPath.value,
           uploadHeaders: props.uploadHeaders || {},
@@ -181,15 +155,11 @@ export const DuxAiEditor = defineComponent({
           models: {
             custom: {
               url: props.aiPath || config.apiPath?.ai || 'ai',
-              headers: () => {
-                return {
-                  'Content-Type': 'application/json',
-                  'Authorization': auth.token,
-                }
-              },
-              wrapPayload: (message: string) => {
-                return JSON.stringify({ prompt: message })
-              },
+              headers: () => ({
+                'Content-Type': 'application/json',
+                'Authorization': auth.token,
+              }),
+              wrapPayload: (message: string) => JSON.stringify({ prompt: message }),
               parseMessage: (message: string): AiMessage => {
                 const data = JSON.parse(message)
                 return {
@@ -204,39 +174,13 @@ export const DuxAiEditor = defineComponent({
           },
         },
         toolbarKeys: [
-          'undo',
-          'redo',
-          'brush',
-          'eraser',
-          'divider',
-          'heading',
-          'font-family',
-          'font-size',
-          'divider',
-          'bold',
-          'italic',
-          'underline',
-          'strike',
-          'link',
-          'code',
-          'subscript',
-          'superscript',
-          'hr',
-          'todo',
-          'emoji',
-          'divider',
-          'highlight',
-          'font-color',
-          'divider',
-          'align',
-          'line-height',
-          'divider',
-          'bullet-list',
-          'ordered-list',
-          'indent-decrease',
-          'indent-increase',
-          'break',
-          'divider',
+          'undo', 'redo', 'brush', 'eraser', 'divider',
+          'heading', 'font-family', 'font-size', 'divider',
+          'bold', 'italic', 'underline', 'strike', 'link', 'code',
+          'subscript', 'superscript', 'hr', 'todo', 'emoji', 'divider',
+          'highlight', 'font-color', 'divider',
+          'align', 'line-height', 'divider',
+          'bullet-list', 'ordered-list', 'indent-decrease', 'indent-increase', 'break', 'divider',
           ...(props.fileManager
             ? [{
                 id: 'dux-file-manager-image',
@@ -250,7 +194,7 @@ export const DuxAiEditor = defineComponent({
                       component: () => import('../upload/manager'),
                       componentProps: {
                         path: managePath.value,
-                        type: (props.fileManagerType || 'all'),
+                        type: props.fileManagerType || 'all',
                         multiple: true,
                         uploadParams: {
                           path: uploadPath.value,
@@ -260,7 +204,7 @@ export const DuxAiEditor = defineComponent({
                       },
                     })
                     .then((value: Record<string, any>[]) => {
-                      value?.forEach?.((item) => {
+                      value?.forEach?.(item => {
                         const kind = inferFileType(item)
                         const alt = item?.filename || ''
                         if (kind === 'image') {
@@ -272,8 +216,7 @@ export const DuxAiEditor = defineComponent({
                               width: 'auto',
                             },
                           })
-                        }
-                        else if (kind === 'video') {
+                        } else if (kind === 'video') {
                           ed.insert({
                             type: 'video',
                             attrs: {
@@ -282,13 +225,11 @@ export const DuxAiEditor = defineComponent({
                               width: 350,
                             },
                           })
-                        }
-                        else {
+                        } else {
                           const filename = item?.filename || item?.name || 'file'
                           if (props.editorType === 'markdown') {
                             ed.insertMarkdown(`[${filename}](${item.url})`)
-                          }
-                          else {
+                          } else {
                             ed.insert(`<a href="${item.url}" target="_blank">${filename}</a>`)
                           }
                         }
@@ -297,46 +238,53 @@ export const DuxAiEditor = defineComponent({
                 },
               }]
             : []),
-          'image',
-          'video',
-          'attachment',
-          'quote',
-          'container',
-          'code-block',
-          'table',
-          'divider',
-          'printer',
-          'fullscreen',
-          'ai',
+          'image', 'video', 'attachment', 'quote', 'container',
+          'code-block', 'table', 'divider',
+          'printer', 'fullscreen', 'ai',
         ],
       })
-      if (model.value != null) {
-        if (props.editorType === 'markdown') {
-          aiEditor.setMarkdownContent((model.value as string) || '')
-        }
-        else {
-          aiEditor.setContent((model.value as string) || '')
-        }
+    }
+
+    const destroyEditor = () => {
+      if (aiEditor) {
+        aiEditor.destroy()
+        aiEditor = null
       }
+    }
+
+    watch(() => props.value, updateContent)
+    
+    watch(() => theme.isDark.value, (isDark) => {
+      if (divRef.value) {
+        divRef.value.classList.toggle('aie-theme-dark', isDark)
+        divRef.value.classList.toggle('aie-theme-light', !isDark)
+      }
+    }, { immediate: true })
+
+    expose({
+      get aiEditor() {
+        return aiEditor
+      },
+    })
+
+    onMounted(() => {
+      nextTick(() => {
+        createEditor()
+      })
     })
 
     onUnmounted(() => {
-      const element = divRef.value as HTMLElement | undefined
-      element?.removeEventListener('compositionstart', handleCompositionStart)
-      element?.removeEventListener('compositionend', handleCompositionEnd)
-      aiEditor?.destroy()
+      destroyEditor()
     })
 
-    watch(theme.isDark, (value) => {
-      if (!divRef.value) {
-        return
-      }
-      divRef.value.classList.remove('aie-theme-dark', 'aie-theme-light')
-      divRef.value.classList.add(value ? 'aie-theme-dark' : 'aie-theme-light')
-    }, { immediate: true })
-
     return () => (
-      <div ref={divRef} style={`height: ${props.height}; width:100%`} />
+      <div 
+        ref={divRef} 
+        style={{ 
+          height: props.height, 
+          width: '100%' 
+        }} 
+      />
     )
   },
 })
