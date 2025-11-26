@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.1.15
+
+### Patch Changes
+
+- fix: 修正编辑器批量插入图片
+  - @duxweb/dvha-core@1.1.15
+  - @duxweb/dvha-naiveui@1.1.15
+
 ## 1.1.14
 
 ### Patch Changes

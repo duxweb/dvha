@@ -59,26 +59,29 @@ export const DuxAiEditor = defineComponent({
     const { managePath, method } = useUploadConfig()
 
     const updateContent = () => {
-      if (!aiEditor || isUpdatingFromInternal) return
+      if (!aiEditor || isUpdatingFromInternal)
+        return
 
       const content = model.value || ''
       if (props.editorType === 'markdown') {
         aiEditor.setMarkdownContent(content)
-      } else {
+      }
+      else {
         aiEditor.setContent(content)
       }
     }
 
     const handleEditorChange = () => {
-      if (!aiEditor) return
+      if (!aiEditor)
+        return
 
       isUpdatingFromInternal = true
-      const content = props.editorType === 'markdown' 
-        ? aiEditor.getMarkdown() 
+      const content = props.editorType === 'markdown'
+        ? aiEditor.getMarkdown()
         : aiEditor.getHtml()
-      
+
       model.value = content
-      
+
       nextTick(() => {
         isUpdatingFromInternal = false
       })
@@ -121,7 +124,8 @@ export const DuxAiEditor = defineComponent({
     }
 
     const createEditor = () => {
-      if (!divRef.value) return
+      if (!divRef.value)
+        return
 
       const initialContent = props.value || props.defaultValue || ''
 
@@ -131,10 +135,10 @@ export const DuxAiEditor = defineComponent({
         placeholder: t('components.editor.placeholder'),
         content: initialContent,
         contentIsMarkdown: props.editorType === 'markdown',
-        
+
         onChange: handleEditorChange,
         onBlur: handleEditorChange,
-        
+
         image: {
           uploadUrl: uploadPath.value,
           uploadHeaders: props.uploadHeaders || {},
@@ -174,13 +178,39 @@ export const DuxAiEditor = defineComponent({
           },
         },
         toolbarKeys: [
-          'undo', 'redo', 'brush', 'eraser', 'divider',
-          'heading', 'font-family', 'font-size', 'divider',
-          'bold', 'italic', 'underline', 'strike', 'link', 'code',
-          'subscript', 'superscript', 'hr', 'todo', 'emoji', 'divider',
-          'highlight', 'font-color', 'divider',
-          'align', 'line-height', 'divider',
-          'bullet-list', 'ordered-list', 'indent-decrease', 'indent-increase', 'break', 'divider',
+          'undo',
+          'redo',
+          'brush',
+          'eraser',
+          'divider',
+          'heading',
+          'font-family',
+          'font-size',
+          'divider',
+          'bold',
+          'italic',
+          'underline',
+          'strike',
+          'link',
+          'code',
+          'subscript',
+          'superscript',
+          'hr',
+          'todo',
+          'emoji',
+          'divider',
+          'highlight',
+          'font-color',
+          'divider',
+          'align',
+          'line-height',
+          'divider',
+          'bullet-list',
+          'ordered-list',
+          'indent-decrease',
+          'indent-increase',
+          'break',
+          'divider',
           ...(props.fileManager
             ? [{
                 id: 'dux-file-manager-image',
@@ -203,44 +233,97 @@ export const DuxAiEditor = defineComponent({
                         },
                       },
                     })
-                    .then((value: Record<string, any>[]) => {
-                      value?.forEach?.(item => {
-                        const kind = inferFileType(item)
-                        const alt = item?.filename || ''
-                        if (kind === 'image') {
-                          ed.insert({
-                            type: 'image',
-                            attrs: {
-                              src: item.url,
-                              alt,
-                              width: 'auto',
-                            },
+                    .then((value?: Record<string, any>[] | Record<string, any>) => {
+                      const items = Array.isArray(value)
+                        ? [...value]
+                        : value
+                          ? [value]
+                          : []
+                      if (!items.length) return
+
+                      if (props.editorType === 'markdown') {
+                        const markdownSnippets = items
+                          .filter(item => item?.url)
+                          .map((item) => {
+                            const filename = item?.filename || item?.name || 'file'
+                            const kind = inferFileType(item)
+                            return kind === 'image'
+                              ? `![${filename || ''}](${item.url})`
+                              : `[${filename}](${item.url})`
                           })
-                        } else if (kind === 'video') {
-                          ed.insert({
-                            type: 'video',
-                            attrs: {
-                              src: item.url,
-                              controls: 'true',
-                              width: 350,
-                            },
-                          })
-                        } else {
-                          const filename = item?.filename || item?.name || 'file'
-                          if (props.editorType === 'markdown') {
-                            ed.insertMarkdown(`[${filename}](${item.url})`)
-                          } else {
-                            ed.insert(`<a href="${item.url}" target="_blank">${filename}</a>`)
-                          }
+                        if (markdownSnippets.length) {
+                          ed.insertMarkdown(markdownSnippets.join('\n\n'))
                         }
-                      })
+                        return
+                      }
+
+                      const structuredContents = items
+                        .filter(item => item?.url)
+                        .map((item) => {
+                          const kind = inferFileType(item)
+                          const alt = item?.filename || ''
+
+                          if (kind === 'image') {
+                            return {
+                              type: 'image',
+                              attrs: {
+                                src: item.url,
+                                alt,
+                                width: 'auto',
+                              },
+                            }
+                          }
+
+                          if (kind === 'video') {
+                            return {
+                              type: 'video',
+                              attrs: {
+                                src: item.url,
+                                controls: 'true',
+                                width: 350,
+                              },
+                            }
+                          }
+
+                          const filename = item?.filename || item?.name || 'file'
+                          return {
+                            type: 'paragraph',
+                            content: [
+                              {
+                                type: 'text',
+                                text: filename,
+                                marks: [
+                                  {
+                                    type: 'link',
+                                    attrs: {
+                                      href: item.url,
+                                      target: '_blank',
+                                    },
+                                  },
+                                ],
+                              },
+                            ],
+                          }
+                        })
+
+                      if (structuredContents.length) {
+                        ed.insert(structuredContents.length === 1 ? structuredContents[0] : structuredContents)
+                      }
                     })
                 },
               }]
             : []),
-          'image', 'video', 'attachment', 'quote', 'container',
-          'code-block', 'table', 'divider',
-          'printer', 'fullscreen', 'ai',
+          'image',
+          'video',
+          'attachment',
+          'quote',
+          'container',
+          'code-block',
+          'table',
+          'divider',
+          'printer',
+          'fullscreen',
+          'ai',
         ],
       })
     }
@@ -253,7 +336,7 @@ export const DuxAiEditor = defineComponent({
     }
 
     watch(() => props.value, updateContent)
-    
+
     watch(() => theme.isDark.value, (isDark) => {
       if (divRef.value) {
         divRef.value.classList.toggle('aie-theme-dark', isDark)
@@ -278,12 +361,12 @@ export const DuxAiEditor = defineComponent({
     })
 
     return () => (
-      <div 
-        ref={divRef} 
-        style={{ 
-          height: props.height, 
-          width: '100%' 
-        }} 
+      <div
+        ref={divRef}
+        style={{
+          height: props.height,
+          width: '100%',
+        }}
       />
     )
   },
