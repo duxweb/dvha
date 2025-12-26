@@ -40,6 +40,8 @@ export interface IDataProviderResponse {
   data?: any
   meta?: Record<string, any>
   raw?: any
+  headers?: Record<string, any>
+  status?: number
   [key: string]: any
 }
 

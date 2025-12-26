@@ -142,7 +142,7 @@ export function useAction(action?: UseActionProps) {
   const button = useActionButton()
   const dropdown = useActionDropdown()
 
-  const renderTable = (actionRender: UseActionProps): ((rowData: Record<string, any>, rowIndex: number) => VNodeChild) => {
+  const renderTable = (actionRender: UseActionProps): ((rowData: Record<string, unknown>, rowIndex: number) => VNodeChild) => {
     return (rowData: Record<string, any>, rowIndex: number) => {
       const props = {
         id: rowData[actionRender.key || action?.key || 'id'],

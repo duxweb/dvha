@@ -105,6 +105,9 @@ export function useDownload() {
       path,
       method: 'GET',
       query: params,
+      meta: {
+        responseType: 'blob',
+      },
       onDownloadProgress: (progressData) => {
         const currentTime = Date.now()
         const elapsedTimeMs = currentTime - startTime
@@ -127,13 +130,17 @@ export function useDownload() {
         onProgress?.(progressInfo)
       },
     }).then((e) => {
-      const type = contentType || e.data.headers['content-type']
-      const contentDisposition = e.data.headers['content-disposition']
+      const headers = e.headers || e.raw?.headers || {}
+      const type = contentType || headers['content-type'] || headers['Content-Type']
+      const contentDisposition = headers['content-disposition'] || headers['Content-Disposition']
 
       if (!filename) {
         filename = dayjs().format('YYYY-MM-DD-HH:mm:ss')
         if (type) {
-          filename = `${filename}.${mime.getExtension(type)}`
+          const pureType = type.split(';')[0]?.trim()
+          const ext = pureType ? mime.getExtension(pureType) : undefined
+          if (ext)
+            filename = `${filename}.${ext}`
         }
       }
 
@@ -144,7 +151,7 @@ export function useDownload() {
         }
       }
 
-      const blobData = e.data?.data instanceof Blob ? e.data?.data : new Blob([e.data?.data], { type: type || 'application/octet-stream' })
+      const blobData = e.data instanceof Blob ? e.data : new Blob([e.data], { type: type || 'application/octet-stream' })
       blob(blobData, filename)
 
       // 下载完成时设置进度为100%
@@ -159,7 +166,7 @@ export function useDownload() {
       progress.value = finalProgress
       onProgress?.(finalProgress)
     }).catch((e) => {
-      message.error(e.error || (t('hooks.download.failed') as string))
+      message.error(e.error || e.message || (t('hooks.download.failed') as string))
     }).finally(() => {
       loading.value = false
     })

@@ -1,11 +1,12 @@
 import type { IDataProviderResponse, IS3SignData } from '@duxweb/dvha-core'
-import type { App } from 'vue'
+import type { UserConfigDefaults } from '@unocss/core'
 
+import type { App } from 'vue'
 import initUnocssRuntime from '@unocss/runtime'
 import VueECharts from 'vue-echarts'
 import component from './component'
-import { initVeeValidate } from './config'
 
+import { initVeeValidate } from './config'
 import { config as unoConfig } from './config/uno'
 import 'echarts'
 import 'vue-cropper/dist/index.css'
@@ -18,7 +19,7 @@ export function createDuxPro() {
   initVeeValidate()
 
   initUnocssRuntime({
-    defaults: unoConfig(false),
+    defaults: unoConfig(false) as UserConfigDefaults,
     bypassDefined: true,
   })
 

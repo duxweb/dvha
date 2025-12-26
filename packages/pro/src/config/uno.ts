@@ -18,7 +18,7 @@ export function config(build?: boolean) {
         collections: {
           tabler: () => import('@iconify-json/tabler/icons.json').then(i => i.default),
         },
-      }),
+      }) as any,
       presetTypography(),
       presetTheme(),
     ],

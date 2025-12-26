@@ -1,5 +1,22 @@
 # @duxweb/dvha-pro
 
+## 1.1.17
+
+### Patch Changes
+
+- fix: 修正 unocss 新版本编译类型
+  - @duxweb/dvha-core@1.1.17
+  - @duxweb/dvha-naiveui@1.1.17
+
+## 1.1.16
+
+### Patch Changes
+
+- fix: 修正文件下载请求
+- Updated dependencies
+  - @duxweb/dvha-core@1.1.16
+  - @duxweb/dvha-naiveui@1.1.16
+
 ## 1.1.15
 
 ### Patch Changes

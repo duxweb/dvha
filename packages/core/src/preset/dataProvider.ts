@@ -269,11 +269,15 @@ export function simpleDataProvider(props: ISimpleDataProviderProps): IDataProvid
 }
 
 function handleResponse(res: any): IDataProviderResponse {
+  const normalizedData = typeof res.data?.data === 'undefined' ? res.data : res.data?.data
+
   return {
     message: res.data?.message,
-    data: res.data?.data,
+    data: normalizedData,
     meta: res.data?.meta,
     raw: res.data,
+    headers: res.headers,
+    status: res.status,
   }
 }
 

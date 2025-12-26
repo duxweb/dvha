@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-pro",
   "type": "module",
-  "version": "1.1.15",
+  "version": "1.1.17",
   "author": "DuxWeb",
   "license": "MIT",
   "repository": {
@@ -38,6 +38,9 @@
     "build:uno": "unocss -c uno.config.ts './src/**/*' -o ./src/theme/uno.css",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
+  },
+  "peerDependencies": {
+    "@unocss/core": "^66.5.5"
   },
   "dependencies": {
     "@ant-design/colors": "^7.2.1",
@@ -88,6 +91,7 @@
   },
   "devDependencies": {
     "@unocss/cli": "^66.5.5",
+    "@unocss/core": "^66.5.5",
     "rimraf": "^6.1.0",
     "sass-embedded": "^1.93.3",
     "tslib": "^2.8.1",
