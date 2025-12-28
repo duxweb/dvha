@@ -1,8 +1,65 @@
 import { useClient, useI18n } from '@duxweb/dvha-core'
 import dayjs from 'dayjs'
-import mime from 'mime'
 import { useMessage } from 'naive-ui'
 import { ref } from 'vue'
+
+const MIME_EXTENSION_MAP: Record<string, string> = {
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+  'application/vnd.ms-excel': 'xls',
+  'text/csv': 'csv',
+  'application/pdf': 'pdf',
+  'application/json': 'json',
+  'text/plain': 'txt',
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+  'application/zip': 'zip',
+  'application/octet-stream': 'bin',
+}
+
+const resolveExtension = (contentType?: string): string | undefined => {
+  if (!contentType)
+    return undefined
+  const normalized = contentType.split(';')[0]?.trim().toLowerCase()
+  if (!normalized)
+    return undefined
+  if (MIME_EXTENSION_MAP[normalized])
+    return MIME_EXTENSION_MAP[normalized]
+  const segments = normalized.split('/')
+  if (segments.length > 1) {
+    const suffix = segments[1].replace(/\s|\+/g, '')
+    if (suffix)
+      return suffix
+  }
+  return undefined
+}
+
+const extractFilename = (headerValue?: string): string | undefined => {
+  if (!headerValue)
+    return undefined
+  const decoded = headerValue.trim()
+
+  const filenameStar = decoded.match(/filename\*\s*=\s*(?:UTF-8'')?([^;]+)/i)
+  if (filenameStar?.[1]) {
+    try {
+      return decodeURIComponent(filenameStar[1].trim().replace(/["']/g, ''))
+    } catch (error) {
+      console.warn('[download] Failed to decode filename* header', error)
+      return filenameStar[1].trim().replace(/["']/g, '')
+    }
+  }
+
+  const filenameMatch = decoded.match(/filename\s*=\s*["']?([^"';]+)/i)
+  if (filenameMatch?.[1]) {
+    try {
+      return decodeURIComponent(filenameMatch[1].trim())
+    } catch (error) {
+      console.warn('[download] Failed to decode filename header', error)
+      return filenameMatch[1].trim()
+    }
+  }
+
+  return undefined
+}
 
 export interface IDownloadProgress {
   loaded: number
@@ -37,24 +94,28 @@ export function useDownload() {
 
   const blob = (blobData: Blob, filename?: string) => {
     // blob 下载
-    const url = window.URL || window.webkitURL
-    const href = url.createObjectURL(blobData)
-    const a = document.createElement('a')
-    a.href = href
-    a.download = filename || ''
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    url.revokeObjectURL(href)
+    const objectUrl = window.URL || window.webkitURL
+    const href = objectUrl.createObjectURL(blobData)
+    const link = document.createElement('a')
+    link.href = href
+    if (filename)
+      link.download = filename
+    link.rel = 'noopener noreferrer'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    objectUrl.revokeObjectURL(href)
   }
 
   const url = (urlString: string, filename?: string) => {
-    const a = document.createElement('a')
-    a.href = urlString
-    a.download = filename || ''
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
+    const link = document.createElement('a')
+    link.href = urlString
+    if (filename)
+      link.download = filename
+    link.rel = 'noopener noreferrer'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   const image = (urlString: string) => {
@@ -106,7 +167,7 @@ export function useDownload() {
       method: 'GET',
       query: params,
       meta: {
-        responseType: 'blob',
+        responseType: 'arraybuffer',
       },
       onDownloadProgress: (progressData) => {
         const currentTime = Date.now()
@@ -130,29 +191,29 @@ export function useDownload() {
         onProgress?.(progressInfo)
       },
     }).then((e) => {
-      const headers = e.headers || e.raw?.headers || {}
-      const type = contentType || headers['content-type'] || headers['Content-Type']
-      const contentDisposition = headers['content-disposition'] || headers['Content-Disposition']
+      const headers = (e.headers || e.raw?.headers || {}) as Record<string, string>
+      const readHeader = (key: string) => {
+        if (!key)
+          return undefined
+        const lowerKey = key.toLowerCase()
+        const upperKey = key.toUpperCase()
+        return headers[key] ?? headers[lowerKey] ?? headers[upperKey]
+      }
+      const resolvedType = contentType || readHeader('content-type') || 'application/octet-stream'
+      const dispositionFilename = extractFilename(readHeader('content-disposition'))
 
-      if (!filename) {
-        filename = dayjs().format('YYYY-MM-DD-HH:mm:ss')
-        if (type) {
-          const pureType = type.split(';')[0]?.trim()
-          const ext = pureType ? mime.getExtension(pureType) : undefined
-          if (ext)
-            filename = `${filename}.${ext}`
-        }
+      let resolvedFilename = filename || dispositionFilename
+      if (!resolvedFilename) {
+        const fallbackExt = resolveExtension(resolvedType)
+        const timestamp = dayjs().format('YYYY-MM-DD_HH-mm-ss')
+        resolvedFilename = fallbackExt ? `${timestamp}.${fallbackExt}` : timestamp
       }
 
-      if (contentDisposition) {
-        const matches = /filename=["']?([^"']+)/.exec(contentDisposition)
-        if (matches && matches?.length > 1) {
-          filename = decodeURIComponent(matches[1])
-        }
-      }
-
-      const blobData = e.data instanceof Blob ? e.data : new Blob([e.data], { type: type || 'application/octet-stream' })
-      blob(blobData, filename)
+      const responseData = (e.raw?.data ?? e.data ?? e) as Blob | ArrayBuffer | string
+      const blobData = responseData instanceof Blob
+        ? responseData
+        : new Blob([responseData], { type: resolvedType || 'application/octet-stream' })
+      blob(blobData, resolvedFilename)
 
       // 下载完成时设置进度为100%
       const finalProgress: IDownloadProgress = {

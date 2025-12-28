@@ -16,6 +16,7 @@ export const DuxTablePage = defineComponent({
   extends: DuxTableLayout,
   slots: Object as SlotsType<{
     default: (props: TablePageSlotProps) => any
+    filter: (props: { filter: Record<string, any>; filterReactive: Record<string, any>; onSearch: () => void; onReset: () => void }) => any
     bottom: () => any
     tools: () => any
     actions: () => any
@@ -58,6 +59,7 @@ export const DuxTablePage = defineComponent({
               }}
             </NDataTable>
           ),
+          filter: slots?.filter,
           bottom: slots?.bottom,
           tools: slots?.tools,
           actions: slots?.actions,

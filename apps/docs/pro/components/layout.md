@@ -263,18 +263,19 @@ const actions = [
 
 ### 属性
 
-| 属性名         | 类型                | 默认值 | 说明         |
-| -------------- | ------------------- | ------ | ------------ |
-| path           | string              | -      | 数据接口路径 |
-| filter         | Record<string, any> | -      | 筛选条件     |
-| filterSchema   | JsonSchemaNode[]    | -      | 筛选表单配置 |
-| columns        | TableColumn[]       | -      | 表格列配置   |
-| pagination     | boolean/object      | -      | 分页配置     |
-| tabs           | TabItem[]           | -      | 标签页配置   |
-| actions        | UseActionItem[]     | []     | 操作配置     |
-| tools          | TablePageTools      | -      | 工具栏配置   |
-| sideLeftTitle  | string              | ''     | 左侧栏标题   |
-| sideRightTitle | string              | ''     | 右侧栏标题   |
+| 属性名         | 类型                          | 默认值  | 说明                                                                 |
+| -------------- | ----------------------------- | ------- | -------------------------------------------------------------------- |
+| path           | string                        | -       | 数据接口路径                                                         |
+| filter         | Record<string, any>           | -       | 筛选条件                                                             |
+| filterSchema   | JsonSchemaNode[]              | -       | 筛选表单配置（单个对象代表一行；若某项为数组，则该数组内的筛选项共同占一行） |
+| filterType     | `'simple' \| 'multi'`         | simple  | 筛选布局模式，`simple` 为默认单行布局；`multi` 时按行渲染并将查询/重置按钮置于最后一行 |
+| columns        | TableColumn[]                 | -       | 表格列配置                                                           |
+| pagination     | boolean/object                | -       | 分页配置                                                             |
+| tabs           | TabItem[]                     | -       | 标签页配置                                                           |
+| actions        | UseActionItem[]               | []      | 操作配置                                                             |
+| tools          | TablePageTools                | -       | 工具栏配置                                                           |
+| sideLeftTitle  | string                        | ''      | 左侧栏标题                                                           |
+| sideRightTitle | string                        | ''      | 右侧栏标题                                                           |
 
 ### 接口定义
 
@@ -288,14 +289,23 @@ interface TablePageTools {
 
 ### 插槽
 
-| 插槽名    | 说明         | 参数                        |
-| --------- | ------------ | --------------------------- |
-| default   | 表格内容     | result (表格数据和配置结果) |
-| actions   | 操作按钮区域 | -                           |
-| tools     | 工具栏扩展   | -                           |
-| bottom    | 底部扩展区域 | -                           |
-| sideLeft  | 左侧栏内容   | -                           |
-| sideRight | 右侧栏内容   | -                           |
+| 插槽名    | 说明                                       | 参数                        |
+| --------- | ------------------------------------------ | --------------------------- |
+| default   | 表格内容                                   | result (表格数据和配置结果) |
+| filter    | 自定义筛选区域（包含筛选表单及查询/重置等操作，存在时完全覆盖默认布局） | `{ filter, filterReactive, onSearch, onReset }` |
+| actions   | 操作按钮区域                               | -                           |
+| tools     | 工具栏扩展                                 | -                           |
+| bottom    | 底部扩展区域                               | -                           |
+| sideLeft  | 左侧栏内容                                 | -                           |
+| sideRight | 右侧栏内容                                 | -                           |
+
+`#filter` 插槽提供 `filter` 与 `filterReactive` 两个对象用于绑定筛选字段，同时提供 `onSearch`、`onReset` 函数，分别等价于默认布局中的查询与重置行为。当定义该插槽时，组件自带的筛选表单、移动端折叠按钮、查询/重置操作等整块布局都会被替换，可完全自定义筛选 UI。
+
+### 多行筛选布局
+
+- 将 `filterType` 设为 `multi` 后，`filterSchema` 会以多行结构展示；
+- `filterSchema` 数组中的每个元素默认占据一行；若该元素本身是数组，则数组内的多项会并排位于同一行；
+- 查询与重置按钮会固定在多行布局的最后一行，移动端与桌面端表现一致。
 
 ### 基础用法
 

@@ -63,6 +63,14 @@
       "sideLeft": "左侧",
       "sideRight": "右侧"
     },
+    "dateTag": {
+      "recentMinutes": "近{num}分钟",
+      "recentHours": "近{num}小时",
+      "recentDays": "近{num}日",
+      "recentThreeDays": "近3日",
+      "recentSevenDays": "近7日",
+      "recentThirtyDays": "近30日"
+    },
     "form": {
       "edit": "编辑",
       "create": "新增",

@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.1.18
+
+### Patch Changes
+
+- feat: 增加高级筛选模式与 tag 筛选多选和单选
+  - @duxweb/dvha-core@1.1.18
+  - @duxweb/dvha-naiveui@1.1.18
+
 ## 1.1.17
 
 ### Patch Changes

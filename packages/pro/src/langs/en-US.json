@@ -61,6 +61,14 @@
       "rename": "Rename",
       "preview": "Preview"
     },
+    "dateTag": {
+      "recentMinutes": "Last {num} mins",
+      "recentHours": "Last {num} hrs",
+      "recentDays": "Last {num} days",
+      "recentThreeDays": "Last 3 days",
+      "recentSevenDays": "Last 7 days",
+      "recentThirtyDays": "Last 30 days"
+    },
     "form": {
       "edit": "Edit",
       "create": "Create"

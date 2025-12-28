@@ -325,19 +325,20 @@ const actions = [
 
 ### 属性
 
-| 属性名         | 类型                | 默认值 | 说明                                   |
-| -------------- | ------------------- | ------ | -------------------------------------- |
-| path           | string              | -      | 数据接口路径                           |
-| filter         | Record<string, any> | -      | 筛选条件（点击“查询”后生效）           |
-| filterReactive | Record<string, any> | -      | 实时生效的筛选（变更即触发刷新）       |
-| filterSchema   | JsonSchemaNode[]    | -      | 筛选表单配置                           |
-| columns        | TableColumn[]       | -      | 表格列配置                             |
-| pagination     | boolean/object      | -      | 分页配置                               |
-| tabs           | TabItem[]           | -      | 标签页配置                             |
-| actions        | UseActionItem[]     | []     | 操作配置                               |
-| tools          | TablePageTools      | -      | 工具栏配置                             |
-| sideLeftTitle  | string              | ''     | 左侧栏标题                             |
-| sideRightTitle | string              | ''     | 右侧栏标题                             |
+| 属性名         | 类型                          | 默认值  | 说明                                                         |
+| -------------- | ----------------------------- | ------- | ------------------------------------------------------------ |
+| path           | string                        | -       | 数据接口路径                                                 |
+| filter         | Record<string, any>           | -       | 筛选条件（点击“查询”后生效）                                 |
+| filterReactive | Record<string, any>           | -       | 实时生效的筛选（变更即触发刷新）                             |
+| filterSchema   | JsonSchemaNode[]              | -       | 筛选表单配置（对象表示一行；若某项是数组，则数组内的筛选器共享一行） |
+| filterType     | `'simple' \| 'multi'`         | simple  | 筛选布局模式，`simple` 为单行默认，`multi` 时按行渲染并在最后一行放置搜索/重置按钮 |
+| columns        | TableColumn[]                 | -       | 表格列配置                                                   |
+| pagination     | boolean/object                | -       | 分页配置                                                     |
+| tabs           | TabItem[]                     | -       | 标签页配置                                                   |
+| actions        | UseActionItem[]               | []      | 操作配置                                                     |
+| tools          | TablePageTools                | -       | 工具栏配置                                                   |
+| sideLeftTitle  | string                        | ''      | 左侧栏标题                                                   |
+| sideRightTitle | string                        | ''      | 右侧栏标题                                                   |
 
 ### 接口定义
 
@@ -373,14 +374,23 @@ interface JsonSchemaNode {
 
 ### 插槽
 
-| 插槽名    | 说明     | 参数                 |
-| --------- | -------- | -------------------- |
-| default   | 表格内容 | 表格相关的状态和方法 |
-| bottom    | 底部内容 | -                    |
-| tools     | 工具栏   | -                    |
-| actions   | 操作按钮 | -                    |
-| sideLeft  | 左侧边栏 | -                    |
-| sideRight | 右侧边栏 | -                    |
+| 插槽名    | 说明                                       | 参数                 |
+| --------- | ------------------------------------------ | -------------------- |
+| default   | 表格内容                                   | 表格相关的状态和方法 |
+| filter    | 自定义筛选区域（包含筛选表单及查询/重置等操作，存在时完全覆盖默认布局） | `{ filter, filterReactive, onSearch, onReset }` |
+| bottom    | 底部内容                                   | -                    |
+| tools     | 工具栏                                     | -                    |
+| actions   | 操作按钮                                   | -                    |
+| sideLeft  | 左侧边栏                                   | -                    |
+| sideRight | 右侧边栏                                   | -                    |
+
+通过 `#filter="{ filter, filterReactive, onSearch, onReset }"` 可完全掌控筛选区的布局与交互，默认的筛选表单、移动端按钮以及查询/重置操作都会被替换，并可直接复用同样的查询/重置逻辑。
+
+### 多行筛选布局
+
+- 设置 `filterType="multi"` 可启用多行筛选模式；
+- `filterSchema` 中的每个配置默认占据一行；若某一项为数组，则数组中的多个筛选项会并排显示在同一行；
+- 查询与重置按钮会自动出现在筛选区域的最后一行，移动端与桌面端行为保持一致。
 
 ### 基础用法
 
