@@ -27,6 +27,8 @@ export interface TablePageSlotProps extends UseNaiveTableReturn {
   width: number
 }
 
+export type FilterSchemaEntry = JsonSchemaNode | JsonSchemaNode[]
+
 export const DuxTableLayout = defineComponent({
   name: 'DuxTableLayout',
   props: {
@@ -38,7 +40,7 @@ export const DuxTableLayout = defineComponent({
       type: Object as PropType<Record<string, any>>,
     },
     filterSchema: {
-      type: Array as PropType<JsonSchemaNode[] | Ref<JsonSchemaNode[]>>,
+      type: Array as PropType<FilterSchemaEntry[] | Ref<FilterSchemaEntry[]>>,
     },
     filterType: {
       type: String as PropType<'simple' | 'multi'>,
@@ -142,7 +144,7 @@ export const DuxTableLayout = defineComponent({
     // Mobile filter visibility toggle
     const mobileFiltersShow = ref(false)
 
-    const normalizedFilterSchema = computed<JsonSchemaNode[]>(() => {
+    const normalizedFilterSchema = computed<FilterSchemaEntry[]>(() => {
       const schema = unref(props.filterSchema)
       return Array.isArray(schema) ? schema : []
     })
@@ -208,6 +210,9 @@ export const DuxTableLayout = defineComponent({
       if (changed) {
         if (result.page?.value !== 1) {
           result.onUpdatePage?.(1)
+        }
+        else {
+          result.onRefresh?.()
         }
         return
       }

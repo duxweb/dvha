@@ -1,12 +1,13 @@
 import type { JsonSchemaNode, UseExtendListProps } from '@duxweb/dvha-core'
 import type { TabsInst } from 'naive-ui'
-import type { PropType } from 'vue'
+import type { PropType, Ref } from 'vue'
 import type { UseActionItem } from '../../hooks'
 import type { DuxToolOptionItem } from './'
 import { useExtendList, useI18n, useJsonSchema } from '@duxweb/dvha-core'
 import { useWindowSize } from '@vueuse/core'
+import { cloneDeep, isEqual } from 'lodash-es'
 import { NButton, NCheckbox, NDrawer, NPagination, NProgress, NSpin, NTab, NTabs, NTooltip } from 'naive-ui'
-import { computed, defineComponent, h, nextTick, onMounted, reactive, ref, toRef, watch } from 'vue'
+import { computed, defineComponent, h, nextTick, onMounted, reactive, ref, toRaw, toRef, unref, watch } from 'vue'
 import { useAction } from '../../hooks'
 import { DuxPage, DuxPageEmpty } from '../../pages'
 import { DuxDrawerPage } from '../drawer'
@@ -24,6 +25,8 @@ export interface ListPageTools {
   refresh?: boolean
 }
 
+type ListFilterSchemaEntry = JsonSchemaNode | JsonSchemaNode[]
+
 export const DuxListLayout = defineComponent({
   name: 'DuxListLayout',
   props: {
@@ -39,7 +42,14 @@ export const DuxListLayout = defineComponent({
       type: Object as PropType<Record<string, any>>,
     },
     filterSchema: {
-      type: Array as PropType<JsonSchemaNode[]>,
+      type: Array as PropType<ListFilterSchemaEntry[] | Ref<ListFilterSchemaEntry[]>>,
+    },
+    filterReactive: {
+      type: Object as PropType<Record<string, any>>,
+    },
+    filterType: {
+      type: String as PropType<'simple' | 'multi'>,
+      default: 'simple',
     },
     pagination: {
       type: [Boolean, Object] as PropType<boolean | TablePagination>,
@@ -78,6 +88,7 @@ export const DuxListLayout = defineComponent({
   },
   setup(props, { slots, expose }) {
     const filters = toRef(props, 'filter', {})
+    const reactiveFilters = computed<Record<string, any>>(() => props.filterReactive || {})
     const { t } = useI18n()
     const { renderAction } = useAction()
 
@@ -131,24 +142,194 @@ export const DuxListLayout = defineComponent({
 
     const { width: windowWidth } = useWindowSize()
 
-    const filterSchema = computed(() => {
-      return (props.filterSchema || []).map((item) => {
-        const { label, ...rest } = item
+    const normalizedFilterSchema = computed<ListFilterSchemaEntry[]>(() => {
+      const schema = unref(props.filterSchema)
+      return Array.isArray(schema) ? schema : []
+    })
+
+    const filterRows = computed(() => {
+      return normalizedFilterSchema.value.map((entry, rowIndex) => {
+        const items = Array.isArray(entry) ? entry : [entry]
+        const nodes = items.map((item, nodeIndex) => {
+          const { label, ...rest } = item || {}
+          return {
+            key: `filter-node-${rowIndex}-${nodeIndex}`,
+            label: label ?? (item as any)?.title ?? '',
+            schema: rest as JsonSchemaNode,
+          }
+        })
         return {
-          tag: DuxTableFilter,
-          attrs: {
-            label,
-          },
-          children: rest,
+          key: `filter-row-${rowIndex}`,
+          nodes,
         }
       })
     })
 
-    const { render: filterRenderCollapse } = useJsonSchema({
-      data: computed(() => filterSchema.value),
+    const filterSchemaDefault = computed(() => {
+      return filterRows.value.flatMap(row => row.nodes.map(node => ({
+        tag: DuxTableFilter,
+        attrs: {
+          label: node.label,
+        },
+        children: node.schema,
+      })))
+    })
+
+    const { render: filterRenderDefault } = useJsonSchema({
+      data: computed(() => filterSchemaDefault.value),
     })
 
     const filterRenderKey = ref<number>(0)
+
+    const cloneFilters = (value?: Record<string, any>) => cloneDeep(toRaw(value) || {})
+    const snapshotAppliedFilters = () => cloneDeep(toRaw(appliedFilters) || {})
+    const mutateAppliedFilters = (mutator: () => void) => {
+      const prev = snapshotAppliedFilters()
+      mutator()
+      const next = toRaw(appliedFilters) || {}
+      return !isEqual(prev, next)
+    }
+
+    const goFirstPageOrRefresh = (changed: boolean) => {
+      if (changed) {
+        if (result.page?.value !== 1) {
+          result.onUpdatePage?.(1)
+        }
+        else {
+          result.onRefresh?.()
+        }
+        return
+      }
+      result.onRefresh?.()
+    }
+
+    const handleFilterSearch = () => {
+      const changed = mutateAppliedFilters(() => {
+        Object.keys(appliedFilters).forEach((k) => {
+          delete (appliedFilters as Record<string, unknown>)[k]
+        })
+        Object.assign(appliedFilters, cloneFilters(filters.value))
+        Object.assign(appliedFilters, cloneFilters(reactiveFilters.value))
+      })
+      goFirstPageOrRefresh(changed)
+    }
+
+    const handleFilterReset = () => {
+      const keepTab = (filters.value as Record<string, any>)?.tab
+      Object.keys(filters.value || {}).forEach((k) => {
+        if (k !== 'tab') {
+          delete (filters.value as Record<string, unknown>)[k]
+        }
+      })
+      const changed = mutateAppliedFilters(() => {
+        Object.keys(appliedFilters).forEach((k) => {
+          delete (appliedFilters as Record<string, unknown>)[k]
+        })
+        if (keepTab !== undefined) {
+          (appliedFilters as Record<string, any>).tab = keepTab
+        }
+        Object.assign(appliedFilters, cloneFilters(reactiveFilters.value))
+      })
+      goFirstPageOrRefresh(changed)
+      filterRenderKey.value++
+    }
+
+    const filterActionRowSchema = computed<JsonSchemaNode>(() => ({
+      tag: 'div',
+      attrs: {
+        class: 'flex flex-wrap gap-2 items-center w-full',
+      },
+      children: [
+        {
+          tag: 'div',
+          attrs: {
+            class: 'text-right text-sm text-muted w-24 px-1',
+          },
+        },
+        {
+          tag: 'div',
+          attrs: {
+            class: 'flex flex-wrap gap-2 flex-1',
+          },
+          children: [
+            {
+              tag: NButton,
+              attrs: {
+                type: 'primary',
+                secondary: true,
+                onClick: handleFilterSearch,
+              },
+              slots: {
+                icon: () => <div class="i-tabler:search size-4" />,
+                default: () => t('components.button.search'),
+              },
+            },
+            {
+              tag: NButton,
+              attrs: {
+                secondary: true,
+                onClick: handleFilterReset,
+              },
+              slots: {
+                icon: () => <div class="i-tabler:arrow-back-up size-4" />,
+                default: () => t('components.button.reset'),
+              },
+            },
+          ],
+        },
+      ],
+    }) as JsonSchemaNode)
+
+    const filterSchemaMulti = computed<JsonSchemaNode[]>(() => {
+      const rows = filterRows.value.map((row) => {
+        const isMultiColumn = row.nodes.length > 1
+        return {
+          tag: 'div',
+          attrs: {
+            'class': 'flex flex-wrap gap-2 w-full items-start',
+            'data-filter-row': row.key,
+          },
+          children: row.nodes.map((node) => {
+            const label = node.label
+            return {
+              tag: 'div',
+              attrs: {
+                class: isMultiColumn ? 'flex items-start gap-2' : 'flex items-start gap-2 w-full',
+              },
+              children: [
+                label
+                  ? {
+                      tag: 'div',
+                      attrs: {
+                        class: 'w-24 text-right text-sm text-muted px-1 flex-none pt-1.5',
+                      },
+                      children: label,
+                    }
+                  : {
+                      tag: 'div',
+                      attrs: {
+                        class: 'w-24 flex-none',
+                      },
+                    },
+                {
+                  tag: 'div',
+                  attrs: {
+                    class: 'min-w-50',
+                  },
+                  children: node.schema,
+                },
+              ],
+            } as JsonSchemaNode
+          }),
+        } as JsonSchemaNode
+      })
+      rows.push(filterActionRowSchema.value)
+      return rows
+    })
+
+    const { render: filterRenderMulti } = useJsonSchema({
+      data: filterSchemaMulti,
+    })
 
     const tools = computed(() => {
       return {
@@ -175,6 +356,7 @@ export const DuxListLayout = defineComponent({
           const first = values[0]
           if (first !== undefined) {
             filters.value.tab = first
+            ;(appliedFilters as Record<string, any>).tab = first
           }
         }
         nextTick(() => tabsInstRef.value?.syncBarPosition())
@@ -192,6 +374,117 @@ export const DuxListLayout = defineComponent({
 
     // 移动端筛选显隐
     const mobileFiltersShow = ref(false)
+
+    const renderSideControls = () => (
+      <div class={['flex gap-2']}>
+        {slots?.sideLeft && windowWidth.value < 1024 && (
+          <NButton
+            class="flex-none"
+            secondary
+            onClick={() => {
+              sideLeft.show = !sideLeft.show
+            }}
+          >
+            {{
+              icon: () => <div class="i-tabler:layout-sidebar-inactive size-4" />,
+            }}
+          </NButton>
+        )}
+
+        {slots?.sideRight && windowWidth.value < 1024 && (
+          <NButton
+            class="flex-none"
+            secondary
+            onClick={() => {
+              sideRight.show = !sideRight.show
+            }}
+          >
+            {{
+              icon: () => <div class="i-tabler:layout-sidebar-right-inactive size-4" />,
+            }}
+          </NButton>
+        )}
+
+        <div class="flex-none lg:hidden">
+          <NButton
+            secondary
+            onClick={() => {
+              mobileFiltersShow.value = !mobileFiltersShow.value
+            }}
+          >
+            {{
+              icon: () => <div class="i-tabler:filter size-4" />,
+            }}
+          </NButton>
+        </div>
+      </div>
+    )
+
+    const renderSearchControls = () => (
+      <div class={['flex gap-2 flex-row']}>
+        <div class="flex lg:hidden">
+          <NButton
+            type="primary"
+            secondary
+            onClick={handleFilterSearch}
+          >
+            {{
+              icon: () => <div class="i-tabler:search size-4" />,
+            }}
+          </NButton>
+        </div>
+        <div class={['hidden lg:flex gap-2']}>
+          <NButton
+            type="primary"
+            secondary
+            onClick={handleFilterSearch}
+          >
+            {{
+              icon: () => <div class="i-tabler:search size-4" />,
+              default: () => t('components.button.search'),
+            }}
+          </NButton>
+          <NButton
+            secondary
+            onClick={handleFilterReset}
+          >
+            {{
+              icon: () => <div class="i-tabler:arrow-back-up size-4" />,
+              default: () => t('components.button.reset'),
+            }}
+          </NButton>
+        </div>
+      </div>
+    )
+
+    const renderControlBar = (withSearch: boolean) => (
+      <div class="flex justify-between gap-2">
+        {renderSideControls()}
+        {withSearch ? renderSearchControls() : <div class="flex gap-2 flex-row" />}
+      </div>
+    )
+
+    watch(
+      () => reactiveFilters.value,
+      (val) => {
+        const changed = mutateAppliedFilters(() => {
+          const next = (val || {}) as Record<string, any>
+          Object.keys(next).forEach((k) => {
+            const v = next[k]
+            if (v === undefined || v === null || v === '') {
+              delete (appliedFilters as Record<string, unknown>)[k]
+            }
+            else {
+              (appliedFilters as Record<string, any>)[k] = v
+            }
+          })
+        })
+        if (changed) {
+          goFirstPageOrRefresh(true)
+        }
+      },
+      { deep: true },
+    )
 
     return () => (
       <DuxPage actions={props.actions} scrollbar={false}>
@@ -215,6 +508,7 @@ export const DuxListLayout = defineComponent({
                       value={activeTab.value}
                       onUpdateValue={(v) => {
                         filters.value.tab = v
+                        ;(appliedFilters as Record<string, any>).tab = v
                         nextTick(() => tabsInstRef.value?.syncBarPosition())
                       }}
                     >
@@ -234,117 +528,46 @@ export const DuxListLayout = defineComponent({
                 </div>
               </div>
 
-              <div class="flex gap-2 justify-between flex-col-reverse lg:flex-row">
-                {(windowWidth.value >= 1024 || mobileFiltersShow.value) && (
-                  <div class={['flex-1 flex flex-col lg:flex-row gap-2 flex-wrap']}>
-                    <div key={filterRenderKey.value} class="contents">
-                      {h(filterRenderCollapse)}
-                    </div>
-                  </div>
-                )}
+              {slots.filter
+                ? slots.filter({
+                    filter: filters.value,
+                    filterReactive: reactiveFilters.value,
+                    onSearch: handleFilterSearch,
+                    onReset: handleFilterReset,
+                  })
+                : (
+                    (props.filterType === 'multi' && windowWidth.value >= 1024)
+                      ? (
+                          <div class="flex flex-col gap-3">
+                            {(windowWidth.value >= 1024 || mobileFiltersShow.value) && (
+                              <div class="flex flex-col gap-3 w-full">
+                                <div key={filterRenderKey.value} class="flex flex-col gap-3">
+                                  {h(filterRenderMulti)}
+                                </div>
+                              </div>
+                            )}
 
-                <div class="flex justify-between gap-2">
-                  <div class={['flex-1 flex gap-2']}>
-                    {slots?.sideLeft && windowWidth.value < 1024 && (
-                      <NButton
-                        class="flex-none"
-                        secondary
-                        onClick={() => {
-                          sideLeft.show = !sideLeft.show
-                        }}
-                      >
-                        {{
-                          icon: () => <div class="i-tabler:layout-sidebar-inactive size-4" />,
-                        }}
-                      </NButton>
-                    )}
-                    {slots?.sideRight && windowWidth.value < 1024 && (
-                      <NButton
-                        class="flex-none"
-                        secondary
-                        onClick={() => {
-                          sideRight.show = !sideRight.show
-                        }}
-                      >
-                        {{
-                          icon: () => <div class="i-tabler:layout-sidebar-right-inactive size-4" />,
-                        }}
-                      </NButton>
-                    )}
-                    <div class="flex-none lg:hidden">
-                      <NButton
-                        secondary
-                        onClick={() => {
-                          mobileFiltersShow.value = !mobileFiltersShow.value
-                        }}
-                      >
-                        {{
-                          icon: () => <div class="i-tabler:filter size-4" />,
-                        }}
-                      </NButton>
-                    </div>
-                  </div>
+                            {renderControlBar(false)}
+                          </div>
+                        )
+                      : (
+                          <div class="flex gap-2 justify-between flex-col-reverse lg:flex-row">
+                            {(windowWidth.value >= 1024 || mobileFiltersShow.value) && (
+                              <div
+                                class={[
+                                  'flex-1 flex flex-col lg:flex-row gap-2 flex-wrap',
+                                ]}
+                              >
+                                <div key={filterRenderKey.value} class="contents">
+                                  {h(filterRenderDefault)}
+                                </div>
+                              </div>
+                            )}
 
-                  <div class={['flex gap-2 items-center', 'flex-row']}>
-                    <div class="flex lg:hidden">
-                      <NButton
-                        type="primary"
-                        secondary
-                        onClick={() => {
-                          Object.keys(appliedFilters).forEach(k => delete (appliedFilters as Record<string, unknown>)[k])
-                          Object.assign(appliedFilters, JSON.parse(JSON.stringify(filters.value || {})))
-                          result.onUpdatePage?.(1)
-                        }}
-                      >
-                        {{
-                          icon: () => <div class="i-tabler:search size-4" />,
-                        }}
-                      </NButton>
-                    </div>
-                    <div class={['hidden lg:flex gap-2']}>
-                      <NButton
-                        type="primary"
-                        secondary
-                        onClick={() => {
-                          Object.keys(appliedFilters).forEach(k => delete (appliedFilters as Record<string, unknown>)[k])
-                          Object.assign(appliedFilters, JSON.parse(JSON.stringify(filters.value || {})))
-                          result.onUpdatePage?.(1)
-                        }}
-                      >
-                        {{
-                          icon: () => <div class="i-tabler:search size-4" />,
-                          default: () => t('components.button.search'),
-                        }}
-                      </NButton>
-                      <NButton
-                        secondary
-                        onClick={() => {
-                          const keepTab = (filters.value as Record<string, any>).tab
-                          Object.keys(filters.value || {}).forEach((k) => {
-                            if (k !== 'tab') {
-                              delete (filters.value as Record<string, unknown>)[k]
-                            }
-                          })
-                          Object.keys(appliedFilters).forEach((k) => {
-                            delete (appliedFilters as Record<string, unknown>)[k]
-                          })
-                          if (keepTab !== undefined) {
-                            (appliedFilters as Record<string, any>).tab = keepTab
-                          }
-                          result.onUpdatePage?.(1)
-                          filterRenderKey.value++
-                        }}
-                      >
-                        {{
-                          icon: () => <div class="i-tabler:arrow-back-up size-4" />,
-                          default: () => t('components.button.reset'),
-                        }}
-                      </NButton>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
+                            {renderControlBar(true)}
+                          </div>
+                        )
+                  )}
 
               <NSpin show={isLoading.value} class="flex-1 min-h-0" contentClass="h-full">
                 <div
