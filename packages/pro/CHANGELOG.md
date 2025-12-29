@@ -1,5 +1,14 @@
 # @duxweb/dvha-pro
 
+## 1.1.19
+
+### Patch Changes
+
+- fix: useTree useSelect动态监听参数进行重新请求
+- Updated dependencies
+  - @duxweb/dvha-naiveui@1.1.19
+  - @duxweb/dvha-core@1.1.19
+
 ## 1.1.18
 
 ### Patch Changes

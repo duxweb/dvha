@@ -27,8 +27,8 @@ export const DuxCascader = defineComponent<DuxCascaderProps>({
     })
 
     const { options, loading } = useTree({
-      path: path.value,
-      params: params.value,
+      path,
+      params,
     })
 
     const cascaderProps = computed(() => {

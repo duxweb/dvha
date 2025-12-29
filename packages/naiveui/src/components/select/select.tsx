@@ -52,8 +52,8 @@ export const DuxSelect = defineComponent<DuxSelectProps>({
     const descField = toRef(props, 'descField', '')
 
     const { onSearch, loading, pagination, options, pageCount } = useSelect({
-      path: path.value || '',
-      params: params.value,
+      path,
+      params,
       defaultValue: model,
       pagination: props.pagination,
       optionLabel: labelField.value,

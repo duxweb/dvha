@@ -1,10 +1,11 @@
-import { computed, toRef } from 'vue'
+import type { MaybeRef } from 'vue'
+import { computed, reactive, unref, watch } from 'vue'
 import { arrayToTree, treeToArr } from '../utils'
 import { useList } from './data'
 
 export interface IUseTreeProps {
-  path?: string
-  params?: Record<string, any>
+  path?: MaybeRef<string | undefined>
+  params?: MaybeRef<Record<string, any> | undefined>
   treeOptions?: {
     valueKey?: string
     parentKey?: string
@@ -12,18 +13,42 @@ export interface IUseTreeProps {
     childrenKey?: string
   }
   converTree?: boolean
-  providerName?: string
+  providerName?: MaybeRef<string | undefined>
 }
 
 export function useTree(props: IUseTreeProps) {
-  const path = toRef(props, 'path')
-  const params = toRef(props, 'params')
-  const providerName = toRef(props, 'providerName')
+  const path = computed(() => unref(props.path) || '')
+  const resolvedParams = computed<Record<string, any>>(() => unref(props.params) || {})
+  const providerName = computed(() => unref(props.providerName))
+  const filters = reactive<Record<string, any>>({
+    ...resolvedParams.value,
+  })
+
+  watch(resolvedParams, (value) => {
+    const next = value || {}
+
+    Object.keys(filters).forEach((key) => {
+      if (!(key in next)) {
+        delete filters[key]
+      }
+    })
+
+    Object.entries(next).forEach(([key, val]) => {
+      filters[key] = val
+    })
+  }, {
+    deep: true,
+    immediate: true,
+  })
 
   const { data, isLoading } = useList({
-    path: path.value || '',
-    filters: params.value,
-    providerName: providerName.value,
+    get path() {
+      return path.value
+    },
+    filters,
+    get providerName() {
+      return providerName.value
+    },
   })
 
   const options = computed(() => {

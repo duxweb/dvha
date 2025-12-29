@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 1.1.19
+
+### Patch Changes
+
+- fix: useTree useSelect动态监听参数进行重新请求
+
 ## 1.1.18
 
 ## 1.1.17

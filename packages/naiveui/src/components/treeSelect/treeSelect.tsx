@@ -31,8 +31,8 @@ export const DuxTreeSelect = defineComponent<DuxTreeSelectProps>({
     })
 
     const { options, loading } = useTree({
-      path: path.value,
-      params: params.value,
+      path,
+      params,
       ...props.hookProps,
     })
 

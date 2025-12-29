@@ -42,8 +42,8 @@ export const DuxTree = defineComponent<DuxTreeProps>({
     const expanded = ref<valueKey[]>([])
 
     const { options, loading, expanded: expandedKeys } = useTree({
-      path: path.value,
-      params: params.value,
+      path,
+      params,
       ...props.hookProps,
     })
 

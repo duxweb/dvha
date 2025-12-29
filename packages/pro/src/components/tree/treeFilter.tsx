@@ -71,8 +71,8 @@ export const DuxTreeFilter = defineComponent<TreeFilterProps>({
     const { t } = useI18n()
 
     const { options, loading, expanded } = useTree({
-      path: path.value,
-      params: params.value,
+      path,
+      params,
       ...props.treeOptions,
     })
 

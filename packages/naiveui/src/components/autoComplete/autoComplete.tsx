@@ -43,8 +43,8 @@ export const DuxAutoComplete = defineComponent<DuxAutoCompleteProps>({
     const params = toRef(props, 'params', {})
 
     const { onSearch, loading, options } = useSelect({
-      path: path.value || '',
-      params: params.value,
+      path,
+      params,
       pagination: props.pagination,
       optionValue: props.valueField || 'id',
     })

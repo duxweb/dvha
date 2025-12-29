@@ -1,6 +1,6 @@
 import type { MaybeRef } from 'vue'
 import { debounce, isArray } from 'lodash-es'
-import { computed, ref, toRef, watch } from 'vue'
+import { computed, reactive, ref, toRef, unref, watch } from 'vue'
 import { useList, useMany } from './data'
 
 type SelectValue = Array<string | number> | string | number | null | undefined
@@ -9,13 +9,13 @@ export interface IUseSelectProps {
   /** 默认选中值，可以是单个值或数组 */
   defaultValue?: MaybeRef<SelectValue>
   /** 数据请求路径 */
-  path?: string
+  path?: MaybeRef<string | undefined>
   /** 请求参数 */
-  params?: Record<string, any>
+  params?: MaybeRef<Record<string, any> | undefined>
   /** 分页配置，false表示不分页，true表示默认20条/页，数字表示指定每页条数 */
   pagination?: boolean | number
   /** 数据提供者名称 */
-  providerName?: string
+  providerName?: MaybeRef<string | undefined>
   /**
    * 选项显示标签配置
    * - 字符串：指定用作显示标签的字段名
@@ -48,6 +48,9 @@ export interface IUseSelectProps {
 export function useSelect(props: IUseSelectProps) {
   const defaultValue = toRef(props, 'defaultValue')
   const keyword = ref<string>()
+  const resolvedPath = computed(() => unref(props.path) || '')
+  const resolvedParams = computed<Record<string, any>>(() => unref(props.params) || {})
+  const resolvedProviderName = computed(() => unref(props.providerName))
   const pagination = ref({
     page: 1,
     pageSize: typeof props.pagination === 'number'
@@ -55,39 +58,53 @@ export function useSelect(props: IUseSelectProps) {
       : props.pagination ? 20 : 0,
   })
   const selectedOnce = ref(false)
-  const filters = ref<Record<string, any>>({
-    ...props.params,
+  const filters = reactive<Record<string, any>>({
     keyword: '',
+    ...resolvedParams.value,
   })
 
   const debouncedSearch = debounce((value: string) => {
     keyword.value = value
-    filters.value.keyword = value
+    filters.keyword = value
   }, props.debounce || 300)
 
   const onSearch = (searchValue: string) => {
     debouncedSearch(searchValue)
   }
 
-  watch(() => props.params, (params) => {
-    filters.value = {
-      keyword: keyword.value,
-      ...params,
-    }
+  watch(resolvedParams, (params) => {
+    const entries = params || {}
+
+    // 移除已不存在的参数，保留 keyword
+    Object.keys(filters).forEach((key) => {
+      if (key === 'keyword') {
+        return
+      }
+      if (!(key in entries)) {
+        delete filters[key]
+      }
+    })
+
+    Object.entries(entries).forEach(([key, value]) => {
+      filters[key] = value
+    })
+
+    filters.keyword = keyword.value || ''
   }, {
     deep: true,
+    immediate: true,
   })
 
   const { data, isLoading, total, pageCount } = useList({
     get path() {
-      return props.path || ''
+      return resolvedPath.value
     },
     filters,
     get pagination() {
       return props.pagination ? pagination.value : undefined
     },
     get providerName() {
-      return props.providerName
+      return resolvedProviderName.value
     },
   })
 
@@ -157,7 +174,7 @@ export function useSelect(props: IUseSelectProps) {
 
   const { refetch: fetchSelected } = useMany({
     get path() {
-      return props.path || ''
+      return resolvedPath.value
     },
     get ids() {
       return isArray(defaultValue.value) ? defaultValue.value as string[] : [defaultValue.value as string]
@@ -165,7 +182,7 @@ export function useSelect(props: IUseSelectProps) {
     options: {
       enabled: false,
     },
-    providerName: props.providerName,
+    providerName: resolvedProviderName.value,
   })
 
   watch(defaultValue, async (value) => {
