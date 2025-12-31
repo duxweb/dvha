@@ -1,7 +1,7 @@
 import type { FlowNodeRegistry } from '@duxweb/dvha-pro'
-import { DuxFormItem, DuxFormLayout, useNodeDataFlow, FlowNodeCard } from '@duxweb/dvha-pro'
-import { defineComponent, ref, computed, markRaw } from 'vue'
-import { NText, NCard, NInput, NSelect, NTag } from 'naive-ui'
+import { DuxFormItem, DuxFormLayout, FlowNodeCard, useNodeDataFlow } from '@duxweb/dvha-pro'
+import { NCard, NInput, NSelect, NTag, NText } from 'naive-ui'
+import { computed, defineComponent, markRaw, ref } from 'vue'
 
 // AI结束节点组件
 export const AiEndNode = defineComponent({
@@ -10,14 +10,14 @@ export const AiEndNode = defineComponent({
   setup(props) {
     // 创建响应式的数据引用，确保组件能正确响应数据变化
     const nodeData = computed(() => props.data)
-    
+
     return () => (
       <FlowNodeCard
         nodeProps={{
           data: props.data,
           id: props.id,
           selected: props.selected,
-          type: 'aiEnd'
+          type: 'aiEnd',
         }}
         showTargetHandle={true}
         showSourceHandle={false}
@@ -31,14 +31,17 @@ export const AiEndNode = defineComponent({
                 </NTag>
               </div>
               <div class="text-xs text-muted-foreground">
-                <div>模板: {nodeData.value?.config?.outputTemplate ? '已配置' : '未配置'}</div>
+                <div>
+                  模板:
+                  {nodeData.value?.config?.outputTemplate ? '已配置' : '未配置'}
+                </div>
               </div>
             </div>
-          )
+          ),
         }}
       />
     )
-  }
+  },
 })
 
 // AI结束节点配置面板
@@ -48,14 +51,14 @@ export const AiEndNodeConfig = defineComponent({
   emits: ['update:modelValue'],
   setup(props, { emit }) {
     const { getInputFieldOptions } = useNodeDataFlow()
-    
+
     const nodeData = ref({
       ...props.modelValue,
       config: {
         outputField: '',
         outputTemplate: '处理结果: {{response}}',
-        ...props.modelValue?.config
-      }
+        ...props.modelValue?.config,
+      },
     })
 
     const updateData = () => {
@@ -64,18 +67,19 @@ export const AiEndNodeConfig = defineComponent({
 
     // 获取上游字段选项
     const upstreamFields = computed(() => {
-      if (!props.nodeId || !props.nodeRegistries) return []
+      if (!props.nodeId || !props.nodeRegistries)
+        return []
       return getInputFieldOptions(props.nodeId, props.nodeRegistries)
     })
 
     // 获取可用的变量（用于模板）
     const getAvailableVariables = () => {
-      return upstreamFields.value.map(field => {
+      return upstreamFields.value.map((field) => {
         const fieldName = field.value.split('.')[1]
         return {
           name: fieldName,
           syntax: `{{${fieldName}}}`,
-          description: field.label
+          description: field.label,
         }
       })
     }
@@ -86,20 +90,20 @@ export const AiEndNodeConfig = defineComponent({
     const insertVariable = (varName: string) => {
       const template = nodeData.value.config.outputTemplate || ''
       const cursorPos = template.length
-      const newTemplate = template.slice(0, cursorPos) + `{{${varName}}}` + template.slice(cursorPos)
+      const newTemplate = `${template.slice(0, cursorPos)}{{${varName}}}${template.slice(cursorPos)}`
       nodeData.value.config.outputTemplate = newTemplate
       updateData()
     }
 
     return () => (
-      <DuxFormLayout labelPlacement='top'>
+      <DuxFormLayout labelPlacement="top">
         <DuxFormItem label="标签">
           <NInput
             v-model:value={nodeData.value.label}
             onUpdateValue={updateData}
           />
         </DuxFormItem>
-        
+
         <DuxFormItem label="描述">
           <NInput
             v-model:value={nodeData.value.description}
@@ -152,9 +156,27 @@ export const AiEndNodeConfig = defineComponent({
                 </div>
                 <div class="text-xs text-gray-500 dark:text-gray-400 mt-2">
                   <div><strong>示例模板：</strong></div>
-                  <div>用户问题：{'{{'} input {'}}'}  </div>
-                  <div>AI回复：{'{{'} response {'}}'}  </div>
-                  <div>处理时间：{'{{'} timestamp {'}}'}  </div>
+                  <div>
+                    用户问题：
+                    {'{{'}
+                    {' '}
+                    input
+                    {'}}'}
+                  </div>
+                  <div>
+                    AI回复：
+                    {'{{'}
+                    {' '}
+                    response
+                    {'}}'}
+                  </div>
+                  <div>
+                    处理时间：
+                    {'{{'}
+                    {' '}
+                    timestamp
+                    {'}}'}
+                  </div>
                 </div>
               </div>
             </NCard>
@@ -162,22 +184,24 @@ export const AiEndNodeConfig = defineComponent({
         )}
       </DuxFormLayout>
     )
-  }
+  },
 })
 
 // AI结束节点注册信息
-export const getAiEndNodeRegistry = (): FlowNodeRegistry => ({
-  meta: {
-    name: 'aiEnd',
-    label: 'AI结束',
-    description: '输出AI处理的最终结果',
-    category: 'end',
-    nodeType: 'end',
-    icon: 'i-tabler:flag-3',
-    style: {
-      iconBgClass: 'bg-red-500'
-    }
-  },
-  component: markRaw(AiEndNode),
-  settingComponent: markRaw(AiEndNodeConfig)
-})
+export function getAiEndNodeRegistry(): FlowNodeRegistry {
+  return {
+    meta: {
+      name: 'aiEnd',
+      label: 'AI结束',
+      description: '输出AI处理的最终结果',
+      category: 'end',
+      nodeType: 'end',
+      icon: 'i-tabler:flag-3',
+      style: {
+        iconBgClass: 'bg-red-500',
+      },
+    },
+    component: markRaw(AiEndNode),
+    settingComponent: markRaw(AiEndNodeConfig),
+  }
+}

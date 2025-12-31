@@ -1,9 +1,10 @@
 import type { SelectProps } from 'naive-ui'
-import type { VNodeChild } from 'vue'
+import type { PropType, VNodeChild } from 'vue'
 import { useSelect } from '@duxweb/dvha-core'
 import { useVModel } from '@vueuse/core'
+import { isEqual } from 'lodash-es'
 import { NAvatar, NImage, NPagination, NSelect, NSpace, NTag } from 'naive-ui'
-import { computed, defineComponent, toRef } from 'vue'
+import { computed, defineComponent, toRef, watch } from 'vue'
 
 interface DuxSelectProps extends SelectProps {
   path?: string
@@ -13,6 +14,7 @@ interface DuxSelectProps extends SelectProps {
   imageField?: string
   descField?: string
   multiple?: boolean
+  option?: Record<string, any> | Record<string, any>[] | null
 }
 
 export const DuxSelect = defineComponent<DuxSelectProps>({
@@ -34,6 +36,10 @@ export const DuxSelect = defineComponent<DuxSelectProps>({
       type: String,
     },
     multiple: Boolean,
+    option: {
+      type: [Object, Array] as PropType<Record<string, any> | Record<string, any>[] | null>,
+      default: undefined,
+    },
   },
   extends: NSelect,
   setup(props, { emit, slots }) {
@@ -43,6 +49,11 @@ export const DuxSelect = defineComponent<DuxSelectProps>({
     const model = useVModel(props, 'value', emit, {
       passive: true,
       defaultValue: props.defaultValue,
+    })
+
+    const optionModel = useVModel(props, 'option', emit, {
+      passive: true,
+      defaultValue: props.multiple ? [] : null,
     })
 
     const labelField = toRef(props, 'labelField', 'name')
@@ -61,9 +72,42 @@ export const DuxSelect = defineComponent<DuxSelectProps>({
     })
 
     const selectProps = computed(() => {
-      const { labelField, valueField, avatarField, imageField, descField, ...rest } = props
+      const { labelField, valueField, avatarField, imageField, descField, option, ...rest } = props
       return rest
     })
+
+    const syncOptionModel = (records: Record<string, any>[] | Record<string, any> | null) => {
+      if (props.multiple) {
+        if (!isEqual(optionModel.value, records)) {
+          optionModel.value = (records || []) as Record<string, any>[]
+        }
+        return
+      }
+
+      if (optionModel.value !== records) {
+        optionModel.value = (records || null) as Record<string, any> | null
+      }
+    }
+
+    watch(
+      [model, options],
+      ([modelValue, optionList]) => {
+        if (props.multiple) {
+          const values = Array.isArray(modelValue) ? modelValue : []
+          const records = values
+            .map(value => optionList.find(option => option.value === value)?.raw)
+            .filter((item): item is Record<string, any> => Boolean(item))
+          syncOptionModel(records)
+          return
+        }
+
+        const record = optionList.find(option => option.value === modelValue)?.raw || null
+        syncOptionModel(record)
+      },
+      {
+        immediate: true,
+      },
+    )
 
     return () => (
       <NSelect

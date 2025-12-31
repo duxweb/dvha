@@ -1,10 +1,10 @@
 import type { JsonSchemaNode } from '@duxweb/dvha-core'
+import type { DataTableColumn } from 'naive-ui'
 import type { PropType, VNode } from 'vue'
 import { useJsonSchema } from '@duxweb/dvha-core'
 import { useVModel } from '@vueuse/core'
-import { NButton, NTable } from 'naive-ui'
-import { computed, defineComponent, h } from 'vue'
-import { VueDraggable } from 'vue-draggable-plus'
+import { NButton, NDataTable } from 'naive-ui'
+import { computed, defineComponent, h, ref } from 'vue'
 import { DuxBlockEmpty } from '../status'
 
 export interface DuxDynamicDataColumn {
@@ -16,12 +16,19 @@ export interface DuxDynamicDataColumn {
     cell: Record<string, any>,
     rowIndex: number,
   ) => VNode
+  fixed?: 'left' | 'right'
+  align?: 'left' | 'right' | 'center'
+  ellipsis?: boolean
   schema?: JsonSchemaNode | JsonSchemaNode[] | ((cell: Record<string, any>, rowIndex: number) => JsonSchemaNode | JsonSchemaNode[])
 }
 
 export const DuxDynamicData = defineComponent({
   name: 'DuxDynamicData',
   props: {
+    moveAction: {
+      type: Boolean,
+      default: true,
+    },
     createAction: {
       type: Boolean,
       default: true,
@@ -50,6 +57,7 @@ export const DuxDynamicData = defineComponent({
     })
 
     const { renderAsync } = useJsonSchema()
+    const draggingRowIndex = ref<number | null>(null)
 
     const copy = (field: string | number) => {
       const firstRowValue = model.value?.[0][field]
@@ -60,143 +68,199 @@ export const DuxDynamicData = defineComponent({
       model.value = [...newData]
     }
 
-    const colNum = computed(() => {
-      let num = props.columns?.length || 0
-      if (props.createAction || props.deleteAction) {
-        num += 1
+    const dataSource = computed(() => model.value || [])
+
+    const handleCreate = () => {
+      if (props?.onCreate) {
+        props.onCreate()
+        return
       }
-      return num
+      const nextRow = props?.createCallback?.(model.value) || {}
+      model.value = [...(model.value || []), nextRow]
+    }
+
+    const deleteRow = (rowIndex: number) => {
+      if (!model.value) {
+        return
+      }
+      const list = [...model.value]
+      list.splice(rowIndex, 1)
+      model.value = list
+    }
+
+    const rowKeyMap = new WeakMap<Record<string, any>, number>()
+    let rowKeySeed = 0
+    const getRowKey = (row: Record<string, any>) => {
+      if (row.__specKey || row.__rowKey) {
+        return row.__specKey || row.__rowKey
+      }
+      if (!rowKeyMap.has(row)) {
+        rowKeySeed += 1
+        rowKeyMap.set(row, rowKeySeed)
+      }
+      return rowKeyMap.get(row)!
+    }
+
+    const moveRow = (fromIndex: number, toIndex: number) => {
+      if (fromIndex === toIndex) {
+        return
+      }
+      const list = [...(model.value || [])]
+      const [item] = list.splice(fromIndex, 1)
+      list.splice(toIndex, 0, item)
+      model.value = list
+    }
+
+    const getRowProps = (rowIndex: number) => {
+      if (!props.moveAction) {
+        return {}
+      }
+      return {
+        style: { cursor: 'move' },
+        draggable: true,
+        onDragstart: (event: DragEvent) => {
+          draggingRowIndex.value = rowIndex
+          event.dataTransfer?.setData('text/plain', String(rowIndex))
+          event.dataTransfer?.setDragImage?.(event.currentTarget as HTMLElement, 0, 0)
+        },
+        onDragover: (event: DragEvent) => {
+          event.preventDefault()
+          event.dataTransfer!.dropEffect = 'move'
+        },
+        onDrop: (event: DragEvent) => {
+          event.preventDefault()
+          const from = draggingRowIndex.value
+          if (from === null) {
+            return
+          }
+          moveRow(from, rowIndex)
+          draggingRowIndex.value = null
+        },
+        onDragend: () => {
+          draggingRowIndex.value = null
+        },
+      }
+    }
+
+    const moveColumn = computed<DataTableColumn<Record<string, any>> | null>(() => {
+      if (!props.moveAction) {
+        return null
+      }
+      return {
+        key: '__move',
+        fixed: 'left',
+        width: 48,
+        align: 'center',
+        title: '',
+        render: () => (
+          <div class="i-tabler:grid-dots text-gray-400 size-4 inline-flex items-center justify-center"></div>
+        ),
+      }
+    })
+
+    const mappedColumns = computed<DataTableColumn<Record<string, any>>[]>(() => {
+      return (props.columns || []).map((column) => {
+        const titleNode = column.copy
+          ? () => (
+              <div class="flex items-center justify-between gap-1">
+                <span>{column.title}</span>
+                <NButton
+                  text
+                  type="primary"
+                  size="small"
+                  onClick={() => copy(column.key)}
+                  renderIcon={() => <div class="i-tabler:pencil-down text-base"></div>}
+                />
+              </div>
+            )
+          : column.title
+        return {
+          key: column.key,
+          title: titleNode,
+          width: column.width,
+          fixed: column.fixed,
+          align: column.align,
+          ellipsis: column.ellipsis,
+          render: (row: Record<string, any>, rowIndex: number) => {
+            if (column.schema) {
+              const schema = typeof column.schema === 'function' ? column.schema(row, rowIndex) : column.schema
+              return h(renderAsync({
+                data: (Array.isArray(schema) ? schema : [schema]) as JsonSchemaNode[],
+                context: {
+                  rowIndex,
+                  model: model.value,
+                  row,
+                },
+              }))
+            }
+            return column.render?.(row, rowIndex) ?? row[column.key]
+          },
+        } as DataTableColumn<Record<string, any>>
+      })
+    })
+
+    const actionColumn = computed<DataTableColumn<Record<string, any>> | null>(() => {
+      if (!props.createAction && !props.deleteAction) {
+        return null
+      }
+      return {
+        key: '__action',
+        width: 64,
+        fixed: 'right',
+        align: 'center',
+        title: props.createAction
+          ? () => (
+              <NButton
+                tertiary
+                type="primary"
+                circle
+                renderIcon={() => <div class="i-tabler:plus h-4 w-4"></div>}
+                onClick={handleCreate}
+              />
+            )
+          : '',
+        render: (_, rowIndex: number) => (
+          props.deleteAction
+            ? (
+                <NButton
+                  tertiary
+                  type="error"
+                  circle
+                  renderIcon={() => <div class="i-tabler:trash h-4 w-4"></div>}
+                  onClick={() => deleteRow(rowIndex)}
+                />
+              )
+            : null
+        ),
+      }
+    })
+
+    const tableColumns = computed(() => {
+      const cols: (DataTableColumn<Record<string, any>> | null)[] = [
+        moveColumn.value,
+        ...mappedColumns.value,
+        actionColumn.value,
+      ]
+      return cols.filter(Boolean) as DataTableColumn<Record<string, any>>[]
     })
 
     return () => (
-      <VueDraggable
-        modelValue={model.value}
+      <NDataTable
+        size="small"
+        rowKey={getRowKey}
+        bordered={false}
+        columns={tableColumns.value}
+        data={dataSource.value}
+        pagination={false}
         {...{
-          'onUpdate:modelValue': (v) => {
-            model.value = v
-          },
+          rowProps: (_row: Record<string, any>, rowIndex: number) => getRowProps(rowIndex),
         }}
-        handle=".sort-handle"
-        target=".sort-target"
-        animation={150}
-      >
-        <div class="overflow-auto w-full">
-          <NTable class="table-fixed w-full">
-            <thead>
-              <tr>
-                <th style={{
-                  width: '40px',
-                }}
-                >
-
-                </th>
-                {props.columns?.map((item, index) => (
-                  <th
-                    key={index}
-                    style={{
-                      width: `${item.width}px`,
-                    }}
-                  >
-                    <div class="flex items-center justify-between">
-                      <div>{item.title}</div>
-                      {item.copy && (
-                        <div>
-                          <NButton
-                            onClick={() => {
-                              copy(item.key)
-                            }}
-                            renderIcon={() => <div class="i-tabler:pencil-down t-icon"></div>}
-                            text
-                            type="primary"
-                          >
-                          </NButton>
-                        </div>
-                      )}
-                    </div>
-                  </th>
-                ))}
-
-                {(props.createAction || props.deleteAction) && (
-                  <th
-                    class="w-15"
-                  >
-                    {props.createAction
-                      && (
-                        <NButton
-                          tertiary
-                          type="primary"
-                          circle
-                          renderIcon={() => <div class="i-tabler:plus h-4 w-4"></div>}
-                          onClick={() => {
-                            if (props?.onCreate) {
-                              props.onCreate()
-                            }
-                            else {
-                              if (!model.value) {
-                                model.value = []
-                              }
-                              model.value?.push(props?.createCallback?.(model.value) || {})
-                            }
-                          }}
-                        />
-                      )}
-                  </th>
-                )}
-              </tr>
-            </thead>
-            <tbody class="sort-target">
-              {(model.value && model.value?.length > 0)
-                ? model.value.map((row, rowIndex) => (
-                    <tr key={rowIndex}>
-                      <td>
-                        <div class="sort-handle i-tabler:grid-dots size-4 cursor-move"></div>
-                      </td>
-                      {props.columns?.map((column, columnIndex) => {
-                        const schema = typeof column.schema === 'function' ? column.schema(row, rowIndex) : column.schema
-
-                        return (
-                          <td key={columnIndex}>
-                            {column.schema
-                              ? h(renderAsync({
-                                  data: (Array.isArray(schema) ? schema : [schema]) as JsonSchemaNode[],
-                                  context: {
-                                    rowIndex,
-                                    model: model.value,
-                                    row,
-                                  },
-                                }))
-                              : column.render?.(row, rowIndex) || row[column.key]}
-                          </td>
-                        )
-                      })}
-                      {(props.createAction || props.deleteAction) && (
-                        <td class="w-15">
-                          {props.deleteAction && (
-                            <NButton
-                              tertiary
-                              type="error"
-                              circle
-                              renderIcon={() => <div class="i-tabler:trash h-4 w-4"></div>}
-                              onClick={() => {
-                                model.value.splice(rowIndex, 1)
-                              }}
-                            />
-                          )}
-                        </td>
-                      )}
-                    </tr>
-                  ))
-                : (
-                    <tr>
-                      <td colspan={colNum.value}>
-                        <DuxBlockEmpty />
-                      </td>
-                    </tr>
-                  )}
-            </tbody>
-          </NTable>
-        </div>
-      </VueDraggable>
+        v-slots={{
+          empty: () => (
+            <DuxBlockEmpty />
+          ),
+        }}
+      />
     )
   },
 })

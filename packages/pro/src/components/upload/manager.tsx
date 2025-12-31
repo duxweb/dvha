@@ -233,6 +233,9 @@ const DuxFileManage = defineComponent({
               <NButton
                 type="default"
                 ghost
+                style={{
+                  '--n-padding': '0 10px',
+                }}
                 onClick={() => {
                   props.onClose?.()
                 }}

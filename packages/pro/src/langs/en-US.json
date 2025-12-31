@@ -85,6 +85,7 @@
       "placeholder": "Please enter content"
     },
     "upload": {
+      "title": "File Manager",
       "fileManager": "File Manager",
       "uploadFile": "Upload File",
       "cancel": "Cancel",
@@ -182,6 +183,17 @@
         "columnsPlaceholder": "Enter columns",
         "spacingPlaceholder": "Enter spacing"
       }
+    },
+    "spec": {
+      "nameLabel": "Spec Name",
+      "namePlaceholder": "e.g. Color, Weight",
+      "addImage": "Add Spec Image",
+      "valueLabel": "Spec Values",
+      "valuePlaceholder": "e.g. Red",
+      "addValue": "Add Spec Value",
+      "addSpec": "Add Spec",
+      "imageHint": "Upload an image for each spec value",
+      "status": "Status"
     },
     "flowEditor": {
       "properties": "Properties",

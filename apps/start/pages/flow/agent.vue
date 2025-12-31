@@ -1,23 +1,12 @@
-<template>
-  <div class="h-full">
-    <DuxFlowEditor
-      v-model="flowData"
-      :custom-nodes="customNodes"
-      :categories="categories"
-      :config="editorConfig"
-    />
-  </div>
-</template>
-
 <script setup lang="ts">
 import type { FlowData, FlowNodeCategory } from '@duxweb/dvha-pro'
 import { DuxFlowEditor } from '@duxweb/dvha-pro'
 import { computed, ref } from 'vue'
-import { 
-  getAiStartNodeRegistry, 
-  getKnowledgeSearchNodeRegistry, 
-  getLlmModelNodeRegistry, 
-  getAiEndNodeRegistry 
+import {
+  getAiEndNodeRegistry,
+  getAiStartNodeRegistry,
+  getKnowledgeSearchNodeRegistry,
+  getLlmModelNodeRegistry,
 } from '../../components/aiNodes'
 
 // AI Agent 流程数据
@@ -34,9 +23,9 @@ const flowData = ref<FlowData>({
         config: {
           fields: [
             { name: 'question', type: 'text', required: true, label: '用户问题' },
-            { name: 'context', type: 'text', required: false, label: '上下文' }
-          ]
-        }
+            { name: 'context', type: 'text', required: false, label: '上下文' },
+          ],
+        },
       },
     },
     {
@@ -50,8 +39,8 @@ const flowData = ref<FlowData>({
         config: {
           knowledgeBase: 'all',
           searchField: '1.question',
-          searchCount: 5
-        }
+          searchCount: 5,
+        },
       },
     },
     {
@@ -67,9 +56,9 @@ const flowData = ref<FlowData>({
           systemPrompt: '你是一个专业的AI助手，请根据用户问题和检索到的知识库内容，提供准确和有帮助的回答。',
           inputMapping: [
             { name: 'user_query', sourceField: '1.question', description: '用户的问题' },
-            { name: 'knowledge_context', sourceField: '2.documents', description: '检索到的相关文档' }
-          ]
-        }
+            { name: 'knowledge_context', sourceField: '2.documents', description: '检索到的相关文档' },
+          ],
+        },
       },
     },
     {
@@ -82,8 +71,8 @@ const flowData = ref<FlowData>({
         icon: 'i-tabler:flag-3',
         config: {
           outputField: '3.response',
-          outputTemplate: '基于知识库检索，AI回复如下：\n\n{{response}}\n\n参考文档数量：{{total}}'
-        }
+          outputTemplate: '基于知识库检索，AI回复如下：\n\n{{response}}\n\n参考文档数量：{{total}}',
+        },
       },
     },
   ],
@@ -96,10 +85,10 @@ const flowData = ref<FlowData>({
 
 // 自定义AI节点
 const customNodes = computed(() => ({
-  'aiStart': getAiStartNodeRegistry(),
-  'knowledgeSearch': getKnowledgeSearchNodeRegistry(),
-  'llmModel': getLlmModelNodeRegistry(),
-  'aiEnd': getAiEndNodeRegistry(),
+  aiStart: getAiStartNodeRegistry(),
+  knowledgeSearch: getKnowledgeSearchNodeRegistry(),
+  llmModel: getLlmModelNodeRegistry(),
+  aiEnd: getAiEndNodeRegistry(),
 }))
 
 // AI节点分类
@@ -131,3 +120,14 @@ const editorConfig = {
   showControls: true,
 }
 </script>
+
+<template>
+  <div class="h-full">
+    <DuxFlowEditor
+      v-model="flowData"
+      :custom-nodes="customNodes"
+      :categories="categories"
+      :config="editorConfig"
+    />
+  </div>
+</template>

@@ -89,6 +89,7 @@
       "placeholder": "请输入内容"
     },
     "upload": {
+      "title": "文件管理",
       "fileManager": "文件管理器",
       "uploadFile": "上传文件",
       "cancel": "取消",
@@ -186,6 +187,17 @@
         "columnsPlaceholder": "请输入列数",
         "spacingPlaceholder": "请输入间距"
       }
+    },
+    "spec": {
+      "nameLabel": "规格名",
+      "namePlaceholder": "如：颜色、重量",
+      "addImage": "添加规格图片",
+      "valueLabel": "规格值",
+      "valuePlaceholder": "如：红色",
+      "addValue": "添加规格值",
+      "addSpec": "新增规格",
+      "imageHint": "每个规格值可上传图片",
+      "status": "启用状态"
     },
     "flowEditor": {
       "properties": "属性",

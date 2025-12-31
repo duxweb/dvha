@@ -1,23 +1,41 @@
 import type { PropType } from 'vue'
 import type { FlowData, FlowEditorConfig, FlowNodeCategory, FlowNodeRegistry } from './types'
-import { useTheme, useI18n } from '@duxweb/dvha-core'
+import { useI18n, useTheme } from '@duxweb/dvha-core'
 import { Background } from '@vue-flow/background'
 import { ConnectionMode, MarkerType, useVueFlow, VueFlow } from '@vue-flow/core'
+import { useVModel } from '@vueuse/core'
+import cloneDeep from 'lodash-es/cloneDeep'
 import { NButton } from 'naive-ui'
 import { computed, defineComponent, provide, ref, watch } from 'vue'
 import { FlowSetting, FlowToolbar } from './components'
 import { defaultNodes } from './nodes'
 import './style.css'
 
+type NormalizedFlowEditorConfig = FlowEditorConfig & Required<Pick<FlowEditorConfig, 'readonly' | 'showGrid' | 'showControls'>>
+function createEmptyFlowData(): FlowData {
+  return {
+    nodes: [],
+    edges: [],
+    globalSettings: {},
+  }
+}
+
+function cloneFlowData(flow: FlowData): FlowData {
+  return {
+    ...flow,
+    nodes: cloneDeep(flow.nodes ?? []),
+    edges: cloneDeep(flow.edges ?? []),
+    globalSettings: cloneDeep(flow.globalSettings ?? {}),
+    viewport: flow.viewport ? { ...flow.viewport } : undefined,
+  }
+}
+
 export const DuxFlowEditor = defineComponent({
   name: 'DuxFlowEditor',
   props: {
-    modelValue: {
+    value: {
       type: Object as PropType<FlowData>,
-      default: () => ({
-        nodes: [],
-        edges: [],
-      }),
+      default: () => createEmptyFlowData(),
     },
     // 自定义节点
     customNodes: {
@@ -44,7 +62,7 @@ export const DuxFlowEditor = defineComponent({
       default: undefined,
     },
   },
-  emits: ['update:modelValue'],
+  emits: ['update:value'],
   setup(props, { emit, slots }) {
     const flowContainer = ref<HTMLElement>()
     const { isDark } = useTheme()
@@ -83,61 +101,47 @@ export const DuxFlowEditor = defineComponent({
 
     // 跟踪是否是内部更新，避免循环更新
     const isInternalUpdate = ref(false)
-    
+
+    const flowState = useVModel(props, 'value', emit, {
+      eventName: 'update:value',
+      passive: true,
+      deep: true,
+      defaultValue: createEmptyFlowData(),
+    })
+
     // 全局设置状态
-    const globalSettings = ref<Record<string, any>>(props.modelValue?.globalSettings || {})
+    const globalSettings = ref<Record<string, any>>(flowState.value?.globalSettings || {})
+
+    const editorConfig = computed<NormalizedFlowEditorConfig>(() => ({
+      ...(props.config || {}),
+      readonly: props.config?.readonly ?? false,
+      showGrid: props.config?.showGrid ?? true,
+      showControls: props.config?.showControls ?? true,
+    }))
+
+    const pushFlowChanges = (override?: Partial<FlowData>) => {
+      const current = flowState.value ?? createEmptyFlowData()
+      const nextFlow: FlowData = {
+        ...current,
+        nodes: override?.nodes ?? getNodes.value ?? current.nodes ?? [],
+        edges: override?.edges ?? getEdges.value ?? current.edges ?? [],
+        globalSettings: override?.globalSettings ?? globalSettings.value ?? current.globalSettings ?? {},
+      }
+      const snapshot = cloneFlowData(nextFlow)
+      isInternalUpdate.value = true
+      flowState.value = snapshot
+    }
+
+    const trackGraphChanges = (changes: any[]) => {
+      if (!Array.isArray(changes) || changes.length === 0)
+        return
+      pushFlowChanges()
+    }
 
     // 使用 Vue Flow 的内部事件监听器而不是通过 props
-    onNodesChange((changes) => {
-      if (!Array.isArray(changes) || changes.length === 0)
-        return
+    onNodesChange(trackGraphChanges)
 
-      isInternalUpdate.value = true
-      emit('update:modelValue', {
-        nodes: getNodes.value,
-        edges: getEdges.value,
-        globalSettings: globalSettings.value,
-      })
-    })
-
-    onEdgesChange((changes) => {
-      if (!Array.isArray(changes) || changes.length === 0)
-        return
-
-      isInternalUpdate.value = true
-      emit('update:modelValue', {
-        nodes: getNodes.value,
-        edges: getEdges.value,
-        globalSettings: globalSettings.value,
-      })
-    })
-
-    onConnect((connection) => {
-      if (!connection)
-        return
-
-      // 创建新的边对象
-      const newEdge = {
-        id: `edge-${connection.source}-${connection.target}-${Date.now()}`,
-        source: connection.source,
-        target: connection.target,
-        sourceHandle: connection.sourceHandle,
-        targetHandle: connection.targetHandle,
-        data: { type: 'success' },
-        type: 'default', // 使用默认贝塞尔曲线
-      }
-
-      // 应用样式并添加边
-      const styledEdge = getEdgeStyle(newEdge)
-      addEdges([styledEdge])
-
-      isInternalUpdate.value = true
-      emit('update:modelValue', {
-        nodes: getNodes.value,
-        edges: getEdges.value,
-        globalSettings: globalSettings.value,
-      })
-    })
+    onEdgesChange(trackGraphChanges)
 
     // 边样式映射
     const getEdgeStyle = (edge: any) => {
@@ -166,35 +170,64 @@ export const DuxFlowEditor = defineComponent({
       }
     }
 
-    // 初始化数据 - 监听外部数据变化并同步到 Vue Flow
-    watch(() => props.modelValue, (data) => {
-      if (isInternalUpdate.value) {
-        isInternalUpdate.value = false
+    onConnect((connection) => {
+      if (!connection)
         return
+
+      // 创建新的边对象
+      const newEdge = {
+        id: `edge-${connection.source}-${connection.target}-${Date.now()}`,
+        source: connection.source,
+        target: connection.target,
+        sourceHandle: connection.sourceHandle,
+        targetHandle: connection.targetHandle,
+        data: { type: 'success' },
+        type: 'default', // 使用默认贝塞尔曲线
       }
 
-      // 同步节点数据
-      if (data.nodes && Array.isArray(data.nodes)) {
-        setNodes([...data.nodes])
+      // 应用样式并添加边
+      const styledEdge = getEdgeStyle(newEdge)
+      addEdges([styledEdge])
+
+      pushFlowChanges()
+    })
+
+    const applyFlowData = (data?: FlowData) => {
+      const normalized = data ? cloneFlowData(data) : createEmptyFlowData()
+
+      if (Array.isArray(normalized.nodes)) {
+        setNodes([...normalized.nodes])
+      }
+      else {
+        setNodes([])
       }
 
-      // 同步边数据并应用样式
-      if (data.edges && Array.isArray(data.edges)) {
-        const styledEdges = data.edges.map(getEdgeStyle)
+      if (Array.isArray(normalized.edges)) {
+        const styledEdges = normalized.edges.map(getEdgeStyle)
         setEdges(styledEdges)
       }
-      
-      // 同步全局设置数据
-      if (data.globalSettings) {
-        globalSettings.value = { ...data.globalSettings }
+      else {
+        setEdges([])
       }
 
-      if ((data.nodes && data.nodes.length > 0) || (data.edges && data.edges.length > 0)) {
-        // 延迟执行以确保DOM已准备好
+      globalSettings.value = normalized.globalSettings
+        ? { ...normalized.globalSettings }
+        : {}
+
+      if ((Array.isArray(normalized.nodes) && normalized.nodes.length > 0) || (Array.isArray(normalized.edges) && normalized.edges.length > 0)) {
         setTimeout(() => {
           fitView()
         }, 100)
       }
+    }
+
+    // 初始化数据 - 监听外部数据变化并同步到 Vue Flow
+    watch(flowState, (data) => {
+      if (isInternalUpdate.value) {
+        isInternalUpdate.value = false
+        return
+      }
+      applyFlowData(data ?? createEmptyFlowData())
     }, { immediate: true, deep: true })
 
     // 拖放状态
@@ -267,16 +300,16 @@ export const DuxFlowEditor = defineComponent({
                 height: 12,
               },
             }}
-            nodesDraggable={!props.config.readonly}
-            nodesConnectable={!props.config.readonly}
-            elementsSelectable={!props.config.readonly}
+            nodesDraggable={!editorConfig.value.readonly}
+            nodesConnectable={!editorConfig.value.readonly}
+            elementsSelectable={!editorConfig.value.readonly}
             connectionMode={ConnectionMode.Loose}
             isValidConnection={isValidConnection}
             minZoom={0.1}
             maxZoom={1}
           >
             {/* 背景网格 */}
-            {props.config.showGrid && (
+            {editorConfig.value.showGrid && (
               <Background
                 variant="dots"
                 gap={20}
@@ -286,7 +319,7 @@ export const DuxFlowEditor = defineComponent({
             )}
 
             {/* 缩放控制按钮 - 底部居中 */}
-            {props.config.showControls && (
+            {editorConfig.value.showControls && (
               <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
                 <NButton
                   onClick={() => zoomOut()}
@@ -355,23 +388,31 @@ export const DuxFlowEditor = defineComponent({
           <div class="h-full bg-default shadow rounded">
             <FlowSetting
               nodes={allNodes.value}
-              modelValue={props.modelValue}
-              onUpdate:modelValue={(value: any) => emit('update:modelValue', value)}
+              modelValue={flowState.value}
+              onUpdate:modelValue={(value: FlowData, meta?: { skipApply?: boolean }) => {
+                const nextFlow = value ? cloneFlowData(value) : createEmptyFlowData()
+                isInternalUpdate.value = true
+                flowState.value = nextFlow
+                if (!meta?.skipApply) {
+                  applyFlowData(nextFlow)
+                }
+                else if (nextFlow.globalSettings) {
+                  globalSettings.value = { ...nextFlow.globalSettings }
+                }
+              }}
               onSave={props.onSave}
             >
               {{
-                globalSettings: slots.globalSettings ? () => slots.globalSettings?.({
-                  globalSettings: globalSettings.value,
-                  updateGlobalSettings: (newSettings: Record<string, any>) => {
-                    globalSettings.value = { ...newSettings }
-                    // 立即触发更新
-                    emit('update:modelValue', {
-                      nodes: getNodes.value,
-                      edges: getEdges.value,
+                globalSettings: slots.globalSettings
+                  ? () => slots.globalSettings?.({
                       globalSettings: globalSettings.value,
+                      updateGlobalSettings: (newSettings: Record<string, any>) => {
+                        globalSettings.value = { ...newSettings }
+                        // 立即触发更新
+                        pushFlowChanges({ globalSettings: globalSettings.value })
+                      },
                     })
-                  }
-                }) : undefined
+                  : undefined,
               }}
             </FlowSetting>
           </div>
