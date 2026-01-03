@@ -82,7 +82,7 @@ export const DuxSelectCard = defineComponent({
     const gridClasses = [
       'grid gap-4',
       'grid-cols-2',
-      `lg:grid-cols-[repeat(auto-fit,minmax(${props.minWidth},${props.maxWidth}))]`,
+      `lg:grid-cols-[repeat(auto-fill,minmax(${props.minWidth},${props.maxWidth}))]`,
     ]
 
     return () => (
@@ -127,7 +127,7 @@ export const DuxSelectCard = defineComponent({
                 </div>
               )}
 
-              <div class="flex flex-col flex-1">
+              <div class="flex flex-col flex-1 gap-2">
                 <div class={[
                   'text-sm font-medium',
                   {
@@ -140,9 +140,9 @@ export const DuxSelectCard = defineComponent({
                 </div>
                 {option.description && (
                   <div class={[
-                    'text-sm',
+                    'text-xs',
                     {
-                      'text-primary': isSelected(option.value),
+                      'text-primary/80': isSelected(option.value),
                       'text-muted': !isSelected(option.value),
                     },
                   ]}

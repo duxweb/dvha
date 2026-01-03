@@ -3,7 +3,7 @@ import type { TabsInst } from 'naive-ui'
 import type { PropType, Ref } from 'vue'
 import type { UseActionItem } from '../../hooks'
 import type { DuxToolOptionItem } from './'
-import { useExtendList, useI18n, useJsonSchema } from '@duxweb/dvha-core'
+import { useExtendList, useI18n, useJsonSchema, useTabStore } from '@duxweb/dvha-core'
 import { useWindowSize } from '@vueuse/core'
 import { cloneDeep, isEqual } from 'lodash-es'
 import { NButton, NCheckbox, NDrawer, NPagination, NProgress, NSpin, NTab, NTabs, NTooltip } from 'naive-ui'
@@ -60,6 +60,10 @@ export const DuxListLayout = defineComponent({
         label: string
         value: string | number
       }[]>,
+    },
+    title: {
+      type: String,
+      default: '',
     },
     tools: {
       type: Object as PropType<ListPageTools>,
@@ -341,6 +345,7 @@ export const DuxListLayout = defineComponent({
     })
 
     const tabsInstRef = ref<TabsInst | null>(null)
+    const tabStore = useTabStore()
 
     const activeTab = computed(() => {
       const values = props.tabs?.map(t => t.value) || []
@@ -486,15 +491,25 @@ export const DuxListLayout = defineComponent({
       { deep: true },
     )
 
+    const tabTitle = computed(() => tabStore.tabs.find(v => v.path === tabStore.current)?.label)
+
     return () => (
       <DuxPage actions={props.actions} scrollbar={false}>
         {{
+          title: slots.title,
           sideLeft: () => slots?.sideLeft && windowWidth.value >= 1024 ? slots?.sideLeft?.() : undefined,
           sideRight: () => slots?.sideRight && windowWidth.value >= 1024 ? slots?.sideRight?.() : undefined,
           default: () => (
             <div class="flex flex-col gap-3 h-full relative">
               <div class="flex gap-2 justify-between flex-row border-b border-muted">
                 <div class="relative top-1.5px">
+                  {!props.tabs && (
+                    slots.title?.() || (
+                      (props.title || tabTitle.value)
+                        ? <div class="pb-4 pt-2 text-base">{props.title || tabTitle.value}</div>
+                        : null
+                    )
+                  )}
                   {props.tabs && (
                     <NTabs
                       ref={tabsInstRef}
@@ -518,7 +533,7 @@ export const DuxListLayout = defineComponent({
                     </NTabs>
                   )}
                 </div>
-                <div class="flex gap-2 justify-end">
+                <div class="flex gap-2 justify-end pb-2">
                   {slots.actions?.()}
                   {props.actions?.length > 0 && renderAction({
                     type: windowWidth.value < 1024 ? 'dropdown' : 'button',

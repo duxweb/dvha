@@ -198,7 +198,7 @@ export const FlowSetting = defineComponent({
     }
 
     return () => (
-      <div class="w-300px h-full flex flex-col">
+      <div class="w-360px h-full flex flex-col">
         {/* 标题区域 - 不参与滚动 */}
         {!selectedNode.value && !selectedEdge.value && (
           <SettingHeader

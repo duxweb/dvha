@@ -5,6 +5,7 @@ import axios from 'axios'
 import crypto from 'crypto-js'
 import dayjs from 'dayjs'
 import * as _ from 'lodash-es'
+import * as marked from 'marked'
 import * as math from 'mathjs'
 import mime from 'mime'
 import mitt from 'mitt'
@@ -43,6 +44,7 @@ export function sfcLoader(path: string) {
       'pinia': pinia,
       'dayjs': dayjs,
       'vue-router': vueRouter,
+      'marked': marked,
       ...config?.remote?.packages,
 
       'static!': function (content: string, _path: string, type: string) {

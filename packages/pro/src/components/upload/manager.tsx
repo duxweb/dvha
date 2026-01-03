@@ -263,7 +263,7 @@ const DuxFileManage = defineComponent({
               >
                 <div class={[
                   'grid grid-cols-3 md:grid-cols-4 text-sm items-start justify-start',
-                  list.data.value?.data?.length >= 4 && !props.page ? ' lg:grid-cols-[repeat(auto-fit,minmax(150px,1fr))]' : 'lg:grid-cols-[repeat(auto-fit,minmax(150px,150px))]',
+                  list.data.value?.data?.length >= 4 && !props.page ? ' lg:grid-cols-[repeat(auto-fill,minmax(150px,1fr))]' : 'lg:grid-cols-[repeat(auto-fill,minmax(150px,150px))]',
                 ]}
                 >
                   {form.value?.folder && form.value?.folder !== list.data.value?.meta?.folder && (

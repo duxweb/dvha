@@ -12,6 +12,10 @@ export interface CardPageSlotProps {
 export const DuxCardPage = defineComponent({
   name: 'DuxCardPage',
   props: {
+    title: {
+      type: String,
+      default: '',
+    },
     colWidth: {
       type: Number,
       default: 320,
@@ -117,7 +121,8 @@ export const DuxCardPage = defineComponent({
 
               class="grid gap-3"
               style={{
-                'grid-template-columns': `repeat(auto-fit, minmax(${minColumnWidth.value}px, 1fr))`,
+                'grid-template-columns': `repeat(auto-fill, minmax(${minColumnWidth.value}px, 1fr))`,
+                'justify-content': 'flex-start',
               }}
             >
               {result.list.value.map(item => slots?.default?.({

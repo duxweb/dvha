@@ -11,6 +11,10 @@ export interface ListPageSlotProps {
 export const DuxListPage = defineComponent({
   name: 'DuxListPage',
   props: {
+    title: {
+      type: String,
+      default: '',
+    },
     sideLeftTitle: {
       type: String,
       default: '',

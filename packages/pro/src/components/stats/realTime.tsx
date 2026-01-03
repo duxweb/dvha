@@ -106,7 +106,7 @@ export const DuxStatsRealTime = defineComponent({
                   <NScrollbar xScrollable>
                     <div class={[
                       'grid grid-cols-2 whitespace-nowrap auto-cols-max',
-                      `lg:grid-cols-[repeat(auto-fit,minmax(100px,1fr))]`,
+                      `lg:grid-cols-[repeat(auto-fill,minmax(100px,1fr))]`,
                     ]}
                     >
                       {props.cards.map((card, index) => (
