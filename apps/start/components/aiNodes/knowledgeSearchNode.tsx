@@ -158,14 +158,16 @@ export const getKnowledgeSearchNodeRegistry = (): FlowNodeRegistry => ({
     icon: 'i-tabler:database-search',
     style: {
       iconBgClass: 'bg-green-500'
-    }
+    },
+    defaultConfig: {
+      outputFields: [
+        { name: 'documents', type: 'array', label: '匹配文档' },
+        { name: 'scores', type: 'array', label: '相关度分数' },
+        { name: 'total', type: 'number', label: '总数量' },
+        { name: 'query', type: 'text', label: '查询内容' },
+      ],
+    },
   },
   component: markRaw(KnowledgeSearchNode),
   settingComponent: markRaw(KnowledgeSearchNodeConfig),
-  outputFields: [
-    { name: 'documents', type: 'array', label: '匹配文档' },
-    { name: 'scores', type: 'array', label: '相关度分数' },
-    { name: 'total', type: 'number', label: '总数量' },
-    { name: 'query', type: 'text', label: '查询内容' }
-  ]
 })

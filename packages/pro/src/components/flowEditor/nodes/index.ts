@@ -15,6 +15,8 @@ import {
   StartNodeSetting,
 } from './startNode'
 
+export { createDynamicFlowNode, createDynamicFlowNodes } from './dynamicNodeFactory'
+
 // 默认节点注册表 - 空对象，外部自行注册节点
 export const defaultNodes: Record<string, FlowNodeRegistry> = {}
 

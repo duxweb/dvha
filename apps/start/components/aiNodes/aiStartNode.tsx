@@ -164,7 +164,4 @@ export const getAiStartNodeRegistry = (): FlowNodeRegistry => ({
   },
   component: markRaw(AiStartNode),
   settingComponent: markRaw(AiStartNodeConfig),
-  // 开始节点不需要定义outputFields，因为它的输出字段是动态的（基于config.fields）
-  // 但我们可以提供inputFields来标识这是一个输入节点
-  inputFields: []
 })

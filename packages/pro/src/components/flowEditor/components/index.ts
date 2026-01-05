@@ -1,3 +1,6 @@
+export { FlowFieldConfig } from './fieldConfig'
+export { FlowKVInput } from './kvInput'
 export { FlowNodeCard } from './nodeCard'
+export { FlowNote } from './note'
 export { FlowSetting } from './setting'
 export { FlowToolbar } from './toolbar'

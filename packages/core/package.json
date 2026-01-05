@@ -35,6 +35,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@microsoft/fetch-event-source": "^2.0.1",
     "@overlastic/vue": "^0.8.3",
     "@tanstack/vue-query": "^5.90.7",
     "@vee-validate/rules": "^4.15.1",

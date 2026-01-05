@@ -176,27 +176,102 @@ const customNodeRegistry: FlowNodeRegistry = {
     description: '这是一个自定义节点',
     icon: 'i-tabler:puzzle',
   },
-  inputFields: [
-    {
-      name: 'input',
-      type: 'text',
-      label: '输入数据',
-      required: true
-    }
-  ],
-  outputFields: [
-    {
-      name: 'output',
-      type: 'text', 
-      label: '输出结果'
-    }
-  ]
 }
 ```
 
 ## 数据流传递
 
 FlowEditor 支持节点间的数据流传递，通过 `useNodeDataFlow` hook 可以获取节点间的数据关系：
+
+## 配置式节点（推荐）
+
+为避免为每个节点手动创建 Vue 组件，FlowEditor 提供 `createDynamicFlowNodes` 与 `FlowFieldConfig` 等辅助工具，支持通过 JSON/对象配置出整套节点、面板和预览。
+
+### 快速开始
+
+```ts
+import {
+  DuxFlowEditor,
+  createDynamicFlowNodes,
+  type FlowFieldConfigValue,
+} from '@duxweb/dvha-pro'
+
+const aiNodes = createDynamicFlowNodes([
+  {
+    type: 'aiTask',
+    label: 'AI 节点',
+    icon: 'i-tabler:brain',
+    color: 'primary',
+    category: 'ai',
+    nodeType: 'process',
+    defaultConfig: {
+      temperature: 0.7,
+      content: {
+        mode: 'text',
+        text: '请根据以下信息回答：{{input.question}}',
+      } as FlowFieldConfigValue,
+      outputFields: [
+        { name: 'content', label: '回复内容', type: 'text' },
+        { name: 'usage', label: 'Token 统计', type: 'object' },
+      ],
+    },
+    settingFields: [
+      { name: 'provider', label: '供应商', component: 'select', options: providerOptions },
+      { name: 'model', label: '模型', component: 'text' },
+      {
+        name: 'content',
+        label: '输入内容配置',
+        component: 'field-config',
+        componentProps: {
+          textPlaceholder: '支持 {{input.xxx}} / {{节点ID.outputKey}}',
+        },
+        preview: {
+          type: 'text',
+          formatter: ({ value }) => value?.text || '-',
+        },
+      },
+      {
+        name: 'headers',
+        label: '自定义 Header',
+        component: 'kv-input',
+        preview: { type: 'tags', label: 'Headers' },
+      },
+    ],
+  },
+])
+```
+
+然后将 `aiNodes` 传入 `DuxFlowEditor` 的 `custom-nodes` 即可。每条 `settingFields` 描述会自动渲染配置面板表单，同时在节点卡片上生成预览（可通过 `preview` 或 `renderPreview` 自定义）。
+
+> 提示：如果需要给下游节点提供可引用的字段，可在 `defaultConfig.outputFields` 中声明，流程运行时会同步到 `node.data.config.outputFields`，`useNodeDataFlow` 会自动识别这些字段。
+
+### 动态字段 API
+
+| 属性 | 说明 |
+|------|------|
+| `type` | 节点类型（唯一），等同于 Vue Flow Node type |
+| `label` | 节点标题 |
+| `color` | 可使用 `primary/success/...` 控制节点主色 |
+| `settingFields` | 设置表单字段，支持 `component` (`text/textarea/select/number/switch/color/json/field-config/kv-input/dux-select/note`) 或 `render` 自定义，额外属性可通过 `componentProps` 传递 |
+| `allowLabelEdit` / `allowDescriptionEdit` | 控制是否在面板中允许修改节点名称/描述 |
+| `allowNodeIdEdit` | 是否允许在侧边设置里直接修改节点 ID（会同步更新相关连线） |
+| `renderPreview` | 完全自定义节点卡片内容 |
+
+> 内置 `component` 字符串包括 `field-config`（多模态输入配置）、`kv-input`（键值对输入）、`dux-select`（基于 `DuxSelect` 的远程下拉，支持 `path`、`params` 等 props）、`note`（说明块）。当然也可以通过 `render` 注入自定义表单。
+
+> 动态节点默认允许在设置面板里修改“节点 ID”，以便生成可读的引用 key；如需禁用，可在定义里设置 `allowNodeIdEdit: false`。
+
+### 表单辅助组件
+
+| 组件 | 说明 |
+|------|------|
+| `FlowFieldConfig` | 多模态内容编辑器，支持文本/JSON/代码模式切换，提供图中所示的字段列表交互 |
+| `FlowKVInput` | 键值对输入，基于 `NDynamicInput` 实现 |
+| `FlowNote` | 说明块 |
+
+> `FlowFieldConfig` 在不同模式下会写入不同字段：`text`（纯文本）与 `items`（JSON 列表）为结构化数据，`code` 则只是原始 JSON 字符串，不会与 `items` 互相转换，如需解析请在业务侧自行处理。
+
+上述组件都支持 `v-model`，可直接在 `settingFields` 的 `render` 或自定义节点设置里引用。
 
 ```typescript
 import { useNodeDataFlow } from '@duxweb/dvha-pro'
@@ -213,7 +288,7 @@ const inputOptions = getInputFieldOptions(nodeId, nodeRegistries)
 ### 字段引用规则
 
 - **开始节点**: 提供 `data.config.fields` 中定义的输入字段
-- **处理节点**: 提供 `registry.outputFields` 中定义的输出字段
+- **其它节点**: 提供 `data.config.outputFields`（或 `defaultConfig.outputFields`）里声明的字段
 - **字段引用格式**: `nodeId.fieldName`
 
 ## 应用场景

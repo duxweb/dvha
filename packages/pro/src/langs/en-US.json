@@ -267,6 +267,22 @@
         "label": "Start",
         "description": "Starting node of the process",
         "configTitle": "Start Node Configuration"
+      },
+      "nodeId": "Node ID",
+      "nodeIdPlaceholder": "e.g. ai_task",
+      "nodeIdExists": "Node ID already exists",
+      "fieldConfig": {
+        "modePlaceholder": "Select input mode",
+        "modeText": "Text mode",
+        "modeJson": "JSON builder",
+        "modeCode": "Code editor",
+        "fieldNamePlaceholder": "Field name",
+        "fieldTypePlaceholder": "Field type",
+        "labelPlaceholder": "Display label",
+        "textPlaceholder": "Supports {{input.xxx}} / {{node.output}}",
+        "notePlaceholder": "Notes (optional)",
+        "addField": "Add Field",
+        "codePlaceholder": "Enter JSON array, e.g. [{ \"name\": \"field\" }]"
       }
     },
     "formEditor": {

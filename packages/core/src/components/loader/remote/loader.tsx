@@ -1,4 +1,5 @@
 import type { Options, Resource } from 'vue3-sfc-loader'
+import * as sse from '@microsoft/fetch-event-source'
 import * as vueQuery from '@tanstack/vue-query'
 import * as vueUse from '@vueuse/core'
 import axios from 'axios'
@@ -45,6 +46,7 @@ export function sfcLoader(path: string) {
       'dayjs': dayjs,
       'vue-router': vueRouter,
       'marked': marked,
+      '@microsoft/fetch-event-source': sse,
       ...config?.remote?.packages,
 
       'static!': function (content: string, _path: string, type: string) {

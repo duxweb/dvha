@@ -1,5 +1,5 @@
-import type { Edge, Node } from '@vue-flow/core'
-import type { VNode } from 'vue'
+import type { Edge, Node, NodeProps } from '@vue-flow/core'
+import type { VNode, VNodeChild } from 'vue'
 
 // 节点数据类型
 export interface FlowNodeData {
@@ -45,6 +45,107 @@ export interface FlowNodeField {
   required?: boolean
 }
 
+export interface FlowFieldConfigItem {
+  name: string
+  type: string
+  content: string
+  description?: string
+  label?: string
+  required?: boolean
+}
+
+export interface FlowFieldConfigValue {
+  mode: 'text' | 'json' | 'code'
+  text?: string
+  items: FlowFieldConfigItem[]
+  code?: string
+}
+
+export interface FlowKVItem {
+  name: string
+  value: string
+}
+
+export interface FlowDynamicFieldPreviewContext {
+  value: any
+  field: FlowDynamicFieldDefinition
+  data: FlowNodeData
+  nodeProps: NodeProps<FlowNodeData>
+}
+
+export interface FlowDynamicFieldPreviewOptions {
+  label?: string
+  type?: 'text' | 'tags'
+  emptyText?: string
+  tagType?: 'default' | 'info' | 'success' | 'warning' | 'error'
+  maxTagCount?: number
+  formatter?: (context: FlowDynamicFieldPreviewContext) => VNodeChild
+  render?: (context: FlowDynamicFieldPreviewContext) => VNodeChild
+}
+
+export type FlowDynamicFieldPreview = boolean | FlowDynamicFieldPreviewOptions
+
+export interface FlowDynamicFieldRenderContext {
+  value: any
+  field: FlowDynamicFieldDefinition
+  data: FlowNodeData
+  update: (value: any) => void
+}
+
+export type FlowDynamicFieldComponent = 'text'
+  | 'textarea'
+  | 'number'
+  | 'select'
+  | 'switch'
+  | 'color'
+  | 'json'
+  | 'field-config'
+  | 'kv-input'
+  | 'dux-select'
+  | 'note'
+
+export interface FlowDynamicFieldDefinition {
+  name: string
+  label?: string
+  description?: string
+  placeholder?: string
+  required?: boolean
+  defaultValue?: any
+  component?: FlowDynamicFieldComponent
+  options?: Array<{ label: string, value: any }>
+  rows?: number
+  preview?: FlowDynamicFieldPreview
+  hideInPreview?: boolean
+  render?: (context: FlowDynamicFieldRenderContext) => VNodeChild
+  componentProps?: Record<string, any>
+}
+
+export interface FlowDynamicPreviewRenderContext {
+  nodeProps: NodeProps<FlowNodeData>
+  settingFields: FlowDynamicFieldDefinition[]
+}
+
+export interface FlowDynamicNodeDefinition {
+  type?: string
+  label?: string
+  description?: string
+  category?: FlowNodeMeta['category']
+  nodeType?: FlowNodeMeta['nodeType']
+  icon?: string
+  color?: string
+  style?: FlowNodeMeta['style']
+  defaultConfig?: Record<string, any>
+  settingFields?: FlowDynamicFieldDefinition[]
+  allowLabelEdit?: boolean
+  allowDescriptionEdit?: boolean
+  allowNodeIdEdit?: boolean
+  renderPreview?: (context: FlowDynamicPreviewRenderContext) => VNodeChild
+  settingComponent?: any
+  component?: any
+  multiInput?: boolean
+  multiOutput?: boolean
+}
+
 // 节点注册信息
 export interface FlowNodeRegistry {
   meta: FlowNodeMeta
@@ -56,10 +157,6 @@ export interface FlowNodeRegistry {
   multiInput?: boolean
   // 是否允许多个输出
   multiOutput?: boolean
-  // 输出字段定义
-  outputFields?: FlowNodeField[]
-  // 输入字段定义
-  inputFields?: FlowNodeField[]
 }
 
 // 流程编辑器配置

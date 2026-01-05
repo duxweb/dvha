@@ -179,14 +179,16 @@ export const getLlmModelNodeRegistry = (): FlowNodeRegistry => ({
     icon: 'i-tabler:brain',
     style: {
       iconBgClass: 'bg-purple-500'
+    },
+    defaultConfig: {
+      outputFields: [
+        { name: 'response', type: 'text', label: 'AI回复内容' },
+        { name: 'tokens', type: 'number', label: '消耗Token数' },
+        { name: 'model', type: 'text', label: '使用的模型' },
+        { name: 'timestamp', type: 'date', label: '处理时间' }
+      ]
     }
   },
   component: markRaw(LlmModelNode),
   settingComponent: markRaw(LlmModelNodeConfig),
-  outputFields: [
-    { name: 'response', type: 'text', label: 'AI回复内容' },
-    { name: 'tokens', type: 'number', label: '消耗Token数' },
-    { name: 'model', type: 'text', label: '使用的模型' },
-    { name: 'timestamp', type: 'date', label: '处理时间' }
-  ]
 })

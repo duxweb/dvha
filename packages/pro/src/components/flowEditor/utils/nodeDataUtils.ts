@@ -1,10 +1,76 @@
-import type { FlowNodeRegistry, FlowNodeField } from '../types'
+import type { FlowNodeField, FlowNodeRegistry } from '../types'
 import { useI18n } from '@duxweb/dvha-core'
 import { useVueFlow } from '@vue-flow/core'
 
 // 获取节点间数据传递的工具函数
-export const useNodeDataFlow = () => {
+export function useNodeDataFlow() {
   const { findNode, getEdges } = useVueFlow()
+
+  const resolveFieldConfigItems = (value: any): any[] => {
+    if (Array.isArray(value))
+      return value
+    if (value && typeof value === 'object' && Array.isArray(value.items))
+      return value.items
+    return []
+  }
+
+  /**
+   * 获取指定节点的输出字段
+   * @param nodeId 节点ID
+   * @param nodeRegistries 节点注册信息
+   * @returns 节点的输出字段列表
+   */
+  const getNodeOutputFields = (nodeId: string, nodeRegistries: Record<string, FlowNodeRegistry>) => {
+    const node = findNode(nodeId)
+    if (!node)
+      return []
+
+    const registry = nodeRegistries[node.type!]
+
+    const fields: FlowNodeField[] = []
+
+    const normalizeField = (field: any): FlowNodeField => ({
+      name: field.name,
+      type: field.type || 'text',
+      label: field.label || field.name,
+      description: field.description,
+      required: field.required,
+    })
+
+    const nodeType = registry?.meta.nodeType || registry?.meta.category
+
+    if (nodeType === 'start') {
+      const startFields = resolveFieldConfigItems(node.data?.config?.fields)
+      // 开始节点的输入字段作为可引用输出
+      if (startFields.length) {
+        fields.push(...startFields.map((field: any) => ({
+          name: field.name,
+          type: field.type || 'text',
+          label: field.label || field.name,
+          description: field.description,
+          required: field.required,
+        })))
+      }
+    }
+
+    const resolvedOutputFields: any[] = []
+
+    const configuredOutputs = resolveFieldConfigItems(node.data?.config?.outputFields)
+    if (configuredOutputs.length) {
+      resolvedOutputFields.push(...configuredOutputs)
+    }
+    else if (registry?.meta?.defaultConfig) {
+      const defaultOutputs = resolveFieldConfigItems((registry.meta.defaultConfig as any)?.outputFields)
+      if (defaultOutputs.length)
+        resolvedOutputFields.push(...defaultOutputs)
+    }
+
+    if (resolvedOutputFields.length) {
+      fields.push(...resolvedOutputFields.map(normalizeField))
+    }
+
+    return fields
+  }
 
   /**
    * 获取指定节点的上游节点输出字段
@@ -16,8 +82,7 @@ export const useNodeDataFlow = () => {
     // 直接使用getEdges获取所有边，然后过滤出目标为当前节点的边
     const allEdges = getEdges.value
     const incomingEdges = allEdges.filter(edge => edge.target === nodeId)
-    
-    
+
     const fields: Array<{
       label: string
       value: string
@@ -28,71 +93,20 @@ export const useNodeDataFlow = () => {
 
     for (const edge of incomingEdges) {
       const sourceNode = findNode(edge.source)
-      if (!sourceNode) continue
+      if (!sourceNode)
+        continue
 
-      const registry = nodeRegistries[sourceNode.type!]
-      if (!registry) continue
+      const sourceFields = getNodeOutputFields(edge.source, nodeRegistries)
+      if (!sourceFields.length)
+        continue
 
-      // 根据节点类型决定提供哪些字段
-      const nodeType = registry.meta.nodeType || registry.meta.category
-
-      if (nodeType === 'start') {
-        // 开始节点：提供输入字段（data.config.fields）
-        if (sourceNode.data?.config?.fields && Array.isArray(sourceNode.data.config.fields)) {
-          fields.push(...sourceNode.data.config.fields.map((field: any) => ({
-            label: `${sourceNode.data.label}: ${field.label || field.name}`,
-            value: `${edge.source}.${field.name}`,
-            type: field.type || 'text',
-            nodeId: edge.source,
-            nodeName: sourceNode.data.label || sourceNode.type!
-          })))
-        }
-      } else {
-        // 过程节点：提供输出字段（registry.outputFields）
-        if (registry.outputFields) {
-          fields.push(...registry.outputFields.map(field => ({
-            label: `${sourceNode.data.label}: ${field.label || field.name}`,
-            value: `${edge.source}.${field.name}`,
-            type: field.type,
-            nodeId: edge.source,
-            nodeName: sourceNode.data.label || sourceNode.type!
-          })))
-        }
-      }
-    }
-
-    return fields
-  }
-
-  /**
-   * 获取指定节点的输出字段
-   * @param nodeId 节点ID
-   * @param nodeRegistries 节点注册信息
-   * @returns 节点的输出字段列表
-   */
-  const getNodeOutputFields = (nodeId: string, nodeRegistries: Record<string, FlowNodeRegistry>) => {
-    const node = findNode(nodeId)
-    if (!node) return []
-
-    const registry = nodeRegistries[node.type!]
-    if (!registry) return []
-
-    const fields: FlowNodeField[] = []
-
-    // 处理动态字段
-    if (node.data?.config?.fields && Array.isArray(node.data.config.fields)) {
-      fields.push(...node.data.config.fields.map((field: any) => ({
-        name: field.name,
-        type: field.type || 'text',
-        label: field.label || field.name,
-        description: field.description,
-        required: field.required
+      fields.push(...sourceFields.map(field => ({
+        label: `${sourceNode.data?.label || sourceNode.type}: ${field.label || field.name}`,
+        value: `${edge.source}.${field.name}`,
+        type: field.type,
+        nodeId: edge.source,
+        nodeName: sourceNode.data?.label || sourceNode.type!,
       })))
-    }
-
-    // 处理固定输出字段
-    if (registry.outputFields) {
-      fields.push(...registry.outputFields)
     }
 
     return fields
@@ -108,10 +122,10 @@ export const useNodeDataFlow = () => {
     if (parts.length !== 2) {
       return null
     }
-    
+
     return {
       nodeId: parts[0],
-      fieldName: parts[1]
+      fieldName: parts[1],
     }
   }
 
@@ -123,10 +137,12 @@ export const useNodeDataFlow = () => {
    */
   const validateFieldReference = (fieldRef: string, nodeRegistries: Record<string, FlowNodeRegistry>) => {
     const parsed = parseFieldReference(fieldRef)
-    if (!parsed) return false
+    if (!parsed)
+      return false
 
     const node = findNode(parsed.nodeId)
-    if (!node) return false
+    if (!node)
+      return false
 
     const outputFields = getNodeOutputFields(parsed.nodeId, nodeRegistries)
     return outputFields.some(field => field.name === parsed.fieldName)
@@ -142,7 +158,7 @@ export const useNodeDataFlow = () => {
     return getUpstreamFields(nodeId, nodeRegistries).map(field => ({
       label: field.label,
       value: field.value,
-      type: field.type
+      type: field.type,
     }))
   }
 
@@ -151,12 +167,12 @@ export const useNodeDataFlow = () => {
     getNodeOutputFields,
     parseFieldReference,
     validateFieldReference,
-    getInputFieldOptions
+    getInputFieldOptions,
   }
 }
 
 // 字段类型映射
-export const getFieldTypeOptions = () => {
+export function getFieldTypeOptions() {
   const { t } = useI18n()
   return [
     { label: t('components.flowEditor.fieldTypes.text') || '', value: 'text' },

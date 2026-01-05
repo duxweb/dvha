@@ -47,6 +47,7 @@
     "@duxweb/dvha-core": "workspace:*",
     "@duxweb/dvha-naiveui": "workspace:*",
     "@iconify-json/tabler": "^1.2.23",
+    "@microsoft/fetch-event-source": "^2.0.1",
     "@overlastic/vue": "^0.8.3",
     "@tanstack/vue-query": "^5.90.7",
     "@unocss/preset-icons": "^66.5.5",
