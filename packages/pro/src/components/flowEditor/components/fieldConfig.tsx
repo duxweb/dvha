@@ -1,3 +1,4 @@
+import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import type { PropType } from 'vue'
 import type { FlowFieldConfigItem, FlowFieldConfigValue } from '../types'
 import { useI18n } from '@duxweb/dvha-core'
@@ -118,9 +119,9 @@ export const FlowFieldConfig = defineComponent({
       }
       return 'text'
     })
-    const resolvedModeOptions = computed<ModeOption[]>(() => {
+    const resolvedModeOptions = computed<SelectMixedOption[]>(() => {
       if (props.modeOptions?.length) {
-        return props.modeOptions as ModeOption[]
+        return props.modeOptions as SelectMixedOption[]
       }
       return [
         { label: t('components.flowEditor.fieldConfig.modeText') || '文本模式', value: 'text' },

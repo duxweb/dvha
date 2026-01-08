@@ -1,5 +1,5 @@
 // 组件
-export { FlowFieldConfig, FlowKVInput, FlowNote, FlowNodeCard, FlowSetting, FlowToolbar } from './components'
+export { FlowFieldConfig, FlowKVInput, FlowNodeCard, FlowNote, FlowSetting, FlowToolbar } from './components'
 
 // 主组件
 export { DuxFlowEditor } from './flowEditor'

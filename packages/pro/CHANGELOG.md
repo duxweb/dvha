@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.1.20
+
+### Patch Changes
+
+- feat: flow 编辑器增加自定义扩展节点
+  - @duxweb/dvha-core@1.1.20
+  - @duxweb/dvha-naiveui@1.1.20
+
 ## 1.1.19
 
 ### Patch Changes

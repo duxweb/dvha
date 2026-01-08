@@ -115,6 +115,7 @@ DVHA Pro 在基础组件之上，提供了专为中后台系统设计的业务�
 - **[DuxLevel](/pro/components/level)** - 层级选择组件，支持省市区等多级联动
 - **[DuxDynamicData](/pro/components/data)** - 动态数据组件
 - **[DuxDynamicSelect](/pro/components/data)** - 动态选择组件
+- **[DuxSchemaTreeEditor](/pro/components/schema-editor)** - 树形 Schema 编辑器，支持节点配置
 
 #### 导航组件
 

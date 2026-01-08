@@ -40,6 +40,7 @@ import {
   DuxPageForm,
   DuxPanelAlert,
   DuxPanelCard,
+  DuxSchemaTreeEditor,
   DuxSelectCard,
   DuxSettingForm,
   DuxStatsNumber,
@@ -107,6 +108,7 @@ export default {
     app.component('DuxFileUpload', DuxFileUpload)
     app.component('DuxImageUpload', DuxImageUpload)
     app.component('DuxTreeFilter', DuxTreeFilter)
+    app.component('DuxSchemaTreeEditor', DuxSchemaTreeEditor)
     app.component('DuxIconPicker', DuxIconPicker)
     app.component('DuxCollapsePanel', DuxCollapsePanel)
     app.component('DuxCodeEditor', DuxCodeEditor)

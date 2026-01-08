@@ -82,7 +82,7 @@ export default defineComponent({
           default: ({ draggableClass }) => (
             <div
               class={[
-                'w-400px rounded border border-muted max-w-full shadow-lg shadow-gray-950/10 bg-white/70 dark:shadow-gray-950/80  dark:bg-gray-900/70 backdrop-blur',
+                'w-400px rounded border border-muted max-w-full shadow-lg shadow-gray-950/10 bg-white/95 dark:shadow-gray-950/80  dark:bg-gray-900/90 backdrop-blur',
 
               ]}
             >

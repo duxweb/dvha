@@ -45,7 +45,7 @@ export const FlowKVInput = defineComponent({
       },
     })
 
-    const handleUpdate = (val: FlowKVItem[]) => {
+    const handleUpdate = (val) => {
       items.value = val
     }
 
