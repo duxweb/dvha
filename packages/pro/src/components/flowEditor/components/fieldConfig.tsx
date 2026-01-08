@@ -328,9 +328,6 @@ export const FlowFieldConfig = defineComponent({
               v-model:value={codeInput.value}
               lang="json"
             />
-            <div class="text-xs text-muted">
-              {t('components.flowEditor.fieldConfig.codePlaceholder') || '请输入 JSON 内容'}
-            </div>
           </div>
         )}
       </div>

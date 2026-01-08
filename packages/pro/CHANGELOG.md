@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.1.21
+
+### Patch Changes
+
+- fix: flow 移除多余语言提示
+  - @duxweb/dvha-core@1.1.21
+  - @duxweb/dvha-naiveui@1.1.21
+
 ## 1.1.20
 
 ### Patch Changes

@@ -285,8 +285,7 @@
         "labelPlaceholder": "显示名称",
         "textPlaceholder": "支持 {{input.xxx}} / {{节点ID.output}}",
         "notePlaceholder": "备注说明（可选）",
-        "addField": "新增字段",
-        "codePlaceholder": "请输入 JSON 数组内容，如 [{ \"name\": \"field\" }]"
+        "addField": "新增字段"
       }
     },
     "schemaEditor": {

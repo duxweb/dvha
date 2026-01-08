@@ -281,8 +281,7 @@
         "labelPlaceholder": "Display label",
         "textPlaceholder": "Supports {{input.xxx}} / {{node.output}}",
         "notePlaceholder": "Notes (optional)",
-        "addField": "Add Field",
-        "codePlaceholder": "Enter JSON array, e.g. [{ \"name\": \"field\" }]"
+        "addField": "Add Field"
       }
     },
     "schemaEditor": {
