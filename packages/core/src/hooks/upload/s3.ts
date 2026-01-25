@@ -73,9 +73,9 @@ export function createS3UploadDriver(config: {
         headers,
         onUploadProgress: (progressEvent) => {
           if (options.onUploadProgress && progressEvent.total) {
-            const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            const percent = Math.max(0, Math.min(100, Math.round((progressEvent.loaded * 100) / progressEvent.total)))
             options.onUploadProgress({
-              loaded: progressEvent.loaded,
+              loaded: Math.min(progressEvent.loaded, progressEvent.total),
               total: progressEvent.total,
               percent,
             })
@@ -86,6 +86,18 @@ export function createS3UploadDriver(config: {
       if (uploadResponse.status < 200 || uploadResponse.status >= 300) {
         throw new Error(`S3 upload failed: ${uploadResponse.statusText}`)
       }
+
+      await client.request({
+        method: 'PUT',
+        path: config.signPath,
+        payload: {
+          url: signData.url,
+          filename: file.name,
+          size: file.size,
+          mime: file.type,
+        },
+        signal: options.signal,
+      })
 
       return {
         data: {

@@ -1,9 +1,9 @@
 import type { TableColumn, TablePagination } from '@duxweb/dvha-naiveui'
-import type { PropType } from 'vue'
+import type { MaybeRef, PropType } from 'vue'
 import { useI18n } from '@duxweb/dvha-core'
 import { useWindowSize } from '@vueuse/core'
 import { NDataTable, NPagination } from 'naive-ui'
-import { computed, defineComponent, toRef } from 'vue'
+import { computed, defineComponent, unref } from 'vue'
 import { useTable } from '../../hooks'
 import { DuxListEmpty } from '../status'
 
@@ -15,7 +15,7 @@ export const DuxTable = defineComponent({
       required: true,
     },
     filter: {
-      type: Object as PropType<Record<string, any>>,
+      type: Object as PropType<MaybeRef<Record<string, any>>>,
     },
     columns: {
       type: Array as PropType<TableColumn[]>,
@@ -32,11 +32,11 @@ export const DuxTable = defineComponent({
       return rest
     })
 
-    const filters = toRef(props.filter || {})
+    const filters = computed(() => unref(props.filter) || {})
 
     const result = useTable({
       path: props.path,
-      filters: filters.value,
+      filters,
       columns: props.columns || [],
       pagination: props.pagination,
     })

@@ -1,9 +1,9 @@
 import type { SelectProps } from 'naive-ui'
 import type { PropType, VNodeChild } from 'vue'
-import { useSelect } from '@duxweb/dvha-core'
+import { useI18n, useSelect } from '@duxweb/dvha-core'
 import { useVModel } from '@vueuse/core'
 import { isEqual } from 'lodash-es'
-import { NAvatar, NImage, NPagination, NSelect, NSpace, NTag } from 'naive-ui'
+import { NAvatar, NImage, NPagination, NSelect, NSpace, NTag, NTooltip } from 'naive-ui'
 import { computed, defineComponent, toRef, watch } from 'vue'
 
 interface DuxSelectProps extends SelectProps {
@@ -15,6 +15,7 @@ interface DuxSelectProps extends SelectProps {
   descField?: string
   multiple?: boolean
   option?: Record<string, any> | Record<string, any>[] | null
+  refreshable?: boolean
 }
 
 export const DuxSelect = defineComponent<DuxSelectProps>({
@@ -40,9 +41,14 @@ export const DuxSelect = defineComponent<DuxSelectProps>({
       type: [Object, Array] as PropType<Record<string, any> | Record<string, any>[] | null>,
       default: undefined,
     },
+    refreshable: {
+      type: Boolean,
+      default: true,
+    },
   },
   extends: NSelect,
   setup(props, { emit, slots }) {
+    const { t } = useI18n()
     const params = toRef(props, 'params', {})
     const path = toRef(props, 'path')
 
@@ -62,7 +68,7 @@ export const DuxSelect = defineComponent<DuxSelectProps>({
     const imageField = toRef(props, 'imageField', '')
     const descField = toRef(props, 'descField', '')
 
-    const { onSearch, loading, pagination, options, pageCount } = useSelect({
+    const { onSearch, loading, pagination, options, pageCount, refetch } = useSelect({
       path,
       params,
       defaultValue: model,
@@ -186,6 +192,48 @@ export const DuxSelect = defineComponent<DuxSelectProps>({
         }}
       >
         {{
+          arrow: () => {
+            const arrowSlot = slots.arrow?.()
+            const arrowNode = arrowSlot || null
+
+            if (!props.refreshable) {
+              return arrowNode
+            }
+
+            return (
+              <NTooltip trigger="hover">
+                {{
+                  default: () => t('components.button.refresh') || 'Refresh',
+                  trigger: () => (
+                    <div
+                      class={[
+                        'i-tabler:refresh size-4 cursor-pointer opacity-70 hover:opacity-100',
+                        loading.value && 'animate-spin',
+                      ]}
+                      role="button"
+                      tabindex={0}
+                      onMousedown={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                      }}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        refetch?.()
+                      }}
+                      onKeydown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          refetch?.()
+                        }
+                      }}
+                    />
+                  ),
+                }}
+              </NTooltip>
+            )
+          },
           action: () => {
             if (props.pagination) {
               return (

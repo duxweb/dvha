@@ -1,6 +1,8 @@
+import type { PropType, VNodeChild } from 'vue'
+import { useResizeObserver } from '@vueuse/core'
 import clsx from 'clsx'
-import { NImageGroup } from 'naive-ui'
-import { computed, defineComponent } from 'vue'
+import { NImageGroup, NTooltip } from 'naive-ui'
+import { computed, defineComponent, nextTick, ref, watch } from 'vue'
 import { DuxAvatar } from '../widget'
 import { DuxImage } from '../widget/image'
 
@@ -9,7 +11,8 @@ export const DuxMedia = defineComponent({
   props: {
     title: String,
     avatar: Boolean,
-    image: [String, Array<string>],
+    // Support string(s) for default image/avatar rendering, or VNode / render fn for custom image area.
+    image: [String, Array, Object, Function] as PropType<string | string[] | VNodeChild | (() => VNodeChild)>,
     desc: [String, Array<string>],
     extend: String,
     onClick: Function,
@@ -24,50 +27,99 @@ export const DuxMedia = defineComponent({
   },
   setup(props, { slots }) {
     const images = computed(() => {
-      return Array.isArray(props.image) ? props.image : props.image !== undefined ? [props.image] : []
+      if (typeof props.image === 'string')
+        return [props.image]
+      if (Array.isArray(props.image))
+        return props.image as string[]
+      return []
     })
     const desc = computed(() => {
       return Array.isArray(props.desc) ? props.desc : props.desc !== undefined ? [props.desc] : []
     })
 
+    const isCustomImage = computed(() => typeof props.image === 'function' || (props.image && typeof props.image === 'object' && !Array.isArray(props.image)))
+    const hasAvatarArea = computed(() => isCustomImage.value || Boolean(props.avatar) || images.value.length > 0)
+
+    const hasDesc = computed(() => Boolean(desc.value?.length) || Boolean(slots.desc))
+    const titleRef = ref<HTMLElement | null>(null)
+    const titleEllipsis = ref(false)
+
+    const updateTitleEllipsis = async () => {
+      await nextTick()
+      const el = titleRef.value
+      if (!el) {
+        titleEllipsis.value = false
+        return
+      }
+      // Single-line ellipsis uses width overflow; multi-line clamp uses height overflow.
+      titleEllipsis.value = hasDesc.value
+        ? el.scrollWidth > el.clientWidth
+        : el.scrollHeight > el.clientHeight
+    }
+
+    watch([() => props.title, hasDesc], updateTitleEllipsis, { immediate: true })
+    useResizeObserver(titleRef, updateTitleEllipsis)
+
     return () => (
       <div class="flex gap-2 items-center">
         {slots?.image && <div class="flex-none flex items-center gap-2">{slots?.image?.()}</div>}
 
-        {(props.avatar || images?.value.length > 0) && (
+        {hasAvatarArea.value && (
           <div class="flex-none flex items-center gap-2">
-            {props.avatar
-              ? (
-                  <>
-                    {images.value.length > 0
-                      ? images.value.map((item, key) => (
-                          <DuxAvatar key={key} src={item} round size={props.imageWidth} />
-                        ))
-                      : <DuxAvatar round size={props.imageWidth} />}
-                  </>
-                )
-              : (
-                  <NImageGroup>
-                    { images.value.map((item, key) => (
-                      <DuxImage key={key} src={item} class="rounded" objectFit="cover" width={props.imageWidth} height={props.imageHeight} />
-                    ))}
-                  </NImageGroup>
-                )}
+            {isCustomImage.value
+              ? (typeof props.image === 'function' ? (props.image as any)() : props.image)
+              : props.avatar
+                ? (
+                    <>
+                      {images.value.length > 0
+                        ? images.value.map((item, key) => (
+                            <DuxAvatar key={key} src={item} round size={props.imageWidth} />
+                          ))
+                        : <DuxAvatar round size={props.imageWidth} />}
+                    </>
+                  )
+                : (
+                    <NImageGroup>
+                      { images.value.map((item, key) => (
+                        <DuxImage key={key} src={item} class="rounded" objectFit="cover" width={props.imageWidth} height={props.imageHeight} />
+                      ))}
+                    </NImageGroup>
+                  )}
           </div>
         )}
-        <div class="flex-1 flex-col gap-2 min-w-0 truncate items-center">
+        <div class="flex-1 flex flex-col min-w-0">
           <div class="flex gap-2 items-center">
             {slots.prefix?.()}
             {(props.title || slots.default) && (
-              <div
-                onClick={() => props.onClick?.()}
-                class={clsx([
-                  'transition-all truncate',
-                  props?.onClick && 'hover:text-primary cursor-pointer',
-                ])}
+              <NTooltip
+                trigger="hover"
+                disabled={!props.title || !titleEllipsis.value}
               >
-                {props.title || slots.default?.()}
-              </div>
+                {{
+                  default: () => props.title,
+                  trigger: () => (
+                    <div
+                      ref={titleRef}
+                      onClick={() => props.onClick?.()}
+                      class={clsx([
+                        'transition-all',
+                        hasDesc.value ? 'truncate' : 'break-words',
+                        props?.onClick && 'hover:text-primary cursor-pointer',
+                      ])}
+                      style={!hasDesc.value
+                        ? {
+                            display: '-webkit-box',
+                            overflow: 'hidden',
+                            WebkitBoxOrient: 'vertical',
+                            WebkitLineClamp: 2,
+                          }
+                        : undefined}
+                    >
+                      {props.title || slots.default?.()}
+                    </div>
+                  ),
+                }}
+              </NTooltip>
             )}
           </div>
           {(desc?.value.length > 0 || slots.desc) && (

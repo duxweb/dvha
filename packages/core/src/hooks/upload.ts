@@ -99,12 +99,13 @@ export function useUpload(props?: IUseUploadProps) {
         totalLoaded += file.filesize || 0
       }
       else if (index === currentUploadingIndex.value) {
-        totalLoaded += file.progress?.loaded || 0
+        // Some environments report loaded > total; clamp to avoid > 100% overall progress.
+        totalLoaded += Math.min(file.progress?.loaded || 0, file.filesize || 0)
       }
     })
 
     if (totalSize > 0) {
-      overallPercent = Math.round((totalLoaded / totalSize) * 100)
+      overallPercent = Math.max(0, Math.min(100, Math.round((totalLoaded / totalSize) * 100)))
     }
 
     // index 计算：没有上传时为 0，上传时从 1 开始计数
@@ -310,9 +311,9 @@ export function useUpload(props?: IUseUploadProps) {
         const remainingTime = speed > 0 ? remainingBytes / speed : 0
 
         const newProgress = {
-          loaded: progressData.loaded,
+          loaded: progressData.total ? Math.min(progressData.loaded, progressData.total) : progressData.loaded,
           total: progressData.total,
-          percent: progressData.percent || 0,
+          percent: Math.max(0, Math.min(100, progressData.percent || 0)),
           speed: Math.round(speed),
           speedText: formatSpeed(speed),
           uploadTime: Math.round(elapsedTimeSeconds),

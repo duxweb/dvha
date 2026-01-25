@@ -69,6 +69,16 @@
       "recentSevenDays": "Last 7 days",
       "recentThirtyDays": "Last 30 days"
     },
+    "textImageEditor": {
+      "hint": "Click to add an image or text. You can also drag to reorder.",
+      "empty": "Live preview",
+      "addImage": "Add image",
+      "addText": "Add text",
+      "preview": "Preview",
+      "previewTitle": "Preview",
+      "textLabel": "Text",
+      "editText": "Edit text"
+    },
     "form": {
       "edit": "Edit",
       "create": "Create"
@@ -83,6 +93,11 @@
     },
     "editor": {
       "placeholder": "Please enter content"
+    },
+    "cascaderPanel": {
+      "level": "Level {num}",
+      "selectAll": "Select All",
+      "clearAll": "Clear All"
     },
     "upload": {
       "title": "File Manager",

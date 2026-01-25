@@ -12,6 +12,7 @@ export interface DuxDynamicDataColumn {
   title?: string
   copy?: boolean
   width?: number
+  minWidth?: number
   render?: (
     cell: Record<string, any>,
     rowIndex: number,
@@ -25,6 +26,10 @@ export interface DuxDynamicDataColumn {
 export const DuxDynamicData = defineComponent({
   name: 'DuxDynamicData',
   props: {
+    size: {
+      type: String as PropType<'small' | 'medium' | 'large'>,
+      default: 'small',
+    },
     moveAction: {
       type: Boolean,
       default: true,
@@ -178,6 +183,7 @@ export const DuxDynamicData = defineComponent({
           key: column.key,
           title: titleNode,
           width: column.width,
+          minWidth: column.minWidth,
           fixed: column.fixed,
           align: column.align,
           ellipsis: column.ellipsis,
@@ -246,14 +252,17 @@ export const DuxDynamicData = defineComponent({
 
     return () => (
       <NDataTable
-        size="small"
+        size={props.size}
         rowKey={getRowKey}
-        bordered={false}
+        bordered={true}
         columns={tableColumns.value}
         data={dataSource.value}
         pagination={false}
         {...{
           rowProps: (_row: Record<string, any>, rowIndex: number) => getRowProps(rowIndex),
+        }}
+        style={{
+          '--n-empty-padding': '20px 0',
         }}
         v-slots={{
           empty: () => (

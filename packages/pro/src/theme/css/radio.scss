@@ -1,0 +1,8 @@
+:root {
+  --dux-radio-group-padding-block: 6px;
+}
+
+.n-radio-group .n-radio, .n-checkbox-group .n-radio {
+  padding-block: var(--dux-radio-group-padding-block);
+}
+

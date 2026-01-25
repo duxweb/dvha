@@ -71,6 +71,16 @@
       "recentSevenDays": "近7日",
       "recentThirtyDays": "近30日"
     },
+    "textImageEditor": {
+      "hint": "点击按钮添加图片或文本，也可以拖拽进行排序",
+      "empty": "右侧实时预览",
+      "addImage": "添加图片",
+      "addText": "添加文本",
+      "preview": "预览",
+      "previewTitle": "预览",
+      "textLabel": "文本",
+      "editText": "编辑文本"
+    },
     "form": {
       "edit": "编辑",
       "create": "新增",
@@ -151,6 +161,11 @@
     },
     "stats": {
       "realTimeData": "实时数据"
+    },
+    "cascaderPanel": {
+      "level": "第{num}级",
+      "selectAll": "全选",
+      "clearAll": "全不选"
     },
     "data": {
       "selectTitle": "请选择数据"

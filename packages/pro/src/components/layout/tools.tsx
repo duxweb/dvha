@@ -71,7 +71,7 @@ export const DuxTableTools = defineComponent({
         >
           {hasSelectedItems.value
             ? (
-                <div class="flex h-10 px-1 justify-between lg:justify-center gap-2 pointer-events-auto">
+                <div class="flex h-10 px-1 justify-between md:justify-center gap-2 pointer-events-auto">
                   {group.value?.map((options, index) => (
                     <div class="h-10 mt-1 bg-default rounded px-4 py-1 shadow flex items-center gap-4">
 

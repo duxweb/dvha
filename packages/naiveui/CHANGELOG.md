@@ -1,5 +1,11 @@
 # @duxweb/dvha-naiveui
 
+## 1.1.22
+
+### Patch Changes
+
+- feat: 增加多个组件与优化数据请求稳定性
+
 ## 1.1.21
 
 ## 1.1.20

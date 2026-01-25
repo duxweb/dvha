@@ -1,6 +1,6 @@
 import type { PropType, Ref } from 'vue'
 import { NButton, NTabs } from 'naive-ui'
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'ModalTab',
@@ -14,8 +14,9 @@ export default defineComponent({
       default: '0',
     },
     handle: {
-      type: Object as PropType<Ref<HTMLElement>>,
-      default: () => ref<HTMLElement>(),
+      // `DuxModal` passes `draggableClass` (string). Keep backward compatibility with ref usage.
+      type: [String, Object] as PropType<string | Ref<HTMLElement>>,
+      default: '',
     },
     onClose: {
       type: Function as PropType<() => void>,
@@ -37,7 +38,23 @@ export default defineComponent({
         >
           {{
             default: () => slots.default?.(),
-            prefix: () => props.draggable ? <div class="pl-4 cursor-move flex items-center" ref={props.handle}><div class="i-tabler:grid-dots size-4" /></div> : null,
+            prefix: () => {
+              if (!props.draggable) {
+                return null
+              }
+              const isRef = typeof props.handle === 'object' && props.handle !== null
+              return (
+                <div
+                  class={[
+                    'pl-4 cursor-move flex items-center',
+                    !isRef && props.handle,
+                  ]}
+                  ref={isRef ? props.handle as any : undefined}
+                >
+                  <div class="i-tabler:grid-dots size-4" />
+                </div>
+              )
+            },
             suffix: () => (
               <div class="pr-4 flex items-center">
                 <NButton text onClick={props.onClose} aria-label="close">

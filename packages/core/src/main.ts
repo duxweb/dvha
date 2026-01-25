@@ -1,6 +1,6 @@
 import type { App } from 'vue'
 import type { IConfig } from './types'
-import { VueQueryPlugin } from '@tanstack/vue-query'
+import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { ref } from 'vue'
@@ -11,6 +11,16 @@ import { initRouter } from './router/route'
 export function createDux(config: IConfig) {
   const pinia = createPinia()
   pinia.use(piniaPluginPersistedstate)
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 60 * 1000,
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
+      },
+    },
+  })
 
   return {
     install(app: App) {
@@ -29,7 +39,7 @@ export function createDux(config: IConfig) {
       app.provide('dux.manage', manageRef)
       app.directive('can', permissionDirective)
       app.use(pinia)
-      app.use(VueQueryPlugin)
+      app.use(VueQueryPlugin, { queryClient })
       app.use(initRouter(config))
     },
   }

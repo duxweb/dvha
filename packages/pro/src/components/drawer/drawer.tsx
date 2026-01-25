@@ -1,7 +1,7 @@
 import type { AsyncComponentLoader, Component, PropType } from 'vue'
 import { useDisclosure } from '@overlastic/vue'
 import { NDrawer, NSpin } from 'naive-ui'
-import { defineAsyncComponent, defineComponent, Suspense } from 'vue'
+import { defineAsyncComponent, defineComponent, ref, Suspense } from 'vue'
 
 export default defineComponent({
   name: 'DuxDrawer',
@@ -24,6 +24,22 @@ export default defineComponent({
       duration: 1000,
     })
 
+    const viewportWidth = ref<number | undefined>(typeof window === 'undefined' ? undefined : window.innerWidth)
+    const getMaxWidth = () => {
+      if (viewportWidth.value) {
+        return props?.maxWidth ? Math.min(props.maxWidth, viewportWidth.value) : viewportWidth.value
+      }
+      return props?.maxWidth ?? 800
+    }
+
+    const getDefaultWidth = () => {
+      const defaultWidth = props?.width || 400
+      if (typeof defaultWidth === 'number' && viewportWidth.value) {
+        return Math.min(defaultWidth, viewportWidth.value)
+      }
+      return defaultWidth
+    }
+
     const params = props?.componentProps || {}
     params.title = props.title
     params.onConfirm = confirm
@@ -38,8 +54,8 @@ export default defineComponent({
         closeOnEsc={false}
         maskClosable={false}
         minWidth={200}
-        maxWidth={props?.maxWidth || 800}
-        defaultWidth={props?.width || 400}
+        maxWidth={getMaxWidth()}
+        defaultWidth={getDefaultWidth()}
         resizable={true}
         placement={props.placement}
         show={visible.value}

@@ -3,7 +3,7 @@ import type { DefaultError, DefinedInitialDataInfiniteOptions, DefinedInitialQue
 import type { IDataProviderCreateManyOptions, IDataProviderCreateOptions, IDataProviderCustomOptions, IDataProviderDeleteManyOptions, IDataProviderDeleteOptions, IDataProviderError, IDataProviderGetManyOptions, IDataProviderGetOneOptions, IDataProviderListOptions, IDataProviderPagination, IDataProviderResponse, IDataProviderUpdateManyOptions, IDataProviderUpdateOptions } from '../types'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { trimStart } from 'lodash-es'
-import { computed, ref, toRef, watch } from 'vue'
+import { computed, ref, toRef, unref, watch } from 'vue'
 import { useError, useGetAuth } from './auth'
 import { useManage } from './manage'
 
@@ -28,9 +28,9 @@ export function useList(params: IListParams) {
   const { mutate: onAuthError } = useError()
 
   const pagination = toRef<IDataProviderPagination>(params.pagination ? params.pagination as IDataProviderPagination : { page: 1, pageSize: 20 })
-  const sorters = toRef(params, 'sorters', {})
-  const filters = toRef(params, 'filters', {})
-  const meta = toRef(params, 'meta', {})
+  const sorters = computed(() => unref(params.sorters) || {})
+  const filters = computed(() => unref(params.filters) || {})
+  const meta = computed(() => unref(params.meta) || {})
 
   const props = computed((): IDataProviderListOptions => {
     const { onError, options, pagination, filters, sorters, meta, ...rest } = params
@@ -50,14 +50,18 @@ export function useList(params: IListParams) {
     return {
       ...props.value,
       pagination: params.pagination ? pagination.value : undefined,
-      filters: filters.value || {},
-      sorters: sorters.value || {},
-      meta: meta.value || {},
+      filters: filters.value,
+      sorters: sorters.value,
+      meta: meta.value,
     }
   })
 
+  const queryKey = computed(() => {
+    return [`${manage.config?.name}:${providerName}:${params.path}`, queryProps.value]
+  })
+
   const req = useQuery({
-    queryKey: [`${manage.config?.name}:${providerName}:${params.path}`, queryProps.value],
+    queryKey,
     queryFn: () => manage.config?.dataProvider?.[providerName]?.getList(queryProps.value, manage, auth),
     ...params.options,
   })
@@ -145,8 +149,12 @@ export function useInfiniteList(params: IInfiniteListParams) {
     }
   })
 
+  const queryKey = computed(() => {
+    return [`${manage.config?.name}:${providerName}:infinite:${params.path}`, queryProps.value]
+  })
+
   const req = useInfiniteQuery({
-    queryKey: [`${manage.config?.name}:${providerName}:infinite:${params.path}`, queryProps.value],
+    queryKey,
     queryFn: ({ pageParam }) => {
       pagination.value.page = pageParam
       return manage.config?.dataProvider?.[providerName]?.getList({
@@ -267,6 +275,7 @@ export function useOne(params: IOneParams) {
     queryKey: [`${manage.config?.name}:${providerName}:${params.path}`, props],
     queryFn: () => manage.config?.dataProvider?.[providerName]?.getOne(props.value, manage, auth),
     ...params.options,
+    staleTime: 0,
   })
 
   const isLoading = computed<boolean>(() => {
@@ -328,6 +337,7 @@ export function useMany(params: IManyParams) {
     queryKey: [`${manage.config?.name}:${providerName}:${params.path}`, props],
     queryFn: () => manage.config?.dataProvider?.[providerName]?.getMany(props.value, manage, auth),
     ...params.options,
+    staleTime: 0,
   })
 
   const isLoading = computed<boolean>(() => {

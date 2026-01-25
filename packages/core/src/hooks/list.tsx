@@ -1,7 +1,8 @@
 import type { IDataProviderError, IDataProviderPagination, IDataProviderResponse } from '../types'
+import type { MaybeRef } from 'vue'
 import type { IImportProgress } from './import'
 import { reactiveComputed, useCountdown } from '@vueuse/core'
-import { computed, ref, toRef, watch } from 'vue'
+import { computed, ref, toRef, unref, watch } from 'vue'
 import { useCustomMutation, useList } from './data'
 import { useExportCsv } from './exportCsv'
 import { useImportCsv } from './importCsv'
@@ -17,8 +18,8 @@ export interface UseExtendListProps {
   path: string
   key?: IListKey
   totalField?: string
-  filters?: Record<string, any>
-  sorters?: Record<string, 'asc' | 'desc'>
+  filters?: MaybeRef<Record<string, any>>
+  sorters?: MaybeRef<Record<string, 'asc' | 'desc'>>
   pagination?: boolean | IListPagination
   exportFilename?: string
   exportMaxPage?: number
@@ -35,8 +36,8 @@ export interface UseExtendListProps {
 }
 
 export function useExtendList(props: UseExtendListProps) {
-  const filters = toRef(props, 'filters', {})
-  const sorters = toRef(props, 'sorters', {})
+  const filters = ref<Record<string, any>>(unref(props.filters) || {})
+  const sorters = ref<Record<string, 'asc' | 'desc'>>(unref(props.sorters) || {})
 
   // 分页处理
   const pagination = toRef(typeof props.pagination === 'object'
@@ -75,8 +76,8 @@ export function useExtendList(props: UseExtendListProps) {
   const { data, isLoading, refetch } = useList({
     path: props.path,
     pagination: props.pagination ? pagination.value : false,
-    filters: filters.value,
-    sorters: sorters.value,
+    filters,
+    sorters,
   })
 
   const list = computed<Record<string, any>[]>(() => data.value?.data || [])
@@ -87,6 +88,22 @@ export function useExtendList(props: UseExtendListProps) {
   })
 
   const pageCount = computed(() => Math.ceil(total.value / pagination.value.pageSize) || 0)
+
+  watch(
+    () => unref(props.filters),
+    (v) => {
+      filters.value = v || {}
+    },
+    { deep: true },
+  )
+
+  watch(
+    () => unref(props.sorters),
+    (v) => {
+      sorters.value = v || {}
+    },
+    { deep: true },
+  )
 
   const onUpdateFilters = (v: Record<string, any>) => {
     filters.value = v

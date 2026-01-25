@@ -3,14 +3,118 @@ import type { PropType } from 'vue'
 import { useI18n, useUpload } from '@duxweb/dvha-core'
 import { useVModel } from '@vueuse/core'
 import clsx from 'clsx'
-import { NButton, NImage, NProgress, useMessage } from 'naive-ui'
-import { computed, defineComponent, watch } from 'vue'
+import { NButton, NProgress, useMessage } from 'naive-ui'
+import { computed, defineComponent, onMounted, onUnmounted, ref, watch } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
-import { useImagePreview, useModal } from '../../hooks'
+import { useDialog, useModal } from '../../hooks'
 import { useUploadConfig } from './config'
 
-export const DuxImageUpload = defineComponent({
-  name: 'DuxImageUpload',
+const DuxVideoThumb = defineComponent({
+  name: 'DuxVideoThumb',
+  props: {
+    src: String,
+  },
+  setup(props) {
+    const elRef = ref<HTMLElement>()
+    const thumbUrl = ref<string>()
+    let observer: IntersectionObserver | undefined
+
+    const generateThumb = async () => {
+      if (!props.src || thumbUrl.value)
+        return
+
+      const video = document.createElement('video')
+      video.muted = true
+      video.playsInline = true
+      video.preload = 'metadata'
+      // If CORS is not allowed, canvas extraction will fail; we fall back to icon.
+      video.crossOrigin = 'anonymous'
+      video.src = props.src
+
+      const wait = (event: keyof HTMLMediaElementEventMap) => new Promise<void>((resolve, reject) => {
+        function onResolve() {
+          cleanup()
+          resolve()
+        }
+        function onReject() {
+          cleanup()
+          reject(new Error('video load failed'))
+        }
+        function cleanup() {
+          video.removeEventListener(event, onResolve)
+          video.removeEventListener('error', onReject)
+        }
+        video.addEventListener(event, onResolve, { once: true })
+        video.addEventListener('error', onReject, { once: true })
+      })
+
+      try {
+        await wait('loadedmetadata')
+
+        // Seek to a small offset to increase chance of getting a keyframe.
+        // Some formats don't like non-zero seek before data is available; fall back to 0.
+        const target = Number.isFinite(video.duration) && video.duration > 1 ? 0.1 : 0
+        try {
+          video.currentTime = target
+        }
+        catch {
+          video.currentTime = 0
+        }
+
+        await wait('seeked')
+
+        const w = video.videoWidth || 160
+        const h = video.videoHeight || 90
+        const canvas = document.createElement('canvas')
+        canvas.width = w
+        canvas.height = h
+        const ctx = canvas.getContext('2d')
+        if (!ctx)
+          return
+        ctx.drawImage(video, 0, 0, w, h)
+        thumbUrl.value = canvas.toDataURL('image/jpeg', 0.75)
+      }
+      catch {
+        // ignore
+      }
+      finally {
+        video.removeAttribute('src')
+        video.load()
+      }
+    }
+
+    onMounted(() => {
+      if (!elRef.value)
+        return
+      observer = new IntersectionObserver((entries) => {
+        const entry = entries[0]
+        if (entry?.isIntersecting) {
+          generateThumb().finally(() => {
+            observer?.disconnect()
+            observer = undefined
+          })
+        }
+      }, { rootMargin: '200px' })
+      observer.observe(elRef.value)
+    })
+
+    onUnmounted(() => {
+      observer?.disconnect()
+      observer = undefined
+    })
+
+    return () => (
+      <div ref={elRef} class="size-12 flex items-center justify-center">
+        {thumbUrl.value
+          ? <img src={thumbUrl.value} class="size-12 rounded object-cover" />
+          : <div class="i-tabler:video size-6 text-muted" />}
+      </div>
+    )
+  },
+})
+
+export const DuxVideoUpload = defineComponent({
+  name: 'DuxVideoUpload',
   props: {
     path: {
       type: String,
@@ -48,13 +152,14 @@ export const DuxImageUpload = defineComponent({
     })
 
     const message = useMessage()
-    const image = useImagePreview()
+    const dialog = useDialog()
+    const modal = useModal()
     const { t } = useI18n()
 
     const styles = {
       container: 'flex gap-2',
-      imageItem: 'size-80px rounded border border-muted relative group draggable flex items-center',
-      imageOverlay: 'z-1 size-full inset-0 absolute flex items-center justify-center bg-default/80 transition-all opacity-0 group-hover:opacity-100 rounded',
+      item: 'size-80px rounded border border-muted relative group draggable flex items-center justify-center bg-default',
+      overlay: 'z-1 size-full inset-0 absolute flex items-center justify-center bg-default/80 transition-all opacity-0 group-hover:opacity-100 rounded gap-1',
       uploadArea: 'relative size-80px text-sm rounded flex flex-col border border-dashed bg-elevated border-muted dark:border-accented hover:bg-accented/50 hover:border-accented dark:hover:bg-accented/50 dark:hover:border-accented cursor-pointer',
       uploadContent: 'flex-1 flex flex-col justify-center items-center gap-1 relative',
       progressContainer: 'size-80px flex items-center justify-center rounded',
@@ -78,7 +183,7 @@ export const DuxImageUpload = defineComponent({
       maxFileCount: props.maxNum,
       maxFileSize: maxSize.value * 1024 * 1024,
       autoUpload: true,
-      accept: 'image/*',
+      accept: 'video/*',
       params: props.manager ? { manager: 'true' } : undefined,
       method: method.value,
       onError: (error) => {
@@ -86,6 +191,37 @@ export const DuxImageUpload = defineComponent({
       },
       driver: driver.value,
     })
+
+    // Keep object URLs stable per upload file (prevents new URL per render and enables caching).
+    const objectUrls = ref(new Map<string, string>())
+    const getFileUrl = (file: any) => {
+      if (file.url)
+        return file.url as string
+      const existing = objectUrls.value.get(file.id)
+      if (existing)
+        return existing
+      const created = URL.createObjectURL(file.file as File)
+      objectUrls.value.set(file.id, created)
+      return created
+    }
+
+    watch(upload.uploadFiles, (files) => {
+      const alive = new Set((files || []).map((f: any) => f.id))
+      for (const [id, url] of objectUrls.value.entries()) {
+        if (!alive.has(id)) {
+          URL.revokeObjectURL(url)
+          objectUrls.value.delete(id)
+        }
+      }
+    }, { deep: true })
+
+    // If backend rejects the upload, don't keep an errored item in the list.
+    watch(upload.uploadFiles, (files) => {
+      const toRemove = (files || []).filter((f: any) => f?.status === 'error')
+      if (toRemove.length) {
+        upload.removeFiles(toRemove.map((f: any) => f.id))
+      }
+    }, { deep: true })
 
     watch(upload.dataFiles, (v) => {
       const files = props.multiple ? v?.map(file => file.url as string) : v?.[0]?.url as string
@@ -109,11 +245,29 @@ export const DuxImageUpload = defineComponent({
       return props.multiple ? props.maxNum && upload.uploadFiles.value.length >= props.maxNum : true
     })
 
-    const previewList = computed(() => {
-      return upload.dataFiles.value?.map(file => file.url as string)
-    })
+    const previewVideo = (url?: string) => {
+      if (!url)
+        return
+      dialog.node({
+        title: t('components.button.preview'),
+        render: () => (
+          <div class="flex items-center justify-center">
+            <video class="w-120 max-w-full" controls>
+              <source src={url} />
+            </video>
+          </div>
+        ),
+      })
+    }
 
-    const modal = useModal()
+    const pickManagerVideos = (value: Record<string, any>[] | undefined) => {
+      const items = (value || []).filter((v) => {
+        const mime = String(v?.filetype || '')
+        const url = String(v?.url || '')
+        return /^video\//i.test(mime) || /\.(?:mp4|webm|ogg|mov|m4v)$/i.test(url)
+      })
+      return items
+    }
 
     watch(model, (v) => {
       if (!v || !(Array.isArray(v) ? v.length : String(v).length))
@@ -134,28 +288,21 @@ export const DuxImageUpload = defineComponent({
           draggable=".draggable"
         >
           {upload.uploadFiles.value?.map((file, index) => {
-            const url = file.url || URL.createObjectURL(file.file as File)
+            const url = getFileUrl(file)
             return (
               <div
                 key={index}
-                class={clsx(styles.imageItem)}
+                class={clsx(styles.item)}
               >
-                <NImage
-                  class="z-0 rounded"
-                  objectFit="scale-down"
-                  width={78}
-                  height={78}
-                  previewDisabled
-                  src={url}
-                />
-                <div class={styles.imageOverlay}>
+                <DuxVideoThumb src={url} />
+                <div class={styles.overlay}>
                   {file.status === 'success' && (
                     <NButton
                       quaternary
                       circle
                       size="small"
                       renderIcon={() => <div class="n-icon i-tabler:eye"></div>}
-                      onClick={() => image.show(previewList.value, index)}
+                      onClick={() => previewVideo(url)}
                     />
                   )}
                   <NButton
@@ -190,18 +337,19 @@ export const DuxImageUpload = defineComponent({
                       component: () => import('./manager'),
                       componentProps: {
                         path: managePath.value,
-                        type: 'image',
+                        type: 'media',
                         multiple: props.multiple,
                         uploadParams: {
                           path: uploadPath.value,
-                          accept: 'image/*',
+                          accept: 'video/*',
                           maxNum: props.maxNum,
                           maxSize: props.maxSize,
                           method: method.value,
                         },
                       },
                     }).then((value: Record<string, any>[]) => {
-                      upload.addDataFiles(value)
+                      const items = pickManagerVideos(value)
+                      upload.addDataFiles(items)
                     })
                   }}
                 >

@@ -95,7 +95,7 @@ export function useSelect(props: IUseSelectProps) {
     immediate: true,
   })
 
-  const { data, isLoading, total, pageCount } = useList({
+  const { data, isLoading, total, pageCount, refetch } = useList({
     get path() {
       return resolvedPath.value
     },
@@ -217,6 +217,7 @@ export function useSelect(props: IUseSelectProps) {
     options,
     meta,
     loading,
+    refetch,
     pagination,
     total,
     pageCount,

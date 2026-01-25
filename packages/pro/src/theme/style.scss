@@ -7,6 +7,7 @@
 @use './css/menu.scss';
 @use './css/login.scss';
 @use './css/loading.scss';
+@use './css/radio.scss';
 
 html {
   color-scheme: light;
@@ -15,6 +16,21 @@ html {
 html.dark {
   color-scheme: dark;
   background-color: rgb(16, 16, 20);
+}
+
+img, video {
+  max-width: none;
+  height: auto;
+}
+
+*, ::after, ::before, ::backdrop, ::file-selector-button {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+label,button, input, select, textarea {
+  border: 1px solid transparent;
 }
 
 [un-cloak] {
@@ -44,3 +60,4 @@ html.dark {
   opacity: 0;
   transform: translateX(30px);
 }
+

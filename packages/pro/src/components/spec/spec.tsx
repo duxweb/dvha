@@ -74,7 +74,7 @@ function buildCombinations(specs: NormalizedSpec[]): SpecCombination[] {
 }
 
 function buildRowFallbackKey(row: Record<string, any>, specs: NormalizedSpec[]) {
-  return specs.map(spec => row[getSpecColumnKey(spec.id)] || '').join('__')
+  return specs.map(spec => row?.__specs?.[spec.id]?.id || row?.[getSpecColumnKey(spec.id)] || '').join('__')
 }
 
 export const DuxSpec = defineComponent({
@@ -90,6 +90,16 @@ export const DuxSpec = defineComponent({
     imageUploadProps: {
       type: Object as PropType<Partial<DuxSpecImageUploadProps>>,
       default: () => ({}),
+    },
+    /**
+     * When enabled, DuxSpec will keep `row.specs` in sync as a plain map:
+     * { [specName]: valueLabel }.
+     *
+     * This lets the backend store/query SKU specs without dealing with editor-only fields.
+     */
+    syncRowSpecs: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ['update:value', 'change'],
@@ -151,6 +161,61 @@ export const DuxSpec = defineComponent({
         .filter(spec => spec.name && spec.values.length)
     })
 
+    const ensureRowSpecs = (row: Record<string, any>, specs: NormalizedSpec[]) => {
+      if (!props.syncRowSpecs) {
+        return
+      }
+      const next: Record<string, string> = {}
+      specs.forEach((spec) => {
+        const selected = row?.__specs?.[spec.id] as NormalizedSpecValue | undefined
+        if (selected?.label) {
+          next[spec.name] = selected.label
+        }
+      })
+      row.specs = next
+    }
+
+    const hydrateRowFromPlainSpecs = (row: Record<string, any>, specs: NormalizedSpec[]) => {
+      if (!row || typeof row !== 'object') {
+        return
+      }
+
+      // Already hydrated by the editor.
+      if (row.__specKey && row.__specs) {
+        ensureRowSpecs(row, specs)
+        return
+      }
+
+      // If backend only returns a plain map: { specName: valueLabel },
+      // rebuild editor-only fields so the table can render and preserve row values.
+      const plain = row.specs
+      if (!plain || typeof plain !== 'object' || Array.isArray(plain)) {
+        return
+      }
+
+      const map: Record<string, NormalizedSpecValue> = {}
+      const ids: string[] = []
+      specs.forEach((spec) => {
+        const label = (plain as any)[spec.name]
+        if (!label) {
+          return
+        }
+        const matched = spec.values.find(v => v.label === label)
+        if (!matched) {
+          return
+        }
+        map[spec.id] = matched
+        ids.push(matched.id)
+        row[getSpecColumnKey(spec.id)] = matched.label
+      })
+
+      if (ids.length === specs.length) {
+        row.__specKey = ids.join('__')
+        row.__specs = map
+        ensureRowSpecs(row, specs)
+      }
+    }
+
     const syncRowsWithSpecs = (specs: NormalizedSpec[]) => {
       ensureModelState()
       if (!specs.length) {
@@ -175,6 +240,7 @@ export const DuxSpec = defineComponent({
       }
 
       const existingRows = (model.value!.rows || []) as Record<string, any>[]
+      existingRows.forEach(row => hydrateRowFromPlainSpecs(row, specs))
       const combinations = buildCombinations(specs)
       const previousRows = existingRows
       const previousMap = new Map<string, Record<string, any>>()
@@ -197,6 +263,7 @@ export const DuxSpec = defineComponent({
           const columnKey = getSpecColumnKey(spec.id)
           row[columnKey] = combination.map[spec.id]?.label || ''
         })
+        ensureRowSpecs(row, specs)
         if (!changed && existing) {
           const columnDiff = specs.some((spec) => {
             const columnKey = getSpecColumnKey(spec.id)
@@ -305,7 +372,7 @@ export const DuxSpec = defineComponent({
           createAction={false}
           deleteAction={false}
           moveAction={false}
-
+          size="medium"
           {...{
             'onUpdate:value': (rows: Record<string, any>[]) => {
               ensureModelState()

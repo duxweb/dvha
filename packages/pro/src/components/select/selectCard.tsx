@@ -93,7 +93,7 @@ export const DuxSelectCard = defineComponent({
             class={[
               'relative cursor-pointer border rounded p-2.5 transition-all duration-200 hover:border-primary',
               {
-                'border-primary bg-primary/10': isSelected(option.value),
+                'border-primary bg-primary/5': isSelected(option.value),
                 'border-muted': !isSelected(option.value),
                 'opacity-50 cursor-not-allowed': option.disabled || props.disabled,
               },
@@ -119,15 +119,15 @@ export const DuxSelectCard = defineComponent({
               {option.icon && (
                 <div class={[
                   'flex items-center justify-center p-3 rounded-lg',
-                  `bg-${option.iconColor}/10`,
-                  `text-${option.iconColor}`,
+                  `bg-${option.iconColor || 'primary'}/10`,
+                  `text-${option.iconColor || 'primary'}`,
                 ]}
                 >
                   <div class={`${option.icon} size-4`}></div>
                 </div>
               )}
 
-              <div class="flex flex-col flex-1 gap-2">
+              <div class="flex flex-col flex-1 gap-1">
                 <div class={[
                   'text-sm font-medium',
                   {

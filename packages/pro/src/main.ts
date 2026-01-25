@@ -69,5 +69,14 @@ declare module '@duxweb/dvha-core' {
     }
     // 工具配置
     tools?: ITool[]
+
+    // Map config (e.g. Baidu Map)
+    map?: {
+      // 百度地图 AK
+      baiduAk?: string
+      // 天地图 TK
+      tiandituTk?: string
+      [key: string]: any
+    }
   }
 }

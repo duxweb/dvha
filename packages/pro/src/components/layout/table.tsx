@@ -211,9 +211,6 @@ export const DuxTableLayout = defineComponent({
         if (result.page?.value !== 1) {
           result.onUpdatePage?.(1)
         }
-        else {
-          result.onRefresh?.()
-        }
         return
       }
       result.onRefresh?.()
@@ -289,6 +286,16 @@ export const DuxTableLayout = defineComponent({
               slots: {
                 icon: () => <div class="i-tabler:arrow-back-up size-4" />,
                 default: () => t('components.button.reset'),
+              },
+            },
+            {
+              tag: NButton,
+              attrs: {
+                secondary: true,
+                onClick: () => result.onRefresh?.(),
+              },
+              slots: {
+                icon: () => <div class="i-tabler:refresh size-4" />,
               },
             },
           ],
@@ -434,6 +441,14 @@ export const DuxTableLayout = defineComponent({
             {{
               icon: () => <div class="i-tabler:arrow-back-up size-4" />,
               default: () => t('components.button.reset'),
+            }}
+          </NButton>
+          <NButton
+            secondary
+            onClick={() => result.onRefresh?.()}
+          >
+            {{
+              icon: () => <div class="i-tabler:refresh size-4" />,
             }}
           </NButton>
         </div>

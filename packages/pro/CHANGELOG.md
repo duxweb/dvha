@@ -1,5 +1,14 @@
 # @duxweb/dvha-pro
 
+## 1.1.22
+
+### Patch Changes
+
+- feat: 增加多个组件与优化数据请求稳定性
+- Updated dependencies
+  - @duxweb/dvha-naiveui@1.1.22
+  - @duxweb/dvha-core@1.1.22
+
 ## 1.1.21
 
 ### Patch Changes

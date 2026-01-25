@@ -7,7 +7,7 @@ import { computed, defineComponent, h, ref, watch } from 'vue'
 import { useTable } from '../../hooks'
 import { DuxModalPage } from '../modal'
 
-const Select = defineComponent({
+const SelectModal = defineComponent({
   name: 'Select',
   props: {
     path: String,
@@ -120,4 +120,4 @@ const Select = defineComponent({
   },
 })
 
-export default Select
+export default SelectModal

@@ -4,7 +4,7 @@ import type { ComputedRef, MaybeRef, Ref } from 'vue'
 import { treeToArr, useExtendList } from '@duxweb/dvha-core'
 import { watchDebounced } from '@vueuse/core'
 import { cloneDeep } from 'lodash-es'
-import { computed, ref, toRef, watch } from 'vue'
+import { computed, ref, toRef, unref, watch } from 'vue'
 
 export interface TableColumnExtend {
   show?: boolean
@@ -38,8 +38,8 @@ export interface UseNaiveTableReturn extends ReturnType<typeof useExtendList> {
 }
 
 export function useNaiveTable(props: UseTableProps): UseNaiveTableReturn {
-  const filters = toRef(props, 'filters', {})
-  const sorters = toRef(props, 'sorters', {})
+  const filters = computed(() => unref(props.filters) || {})
+  const sorters = computed(() => unref(props.sorters) || {})
   const tableColumns = toRef(props, 'columns', [])
 
   const tableFilters = ref<Record<string, any>>({})
@@ -52,22 +52,23 @@ export function useNaiveTable(props: UseTableProps): UseNaiveTableReturn {
   const dataSorters = ref<Record<string, 'asc' | 'desc'>>({
     ...sorters.value,
   })
-
-  watchDebounced([filters, tableFilters], ([filtersValue, tableFiltersValue]) => {
-    Object.keys(dataFilters.value).forEach((key) => {
-      delete dataFilters.value[key]
-    })
-    Object.assign(dataFilters.value, filtersValue, tableFiltersValue)
-  }, {
-    debounce: 300,
-    deep: true,
-  })
-
   // 使用 useExtendList
   const extendListResult = useExtendList({
     ...props,
-    filters: dataFilters.value,
-    sorters: dataSorters.value,
+    filters: dataFilters,
+    sorters: dataSorters,
+  })
+
+  watchDebounced([filters, tableFilters], ([filtersValue, tableFiltersValue]) => {
+    const mergedFilters = {
+      ...(filtersValue || {}),
+      ...(tableFiltersValue || {}),
+    }
+    dataFilters.value = mergedFilters
+    extendListResult.onUpdateFilters(mergedFilters)
+  }, {
+    debounce: 300,
+    deep: true,
   })
 
   // 列处理
@@ -116,10 +117,8 @@ export function useNaiveTable(props: UseTableProps): UseNaiveTableReturn {
       }
     })
 
-    Object.keys(dataSorters.value).forEach((key) => {
-      delete dataSorters.value[key]
-    })
-    Object.assign(dataSorters.value, newSorter)
+    dataSorters.value = newSorter
+    extendListResult.onUpdateSorters(newSorter)
   }
 
   // 筛选处理

@@ -33,6 +33,7 @@ import {
   DuxListLayout,
   DuxListPage,
   DuxMedia,
+  DuxMapCoord,
   DuxModal,
   DuxModalForm,
   DuxModalPage,
@@ -95,6 +96,7 @@ export default {
     app.component('DuxCardPage', DuxCardPage)
     app.component('DuxListPage', DuxListPage)
     app.component('DuxMedia', DuxMedia)
+    app.component('DuxMapCoord', DuxMapCoord)
     app.component('DuxModal', DuxModal)
     app.component('DuxPanelAlert', DuxPanelAlert)
     app.component('DuxPanelCard', DuxPanelCard)

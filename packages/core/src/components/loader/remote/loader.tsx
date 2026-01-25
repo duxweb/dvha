@@ -11,6 +11,7 @@ import * as math from 'mathjs'
 import mime from 'mime'
 import mitt from 'mitt'
 import * as pinia from 'pinia'
+import printJS from 'print-js'
 import * as Vue from 'vue'
 import { loadModule } from 'vue3-sfc-loader'
 import * as vueRouter from 'vue-router'
@@ -47,6 +48,7 @@ export function sfcLoader(path: string) {
       'vue-router': vueRouter,
       'marked': marked,
       '@microsoft/fetch-event-source': sse,
+      'print-js': printJS,
       ...config?.remote?.packages,
 
       'static!': function (content: string, _path: string, type: string) {

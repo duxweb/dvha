@@ -1,3 +1,3 @@
 export * from './dynamicData'
 export * from './dynamicSelect'
-export * from './selectModal'
+export { default as DuxSelectModal } from './selectModal'
