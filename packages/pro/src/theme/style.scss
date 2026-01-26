@@ -20,11 +20,11 @@ html.dark {
 
 img, video {
   max-width: none;
-  height: auto;
+  height: revert-layer;
 }
 
 *, ::after, ::before, ::backdrop, ::file-selector-button {
-  box-sizing: inherit;
+  box-sizing: revert;
   margin: 0;
   padding: 0;
 }

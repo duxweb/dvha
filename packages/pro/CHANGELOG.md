@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.1.23
+
+### Patch Changes
+
+- fix: default box-sizing
+  - @duxweb/dvha-core@1.1.23
+  - @duxweb/dvha-naiveui@1.1.23
+
 ## 1.1.22
 
 ### Patch Changes

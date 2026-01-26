@@ -1,5 +1,11 @@
 # @duxweb/dvha-elementui
 
+## 1.1.23
+
+### Patch Changes
+
+- @duxweb/dvha-core@1.1.23
+
 ## 1.1.22
 
 ### Patch Changes

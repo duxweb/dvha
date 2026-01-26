@@ -1,5 +1,5 @@
 /* layer: properties */
-@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))){*, ::before, ::after, ::backdrop{--un-from-opacity:100%;--un-text-opacity:100%;--un-bg-opacity:100%;--un-divide-y-reverse:initial;--un-border-style:solid;--un-space-y-reverse:initial;--un-divide-x-reverse:initial;--un-divide-opacity:100%;--un-shadow-opacity:100%;--un-border-opacity:100%;--un-translate-x:initial;--un-translate-y:initial;--un-translate-z:initial;--un-to-opacity:100%;--un-ease:initial;--un-outline-style:solid;--un-fill-opacity:100%;}}
+@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))){*, ::before, ::after, ::backdrop{--un-from-opacity:100%;--un-text-opacity:100%;--un-bg-opacity:100%;--un-divide-y-reverse:initial;--un-border-style:solid;--un-divide-x-reverse:initial;--un-divide-opacity:100%;--un-space-y-reverse:initial;--un-shadow-opacity:100%;--un-border-opacity:100%;--un-translate-x:initial;--un-translate-y:initial;--un-translate-z:initial;--un-ease:initial;--un-to-opacity:100%;--un-outline-style:solid;--un-fill-opacity:100%;}}
 @property --un-text-opacity{syntax:"<percentage>";inherits:false;initial-value:100%;}
 @property --un-outline-style{syntax:"*";inherits:false;initial-value:solid;}
 @property --un-border-opacity{syntax:"<percentage>";inherits:false;initial-value:100%;}
@@ -1095,6 +1095,7 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .m12{margin:calc(var(--spacing) * 12);}
 .m14{margin:calc(var(--spacing) * 14);}
 .m146\.8{margin:calc(var(--spacing) * 146.8);}
+.m15{margin:calc(var(--spacing) * 15);}
 .m18{margin:calc(var(--spacing) * 18);}
 .m29\.3{margin:calc(var(--spacing) * 29.3);}
 .m3{margin:calc(var(--spacing) * 3);}
@@ -1446,10 +1447,9 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .end-0{inset-inline-end:calc(var(--spacing) * 0);}
 .start-0{inset-inline-start:calc(var(--spacing) * 0);}
 .inset-y-0{inset-block:calc(var(--spacing) * 0);}
-.-right-15{right:calc(calc(var(--spacing) * 15) * -1);}
 .-right-18{right:calc(calc(var(--spacing) * 18) * -1);}
 .-right-20{right:calc(calc(var(--spacing) * 20) * -1);}
-.-top-15{top:calc(calc(var(--spacing) * 15) * -1);}
+.-top-20{top:calc(calc(var(--spacing) * 20) * -1);}
 .-top-7{top:calc(calc(var(--spacing) * 7) * -1);}
 .bottom-0{bottom:calc(var(--spacing) * 0);}
 .bottom-2{bottom:calc(var(--spacing) * 2);}

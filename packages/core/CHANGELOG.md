@@ -1,5 +1,7 @@
 # @duxweb/dvha-core
 
+## 1.1.23
+
 ## 1.1.22
 
 ### Patch Changes
