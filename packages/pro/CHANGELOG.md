@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.1.24
+
+### Patch Changes
+
+- fix: box style
+  - @duxweb/dvha-core@1.1.24
+  - @duxweb/dvha-naiveui@1.1.24
+
 ## 1.1.23
 
 ### Patch Changes

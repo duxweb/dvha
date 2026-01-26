@@ -24,7 +24,7 @@ img, video {
 }
 
 *, ::after, ::before, ::backdrop, ::file-selector-button {
-  box-sizing: revert;
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
@@ -61,3 +61,7 @@ label,button, input, select, textarea {
   transform: translateX(30px);
 }
 
+
+.n-image-preview-toolbar * {
+  box-sizing: content-box;
+}
