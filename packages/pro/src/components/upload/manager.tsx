@@ -80,7 +80,7 @@ const DuxFileManage = defineComponent({
     })
 
     const uploadParams = computed(() => {
-      const { driver, signPath, signCallback, ...rest } = props.uploadParams || {}
+      const { driver, signPath, signCallback, multiple, ...rest } = props.uploadParams || {}
       return rest
     })
 
@@ -109,12 +109,16 @@ const DuxFileManage = defineComponent({
     }
 
     const upload = useUpload({
+      accept: uploadParams.value?.accept,
+      maxFileCount: uploadParams.value?.maxNum,
+      maxFileSize: uploadParams.value?.maxSize ? uploadParams.value.maxSize * 1024 * 1024 : undefined,
       ...uploadParams.value,
       path: uploadPath.value,
       autoUpload: true,
       driver: driver.value,
       params: form.value,
       method: method.value,
+      multiple: true,
       onSuccess: () => {
         resetAndRefetch()
       },

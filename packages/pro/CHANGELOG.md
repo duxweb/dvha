@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.1.25
+
+### Patch Changes
+
+- fix: editor mulit upload
+  - @duxweb/dvha-core@1.1.25
+  - @duxweb/dvha-naiveui@1.1.25
+
 ## 1.1.24
 
 ### Patch Changes
