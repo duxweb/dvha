@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.1.26
+
+### Patch Changes
+
+- fix: styles
+  - @duxweb/dvha-core@1.1.26
+  - @duxweb/dvha-naiveui@1.1.26
+
 ## 1.1.25
 
 ### Patch Changes

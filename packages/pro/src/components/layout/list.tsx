@@ -168,6 +168,10 @@ export const DuxListLayout = defineComponent({
         }
       })
     })
+    const hasFilterSchema = computed(() => {
+      return filterRows.value.some(row => row.nodes.some(node => Object.keys(node.schema || {}).length > 0))
+    })
+    const shouldShowFilter = computed(() => Boolean(slots.filter) || hasFilterSchema.value)
 
     const filterSchemaDefault = computed(() => {
       return filterRows.value.flatMap(row => row.nodes.map(node => ({
@@ -285,6 +289,9 @@ export const DuxListLayout = defineComponent({
     }) as JsonSchemaNode)
 
     const filterSchemaMulti = computed<JsonSchemaNode[]>(() => {
+      if (!hasFilterSchema.value) {
+        return []
+      }
       const rows = filterRows.value.map((row) => {
         const isMultiColumn = row.nodes.length > 1
         return {
@@ -380,9 +387,16 @@ export const DuxListLayout = defineComponent({
     // 移动端筛选显隐
     const mobileFiltersShow = ref(false)
 
-    const renderSideControls = () => (
-      <div class={['flex gap-2']}>
-        {slots?.sideLeft && windowWidth.value < 1024 && (
+    const renderSideControls = () => {
+      const showSideLeft = Boolean(slots?.sideLeft) && windowWidth.value < 1024
+      const showSideRight = Boolean(slots?.sideRight) && windowWidth.value < 1024
+      const showFilter = !slots?.filter && shouldShowFilter.value && windowWidth.value < 1024
+      if (!showSideLeft && !showSideRight && !showFilter) {
+        return null
+      }
+      return (
+        <div class={['flex gap-2']}>
+          {showSideLeft && (
           <NButton
             class="flex-none"
             secondary
@@ -394,9 +408,9 @@ export const DuxListLayout = defineComponent({
               icon: () => <div class="i-tabler:layout-sidebar-inactive size-4" />,
             }}
           </NButton>
-        )}
+          )}
 
-        {slots?.sideRight && windowWidth.value < 1024 && (
+          {showSideRight && (
           <NButton
             class="flex-none"
             secondary
@@ -408,22 +422,25 @@ export const DuxListLayout = defineComponent({
               icon: () => <div class="i-tabler:layout-sidebar-right-inactive size-4" />,
             }}
           </NButton>
-        )}
+          )}
 
-        <div class="flex-none lg:hidden">
-          <NButton
-            secondary
-            onClick={() => {
-              mobileFiltersShow.value = !mobileFiltersShow.value
-            }}
-          >
-            {{
-              icon: () => <div class="i-tabler:filter size-4" />,
-            }}
-          </NButton>
+          {showFilter && (
+          <div class="flex-none lg:hidden">
+            <NButton
+              secondary
+              onClick={() => {
+                mobileFiltersShow.value = !mobileFiltersShow.value
+              }}
+            >
+              {{
+                icon: () => <div class="i-tabler:filter size-4" />,
+              }}
+            </NButton>
+          </div>
+          )}
         </div>
-      </div>
-    )
+      )
+    }
 
     const renderSearchControls = () => (
       <div class={['flex gap-2 flex-row']}>
@@ -462,12 +479,19 @@ export const DuxListLayout = defineComponent({
       </div>
     )
 
-    const renderControlBar = (withSearch: boolean) => (
-      <div class="flex justify-between gap-2">
-        {renderSideControls()}
-        {withSearch ? renderSearchControls() : <div class="flex gap-2 flex-row" />}
-      </div>
-    )
+    const renderControlBar = (withSearch: boolean) => {
+      const sideControls = renderSideControls()
+      const searchControls = withSearch ? renderSearchControls() : null
+      if (!sideControls && !searchControls) {
+        return null
+      }
+      return (
+        <div class="flex justify-between gap-2">
+          {sideControls}
+          {searchControls}
+        </div>
+      )
+    }
 
     watch(
       () => reactiveFilters.value,
@@ -500,8 +524,18 @@ export const DuxListLayout = defineComponent({
           sideLeft: () => slots?.sideLeft && windowWidth.value >= 1024 ? slots?.sideLeft?.() : undefined,
           sideRight: () => slots?.sideRight && windowWidth.value >= 1024 ? slots?.sideRight?.() : undefined,
           default: () => (
-            <div class="flex flex-col gap-3 h-full relative">
-              <div class="flex gap-2 justify-between flex-row border-b border-muted">
+            <div
+              class={[
+                'flex flex-col h-full relative',
+                shouldShowFilter.value && 'gap-3',
+              ]}
+            >
+              <div
+                class={[
+                  'flex gap-2 justify-between flex-row',
+                  shouldShowFilter.value && 'border-b border-muted',
+                ]}
+              >
                 <div class="relative top-1.5px">
                   {!props.tabs && (
                     slots.title?.() || (
@@ -543,46 +577,50 @@ export const DuxListLayout = defineComponent({
                 </div>
               </div>
 
-              {slots.filter
-                ? slots.filter({
-                    filter: filters.value,
-                    filterReactive: reactiveFilters.value,
-                    onSearch: handleFilterSearch,
-                    onReset: handleFilterReset,
-                  })
-                : (
-                    (props.filterType === 'multi' && windowWidth.value >= 1024)
-                      ? (
-                          <div class="flex flex-col gap-3">
-                            {(windowWidth.value >= 1024 || mobileFiltersShow.value) && (
-                              <div class="flex flex-col gap-3 w-full">
-                                <div key={filterRenderKey.value} class="flex flex-col gap-3">
-                                  {h(filterRenderMulti)}
-                                </div>
-                              </div>
-                            )}
-
-                            {renderControlBar(false)}
-                          </div>
-                        )
+              {shouldShowFilter.value
+                ? (
+                    slots.filter
+                      ? slots.filter({
+                          filter: filters.value,
+                          filterReactive: reactiveFilters.value,
+                          onSearch: handleFilterSearch,
+                          onReset: handleFilterReset,
+                        })
                       : (
-                          <div class="flex gap-2 justify-between flex-col-reverse lg:flex-row">
-                            {(windowWidth.value >= 1024 || mobileFiltersShow.value) && (
-                              <div
-                                class={[
-                                  'flex-1 flex flex-col lg:flex-row gap-2 flex-wrap',
-                                ]}
-                              >
-                                <div key={filterRenderKey.value} class="contents">
-                                  {h(filterRenderDefault)}
-                                </div>
-                              </div>
-                            )}
+                          (props.filterType === 'multi' && windowWidth.value >= 1024)
+                            ? (
+                                <div class="flex flex-col gap-3">
+                                  {(windowWidth.value >= 1024 || mobileFiltersShow.value) && (
+                                    <div class="flex flex-col gap-3 w-full">
+                                      <div key={filterRenderKey.value} class="flex flex-col gap-3">
+                                        {h(filterRenderMulti)}
+                                      </div>
+                                    </div>
+                                  )}
 
-                            {renderControlBar(true)}
-                          </div>
+                                  {renderControlBar(false)}
+                                </div>
+                              )
+                            : (
+                                <div class="flex gap-2 justify-between flex-col-reverse lg:flex-row">
+                                  {(windowWidth.value >= 1024 || mobileFiltersShow.value) && (
+                                    <div
+                                      class={[
+                                        'flex-1 flex flex-col lg:flex-row gap-2 flex-wrap',
+                                      ]}
+                                    >
+                                      <div key={filterRenderKey.value} class="contents">
+                                        {h(filterRenderDefault)}
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {renderControlBar(true)}
+                                </div>
+                              )
                         )
-                  )}
+                  )
+                : renderSideControls()}
 
               <NSpin show={isLoading.value} class="flex-1 min-h-0" contentClass="h-full">
                 <div
