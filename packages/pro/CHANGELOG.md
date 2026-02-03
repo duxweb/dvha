@@ -1,5 +1,14 @@
 # @duxweb/dvha-pro
 
+## 1.1.27
+
+### Patch Changes
+
+- fix: 多管理端兜底路由配置
+- Updated dependencies
+  - @duxweb/dvha-core@1.1.27
+  - @duxweb/dvha-naiveui@1.1.27
+
 ## 1.1.26
 
 ### Patch Changes

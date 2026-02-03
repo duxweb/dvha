@@ -113,7 +113,7 @@ export default defineComponent({
                                           window.open(url, '_blank')
                                         }
                                         else {
-                                          router.push(getRoutePath(config.notice?.path || 'notice'))
+                                          router.push(getRoutePath(config.notice?.route || 'notice'))
                                         }
                                         item[readField] = true
                                         handleNotice(item)
@@ -153,7 +153,7 @@ export default defineComponent({
                         <div
                           class="text-center text-sm text-primary hover:text-primary-hover cursor-pointer py-1"
                           onClick={() => {
-                            router.push(getRoutePath(config.notice?.path || 'notice'))
+                            router.push(getRoutePath(config.notice?.route || 'notice'))
                             show.value = false
                           }}
                         >

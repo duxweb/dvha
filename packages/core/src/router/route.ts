@@ -32,6 +32,12 @@ export function initRouter(config: IConfig) {
           component: manage.components?.noAuthLayout,
           children: noAuthRoutes,
         },
+        {
+          path: ':pathMatch(.*)*',
+          name: `${manage.name}.placeholder`,
+          component: manage.components?.authLayout,
+          children: [],
+        },
       ],
       meta: {
         manageName: manage.name,

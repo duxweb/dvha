@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 1.1.27
+
+### Patch Changes
+
+- fix: 多管理端兜底路由配置
+
 ## 1.1.26
 
 ## 1.1.25
