@@ -1,11 +1,11 @@
 ---
 layout: home
 title: DVHA
-titleTemplate: 基于 Vue 的无头中后台框架
+titleTemplate: 基于 Vue 的无头中纯前端后台框架
 
 hero:
   name: DVHA
-  text: 基于 Vue 的无头中后台框架
+  text: 基于 Vue 的无头中后台纯前端框架
   tagline: Headless Admin for Vue
   subtitle: 灵活组合 • 多管理端 • 数据驱动
   mockUrl: "dux.cn"
