@@ -10,12 +10,6 @@ DVHA 是一个基于 Vue 的中后台框架，提供了一套完整的数据管�
 - **npm**、**yarn**、**pnpm** 或 **bun** 包管理器
 - 基本的 **Vue 3** 和 **TypeScript** 知识
 
-## 在线体验
-
-如果您想在本地安装之前先体验 DVHA，可以使用我们的在线沙盒环境：
-
-[![Edit dvha](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/devbox/funny-jerry-7xttgl?embed=1)
-
 ## 使用脚手架创建项目 (推荐)
 
 DVHA 提供了官方脚手架工具 `@duxweb/dvha-template`，可以快速创建项目。
@@ -25,19 +19,19 @@ DVHA 提供了官方脚手架工具 `@duxweb/dvha-template`，可以快速创建
 ::: code-group
 
 ```bash [bun (推荐)]
-bunx @duxweb/dvha-template@latest init
+bunx @duxweb/dvha-template init
 ```
 
 ```bash [npx]
-npx @duxweb/dvha-template@latest init
+npx @duxweb/dvha-template init
 ```
 
 ```bash [yarn]
-yarn dlx @duxweb/dvha-template@latest init
+yarn dlx @duxweb/dvha-template init
 ```
 
 ```bash [pnpm]
-pnpm dlx @duxweb/dvha-template@latest init
+pnpm dlx @duxweb/dvha-template init
 ```
 
 :::
@@ -185,6 +179,7 @@ const config: IConfig = {
       name: 'admin',
       title: 'DVHA 后台管理系统',
       routePrefix: '/admin',
+      apiBasePath: '/admin',
       components: {
         authLayout: () => import('./pages/layout.vue'),
         notFound: () => import('./pages/404.vue'),

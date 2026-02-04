@@ -18,7 +18,7 @@
 ```js
 // 认证提供者接口
 interface IAuthProvider {
-  updatePassword(params?: any): Promise<IAuthActionResponse>
+  updatePassword(params?: any, manage?: IManageHook): Promise<IAuthActionResponse>
 }
 ```
 

@@ -61,9 +61,11 @@ bun add -D unocss @unocss/reset @unocss/preset-icons
 # 安装图标包
 bun add -D @iconify-json/tabler
 
-# 安装其他必要依赖
-bun add @vueuse/core @vueuse/integrations axios lodash-es
+# 安装必要依赖
 bun add -D @vitejs/plugin-vue-jsx
+
+# 可选依赖（按需安装）
+# bun add @vueuse/core @vueuse/integrations axios lodash-es
 ```
 
 ```bash [npm]
@@ -78,9 +80,11 @@ npm install -D unocss @unocss/reset @unocss/preset-icons
 # 安装图标包
 npm install -D @iconify-json/tabler
 
-# 安装其他必要依赖
-npm install @vueuse/core @vueuse/integrations axios lodash-es
+# 安装必要依赖
 npm install -D @vitejs/plugin-vue-jsx
+
+# 可选依赖（按需安装）
+# npm install @vueuse/core @vueuse/integrations axios lodash-es
 ```
 
 ```bash [yarn]
@@ -95,9 +99,11 @@ yarn add -D unocss @unocss/reset @unocss/preset-icons
 # 安装图标包
 yarn add -D @iconify-json/tabler
 
-# 安装其他必要依赖
-yarn add @vueuse/core @vueuse/integrations axios lodash-es
+# 安装必要依赖
 yarn add -D @vitejs/plugin-vue-jsx
+
+# 可选依赖（按需安装）
+# yarn add @vueuse/core @vueuse/integrations axios lodash-es
 ```
 
 ```bash [pnpm]
@@ -112,9 +118,11 @@ pnpm add -D unocss @unocss/reset @unocss/preset-icons
 # 安装图标包
 pnpm add -D @iconify-json/tabler
 
-# 安装其他必要依赖
-pnpm add @vueuse/core @vueuse/integrations axios lodash-es
+# 安装必要依赖
 pnpm add -D @vitejs/plugin-vue-jsx
+
+# 可选依赖（按需安装）
+# pnpm add @vueuse/core @vueuse/integrations axios lodash-es
 ```
 
 :::
@@ -249,6 +257,7 @@ const config: IConfig = {
       name: 'admin',
       title: 'DVHA 后台管理系统',
       routePrefix: '/admin',
+      apiBasePath: '/admin',
       components: {
         authLayout: () => import('./pages/layout.vue'),
         notFound: () => import('./pages/404.vue'),
@@ -409,7 +418,7 @@ onUnmounted(() => document.removeEventListener('click', closeDropdowns))
       <ul class="space-y-2">
         <li v-for="menu in menus" :key="menu.name">
           <router-link
-            :to="{ name: getRouteName(menu.path) }"
+            :to="getRoutePath(menu.path)"
             class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
             active-class="bg-blue-100 text-blue-700"
           >
@@ -430,9 +439,7 @@ defineProps<{
 }>()
 
 const menus = useMenu()
-const manage = useManage()
-
-const getRouteName = (path: string) => `${manage.config?.name}.${path}`
+const { getRoutePath } = useManage()
 </script>
 ```
 

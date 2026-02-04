@@ -37,9 +37,11 @@ interface IManage {
   updatePassword?: boolean // 是否支持修改密码
 
   apiRoutePath?: string // 远程菜单 API 路径
+  apiBasePath?: string // API 基础路径
 
   authProvider?: IAuthProvider // 认证提供者
   dataProvider?: IDataProvider | Record<string, IDataProvider> // 数据提供者
+  i18nProvider?: I18nProvider // 国际化提供者
 
   routePrefix?: string // 路由前缀
   routes?: RouteRecordRaw[] // 路由配置
@@ -47,6 +49,15 @@ interface IManage {
 
   components?: IConfigComponent // 组件配置
   theme?: IConfigTheme // 主题配置
+  remote?: {
+    packages?: Options
+    apiMethod?: string
+    apiRoutePath?: string | ((path: string) => string)
+  }
+  jsonSchema?: {
+    adaptors?: IJsonAdaptor[]
+    components?: Record<string, Component> | Component[]
+  }
 
   [key: string]: any // 扩展字段
 }
@@ -126,9 +137,10 @@ const userDetailRoute = getRoutePath('users/123') // '/admin/users/123'
 const dashboardRoute = getRoutePath() // '/admin/'
 
 // 生成 API 地址 - 使用默认数据提供者
-const userListApi = getApiUrl('users') // 调用 dataProvider.apiUrl('users')
-const userDetailApi = getApiUrl('users/123') // 调用 dataProvider.apiUrl('users/123')
-const statsApi = getApiUrl('dashboard/stats') // 调用 dataProvider.apiUrl('dashboard/stats')
+// 内部调用 dataProvider.apiUrl(path, manage.config.apiBasePath)
+const userListApi = getApiUrl('users')
+const userDetailApi = getApiUrl('users/123')
+const statsApi = getApiUrl('dashboard/stats')
 
 // 生成 API 地址 - 使用指定数据提供者
 const analyticsApi = getApiUrl('stats', 'analytics') // 调用 analytics 数据提供者
@@ -378,7 +390,8 @@ const analyticsApi = computed(() => {
 
 - 管理端名称必须在全局配置中已定义
 - `getRoutePath` 会自动处理路由前缀和斜杠
-- `getApiUrl` 通过调用数据提供者的 `apiUrl` 方法来构建完整的 API 地址
+- `getApiUrl` 通过调用数据提供者的 `apiUrl(path, apiBasePath)` 方法构建 API 地址
+- `apiBasePath` 用于为当前管理端提供 API 路径前缀
 - `getPath` 返回当前页面相对于管理端前缀的路径，用于面包屑导航等
 - 配置信息会自动合并全局和管理端特定配置
 - 支持单一数据提供者或多数据提供者配置

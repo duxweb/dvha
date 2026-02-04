@@ -218,6 +218,20 @@ const adminManage = {
 }
 ```
 
+### 远程组件菜单
+
+```js
+{
+  name: 'remote.widget',
+  label: '远程组件',
+  loader: 'remote',
+  path: 'remote/widget',
+  meta: {
+    url: 'https://example.com/remote/widget.js'
+  }
+}
+```
+
 ## 菜单元数据
 
 ### 权限控制

@@ -20,7 +20,7 @@
 // 菜单项接口
 interface IMenu {
   name: string
-  title?: string
+  label?: string
   icon?: string
   path?: string
   parent?: string
@@ -119,7 +119,7 @@ const { crumbs } = useMenu()
 console.log('面包屑路径:', crumbs.value)
 
 // 面包屑通常是从根到当前页面的路径
-// 例如: [{ name: 'dashboard', title: '仪表板' }, { name: 'users', title: '用户管理' }]
+// 例如: [{ name: 'dashboard', label: '仪表板' }, { name: 'users', label: '用户管理' }]
 ```
 
 ## 菜单过滤
@@ -174,7 +174,7 @@ watch([active, appActive, subActive], ([newActive, newApp, newSub]) => {
         >
           <router-link :to="item.path">
             <i :class="item.icon"></i>
-            {{ item.title }}
+            {{ item.label }}
           </router-link>
         </li>
       </ul>
@@ -189,7 +189,7 @@ watch([active, appActive, subActive], ([newActive, newApp, newSub]) => {
           :class="{ active: subActive === item.name }"
         >
           <router-link :to="item.path">
-            {{ item.title }}
+            {{ item.label }}
           </router-link>
         </li>
       </ul>

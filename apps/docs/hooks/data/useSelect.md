@@ -20,11 +20,11 @@
 ```typescript
 // 参数接口
 interface UseSelectProps {
-  defaultValue?: SelectValue // 默认选中值
-  path?: string // API 路径
-  params?: Record<string, any> // 筛选参数
+  defaultValue?: MaybeRef<SelectValue> // 默认选中值
+  path?: MaybeRef<string | undefined> // API 路径
+  params?: MaybeRef<Record<string, any> | undefined> // 筛选参数
   pagination?: boolean | number // 是否启用分页，传入数字时作为每页大小
-  providerName?: string // 数据提供者名称
+  providerName?: MaybeRef<string | undefined> // 数据提供者名称
   optionLabel?: string | ((item: Record<string, any>) => string) // 标签字段或函数，默认 'label'
   optionValue?: string | ((item: Record<string, any>) => string) // 值字段或函数，默认 'value'
   optionField?: string // 用于去重的字段名，默认 'value' | 'id'
@@ -63,11 +63,11 @@ const { options, loading, onSearch } = useSelect({
 
 | 参数           | 类型                  | 必需 | 默认值      | 说明                                     |
 | -------------- | --------------------- | ---- | ----------- | ---------------------------------------- |
-| `defaultValue` | `SelectValue`         | ❌   | -           | 当前选中的值，支持单选和多选             |
-| `path`         | `string`              | ❌   | -           | API 资源路径                             |
-| `params`       | `Record<string, any>` | ❌   | -           | 筛选参数，变化时自动重置页码             |
+| `defaultValue` | `MaybeRef<SelectValue>` | ❌ | -           | 当前选中的值，支持单选和多选             |
+| `path`         | `MaybeRef<string \| undefined>` | ❌ | -       | API 资源路径                             |
+| `params`       | `MaybeRef<Record<string, any> \| undefined>` | ❌ | - | 筛选参数，变化时自动重置页码 |
 | `pagination`   | `boolean \| number`   | ❌   | `false`     | 是否启用分页功能，传入数字时作为每页大小 |
-| `providerName` | `string`              | ❌   | `'default'` | 数据提供者名称                           |
+| `providerName` | `MaybeRef<string \| undefined>` | ❌ | `'default'` | 数据提供者名称              |
 | `optionLabel`  | `string \| Function`  | ❌   | `'label'`   | 标签字段名或格式化函数                   |
 | `optionValue`  | `string \| Function`  | ❌   | `'value'`   | 值字段名或格式化函数                     |
 | `optionField`  | `string`              | ❌   | `'value'`   | 用于去重和比较的字段名                   |
@@ -82,8 +82,9 @@ const { options, loading, onSearch } = useSelect({
 | `loading`  | `Ref<boolean>`             | 是否加载中         |
 | `meta`     | `Ref<Record<string, any>>` | 分页元数据         |
 | `onSearch` | `Function`                 | 搜索函数           |
-| `page`     | `Ref<number>`              | 当前页码           |
-| `pageSize` | `Ref<number>`              | 每页大小           |
+| `pagination` | `Ref<{ page: number; pageSize: number }>` | 分页配置 |
+| `total`    | `Ref<number>`              | 总数               |
+| `pageCount`| `Ref<number>`              | 总页数             |
 
 ## 使用示例
 
@@ -106,7 +107,7 @@ const { options, loading, onSearch } = useSelect({
 ### 带分页的选择器
 
 ```js
-const { options, loading, onSearch, page, pageSize, meta } = useSelect({
+const { options, loading, onSearch, pagination, meta } = useSelect({
   defaultValue: selectedUser.value,
   path: '/api/users',
   pagination: true, // 启用分页，默认每页 20 条
@@ -115,14 +116,14 @@ const { options, loading, onSearch, page, pageSize, meta } = useSelect({
 })
 
 // 分页信息
-console.log('当前页:', page.value)
+console.log('当前页:', pagination.value.page)
 console.log('总数:', meta.value.total)
 ```
 
 ### 自定义每页大小
 
 ```js
-const { options, loading, pageSize } = useSelect({
+const { options, loading, pagination } = useSelect({
   defaultValue: selectedUser.value,
   path: '/api/users',
   pagination: 50, // 启用分页，每页 50 条
@@ -130,7 +131,7 @@ const { options, loading, pageSize } = useSelect({
   optionValue: 'id'
 })
 
-console.log('每页大小:', pageSize.value) // 输出: 50
+console.log('每页大小:', pagination.value.pageSize) // 输出: 50
 ```
 
 ### 动态筛选

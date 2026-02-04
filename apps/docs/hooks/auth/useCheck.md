@@ -18,7 +18,7 @@
 ```js
 // 认证提供者接口
 interface IAuthProvider {
-  check(params?: any): Promise<IAuthCheckResponse>
+  check(params?: any, manage?: IManageHook, auth?: IUserState): Promise<IAuthCheckResponse>
 }
 ```
 

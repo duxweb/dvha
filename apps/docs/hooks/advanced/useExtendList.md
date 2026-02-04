@@ -8,6 +8,8 @@
 - ✅ **选中管理** - 提供行选中、全选、反选功能
 - 📤 **批量导出** - 支持导出全部数据或选中数据
 - 📥 **批量导入** - 支持 CSV 文件导入功能
+- 🧩 **批量操作** - 内置批量接口调用封装
+- ⏱️ **自动刷新** - 内置自动刷新倒计时
 - 📄 **智能分页** - 动态计算分页大小选项
 - 🔄 **状态管理** - 提供完整的加载、选中状态管理
 - ⚡ **进度反馈** - 导入导出进度实时反馈
@@ -22,12 +24,13 @@ interface UseExtendListProps {
   path: string // API 路径
   key?: string | number // 数据项唯一标识字段
   totalField?: string // 总数字段名
-  filters?: Record<string, any> // 筛选条件
-  sorters?: Record<string, 'asc' | 'desc'> // 排序条件
+  filters?: MaybeRef<Record<string, any>> // 筛选条件
+  sorters?: MaybeRef<Record<string, 'asc' | 'desc'>> // 排序条件
   expanded?: boolean // 是否展开
   pagination?: boolean | IListPagination // 分页配置
   exportFilename?: string // 导出文件名
   exportMaxPage?: number // 导出最大页数
+  batchPath?: string // 批量接口路径
   total?: (data?: IDataProviderResponse) => number // 总数计算函数
   onExportSuccess?: (data?: IDataProviderResponse) => void // 导出成功回调
   onExportProgress?: (data?: IDataProviderPagination) => void // 导出进度回调
@@ -35,6 +38,8 @@ interface UseExtendListProps {
   onImportSuccess?: (progress?: IImportProgress) => void // 导入成功回调
   onImportProgress?: (progress?: IImportProgress) => void // 导入进度回调
   onImportError?: (error?: IDataProviderError) => void // 导入错误回调
+  onBatchSuccess?: (data?: IDataProviderResponse) => void // 批量操作成功回调
+  onBatchError?: (error?: IDataProviderError) => void // 批量操作错误回调
 }
 
 // 分页接口
@@ -123,12 +128,15 @@ const {
 | `pagination`       | `boolean \| IListPagination`      | ❌   | 分页配置                 |
 | `exportFilename`   | `string`                          | ❌   | 导出文件名               |
 | `exportMaxPage`    | `number`                          | ❌   | 导出最大页数             |
+| `batchPath`        | `string`                          | ❌   | 批量接口路径             |
 | `onExportSuccess`  | `Function`                        | ❌   | 导出成功回调             |
 | `onExportProgress` | `Function`                        | ❌   | 导出进度回调             |
 | `onExportError`    | `Function`                        | ❌   | 导出错误回调             |
 | `onImportSuccess`  | `Function`                        | ❌   | 导入成功回调             |
 | `onImportProgress` | `Function`                        | ❌   | 导入进度回调             |
 | `onImportError`    | `Function`                        | ❌   | 导入错误回调             |
+| `onBatchSuccess`   | `Function`                        | ❌   | 批量操作成功回调         |
+| `onBatchError`     | `Function`                        | ❌   | 批量操作错误回调         |
 
 ## 返回值
 
@@ -143,9 +151,15 @@ const {
 | `isIndeterminate` | `ComputedRef<boolean>` | 是否部分选中         |
 | `pagination`      | `Ref<object>`          | 分页配置             |
 | `pageCount`       | `ComputedRef<number>`  | 总页数               |
+| `page`            | `ComputedRef<number>`  | 当前页码             |
+| `pageSize`        | `ComputedRef<number>`  | 当前每页数量         |
+| `pageSizes`       | `number[]`             | 可选分页数           |
+| `onUpdatePage`    | `Function`             | 更新当前页           |
+| `onUpdatePageSize`| `Function`             | 更新每页数量         |
 | `toggleChecked`   | `Function`             | 切换项目选中状态     |
 | `toggleSelectAll` | `Function`             | 切换全选状态         |
 | `isChecked`       | `Function`             | 检查项目是否选中     |
+| `onUpdateChecked` | `Function`             | 更新选中列表         |
 | `onRefresh`       | `Function`             | 刷新列表             |
 | `onExport`        | `Function`             | 导出全部数据         |
 | `onExportRows`    | `Function`             | 导出选中数据         |
@@ -153,6 +167,11 @@ const {
 | `isExporting`     | `Ref<boolean>`         | 是否正在导出全部数据 |
 | `isExportingRows` | `Ref<boolean>`         | 是否正在导出选中数据 |
 | `isImporting`     | `Ref<boolean>`         | 是否正在导入         |
+| `autoRefetch`     | `Ref<boolean>`         | 是否自动刷新         |
+| `onAutoRefetch`   | `Function`             | 切换自动刷新         |
+| `autoCountdown`   | `Ref<number>`          | 自动刷新倒计时       |
+| `onBatch`         | `Function`             | 批量操作方法         |
+| `isBatching`      | `Ref<boolean>`         | 是否正在批量操作     |
 
 ## 基础使用示例
 

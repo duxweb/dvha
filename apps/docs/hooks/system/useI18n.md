@@ -9,7 +9,7 @@
 - 📍 **语言获取** - 获取当前激活的语言
 - 🏪 **状态管理** - 自动管理语言状态持久化
 - 🎯 **依赖注入** - 自动获取管理端的国际化提供者
-- 📱 **响应式** - 语言状态变化响应式更新
+- 📱 **轻量调用** - 直接调用提供者方法
 
 ## 接口关系
 
@@ -20,7 +20,10 @@
 interface I18nProvider {
   t: (key: string, options?: any, defaultMessage?: string) => string
   changeLocale: (lang: string, options?: any) => Promise<any>
+  loadLocale: (lang: string, files: Record<string, unknown>) => Promise<any>
+  mergeLocale: (lang: string, messages: Record<string, unknown>) => void
   getLocale: () => string
+  getLocales: () => string[]
 }
 ```
 
@@ -29,7 +32,7 @@ interface I18nProvider {
 ```typescript
 import { useI18n } from '@duxweb/dvha-core'
 
-const { t, changeLocale, getLocale } = useI18n()
+const { t, changeLocale, getLocale, loadLocale, mergeLocale, getLocales } = useI18n()
 ```
 
 ## 参数说明
@@ -43,6 +46,9 @@ const { t, changeLocale, getLocale } = useI18n()
 | `t`            | `(key: string, options?: any, defaultMessage?: string) => string` | 翻译函数         |
 | `changeLocale` | `(lang: string) => Promise<any>`                                  | 语言切换函数     |
 | `getLocale`    | `() => string`                                                    | 获取当前语言函数 |
+| `loadLocale`   | `(lang: string, files: Record<string, unknown>) => Promise<any>`  | 加载语言包       |
+| `mergeLocale`  | `(lang: string, messages: Record<string, unknown>) => void`       | 合并语言包       |
+| `getLocales`   | `() => string[]`                                                  | 获取可用语言列表 |
 
 ## 基本翻译
 

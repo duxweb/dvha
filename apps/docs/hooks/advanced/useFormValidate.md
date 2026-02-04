@@ -1,33 +1,18 @@
 # useFormValidate
 
-`useFormValidate` hook 专门用于表单数据验证，基于 vee-validate 构建，提供独立的表单验证功能。
+`useFormValidate` hook 专门用于表单数据验证，基于 vee-validate 的 `validationSchema` 构建。
 
 ## 功能特点
 
 - ✅ **独立验证** - 可单独使用的表单验证功能
 - 📝 **响应式验证** - 表单数据变化时自动更新验证状态
-- 🛡️ **双重规则支持** - 支持 vee-validate 内置规则和 Yup Schema 两种验证方式
-- ⚡ **异步验证** - 支持异步验证函数
+- ⚡ **异步验证** - 支持异步验证函数（由 schema 支持）
 - 🔄 **状态重置** - 提供验证状态重置功能
 - 🎯 **错误详情** - 提供详细的验证错误信息
 
 ## 支持的验证方式
 
-框架支持两种验证方式，可根据项目需求选择：
-
-### 1. vee-validate 内置规则（字符串格式）
-
-- **适用场景**：简单验证、快速开发
-- **格式**：字符串形式，如 `'required|email'`
-- **优点**：语法简洁，上手快速
-- **前提**：需要先调用 `initFormValidate()` 注册规则
-
-### 2. Yup Schema 验证（对象格式）
-
-- **适用场景**：复杂验证、类型安全、异步验证
-- **格式**：Yup 对象形式
-- **优点**：类型安全、功能强大、支持复杂逻辑
-- **前提**：需要安装 `yup` 依赖
+`useValidateForm` 通过 `validationSchema` 接收 `TypedSchema`（如 Yup/Zod）。
 
 ## 接口关系
 
@@ -54,43 +39,7 @@ interface ValidationResult {
 }
 ```
 
-## 验证规则初始化
-
-使用 vee-validate 内置规则前，需要先初始化：
-
-```js
-import { initFormValidate } from '@duxweb/dvha-core'
-
-// 在应用启动时调用，注册所有内置验证规则
-initFormValidate()
-```
-
 ## 使用方法
-
-### 方式一：vee-validate 内置规则
-
-```js
-import { initFormValidate, useValidateForm } from '@duxweb/dvha-core'
-import { ref } from 'vue'
-
-// 初始化内置规则（应用启动时调用一次）
-initFormValidate()
-
-const formData = ref({
-  name: '',
-  email: ''
-})
-
-const { validate, reset, submit } = useValidateForm({
-  data: formData,
-  rules: {
-    name: 'required|min:2',
-    email: 'required|email'
-  }
-})
-```
-
-### 方式二：Yup Schema 验证
 
 ```js
 import { useValidateForm } from '@duxweb/dvha-core'
@@ -113,10 +62,10 @@ const { validate, reset, submit } = useValidateForm({
 
 ## 参数说明
 
-| 参数    | 类型                            | 必需 | 说明                                    |
-| ------- | ------------------------------- | ---- | --------------------------------------- |
-| `data`  | `MaybeRef<Record<string, any>>` | ❌   | 要验证的表单数据                        |
-| `rules` | `TypedSchema`                   | ❌   | 验证规则（支持字符串规则或 Yup Schema） |
+| 参数    | 类型                            | 必需 | 说明                     |
+| ------- | ------------------------------- | ---- | ------------------------ |
+| `data`  | `MaybeRef<Record<string, any>>` | ❌   | 要验证的表单数据         |
+| `rules` | `TypedSchema`                   | ❌   | 验证规则（schema）       |
 
 ## 返回值
 
@@ -126,16 +75,12 @@ const { validate, reset, submit } = useValidateForm({
 | `reset`    | `() => void`                      | 重置验证状态                      |
 | `submit`   | `Function`                        | 处理表单提交（来自 vee-validate） |
 
-## 方式一：vee-validate 内置规则示例
-
-### 基础验证示例
+## 验证示例
 
 ```js
-import { initFormValidate, useValidateForm } from '@duxweb/dvha-core'
+import { useValidateForm } from '@duxweb/dvha-core'
 import { ref } from 'vue'
-
-// 应用启动时初始化
-initFormValidate()
+import * as yup from 'yup'
 
 const formData = ref({
   username: '',
@@ -148,17 +93,16 @@ const formData = ref({
 
 const { validate, reset } = useValidateForm({
   data: formData,
-  rules: {
-    username: 'required|min:3|max:20',
-    password: 'required|min:6',
-    confirmPassword: 'required|confirmed:@password',
-    email: 'required|email',
-    phone: 'regex:^1[3-9]\\d{9}$',
-    age: 'numeric|min_value:1|max_value:120'
-  }
+  rules: yup.object({
+    username: yup.string().required().min(3).max(20),
+    password: yup.string().required().min(6),
+    confirmPassword: yup.string().oneOf([yup.ref('password')]),
+    email: yup.string().required().email(),
+    phone: yup.string(),
+    age: yup.number().min(1).max(120)
+  })
 })
 
-// 验证表单
 async function handleValidate() {
   const result = await validate()
   if (result.valid) {
@@ -169,35 +113,6 @@ async function handleValidate() {
   }
 }
 ```
-
-### 常用内置规则
-
-```js
-const rules = {
-  // 必填验证
-  name: 'required',
-
-  // 长度验证
-  title: 'required|min:2|max:50',
-
-  // 邮箱验证
-  email: 'required|email',
-
-  // 数值验证
-  age: 'required|numeric|min_value:1|max_value:120',
-  price: 'required|decimal:2|min_value:0',
-
-  // 正则验证
-  phone: 'required|regex:^1[3-9]\\d{9}$',
-
-  // 确认验证（密码确认）
-  password: 'required|min:6',
-  confirmPassword: 'required|confirmed:@password',
-
-  // URL验证
-  website: 'url',
-
-  // 日期验证
   birthday: 'required|date_format:YYYY-MM-DD',
 
   // 选择验证

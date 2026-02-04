@@ -18,8 +18,8 @@
 ```typescript
 // 参数接口
 interface IUseTreeProps {
-  path?: string // API 路径
-  params?: Record<string, any> // 请求参数
+  path?: MaybeRef<string | undefined> // API 路径
+  params?: MaybeRef<Record<string, any> | undefined> // 请求参数
   treeOptions?: { // 树形配置选项
     valueKey?: string // 节点值字段名，默认 'id'
     parentKey?: string // 父节点字段名，默认 'parentId'
@@ -27,7 +27,7 @@ interface IUseTreeProps {
     childrenKey?: string // 子节点字段名，默认 'children'
   }
   converTree?: boolean // 是否转换为树形结构，默认 false
-  providerName?: string // 数据提供者名称，默认 'default'
+  providerName?: MaybeRef<string | undefined> // 数据提供者名称，默认 'default'
 }
 
 // 树形节点接口
@@ -58,18 +58,18 @@ const { options: treeData, loading: treeLoading } = useTree({
 
 | 参数           | 类型                  | 必需 | 默认值      | 说明                         |
 | -------------- | --------------------- | ---- | ----------- | ---------------------------- |
-| `path`         | `string`              | ❌   | -           | API 资源路径                 |
-| `params`       | `Record<string, any>` | ❌   | -           | 请求参数和筛选条件           |
+| `path`         | `MaybeRef<string \| undefined>` | ❌ | -       | API 资源路径                 |
+| `params`       | `MaybeRef<Record<string, any> \| undefined>` | ❌ | - | 请求参数和筛选条件 |
 | `treeOptions`  | `object`              | ❌   | -           | 树形结构配置选项             |
 | `converTree`   | `boolean`             | ❌   | `false`     | 是否将平铺数据转换为树形结构 |
-| `providerName` | `string`              | ❌   | `'default'` | 数据提供者名称               |
+| `providerName` | `MaybeRef<string \| undefined>` | ❌ | `'default'` | 数据提供者名称 |
 
 ### treeOptions 配置
 
 | 参数          | 类型     | 默认值       | 说明         |
 | ------------- | -------- | ------------ | ------------ |
 | `valueKey`    | `string` | `'id'`       | 节点值字段名 |
-| `parentKey`   | `string` | `'parentId'` | 父节点字段名 |
+| `parentKey`   | `string` | `'parent_id'` | 父节点字段名 |
 | `sortKey`     | `string` | `'sort'`     | 排序字段名   |
 | `childrenKey` | `string` | `'children'` | 子节点字段名 |
 

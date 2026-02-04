@@ -26,9 +26,11 @@ interface IManage {
   updatePassword?: boolean                                  // 是否支持修改密码
 
   apiRoutePath?: string                                     // 远程菜单 API 路径
+  apiBasePath?: string                                      // API 基础路径
 
   authProvider?: IAuthProvider                              // 认证提供者
   dataProvider?: IDataProvider | Record<string, IDataProvider>  // 数据提供者
+  i18nProvider?: I18nProvider                               // 国际化提供者
 
   routePrefix?: string                                      // 路由前缀
   routes?: RouteRecordRaw[]                                 // 路由配置
@@ -36,6 +38,15 @@ interface IManage {
 
   components?: IConfigComponent                             // 组件配置
   theme?: IConfigTheme                                     // 主题配置
+  remote?: {
+    packages?: Options
+    apiMethod?: string
+    apiRoutePath?: string | ((path: string) => string)
+  }                                                        // 远程包配置
+  jsonSchema?: {
+    adaptors?: IJsonAdaptor[]
+    components?: Record<string, Component> | Component[]
+  }                                                        // JSON Schema 配置
 
   [key: string]: any                                       // 扩展字段
 }
@@ -72,6 +83,7 @@ const app = createDux({
 
       // 路由配置
       routePrefix: '/admin',
+      apiBasePath: '/admin',
 
       // 认证提供者
       authProvider: adminAuthProvider,

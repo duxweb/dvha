@@ -20,6 +20,10 @@
 interface UseOverlayProps {
   component?: () => any                    // 异步加载的弹窗组件
   componentProps?: Record<string, any>     // 传递给组件的属性
+  mask?: boolean                           // 是否显示遮罩
+  maskClosable?: boolean                   // 点击遮罩是否关闭
+  duration?: number                        // 动画时长
+  zIndex?: number                          // 层级
 }
 ```
 

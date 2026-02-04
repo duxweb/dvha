@@ -1,6 +1,6 @@
 # useFormExtend
 
-`useFormExtend` hook 用于处理带验证功能的表单数据，集成了表单管理和数据验证，基于 `useForm` 和 `useFormValidate` 构建。
+`useFormExtend` hook 用于处理带验证功能的表单数据，集成了表单管理和数据验证，基于 `useForm` 和 `useValidateForm` 构建。
 
 ## 功能特点
 

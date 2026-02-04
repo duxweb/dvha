@@ -10,7 +10,7 @@ DVHA 的无头架构通过将业务逻辑与 UI 和路由解耦，支持构建�
 
 * 任何自定义设计或 UI 框架，如 TailwindCSS、UnoCSS 等
 * Vue 生态的主流 UI 框架：Element Plus、Naive UI 等，提供专门的增强包支持
-* 各种平台，包括 Vite、Nuxt.js、Electron 等，通过简单的配置，无需额外的设置步骤
+* Vite + Vue 3 应用（默认示例与推荐用法）
 
 ## 为什么选择 DVHA？
 
@@ -163,4 +163,3 @@ DVHA 提供了丰富的 hooks 来简化开发：
 * 📖 查看我们的 [GitHub 仓库](https://github.com/duxweb/dvha) 了解最新更新
 * 💬 在 GitHub Discussions 中提出任何关于 DVHA 项目的问题或给出反馈
 * 🤝 了解如何为 DVHA 项目做贡献
-

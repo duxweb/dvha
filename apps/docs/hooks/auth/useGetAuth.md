@@ -7,7 +7,7 @@
 - 👤 **用户信息** - 获取当前登录用户的详细信息
 - 🔐 **认证状态** - 实时获取认证状态数据
 - 🎯 **权限信息** - 获取用户权限和相关数据
-- 📱 **响应式** - 认证状态变化自动响应
+- 📱 **轻量读取** - 返回当前快照（非响应式）
 - 🏢 **多管理端** - 支持获取指定管理端的认证信息
 - ⚡ **高性能** - 直接从本地状态读取，无需网络请求
 
@@ -33,8 +33,8 @@ import { useGetAuth } from '@duxweb/dvha-core'
 const userAuth = useGetAuth()
 
 // 获取用户信息
-if (userAuth.value?.token) {
-  console.log('用户已登录:', userAuth.value)
+if (userAuth?.token) {
+  console.log('用户已登录:', userAuth)
 } else {
   console.log('用户未登录')
 }
@@ -50,7 +50,7 @@ if (userAuth.value?.token) {
 
 | 字段 | 类型 | 说明 |
 |------|------|------|
-| 返回值 | `Ref<IUserState>` | 用户认证状态的响应式引用 |
+| 返回值 | `IUserState` | 用户认证状态的快照 |
 
 ### IUserState 类型说明
 
@@ -71,15 +71,15 @@ const userAuth = useGetAuth()
 
 // 获取用户基本信息
 const currentUser = computed(() => {
-  return userAuth.value?.info || null
+  return userAuth?.info || null
 })
 
 const isAuthenticated = computed(() => {
-  return !!userAuth.value?.token
+  return !!userAuth?.token
 })
 
 const displayName = computed(() => {
-  const info = userAuth.value?.info
+  const info = userAuth?.info
   return info?.name || info?.username || '访客'
 })
 ```
@@ -89,7 +89,7 @@ const displayName = computed(() => {
 ```js
 // 权限检查
 const hasPermission = (permission) => {
-  const permissions = userAuth.value?.permission
+  const permissions = userAuth?.permission
 
   if (Array.isArray(permissions)) {
     return permissions.includes(permission)
@@ -106,25 +106,9 @@ const hasPermission = (permission) => {
 const adminAuth = useGetAuth('admin')
 const userAuth = useGetAuth('user')
 
-const currentManageAuth = computed(() => {
-  const currentManage = getCurrentManageName()
-  return useGetAuth(currentManage).value
-})
-
-// 状态监听
-watch(userAuth, (newAuth, oldAuth) => {
-  if (!newAuth?.token && oldAuth?.token) {
-    console.log('用户已登出')
-    clearUserData()
-  } else if (newAuth?.token && !oldAuth?.token) {
-    console.log('用户已登录:', newAuth.info)
-    initializeUserData()
-  }
-}, { deep: true })
-
 // 用户偏好设置
 const userPreferences = computed(() => {
-  return userAuth.value?.info?.preferences || {}
+  return userAuth?.info?.preferences || {}
 })
 
 const theme = computed(() => {
@@ -159,7 +143,7 @@ const theme = computed(() => {
 ## 注意事项
 
 - 这是一个同步操作，直接从本地状态读取，不会发起网络请求
-- 返回的是响应式引用，状态变化会自动更新视图
+- 返回的是当前快照；如需响应式请使用 authStore 的 `data`
 - 多管理端环境下，需要指定管理端名称来获取对应的认证信息
 - 如果用户未登录，返回的对象可能为空或只包含部分字段
 - 权限信息的格式取决于后端实现，可能是数组或对象

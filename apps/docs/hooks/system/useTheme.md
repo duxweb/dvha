@@ -38,13 +38,15 @@ const {
 
 | 字段               | 类型                    | 说明                                                                    |
 | ------------------ | ----------------------- | ----------------------------------------------------------------------- |
-| `toggle`           | `Function`              | 循环切换主题模式 (light → dark → auto)                                  |
+| `toggle`           | `Function`              | 循环切换主题模式 (dark → light → auto)                                  |
 | `mode`             | `Ref<ColorMode>`        | 当前主题模式                                                            |
 | `isDark`           | `Ref<boolean>`          | 是否为暗色主题                                                          |
 | `resources`        | `Ref<ITheme>`           | 当前主题资源配置（logo、banner等）                                      |
 | `config`           | `Readonly<ThemeConfig>` | 只读的主题配置                                                          |
 | `colorMapping`     | `Readonly<Ref>`         | 只读的颜色映射关系                                                      |
 | `colors`           | `Ref<string[]>`         | 所有可用的颜色名称列表                                                  |
+| `neutralColors`    | `Ref<string[]>`         | 中性色列表                                                              |
+| `primaryColors`    | `Ref<string[]>`         | 非中性色列表                                                            |
 | `colorShades`      | `string[]`              | 颜色色阶列表 ['50', '100', ..., '950']                                  |
 | `colorTypes`       | `string[]`              | 颜色类型列表 ['primary', 'info', 'success', 'warning', 'error', 'gray'] |
 | `colorScenes`      | `string[]`              | 场景类型列表 ['default', 'hover', 'pressed', 'focus', 'disabled']       |
@@ -52,6 +54,7 @@ const {
 | `cssReset`         | `Function`              | 重置为默认颜色配置                                                      |
 | `setColor`         | `Function`              | 设置单个颜色映射                                                        |
 | `setColors`        | `Function`              | 设置多个颜色映射                                                        |
+| `setMode`          | `Function`              | 设置主题模式                                                            |
 | `getSceneColor`    | `Function`              | 获取场景颜色值                                                          |
 | `getShadeColor`    | `Function`              | 获取色阶颜色值                                                          |
 | `getSemanticColor` | `Function`              | 获取语义颜色值                                                          |

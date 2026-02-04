@@ -30,12 +30,14 @@ const app = createDux({
     {
       name: 'admin',
       title: '系统管理',
-      routePrefix: '/admin'
+      routePrefix: '/admin',
+      apiBasePath: '/admin'
     },
     {
       name: 'merchant',
       title: '商家中心',
-      routePrefix: '/merchant'
+      routePrefix: '/merchant',
+      apiBasePath: '/merchant'
     }
   ]
 })
@@ -56,7 +58,8 @@ const app = createDux({
       dataProvider: simpleDataProvider({
         apiUrl: 'https://admin-api.example.com'
       }),
-      routePrefix: '/admin'
+      routePrefix: '/admin',
+      apiBasePath: '/admin'
     },
     {
       name: 'merchant',
@@ -64,7 +67,8 @@ const app = createDux({
       dataProvider: simpleDataProvider({
         apiUrl: 'https://merchant-api.example.com'
       }),
-      routePrefix: '/merchant'
+      routePrefix: '/merchant',
+      apiBasePath: '/merchant'
     }
   ]
 })
@@ -93,7 +97,8 @@ const app = createDux({
           apiUrl: 'https://payment-api.example.com'
         })
       },
-      routePrefix: '/merchant'
+      routePrefix: '/merchant',
+      apiBasePath: '/merchant'
     }
   ]
 })

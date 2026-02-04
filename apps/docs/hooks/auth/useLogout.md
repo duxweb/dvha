@@ -18,7 +18,7 @@
 ```js
 // 认证提供者接口
 interface IAuthProvider {
-  logout(params?: any): Promise<IAuthLogoutResponse>
+  logout(params?: any, manage?: IManageHook): Promise<IAuthLogoutResponse>
 }
 ```
 
@@ -63,7 +63,7 @@ const { mutate: logout } = useLogout({
     console.log('用户已安全登出')
   },
   onError: (result) => {
-    console.error('登出失败，但本地状态已清除')
+    console.error('登出失败')
   }
 })
 
@@ -129,11 +129,9 @@ const resetInactivityTimer = () => {
    - 自动跳转到 `redirectTo` 指定的页面（默认 `/login`）
 4. 如果失败：
    - 调用 `onError` 回调
-   - 但仍会清除本地状态确保安全
 
 ## 注意事项
 
-- 即使服务器端登出失败，本地的认证状态也会被清除
 - 登出后会自动跳转，无需手动处理路由
 - 多管理端环境下，只会清除当前管理端的认证状态
 - 登出操作是异步的，但通常很快完成

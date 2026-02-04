@@ -31,10 +31,9 @@ export type JsonSchemaData = JsonSchemaNode[] | Ref<JsonSchemaNode[]>
 
 // Hook 参数接口
 interface UseJsonSchemaProps extends JsonAdaptorOptions {
-  data: JsonSchemaData
-  components?: Record<string, any>
+  data?: JsonSchemaData
+  components?: Record<string, Component> | Component[]
   context?: Record<string, any> | Ref<Record<string, any>>
-  adaptors?: IJsonAdaptor[]
 }
 
 // Hook 返回值接口
@@ -150,8 +149,8 @@ const { render } = useJsonSchema({
 
 | 参数         | 类型                                              | 必需 | 说明                 |
 | ------------ | ------------------------------------------------- | ---- | -------------------- |
-| `data`       | `JsonSchemaNode[] \| Ref<JsonSchemaNode[]>`       | ✅   | JSON Schema 配置数据 |
-| `components` | `Record<string, any>`                             | ❌   | 组件映射表           |
+| `data`       | `JsonSchemaNode[] \| Ref<JsonSchemaNode[]>`       | ❌   | JSON Schema 配置数据 |
+| `components` | `Record<string, Component> \| Component[]`        | ❌   | 组件映射表           |
 | `context`    | `Record<string, any> \| Ref<Record<string, any>>` | ❌   | 全局上下文数据和函数 |
 | `adaptors`   | `IJsonAdaptor[]`                                  | ❌   | 自定义适配器列表     |
 

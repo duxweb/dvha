@@ -1,43 +1,93 @@
 ---
-# https://vitepress.dev/reference/default-theme-home-page
 layout: home
+title: DVHA
+titleTemplate: 基于 Vue 的无头中后台框架
 
 hero:
-  name: "DVHA"
-  text: 无头中后台前端框架
-  tagline: Dux Vue Headless Admin
+  name: DVHA
+  text: 基于 Vue 的无头中后台框架
+  tagline: Headless Admin for Vue
+  subtitle: 灵活组合 • 多管理端 • 数据驱动
+  mockUrl: "dux.cn"
+  image:
+    src: /images/hero.png    # 图片路径
   actions:
     - theme: brand
       text: 快速开始
       link: /guide/started
     - theme: alt
-      text: 产品概况
-      link: /guide/overview
+      text: 配置说明
+      link: /guide/config
     - theme: alt
-      text: Pro 版演示
-      link: https://duxweb.github.io/dvha/start/
-    - theme: alt
-      text: 加入社区
-      link: /community
+      text: 在 GitHub 查看
+      link: https://github.com/duxweb/dvha
+      target: _blank
 
 features:
-  - title: 🎨 UI 框架无关
-    details: 与任何 Vue 生态的 UI 框架（Element Plus、Ant Design Vue、Naive UI 等）无缝集成，不锁定到特定的 UI 解决方案，给你完全的设计自由
-  - title: 🏢 企业级多租户
-    details: 内置多管理端支持，轻松构建主后台、子应用后台、商户后台等多个管理系统，统一认证和权限管理，满足复杂业务场景
-  - title: 🚀 开箱即用的 CRUD
-    details: 提供丰富的 hooks 和工具函数，自动处理数据增删改查、状态管理、表单验证等重复性工作，让你专注于业务逻辑而非基础搭建
-  - title: 🔑 统一身份认证
-    details: 完整的认证流程和细粒度权限控制，支持多种认证方式，内置路由守卫和权限验证，确保应用安全
-  - title: 🌐 国际化支持
-    details: 内置 I18n 支持，轻松构建多语言应用，满足全球化业务需求
-  - title: 📘 完整 TypeScript
-    details: 100% TypeScript 开发，提供完整的类型提示和类型安全，提升开发体验和代码质量
----
+  - icon: squares-2x2
+    color: blue
+    title: 无头框架
+    details: 不绑定 UI 库，可自由组合 Element Plus、Naive UI 等 Vue 生态
+  - icon: building-library
+    color: green
+    title: 多管理端
+    details: 内置多管理端配置，支持不同路由前缀与独立配置
+  - icon: hook
+    color: purple
+    title: 数据 Hooks
+    details: 提供列表、详情、增删改、无限滚动等常用数据能力
+  - icon: shield-check
+    color: orange
+    title: 认证与权限
+    details: 认证提供者与权限检查可扩展，配合路由元信息使用
+  - icon: Lang
+    color: indigo
+    title: 国际化
+    details: 内置 i18n provider 与切换能力
+  - icon: puzzle-piece
+    color: amber
+    title: Pro 组件生态
+    details: 可选 Pro 包提供页面与组件集合
 
-<iframe src="https://codesandbox.io/p/devbox/7xttgl"
-     style="width:100%; height: 500px; border:0; border-radius: 4px; overflow:hidden; margin-top: 30px;"
-     title="dvha"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+featuresConfig:
+  title: 为什么选择 DVHA
+  description: 以配置驱动和可扩展能力为核心的中后台基础框架
+  extraSection:
+    title: 立即开始
+    description: 按指南快速完成基础接入与管理端配置
+    tags:
+      - Vue 3
+      - Headless
+      - 多管理端
+      - 数据 Hooks
+      - 认证与权限
+      - i18n
+
+quickStart:
+  badge: 快速上手
+  title: 快速开始
+  subtitle: 几步完成接入
+  description: 安装核心包并创建基础配置
+  steps:
+    - step: "01"
+      icon: "arrow-down-tray"
+      color: "blue"
+      title: "安装核心包"
+      description: "安装 dvha-core"
+      code: "pnpm add @duxweb/dvha-core"
+    - step: "02"
+      icon: "cog-8-tooth"
+      color: "green"
+      title: "创建配置"
+      description: "使用 createDux 初始化"
+      code: "import { createDux } from '@duxweb/dvha-core'"
+    - step: "03"
+      icon: "rocket-launch"
+      color: "purple"
+      title: "启动项目"
+      description: "运行本地开发"
+      code: "pnpm dev"
+  helpText: "需要更详细的步骤？查看快速开始"
+  helpLink: "/guide/started"
+  helpLinkText: "快速开始"
+---

@@ -26,21 +26,23 @@ const adminManage = {
 
   // 数据提供者（必需）
   dataProvider: {
-    custom: async (options, manage, auth) => {
-      const response = await fetch(options.path, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${auth.token}`,
-          'Content-Type': 'application/json'
+    default: {
+      custom: async (options, manage, auth) => {
+        const response = await fetch(options.path, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${auth.token}`,
+            'Content-Type': 'application/json'
+          }
+        })
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`)
         }
-      })
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+        return await response.json()
       }
-
-      return await response.json()
-    }
+    },
   },
 
   // 本地菜单（可选，会与远程菜单合并）
@@ -104,8 +106,9 @@ const dataProvider = {
     const { path, method = 'GET', headers = {}, ...config } = options
 
     // 构建完整的请求URL
-    const baseUrl = manage.config?.apiUrl || 'http://localhost:3000'
-    const url = path.startsWith('http') ? path : `${baseUrl}${path}`
+    const apiBase = manage?.config?.apiBasePath || ''
+    const baseUrl = 'http://localhost:3000'
+    const url = path.startsWith('http') ? path : `${baseUrl}${apiBase}${path}`
 
     // 默认headers
     const defaultHeaders = {

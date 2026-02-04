@@ -18,7 +18,7 @@
 ```js
 // 认证提供者接口
 interface IAuthProvider {
-  login(data: Record<string, any>): Promise<IAuthLoginResponse>
+  login(data: Record<string, any>, manage: IManageHook): Promise<IAuthLoginResponse>
 }
 ```
 

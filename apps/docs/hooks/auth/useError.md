@@ -18,7 +18,7 @@
 ```js
 // 认证提供者接口
 interface IAuthProvider {
-  onError(error: any): Promise<IAuthErrorResponse | void>
+  onError(error?: IDataProviderError): Promise<IAuthErrorResponse | void>
 }
 ```
 

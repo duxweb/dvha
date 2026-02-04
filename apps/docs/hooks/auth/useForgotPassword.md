@@ -18,7 +18,7 @@
 ```js
 // 认证提供者接口
 interface IAuthProvider {
-  forgotPassword(params?: any): Promise<IAuthActionResponse>
+  forgotPassword(params?: any, manage?: IManageHook): Promise<IAuthActionResponse>
 }
 ```
 

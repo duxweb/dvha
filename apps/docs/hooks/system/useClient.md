@@ -18,13 +18,7 @@
 ```js
 // 数据提供者接口
 interface IDataProvider {
-  custom(params: {
-    url: string
-    method: string
-    data?: any
-    headers?: Record<string, string>
-    params?: Record<string, any>
-  }, manage: IManage, auth: IAuth): Promise<IDataProviderResponse>
+  custom(params: IDataProviderCustomOptions, manage?: IManageHook, auth?: IUserState): Promise<IDataProviderResponse>
 }
 ```
 
@@ -37,9 +31,9 @@ const { request } = useClient()
 
 // 执行自定义请求
 const response = await request({
-  url: '/api/custom-endpoint',
+  path: '/api/custom-endpoint',
   method: 'POST',
-  data: { key: 'value' }
+  payload: { key: 'value' }
 })
 ```
 
@@ -60,9 +54,9 @@ const { request } = useClient()
 const fetchData = async () => {
   try {
     const response = await request({
-      url: '/api/statistics',
+      path: '/api/statistics',
       method: 'GET',
-      params: {
+      query: {
         period: 'month',
         category: 'sales'
       }
@@ -88,9 +82,9 @@ const { request } = useClient()
 const submitForm = async (formData) => {
   try {
     const response = await request({
-      url: '/api/forms/submit',
+      path: '/api/forms/submit',
       method: 'POST',
-      data: formData,
+      payload: formData,
       headers: {
         'Content-Type': 'application/json'
       }
@@ -129,9 +123,9 @@ const uploadFile = async (file) => {
 
   try {
     const response = await request({
-      url: '/api/upload',
+      path: '/api/upload',
       method: 'POST',
-      data: formData,
+      payload: formData,
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -157,7 +151,7 @@ const { request } = useClient()
 const customRequest = async () => {
   try {
     const response = await request({
-      url: '/api/protected-resource',
+      path: '/api/protected-resource',
       method: 'GET',
       headers: {
         'X-Custom-Header': 'custom-value',
@@ -185,7 +179,7 @@ const { request } = useClient()
 const handleRequest = async () => {
   try {
     const response = await request({
-      url: '/api/data',
+      path: '/api/data',
       method: 'GET'
     })
 

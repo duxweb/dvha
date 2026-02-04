@@ -29,12 +29,9 @@ interface IDataProvider {
 // 请求选项接口
 interface IDataProviderListOptions {
   path: string // API 路径
-  pagination?: { // 分页配置
-    page?: number
-    pageSize?: number
-  }
-  filters?: Record<string, any> // 筛选条件
-  sorters?: Record<string, 'asc' | 'desc'> // 排序配置
+  pagination?: IDataProviderPagination | boolean // 分页配置
+  filters?: MaybeRef<Record<string, any>> // 筛选条件
+  sorters?: MaybeRef<Record<string, 'asc' | 'desc'>> // 排序配置
   meta?: Record<string, any> // 额外参数
 }
 
@@ -77,7 +74,8 @@ const {
 
   // 可选参数
   pagination: { // 分页配置
-    limit: 20 // 每页数量
+    page: 1,
+    pageSize: 20
   },
   filters: { // 筛选条件
     category: 'tech',
@@ -102,9 +100,9 @@ const {
 | 参数           | 类型                              | 必需 | 说明                             |
 | -------------- | --------------------------------- | ---- | -------------------------------- |
 | `path`         | `string`                          | ✅   | API 资源路径                     |
-| `pagination`   | `object`                          | ❌   | 分页配置，通常只需设置 limit     |
-| `filters`      | `Record<string, any>`             | ❌   | 筛选条件                         |
-| `sorters`      | `Record<string, 'asc' \| 'desc'>` | ❌   | 排序条件                         |
+| `pagination`   | `IDataProviderPagination`         | ❌   | 分页配置                         |
+| `filters`      | `MaybeRef<Record<string, any>>`   | ❌   | 筛选条件                         |
+| `sorters`      | `MaybeRef<Record<string, 'asc' \| 'desc'>>` | ❌ | 排序条件                 |
 | `meta`         | `Record<string, any>`             | ❌   | 传递给 API 的额外参数            |
 | `providerName` | `string`                          | ❌   | 数据提供者名称，默认为 'default' |
 | `onError`      | `(error: any) => void`            | ❌   | 错误处理回调                     |
@@ -114,7 +112,7 @@ const {
 
 | 字段            | 类型                | 说明             |
 | --------------- | ------------------- | ---------------- |
-| `data`          | `Ref<InfiniteData>` | 分页数据对象     |
+| `data`          | `Ref<IDataProviderResponse \| undefined>` | 已合并的数据对象 |
 | `isLoading`     | `Ref<boolean>`      | 是否加载中       |
 | `isError`       | `Ref<boolean>`      | 是否出错         |
 | `error`         | `Ref<any>`          | 错误信息         |
@@ -137,7 +135,8 @@ const {
 } = useInfiniteList({
   path: 'posts',
   pagination: {
-    limit: 10
+    page: 1,
+    pageSize: 10
   }
 })
 </script>
@@ -145,18 +144,12 @@ const {
 <template>
   <div class="infinite-list">
     <div
-      v-for="page in data?.pages"
-      :key="`page-${page.meta?.page}`"
-      class="page-content"
+      v-for="item in data?.data || []"
+      :key="item.id"
+      class="list-item"
     >
-      <div
-        v-for="item in page.data"
-        :key="item.id"
-        class="list-item"
-      >
-        <h3>{{ item.title }}</h3>
-        <p>{{ item.description }}</p>
-      </div>
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.description }}</p>
     </div>
 
     <div v-if="hasNextPage" class="load-more">
@@ -184,14 +177,14 @@ import { useInfiniteList } from '@duxweb/dvha-core'
 // 使用默认数据提供者获取文章列表
 const { data: posts, fetchNextPage: loadMorePosts } = useInfiniteList({
   path: 'posts',
-  pagination: { limit: 20 }
+  pagination: { page: 1, pageSize: 20 }
 })
 
 // 使用分析服务获取访问记录
 const { data: visits, fetchNextPage: loadMoreVisits } = useInfiniteList({
   path: 'access-logs',
   providerName: 'analytics',
-  pagination: { limit: 50 },
+  pagination: { page: 1, pageSize: 50 },
   sorters: { timestamp: 'desc' }
 })
 

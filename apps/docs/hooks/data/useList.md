@@ -29,12 +29,9 @@ interface IDataProvider {
 // 请求选项接口
 interface IDataProviderListOptions {
   path: string // API 路径
-  pagination?: { // 分页配置
-    page?: number
-    pageSize?: number
-  }
-  filters?: Record<string, any> // 筛选条件
-  sorters?: Record<string, 'asc' | 'desc'> // 排序配置
+  pagination?: IDataProviderPagination | boolean // 分页配置
+  filters?: MaybeRef<Record<string, any>> // 筛选条件
+  sorters?: MaybeRef<Record<string, 'asc' | 'desc'>> // 排序配置
   meta?: Record<string, any> // 额外参数
 }
 
@@ -92,9 +89,9 @@ const { data, isLoading, isError, error, refetch } = useList({
 | 参数           | 类型                              | 必需 | 说明                             |
 | -------------- | --------------------------------- | ---- | -------------------------------- |
 | `path`         | `string`                          | ✅   | API 资源路径                     |
-| `pagination`   | `object`                          | ❌   | 分页配置                         |
-| `filters`      | `Record<string, any>`             | ❌   | 筛选条件                         |
-| `sorters`      | `Record<string, 'asc' \| 'desc'>` | ❌   | 排序条件                         |
+| `pagination`   | `IDataProviderPagination \| boolean` | ❌ | 分页配置（可关闭分页）          |
+| `filters`      | `MaybeRef<Record<string, any>>`       | ❌ | 筛选条件                         |
+| `sorters`      | `MaybeRef<Record<string, 'asc' \| 'desc'>>` | ❌ | 排序条件                 |
 | `meta`         | `Record<string, any>`             | ❌   | 传递给 API 的额外参数            |
 | `providerName` | `string`                          | ❌   | 数据提供者名称，默认为 'default' |
 | `onError`      | `(error: any) => void`            | ❌   | 错误处理回调                     |
@@ -110,6 +107,8 @@ const { data, isLoading, isError, error, refetch } = useList({
 | `error`     | `Ref<any>`     | 错误信息     |
 | `refetch`   | `Function`     | 重新获取数据 |
 | `pagination`| `Ref<object>`  | 分页配置对象 |
+| `total`     | `Ref<number>`  | 总数         |
+| `pageCount` | `Ref<number>`  | 总页数       |
 
 ## 动态筛选示例
 

@@ -28,7 +28,9 @@ interface IUseUploadProps extends Omit<IDataProviderCustomOptions, 'onUploadProg
   accept?: string // 接受的文件类型
   multiple?: boolean // 是否支持多选
   autoUpload?: boolean // 是否自动上传
+  params?: Record<string, string> // 额外参数
   driver?: IUploadDriver // 上传驱动实例
+  options?: UseMutationOptions<IDataProviderResponse, IDataProviderError, IDataProviderCustomOptions> // vue-query options
 
   // 回调函数
   onSuccess?: (data: IDataProviderResponse) => void // 单个文件成功回调
@@ -88,26 +90,21 @@ interface IUseUploadReturn {
   isUploading: Ref<boolean> // 是否正在上传
   uploadFiles: Ref<IUseUploadFile[]> // 完整的上传文件列表
   dataFiles: ComputedRef<IUseUploadFileData[]> // 成功上传的文件数据
-  overallProgress: ComputedRef<IOverallProgress> // 整体上传进度
+  progress: ComputedRef<IOverallProgress> // 整体上传进度
 
   // 文件对话框相关
   open: () => void // 打开文件选择对话框
   resetFiles: () => void // 重置文件选择状态
-  files: Ref<FileList | null> // 选中的文件列表
 
   // 上传控制
   trigger: () => Promise<void> // 手动触发上传
   clearFiles: () => void // 清空所有文件
-  removeFile: (id: string) => void // 删除单个文件
   removeFiles: (ids?: string[]) => void // 删除多个文件
-  cancelFile: (id: string) => void // 取消单个文件上传
   cancelFiles: (ids?: string[]) => void // 取消多个文件上传
 
   // 文件添加
-  addFile: (payload: IUseUploadPayload, type: IUseUploadType, filename?: string) => Promise<IUseUploadFile> // 添加单个文件
   addFiles: (files: IUseUploadPayload[], type?: IUseUploadType) => Promise<void> // 添加多个文件
   addDataFiles: (dataFiles: IUseUploadFileData[]) => void // 添加已存在的文件数据
-  createFileFromData: (fileData: IUseUploadFileData) => IUseUploadFile // 从数据创建文件对象
 }
 ```
 
@@ -116,7 +113,7 @@ interface IUseUploadReturn {
 ```js
 import { useUpload } from '@duxweb/dvha-core'
 
-const { uploadFiles, open, trigger, overallProgress } = useUpload({
+const { uploadFiles, open, trigger, progress } = useUpload({
   path: 'upload',
   maxFileCount: 5,
   autoUpload: true
@@ -182,7 +179,9 @@ const { uploadFiles, dataFiles, open, addDataFiles, isUploading } = useUpload({
 | `accept`         | `string`          | ❌   | 接受的文件类型           |
 | `multiple`       | `boolean`         | ❌   | 是否支持多选，默认 false |
 | `autoUpload`     | `boolean`         | ❌   | 是否自动上传，默认 false |
+| `params`         | `Record<string,string>` | ❌ | 额外参数                |
 | `driver`         | `IUploadDriver`   | ❌   | 上传驱动实例             |
+| `options`        | `UseMutationOptions` | ❌ | vue-query 选项         |
 | `onSuccess`      | `Function`        | ❌   | 单个文件上传成功回调     |
 | `onError`        | `Function`        | ❌   | 错误处理回调             |
 | `onProgress`     | `Function`        | ❌   | 整体进度更新回调         |
@@ -197,7 +196,7 @@ const { uploadFiles, dataFiles, open, addDataFiles, isUploading } = useUpload({
 | `isUploading`     | `Ref<boolean>`                      | 是否正在上传         |
 | `uploadFiles`     | `Ref<IUseUploadFile[]>`             | 完整的上传文件列表   |
 | `dataFiles`       | `ComputedRef<IUseUploadFileData[]>` | 成功上传的文件数据   |
-| `overallProgress` | `ComputedRef<IOverallProgress>`     | 整体上传进度信息     |
+| `progress`        | `ComputedRef<IOverallProgress>`     | 整体上传进度信息     |
 | `open`            | `Function`                          | 打开文件选择对话框   |
 | `resetFiles`      | `Function`                          | 重置文件选择状态     |
 | `trigger`         | `Function`                          | 手动触发上传         |
@@ -212,7 +211,7 @@ const { uploadFiles, dataFiles, open, addDataFiles, isUploading } = useUpload({
 ```js
 import { useUpload } from '@duxweb/dvha-core'
 
-const { uploadFiles, open, trigger, isUploading, overallProgress } = useUpload({
+const { uploadFiles, open, trigger, isUploading, progress } = useUpload({
   path: 'upload',
   maxFileSize: 5 * 1024 * 1024, // 5MB
   maxFileCount: 3,

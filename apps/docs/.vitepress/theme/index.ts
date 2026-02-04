@@ -1,17 +1,6 @@
-// https://vitepress.dev/guide/custom-theme
-import { h } from 'vue'
-import type { Theme } from 'vitepress'
-import DefaultTheme from 'vitepress/theme'
-import './style.css'
+// 扩展默认主题
+import Theme from '@duxweb/vitepress-theme'
+// 显式引入主题样式
+import '@duxweb/vitepress-theme/dist/index.css'
 
-export default {
-  extends: DefaultTheme,
-  Layout: () => {
-    return h(DefaultTheme.Layout, null, {
-      // https://vitepress.dev/guide/extending-default-theme#layout-slots
-    })
-  },
-  enhanceApp({ app, router, siteData }) {
-    // ...
-  }
-} satisfies Theme
+export default Theme

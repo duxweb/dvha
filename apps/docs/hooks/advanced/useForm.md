@@ -20,8 +20,8 @@
 // 参数接口
 interface IUseFormProps {
   path?: string // 资源路径
-  id?: string | number // 编辑时的记录ID
-  form?: Record<string, any> // 初始表单数据
+  id?: MaybeRef<string | number | undefined> // 编辑时的记录ID
+  form?: MaybeRef<Record<string, any>> // 初始表单数据
   onSuccess?: (data: IDataProviderResponse) => void // 成功回调
   onError?: (error: IDataProviderError) => void // 错误回调
   action?: 'create' | 'edit' // 操作类型
@@ -33,8 +33,10 @@ interface IUseFormProps {
 // 返回值接口
 interface IUseFormReturn {
   form: Ref<Record<string, any>> // 表单数据
+  initData: Record<string, any> // 重置用的初始数据快照
   isLoading: ComputedRef<boolean> // 加载状态
-  onSubmit: () => void // 提交方法
+  isEdit: ComputedRef<boolean> // 是否编辑态
+  onSubmit: (data?: Record<string, any>) => void // 提交方法
   onReset: () => void // 重置方法
 }
 ```
@@ -80,8 +82,8 @@ const { form, isLoading, onSubmit, onReset } = useForm({
 | 参数           | 类型                   | 必需 | 说明                                   |
 | -------------- | ---------------------- | ---- | -------------------------------------- |
 | `path`         | `string`               | ❌   | API 资源路径                           |
-| `id`           | `string \| number`     | ❌   | 编辑时的记录ID（action为'edit'时必需） |
-| `form`         | `Record<string, any>`  | ❌   | 初始表单数据                           |
+| `id`           | `MaybeRef<string \| number \| undefined>` | ❌   | 编辑时的记录ID（action为'edit'时必需） |
+| `form`         | `MaybeRef<Record<string, any>>`          | ❌   | 初始表单数据                           |
 | `action`       | `'create' \| 'edit'`   | ❌   | 操作类型，默认为 'create'              |
 | `providerName` | `string`               | ❌   | 数据提供者名称，默认为 'default'       |
 | `meta`         | `MaybeRef<Record<string, any>>`  | ❌   | 透传给数据提供者；支持 Ref 动态更新 |
@@ -94,7 +96,9 @@ const { form, isLoading, onSubmit, onReset } = useForm({
 | 字段        | 类型                       | 说明                                 |
 | ----------- | -------------------------- | ------------------------------------ |
 | `form`      | `Ref<Record<string, any>>` | 表单数据对象                         |
+| `initData`  | `Record<string, any>`      | 重置用初始数据快照                   |
 | `isLoading` | `ComputedRef<boolean>`     | 是否加载中（包含数据获取和提交状态） |
+| `isEdit`    | `ComputedRef<boolean>`     | 是否编辑态                           |
 | `onSubmit`  | `Function`                 | 提交表单的函数                       |
 | `onReset`   | `Function`                 | 重置表单的函数                       |
 

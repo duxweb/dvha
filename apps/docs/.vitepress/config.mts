@@ -1,25 +1,19 @@
-import { defineConfig } from 'vitepress'
-import { MermaidMarkdown, MermaidPlugin, withMermaid } from 'vitepress-plugin-mermaid'
+import { withDuxTheme } from '@duxweb/vitepress-theme/config'
 
-// https://vitepress.dev/reference/site-config
-export default defineConfig({
+function getBase() {
+  if (process.env.GITHUB_ACTIONS) {
+    return '/dvha/'
+  }
+  return '/'
+}
+
+export default withDuxTheme({
   title: 'DVHA',
   description: '一个基于 Vue 且不含 UI 的中后台框架',
-  base: '/dvha/',
+  lang: 'zh-CN',
+  base: getBase(),
   lastUpdated: true,
   themeConfig: {
-    search: {
-      provider: 'local',
-    },
-    lastUpdatedText: '最后更新时间',
-    editLink: {
-      pattern: 'https://github.com/duxweb/dvha/edit/main/apps/docs/:path',
-      text: '在 GitHub 上编辑此页',
-    },
-    outline: {
-      level: [1, 2],
-      label: '页面导航',
-    },
     nav: [
       { text: '首页', link: '/' },
       { text: '文档', link: '/guide/started' },
@@ -65,13 +59,16 @@ export default defineConfig({
             { text: '弹窗组件', link: '/pro/components/popup' },
             { text: '上传组件', link: '/pro/components/upload' },
             { text: '编辑器组件', link: '/pro/components/editor' },
+            { text: '代码编辑器', link: '/pro/components/code' },
             { text: '图表组件', link: '/pro/components/chart' },
             { text: '数据组件', link: '/pro/components/data' },
             { text: '媒体组件', link: '/pro/components/media' },
             { text: '选择组件', link: '/pro/components/select' },
+            { text: '树形组件', link: '/pro/components/tree' },
             { text: '裁剪组件', link: '/pro/components/crop' },
             { text: '统计组件', link: '/pro/components/stats' },
             { text: '小部件', link: '/pro/components/widget' },
+            { text: '小部件编辑器', link: '/pro/components/widget-editor' },
             { text: '面板组件', link: '/pro/components/panel' },
             { text: '状态组件', link: '/pro/components/status' },
             { text: '层级组件', link: '/pro/components/level' },
@@ -79,6 +76,17 @@ export default defineConfig({
             { text: '卡片组件', link: '/pro/components/card' },
             { text: '轮播组件', link: '/pro/components/carousel' },
             { text: '仪表盘组件', link: '/pro/components/dashboard' },
+            { text: '级联面板', link: '/pro/components/cascader-panel' },
+            { text: '设计器', link: '/pro/components/design-editor' },
+            { text: '绘制组件', link: '/pro/components/draw' },
+            { text: '表单编辑器', link: '/pro/components/form-editor' },
+            { text: '图标组件', link: '/pro/components/icon' },
+            { text: '坐标选择', link: '/pro/components/map-coord' },
+            { text: '海报编辑器', link: '/pro/components/poster-editor' },
+            { text: '规格组件', link: '/pro/components/spec' },
+            { text: '图文编辑器', link: '/pro/components/text-image-editor' },
+            { text: 'JSON Schema 编辑器', link: '/pro/components/schema-editor' },
+            { text: '流程编辑器', link: '/pro/components/flow-editor' },
           ],
         },
         {
@@ -187,6 +195,12 @@ export default defineConfig({
           ],
         },
         {
+          text: '核心组件',
+          items: [
+            { text: '组件总览', link: '/components/core' },
+          ],
+        },
+        {
           text: '管理端',
           items: [
             { text: '管理端配置', link: '/manage/overview' },
@@ -207,20 +221,16 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/duxweb/dvha' },
     ],
-  },
-  // Mermaid 配置
-  markdown: {
-    config(md) {
-      md.use(MermaidMarkdown) // add this
+
+    footer: {
+      message: '基于 MIT 许可证发布',
+      copyright: 'Copyright © 2025 DuxWeb',
     },
-  },
-  vite: {
-    plugins: [MermaidPlugin()], // add plugins
-    optimizeDeps: { // include mermaid
-      include: ['mermaid'],
+
+    editLink: {
+      pattern: 'https://github.com/duxweb/dvha/edit/main/apps/docs/:path',
+      text: '在 GitHub 上编辑此页',
     },
-    ssr: {
-      noExternal: ['mermaid'],
-    },
+
   },
 })
