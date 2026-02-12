@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.1.28
+
+### Patch Changes
+
+- fix(pro): 修正上传单文件回显对象而不是数组
+  - @duxweb/dvha-core@1.1.28
+  - @duxweb/dvha-naiveui@1.1.28
+
 ## 1.1.27
 
 ### Patch Changes

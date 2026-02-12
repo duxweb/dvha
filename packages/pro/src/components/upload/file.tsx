@@ -74,9 +74,9 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
     multiple: Boolean,
     manager: Boolean,
     accept: String,
-    value: [String, Array<string>],
-    defaultValue: [String, Array<string>],
-    onUpdateValue: Function as PropType<(value?: string | string[]) => void>,
+    value: [String, Array, Object] as PropType<string | IUploadValue>,
+    defaultValue: [String, Array, Object] as PropType<string | IUploadValue>,
+    onUpdateValue: Function as PropType<(value?: IUploadValue) => void>,
     method: String as PropType<'POST' | 'PUT'>,
   },
   setup(props, { emit }) {
@@ -174,7 +174,11 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
       if (syncingFromUpload.value) {
         return
       }
-      if (!v || !v?.length || once.value) {
+      if (once.value) {
+        return
+      }
+      const hasValue = Array.isArray(v) ? v.length > 0 : !!v
+      if (!hasValue) {
         return
       }
       once.value = true
