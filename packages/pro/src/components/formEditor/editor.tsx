@@ -62,7 +62,7 @@ export const DuxFormEditor = defineComponent({
     })
 
     const components = computed<PageEditorComponent[]>(() => {
-      return [
+      const list = [
         duxFormEditorInput(t),
         duxFormEditorInputNumber(t),
         duxFormEditorAIEditor(t),
@@ -87,6 +87,37 @@ export const DuxFormEditor = defineComponent({
         duxFormEditorTransferAsync(t),
         duxFormEditorMentionAsync(t),
       ]
+
+      const descriptions: Record<string, string | undefined> = {
+        'dux-input': t('components.formEditor.toolbarDescriptions.input'),
+        'dux-input-number': t('components.formEditor.toolbarDescriptions.inputNumber'),
+        'dux-editor': t('components.formEditor.toolbarDescriptions.aiEditor'),
+        'sider': t('components.formEditor.toolbarDescriptions.slider'),
+        'dux-date': t('components.formEditor.toolbarDescriptions.date'),
+        'dux-time': t('components.formEditor.toolbarDescriptions.time'),
+        'dux-color': t('components.formEditor.toolbarDescriptions.color'),
+        'dux-checkbox': t('components.formEditor.toolbarDescriptions.checkbox'),
+        'dux-radio': t('components.formEditor.toolbarDescriptions.radio'),
+        'dux-switch': t('components.formEditor.toolbarDescriptions.switch'),
+        'dux-dynamic-input': t('components.formEditor.toolbarDescriptions.dynamicInput'),
+        'dynamic-tags': t('components.formEditor.toolbarDescriptions.dynamicTags'),
+        'dux-image-upload': t('components.formEditor.toolbarDescriptions.imageUpload'),
+        'dux-file-upload': t('components.formEditor.toolbarDescriptions.fileUpload'),
+        'dux-select': t('components.formEditor.toolbarDescriptions.select'),
+        'dux-cascader': t('components.formEditor.toolbarDescriptions.cascader'),
+        'tree-select': t('components.formEditor.toolbarDescriptions.treeSelect'),
+        'region': t('components.formEditor.toolbarDescriptions.region'),
+        'select-async': t('components.formEditor.toolbarDescriptions.selectAsync'),
+        'dux-cascader-async': t('components.formEditor.toolbarDescriptions.cascaderAsync'),
+        'tree-select-async': t('components.formEditor.toolbarDescriptions.treeSelectAsync'),
+        'transfer-async': t('components.formEditor.toolbarDescriptions.transferAsync'),
+        'mention-async': t('components.formEditor.toolbarDescriptions.mentionAsync'),
+      }
+
+      return list.map(item => ({
+        ...item,
+        description: item.description || descriptions[item.name] || '',
+      }))
     })
 
     return () => (

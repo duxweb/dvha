@@ -135,6 +135,7 @@ export function duxFormEditorGrid(t): PageEditorComponent {
     name: 'dux-grid',
     icon: 'i-tabler:grid-4x4',
     label: t('components.designEditor.grid.label'),
+    description: t('components.designEditor.grid.description') || '',
     group: 'layout',
     nested: true,
     component: props => <WidgetEditorGrid {...props} />,

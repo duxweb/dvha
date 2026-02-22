@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.1.29
+
+### Patch Changes
+
+- feat(pro): 优化设计器样式
+  - @duxweb/dvha-core@1.1.29
+  - @duxweb/dvha-naiveui@1.1.29
+
 ## 1.1.28
 
 ### Patch Changes

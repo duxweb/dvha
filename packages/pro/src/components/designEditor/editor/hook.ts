@@ -15,6 +15,7 @@ export interface PageEditorComponent {
   icon: string
   group?: string
   label?: string
+  description?: string
   component: (props?: Record<string, any>) => any
   setting?: (props?: Record<string, any>) => any
   nested?: boolean
