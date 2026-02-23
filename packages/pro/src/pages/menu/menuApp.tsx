@@ -4,8 +4,10 @@ import { cloneDeep } from 'lodash-es'
 import { NButton, NMenu, NScrollbar, NTag, NTooltip } from 'naive-ui'
 import { computed, defineComponent, h, onMounted, Transition } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
-import { DuxMenuAvatar, DuxMenuDark, DuxMenuNotice } from '.'
 import { useUI } from '../../hooks'
+import DuxMenuAvatar from './avatar'
+import DuxMenuDark from './dark'
+import DuxMenuNotice from './notice'
 
 export const DuxMenuApp = defineComponent({
   name: 'DuxMenuApp',

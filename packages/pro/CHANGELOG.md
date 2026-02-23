@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.1.30
+
+### Patch Changes
+
+- feat(pro): 优化上传样式
+  - @duxweb/dvha-core@1.1.30
+  - @duxweb/dvha-naiveui@1.1.30
+
 ## 1.1.29
 
 ### Patch Changes

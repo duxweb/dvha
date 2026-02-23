@@ -3,7 +3,7 @@ import { useIntervalFn } from '@vueuse/core'
 import { NButton } from 'naive-ui'
 import { defineComponent, onMounted, onUnmounted } from 'vue'
 import { useUI } from '../../hooks'
-import { DuxMenuAvatar } from '../menu'
+import DuxMenuAvatar from '../menu/avatar'
 import { DuxPageTab } from './tab'
 
 export const DuxLayoutPage = defineComponent({

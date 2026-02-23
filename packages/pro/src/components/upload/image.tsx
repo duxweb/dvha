@@ -55,6 +55,7 @@ export const DuxImageUpload = defineComponent({
       container: 'flex gap-2',
       imageItem: 'size-80px rounded border border-muted relative group draggable flex items-center',
       imageOverlay: 'z-1 size-full inset-0 absolute flex items-center justify-center bg-default/80 transition-all opacity-0 group-hover:opacity-100 rounded',
+      statusOverlay: 'z-2 size-full inset-0 absolute flex flex-col items-center justify-center rounded bg-default/65 pointer-events-none',
       uploadArea: 'relative size-80px text-sm rounded flex flex-col border border-dashed bg-elevated border-muted dark:border-accented hover:bg-accented/50 hover:border-accented dark:hover:bg-accented/50 dark:hover:border-accented cursor-pointer',
       uploadContent: 'flex-1 flex flex-col justify-center items-center gap-1 relative',
       progressContainer: 'size-80px flex items-center justify-center rounded',
@@ -123,6 +124,9 @@ export const DuxImageUpload = defineComponent({
       const toAdd = urls.filter(url => !existing.includes(url))
       if (toAdd.length)
         upload.addDataFiles(toAdd.map(url => ({ url })))
+    }, {
+      immediate: true,
+      deep: true,
     })
 
     return () => (
@@ -148,6 +152,23 @@ export const DuxImageUpload = defineComponent({
                   previewDisabled
                   src={url}
                 />
+                {file.status !== 'success' && file.status !== 'cancelled' && (
+                  <div class={styles.statusOverlay}>
+                    {file.status === 'error'
+                      ? (
+                          <div class="i-tabler:alert-circle size-5 text-error" />
+                        )
+                      : (
+                          <NProgress
+                            type="circle"
+                            strokeWidth={8}
+                            showIndicator={false}
+                            percentage={Math.max(0, Math.min(100, Number(file.progress?.percent || 0)))}
+                            style={{ width: '34px', height: '34px' }}
+                          />
+                        )}
+                  </div>
+                )}
                 <div class={styles.imageOverlay}>
                   {file.status === 'success' && (
                     <NButton

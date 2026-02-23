@@ -63,7 +63,6 @@ export function createSharedViteConfig(options: SharedConfigOptions): UserConfig
       emptyOutDir: true,
       lib: {
         entry: entryPath,
-        formats: ['es', 'cjs'],
       },
       rollupOptions: {
         external: isExternal,

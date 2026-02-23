@@ -2,8 +2,9 @@ import { DuxLogoIcon, useI18n, useManage } from '@duxweb/dvha-core'
 import { useNaiveMenu } from '@duxweb/dvha-naiveui'
 import { NMenu, NScrollbar, NTag } from 'naive-ui'
 import { defineComponent } from 'vue'
-import { DuxMenuAvatar, DuxMenuButton } from '.'
 import { useUI } from '../../hooks'
+import DuxMenuAvatar from './avatar'
+import DuxMenuButton from './button'
 
 export const DuxMenuMain = defineComponent({
   name: 'DuxMenuMain',
