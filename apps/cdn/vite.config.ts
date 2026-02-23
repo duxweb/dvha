@@ -33,16 +33,28 @@ export default defineConfig({
         index: 'main.ts',
       },
       output: {
-        manualChunks: {
-          'vendor-vue': ['vue', 'vue-router'],
-          'vendor-naive': ['naive-ui'],
-          'vendor-echarts': ['echarts', 'vue-echarts'],
-          'vendor-vueuse': ['@vueuse/core'],
-          'vendor-pinia': ['pinia', 'pinia-plugin-persistedstate'],
-          'vendor-loader': ['vue3-sfc-loader'],
-          'vendor-lodash': ['lodash-es', 'lodash'],
-          'vendor-icon': ['@iconify-json/tabler'],
-          'vendor-dux': ['@duxweb/dvha-core', '@duxweb/dvha-pro'],
+        manualChunks(id) {
+          if (!id.includes('node_modules')) {
+            return
+          }
+
+          const groups: Record<string, string[]> = {
+            'vendor-vue': ['vue', 'vue-router'],
+            'vendor-naive': ['naive-ui'],
+            'vendor-echarts': ['echarts', 'vue-echarts'],
+            'vendor-vueuse': ['@vueuse/core'],
+            'vendor-pinia': ['pinia', 'pinia-plugin-persistedstate'],
+            'vendor-loader': ['vue3-sfc-loader'],
+            'vendor-lodash': ['lodash-es', 'lodash'],
+            'vendor-icon': ['@iconify-json/tabler'],
+            'vendor-dux': ['@duxweb/dvha-core', '@duxweb/dvha-pro'],
+          }
+
+          for (const [chunkName, packages] of Object.entries(groups)) {
+            if (packages.some(pkg => id.includes(`/node_modules/${pkg}/`) || id.includes(`/node_modules/.pnpm/${pkg}@`))) {
+              return chunkName
+            }
+          }
         },
       },
     },

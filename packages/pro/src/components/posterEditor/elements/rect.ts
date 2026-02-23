@@ -33,6 +33,8 @@ const rectElement: ElementConfig = {
     const rect = new Rect({
       left: props.left,
       top: props.top,
+      originX: 'left',
+      originY: 'top',
       width: props.width,
       height: props.height,
       fill: props.fill,

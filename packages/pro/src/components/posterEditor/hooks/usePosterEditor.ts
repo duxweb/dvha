@@ -222,11 +222,27 @@ export function usePosterEditor(options: PosterEditorOptions = {}): PosterEditor
     if (!canvas.value)
       return
 
+    const isPrimaryPointerEvent = (event: any) => {
+      const nativeEvent = event?.e as MouseEvent | PointerEvent | undefined
+      if (!nativeEvent || typeof nativeEvent.button !== 'number') {
+        return true
+      }
+      return nativeEvent.button === 0
+    }
+
     canvas.value.on('selection:created', handleSelectionChange)
     canvas.value.on('selection:updated', handleSelectionChange)
     canvas.value.on('selection:cleared', handleSelectionClear)
-    canvas.value.on('mouse:down', () => setTimeout(handleSelectionChange, 10))
-    canvas.value.on('mouse:up', () => setTimeout(handleSelectionChange, 10))
+    canvas.value.on('mouse:down', (event: any) => {
+      if (!isPrimaryPointerEvent(event))
+        return
+      setTimeout(handleSelectionChange, 10)
+    })
+    canvas.value.on('mouse:up', (event: any) => {
+      if (!isPrimaryPointerEvent(event))
+        return
+      setTimeout(handleSelectionChange, 10)
+    })
     canvas.value.on('object:modified', handleObjectModified)
     canvas.value.on('object:scaling', handleObjectScaling)
     canvas.value.on('path:created', throttledSyncAllData)
@@ -779,10 +795,11 @@ export function usePosterEditor(options: PosterEditorOptions = {}): PosterEditor
 
   // 设置画布背景图
   const setCanvasBackgroundImage = (imageUrl: string) => {
-    if (!canvas.value || !imageUrl) return
+    if (!canvas.value || !imageUrl)
+      return
 
     FabricImage.fromURL(imageUrl, {
-      crossOrigin: 'anonymous'
+      crossOrigin: 'anonymous',
     }).then((img) => {
       if (canvas.value) {
         // 设置背景图并重新渲染
@@ -800,7 +817,8 @@ export function usePosterEditor(options: PosterEditorOptions = {}): PosterEditor
 
     if (imageUrl) {
       setCanvasBackgroundImage(imageUrl)
-    } else if (canvas.value) {
+    }
+    else if (canvas.value) {
       // 清除背景图
       canvas.value.backgroundImage = undefined
       canvas.value.renderAll()

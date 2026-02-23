@@ -33,6 +33,8 @@ const textElement: ElementConfig = {
     const textbox = new Textbox(props.text, {
       left: props.left,
       top: props.top,
+      originX: 'left',
+      originY: 'top',
       width: props.width,
       angle: props.angle,
       scaleX: props.scaleX,

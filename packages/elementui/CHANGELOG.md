@@ -1,5 +1,22 @@
 # @duxweb/dvha-elementui
 
+## 1.2.0
+
+### Minor Changes
+
+- feat: update vite8
+
+### Patch Changes
+
+- Updated dependencies
+  - @duxweb/dvha-core@1.2.0
+
+## 1.1.31
+
+### Patch Changes
+
+- @duxweb/dvha-core@1.1.31
+
 ## 1.1.30
 
 ### Patch Changes

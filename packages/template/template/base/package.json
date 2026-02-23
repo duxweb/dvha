@@ -36,11 +36,11 @@
     "@tanstack/eslint-plugin-query": "^5.91.2",
     "@types/node": "^24.10.0",
     "@unocss/eslint-plugin": "^66.5.5",
-    "@vitejs/plugin-vue": "^6.0.1",
-    "@vitejs/plugin-vue-jsx": "^5.1.1",
+    "@vitejs/plugin-vue": "^6.0.4",
+    "@vitejs/plugin-vue-jsx": "^5.1.4",
     "eslint": "^9.39.1",
     "typescript": "^5.9.3",
-    "vite": "^7.2.2",
+    "vite": "8.0.0-beta.15",
     "vitest": "^4.0.8"
   }
 }

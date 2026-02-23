@@ -31,6 +31,8 @@ const circleElement: ElementConfig = {
     const circle = new Circle({
       left: props.left,
       top: props.top,
+      originX: 'left',
+      originY: 'top',
       radius: props.radius,
       fill: props.fill,
       stroke: props.stroke || undefined,

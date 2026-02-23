@@ -31,6 +31,8 @@ const imageElement: ElementConfig = {
       img.set({
         left: props.left,
         top: props.top,
+        originX: 'left',
+        originY: 'top',
         width: props.width,
         height: props.height,
         angle: props.angle,
@@ -117,6 +119,8 @@ const imageElement: ElementConfig = {
         img.set({
           left: props.left,
           top: props.top,
+          originX: 'left',
+          originY: 'top',
           width: imgWidth,
           height: imgHeight,
           scaleX: scale,
@@ -159,6 +163,8 @@ const imageElement: ElementConfig = {
     img.set({
       left: props.left,
       top: props.top,
+      originX: 'left',
+      originY: 'top',
       scaleX: newScaleX,
       scaleY: newScaleY,
       angle: props.angle,
