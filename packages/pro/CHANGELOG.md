@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.2.1
+
+### Patch Changes
+
+- feat: 增加 DuxCardItem
+  - @duxweb/dvha-core@1.2.1
+  - @duxweb/dvha-naiveui@1.2.1
+
 ## 1.2.0
 
 ### Minor Changes
