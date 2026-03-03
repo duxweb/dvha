@@ -45,6 +45,8 @@ export const DuxCardPage = defineComponent({
     actions: () => any
     sideLeft: () => any
     sideRight: () => any
+    header: () => any
+    contentHeader: () => any
   }>,
   setup(props, { slots, expose }) {
     // 网格容器引用
@@ -137,6 +139,8 @@ export const DuxCardPage = defineComponent({
           bottom: slots.bottom,
           sideLeft: slots.sideLeft,
           sideRight: slots.sideRight,
+          header: slots.header,
+          contentHeader: slots.contentHeader,
         }}
       </DuxListLayout>
     )

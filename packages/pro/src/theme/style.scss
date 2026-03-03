@@ -60,3 +60,10 @@ label,button, input, select, textarea {
 .n-image-preview-toolbar * {
   box-sizing: content-box;
 }
+
+.drawer-page .app-modal-tabs .n-tab-pane {
+  flex: 1;
+  min-height: 0px;
+  overflow-y: auto;
+  padding: var(--n-pane-padding-top);
+}

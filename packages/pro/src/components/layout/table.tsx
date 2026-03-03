@@ -599,6 +599,8 @@ export const DuxTableLayout = defineComponent({
                 </div>
               </div>
 
+              {slots?.header?.()}
+
               {shouldShowFilter.value
                 ? (
                     slots.filter
@@ -644,7 +646,8 @@ export const DuxTableLayout = defineComponent({
                   )
                 : renderSideControls()}
 
-              {slots?.header?.()}
+              {slots?.contentHeader?.()}
+
               <div class="flex-1 min-h-0">
                 {slots?.default?.({
                   ...result,

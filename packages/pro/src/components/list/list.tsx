@@ -32,6 +32,8 @@ export const DuxListPage = defineComponent({
     actions: () => any
     sideLeft: () => any
     sideRight: () => any
+    header: () => any
+    contentHeader: () => any
   }>,
   setup(props, { slots, expose }) {
     const listLayoutRef = ref()
@@ -66,6 +68,8 @@ export const DuxListPage = defineComponent({
           bottom: slots.bottom,
           sideLeft: slots.sideLeft,
           sideRight: slots.sideRight,
+          header: slots.header,
+          contentHeader: slots.contentHeader,
         }}
       </DuxListLayout>
     )

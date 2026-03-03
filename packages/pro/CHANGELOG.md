@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.2.2
+
+### Patch Changes
+
+- feat: 增加列表卡片
+  - @duxweb/dvha-core@1.2.2
+  - @duxweb/dvha-naiveui@1.2.2
+
 ## 1.2.1
 
 ### Patch Changes

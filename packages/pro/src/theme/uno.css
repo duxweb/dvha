@@ -7,7 +7,7 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
 }
 /* layer: properties */
-@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))){*, ::before, ::after, ::backdrop{--un-text-opacity:100%;--un-bg-opacity:100%;--un-from-opacity:100%;--un-divide-y-reverse:initial;--un-border-style:solid;--un-space-y-reverse:initial;--un-shadow-opacity:100%;--un-divide-x-reverse:initial;--un-divide-opacity:100%;--un-border-opacity:100%;--un-translate-x:initial;--un-translate-y:initial;--un-translate-z:initial;--un-ease:initial;--un-to-opacity:100%;--un-outline-style:solid;--un-fill-opacity:100%;}}
+@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))){*, ::before, ::after, ::backdrop{--un-text-opacity:100%;--un-bg-opacity:100%;--un-from-opacity:100%;--un-divide-y-reverse:initial;--un-border-style:solid;--un-divide-x-reverse:initial;--un-divide-opacity:100%;--un-space-y-reverse:initial;--un-shadow-opacity:100%;--un-border-opacity:100%;--un-translate-x:initial;--un-translate-y:initial;--un-translate-z:initial;--un-ease:initial;--un-to-opacity:100%;--un-outline-style:solid;--un-fill-opacity:100%;}}
 @property --un-text-opacity{syntax:"<percentage>";inherits:false;initial-value:100%;}
 @property --un-outline-style{syntax:"*";inherits:false;initial-value:solid;}
 @property --un-border-opacity{syntax:"<percentage>";inherits:false;initial-value:100%;}
@@ -1162,12 +1162,12 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .px-6{padding-inline:calc(var(--spacing) * 6);}
 .py-1{padding-block:calc(var(--spacing) * 1);}
 .py-1\.5{padding-block:calc(var(--spacing) * 1.5);}
-.py-10{padding-block:calc(var(--spacing) * 10);}
 .py-2{padding-block:calc(var(--spacing) * 2);}
 .py-3{padding-block:calc(var(--spacing) * 3);}
 .py-4{padding-block:calc(var(--spacing) * 4);}
 .py-5{padding-block:calc(var(--spacing) * 5);}
 .py-6{padding-block:calc(var(--spacing) * 6);}
+.py-8{padding-block:calc(var(--spacing) * 8);}
 .pb-0{padding-bottom:calc(var(--spacing) * 0);}
 .pb-1{padding-bottom:calc(var(--spacing) * 1);}
 .pb-2{padding-bottom:calc(var(--spacing) * 2);}
@@ -1487,9 +1487,9 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .w-26{width:calc(var(--spacing) * 26);}
 .w-30{width:calc(var(--spacing) * 30);}
 .w-300px{width:300px;}
+.w-32{width:calc(var(--spacing) * 32);}
 .w-360px{width:360px;}
 .w-4{width:calc(var(--spacing) * 4);}
-.w-40{width:calc(var(--spacing) * 40);}
 .w-400px{width:400px;}
 .w-5{width:calc(var(--spacing) * 5);}
 .w-60{width:calc(var(--spacing) * 60);}

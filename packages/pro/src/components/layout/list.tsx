@@ -577,6 +577,8 @@ export const DuxListLayout = defineComponent({
                 </div>
               </div>
 
+              {slots?.header?.()}
+
               {shouldShowFilter.value
                 ? (
                     slots.filter
@@ -621,6 +623,8 @@ export const DuxListLayout = defineComponent({
                         )
                   )
                 : renderSideControls()}
+
+              {slots?.contentHeader?.()}
 
               <NSpin show={isLoading.value} class="flex-1 min-h-0" contentClass="h-full">
                 <div
