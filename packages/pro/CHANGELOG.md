@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.2.3
+
+### Patch Changes
+
+- Updated dependencies
+  - @duxweb/dvha-core@1.2.3
+  - @duxweb/dvha-naiveui@1.2.3
+
 ## 1.2.2
 
 ### Patch Changes

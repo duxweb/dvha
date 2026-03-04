@@ -184,6 +184,8 @@ export const DuxAppProvider = defineComponent({
         // reload route
         return next({
           path: to.redirectedFrom?.path || to.path,
+          query: to.redirectedFrom?.query || to.query,
+          hash: to.redirectedFrom?.hash || to.hash,
           replace: true,
         })
       }

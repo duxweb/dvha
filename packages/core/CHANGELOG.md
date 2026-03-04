@@ -1,5 +1,11 @@
 # @duxweb/dvha-core
 
+## 1.2.3
+
+### Patch Changes
+
+- fix: 修正刷新页面后丢失 query
+
 ## 1.2.2
 
 ## 1.2.1
