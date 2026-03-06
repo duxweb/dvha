@@ -114,6 +114,7 @@ export default withDuxTheme({
             { text: '快速开始', link: '/guide/started' },
             { text: '初始化项目', link: '/guide/init' },
             { text: '项目配置', link: '/guide/config' },
+            { text: '自定义扩展', link: '/guide/custom-extension' },
           ],
         },
         {

@@ -97,6 +97,106 @@ const config: IConfig = {
 | `remote`    | `object` | ❌   | -      | 远程包加载配置           |
 | `jsonSchema`| `object` | ❌   | -      | JSON Schema 渲染配置     |
 
+#### `remote` 字段说明
+
+`remote` 用于给远程组件加载器提供运行时依赖与拉取配置，对应源码类型：
+
+```ts
+remote?: {
+  packages?: Options
+  apiMethod?: string
+  apiRoutePath?: string | ((path: string) => string)
+}
+```
+
+| 字段 | 类型 | 必需 | 说明 |
+| --- | --- | --- | --- |
+| `packages` | `Options['moduleCache']` | ❌ | 远程 SFC/模块运行时可直接 `import` 的包映射 |
+| `apiMethod` | `string` | ❌ | 拉取远程文件内容时使用的请求方法，默认 `POST` |
+| `apiRoutePath` | `string \| (path: string) => string` | ❌ | 远程文件接口地址，默认 `static` |
+
+`remote.packages` 最常用，它会被注入到 `vue3-sfc-loader` 的 `moduleCache` 中。也就是说，远程页面里如果写了 `import { NButton } from 'naive-ui'`，这里必须提前注册 `naive-ui`。
+
+```ts
+import * as DuxNaiveUI from '@duxweb/dvha-naiveui'
+import * as DuxPro from '@duxweb/dvha-pro'
+import * as NaiveUI from 'naive-ui'
+
+const config: IConfig = {
+  remote: {
+    packages: {
+      'naive-ui': NaiveUI,
+      '@duxweb/dvha-pro': DuxPro,
+      '@duxweb/dvha-naiveui': DuxNaiveUI,
+    },
+    apiMethod: 'POST',
+    apiRoutePath: 'static',
+  },
+}
+```
+
+如果只想给某个管理端单独扩展远程依赖，可以写在 `IManage.remote` 中；运行时会与全局 `remote` 合并，管理端同名配置优先。
+
+#### `jsonSchema` 字段说明
+
+`jsonSchema` 用于配置 JSON Schema 渲染器，对应源码类型：
+
+```ts
+jsonSchema?: {
+  adaptors?: IJsonAdaptor[]
+  components?: Record<string, Component> | Component[]
+}
+```
+
+| 字段 | 类型 | 必需 | 说明 |
+| --- | --- | --- | --- |
+| `adaptors` | `IJsonAdaptor[]` | ❌ | 自定义节点适配器 |
+| `components` | `Record<string, Component> \| Component[]` | ❌ | 预注册到 JSON Schema 渲染器中的组件映射 |
+
+`jsonSchema.components` 用于让 `useJsonSchema()` 在渲染时能按名称直接找到组件。支持两种写法：
+
+- 对象写法：显式指定组件名，适合少量精确注册。
+- 数组写法：从组件对象的 `name` / `__name` 自动推导名称，适合批量注册。
+
+```ts
+import * as DuxNaiveUI from '@duxweb/dvha-naiveui'
+import * as DuxPro from '@duxweb/dvha-pro'
+import * as NaiveUI from 'naive-ui'
+
+const config: IConfig = {
+  jsonSchema: {
+    components: [
+      ...Object.values(DuxPro).filter(comp => comp?.name?.startsWith?.('Dux')),
+      ...Object.values(DuxNaiveUI).filter(comp => comp?.name?.startsWith?.('Dux')),
+      ...Object.entries(NaiveUI)
+        .filter(([name]) => name.startsWith('N'))
+        .map(([name, component]) => {
+          ;(component as any).name = name
+          return component
+        }),
+    ],
+  },
+}
+```
+
+如果你只是注册少量业务组件，也可以这样写：
+
+```ts
+import UserProfileCard from './components/UserProfileCard.vue'
+import UserStatusTag from './components/UserStatusTag.vue'
+
+const config: IConfig = {
+  jsonSchema: {
+    components: {
+      UserProfileCard,
+      UserStatusTag,
+    },
+  },
+}
+```
+
+更多关于扩展组织方式、推荐目录和组合示例，可继续参考 [`/guide/custom-extension`](/guide/custom-extension)。
+
 ### 扩展配置
 
 **用途说明**: 🔧 完全供开发者自定义使用，可以存储任意项目特定的配置，通过 `useConfig()` 在组件中获取。
@@ -185,6 +285,14 @@ const config: IConfig = {
 | ----------- | -------- | ---- | ------ | ------------------------ |
 | `remote`    | `object` | ❌   | -      | 远程包加载配置           |
 | `jsonSchema`| `object` | ❌   | -      | JSON Schema 渲染配置     |
+
+> `IManage.remote` 与 `IManage.jsonSchema` 的子字段结构与全局配置一致，常见用途是：
+>
+> - 某个管理端单独增加 `remote.packages`
+> - 某个管理端单独注册 `jsonSchema.components`
+> - 对指定管理端覆盖 `apiRoutePath`
+>
+> 合并规则为“全局配置在前，管理端配置在后”，因此管理端可覆盖同名字段。
 
 ## 组件配置 (IConfigComponent)
 

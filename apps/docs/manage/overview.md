@@ -52,6 +52,91 @@ interface IManage {
 }
 ```
 
+## 远程与 JSON Schema 扩展
+
+`IManage` 除了常规的路由、菜单、主题配置外，还支持针对当前管理端单独配置 `remote` 与 `jsonSchema`。
+
+### `remote` 字段说明
+
+```ts
+remote?: {
+  packages?: Options
+  apiMethod?: string
+  apiRoutePath?: string | ((path: string) => string)
+}
+```
+
+| 字段 | 类型 | 必需 | 说明 |
+| --- | --- | --- | --- |
+| `packages` | `Options['moduleCache']` | ❌ | 当前管理端远程组件可直接 `import` 的包映射 |
+| `apiMethod` | `string` | ❌ | 当前管理端远程文件拉取请求方法，默认 `POST` |
+| `apiRoutePath` | `string \| (path: string) => string` | ❌ | 当前管理端远程文件接口地址，默认 `static` |
+
+最常用的是 `remote.packages`。它会被远程组件加载器注入到 `vue3-sfc-loader` 的 `moduleCache` 中，因此远程页面里使用到的包，都应该提前在这里注册。
+
+```ts
+import * as DuxPro from '@duxweb/dvha-pro'
+import * as NaiveUI from 'naive-ui'
+
+const config: IConfig = {
+  manages: [
+    {
+      name: 'admin',
+      title: '管理后台',
+      remote: {
+        packages: {
+          'naive-ui': NaiveUI,
+          '@duxweb/dvha-pro': DuxPro,
+        },
+        apiRoutePath: 'static',
+      },
+    },
+  ],
+}
+```
+
+### `jsonSchema` 字段说明
+
+```ts
+jsonSchema?: {
+  adaptors?: IJsonAdaptor[]
+  components?: Record<string, Component> | Component[]
+}
+```
+
+| 字段 | 类型 | 必需 | 说明 |
+| --- | --- | --- | --- |
+| `adaptors` | `IJsonAdaptor[]` | ❌ | 当前管理端专用的 JSON Schema 适配器 |
+| `components` | `Record<string, Component> \| Component[]` | ❌ | 当前管理端预注册的 JSON Schema 组件 |
+
+最常用的是 `jsonSchema.components`。它会在应用初始化时注册到 JSON Schema 组件仓库中，这样当前管理端内调用 `useJsonSchema()` 时，就能直接通过组件名使用这些组件。
+
+```ts
+import UserProfileCard from './components/UserProfileCard.vue'
+
+const config: IConfig = {
+  manages: [
+    {
+      name: 'admin',
+      title: '管理后台',
+      jsonSchema: {
+        components: {
+          UserProfileCard,
+        },
+      },
+    },
+  ],
+}
+```
+
+### 合并规则
+
+- 全局 `IConfig.remote` 与 `IConfig.jsonSchema` 会先加载
+- 当前管理端的 `IManage.remote` 与 `IManage.jsonSchema` 会继续合并
+- 同名字段以当前管理端配置为准
+
+如果你还想看更完整的字段说明，可继续参考 [`/guide/config`](/guide/config)；如果想看推荐拆分目录与扩展组织方式，可参考 [`/guide/custom-extension`](/guide/custom-extension)。
+
 ## 基础配置
 
 ### 单管理端配置

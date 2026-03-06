@@ -75,6 +75,55 @@ const { config, getRoutePath, getApiUrl, getPath } = useManage()
 const { config } = useManage('admin')
 ```
 
+## `config.remote` 与 `config.jsonSchema`
+
+`useManage()` 返回的 `config` 已经是“全局配置 + 当前管理端配置”合并后的结果，因此这里读取到的 `config.remote`、`config.jsonSchema` 都可以直接用于当前管理端。
+
+### `config.remote`
+
+```ts
+config.remote?: {
+  packages?: Options
+  apiMethod?: string
+  apiRoutePath?: string | ((path: string) => string)
+}
+```
+
+其中最常见的是 `config.remote.packages`，它用于声明当前管理端远程组件允许运行时直接 `import` 的包。
+
+```ts
+const { config } = useManage()
+
+console.log(config.remote?.packages)
+console.log(config.remote?.apiRoutePath)
+```
+
+### `config.jsonSchema`
+
+```ts
+config.jsonSchema?: {
+  adaptors?: IJsonAdaptor[]
+  components?: Record<string, Component> | Component[]
+}
+```
+
+其中最常见的是 `config.jsonSchema.components`，它表示当前管理端已预注册到 JSON Schema 渲染器中的组件。
+
+```ts
+const { config } = useManage()
+
+console.log(config.jsonSchema?.components)
+console.log(config.jsonSchema?.adaptors)
+```
+
+### 典型场景
+
+- 读取 `config.remote.apiRoutePath`，调试当前管理端远程组件接口地址
+- 根据 `config.remote.packages` 判断当前管理端已注入哪些远程依赖
+- 读取 `config.jsonSchema.components`，确认某个 JSON Schema 组件是否已在当前管理端注册
+
+如果你需要配置这些字段，请参考 [`/guide/config`](/guide/config) 与 [`/guide/custom-extension`](/guide/custom-extension)；如果你需要看 `useJsonSchema()` 如何消费这些配置，请参考 [`/hooks/advanced/useJson`](/hooks/advanced/useJson)。
+
 ## 参数说明
 
 | 参数   | 类型     | 必需 | 说明                             |

@@ -145,6 +145,63 @@ const { render } = useJsonSchema({
 </template>
 ```
 
+## 与全局配置联动
+
+`useJsonSchema()` 除了可以在当前调用中通过 `components` 和 `adaptors` 传入局部扩展，也会自动读取全局配置里的 `jsonSchema`。
+
+对应配置位置：
+
+- `IConfig.jsonSchema.components`
+- `IConfig.jsonSchema.adaptors`
+- `IManage.jsonSchema.components`
+- `IManage.jsonSchema.adaptors`
+
+其中最常见的是 `jsonSchema.components`。当你在项目初始化配置里预注册组件后，后续 JSON Schema 中就可以直接通过组件名使用，不需要每次调用 `useJsonSchema()` 都重复传入。
+
+```ts
+import * as DuxNaiveUI from '@duxweb/dvha-naiveui'
+import * as DuxPro from '@duxweb/dvha-pro'
+import * as NaiveUI from 'naive-ui'
+
+const config: IConfig = {
+  jsonSchema: {
+    components: [
+      ...Object.values(DuxPro).filter(comp => comp?.name?.startsWith?.('Dux')),
+      ...Object.values(DuxNaiveUI).filter(comp => comp?.name?.startsWith?.('Dux')),
+      ...Object.entries(NaiveUI)
+        .filter(([name]) => name.startsWith('N'))
+        .map(([name, component]) => {
+          ;(component as any).name = name
+          return component
+        }),
+    ],
+  },
+}
+```
+
+注册完成后，schema 中可直接写：
+
+```ts
+const schema = [
+  {
+    tag: 'NInput',
+    attrs: {
+      placeholder: '请输入名称',
+    },
+  },
+  {
+    tag: 'DuxFormItem',
+    attrs: {
+      label: '标题',
+    },
+  },
+]
+```
+
+如果只想当前页面临时注册组件，继续使用 `useJsonSchema({ components })` 即可；全局与局部配置可以同时存在。
+
+更多可参考：[`/guide/config`](/guide/config) 与 [`/guide/custom-extension`](/guide/custom-extension)。
+
 ## 参数说明
 
 | 参数         | 类型                                              | 必需 | 说明                 |
