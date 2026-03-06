@@ -1,90 +1,46 @@
 # 自定义扩展
 
-DVHA 本身保留了三类非常适合二次扩展的配置入口：
+这一页专门讲三件最常见的事：
 
-- `extends`：纯业务自定义配置，供你自己的组件和页面读取
-- `remote`：远程组件 / 微前端运行时扩展
-- `jsonSchema`：JSON Schema 渲染器扩展
+- 给远程页面**加载三方包**
+- 给 JSON Schema **加载三方组件**
+- 给你自己的业务**添加自定义配置**
 
-如果你在 `项目配置` 中只想快速查类型，请看 [`/guide/config`](/guide/config)；如果你想知道这些能力应该怎么组织、放在哪里、什么时候放全局或管理端，就看本页。
+如果你刚接触 DVHA，可以先这样理解：
 
-## 推荐理解方式
+- `remote`：解决“远程页面里可以用哪些包”
+- `jsonSchema`：解决“JSON Schema 里可以用哪些组件”
+- `extends`：解决“我自己的业务配置放哪里”
 
-### `extends`
+## 什么时候需要看这一页
 
-`extends` 不参与框架内部逻辑，完全是你的业务配置仓库。
+如果你遇到下面这些情况，就可以看本页：
 
-```ts
-const config: IConfig = {
-  extends: {
-    analytics: {
-      enabled: true,
-      trackingId: 'GA-XXXXXX',
-    },
-    upload: {
-      maxSize: 10 * 1024 * 1024,
-      accept: ['image/png', 'image/jpeg'],
-    },
-  },
-}
-```
+- 远程页面里 `import 'naive-ui'` 报错
+- JSON Schema 里写了 `NInput`、`DuxFormItem` 但是渲染不出来
+- 你想给项目加自己的配置项，比如上传大小、埋点开关、第三方服务参数
 
-适合放：
+## 1. 加载三方包
 
-- 业务开关
-- 第三方服务配置
-- 页面共享常量
-- 上传、展示、埋点等项目级参数
+### 这是什么
 
-读取方式：
+“加载三方包” 指的是：让**远程页面**在运行时可以使用某些 npm 包。
 
-```ts
-import { useConfig } from '@duxweb/dvha-core'
-
-const config = useConfig()
-
-console.log(config.extends?.analytics?.enabled)
-```
-
-### `remote`
-
-`remote` 是远程组件加载器的运行时配置，常用于微前端或服务端下发页面。
-
-```ts
-remote?: {
-  packages?: Options
-  apiMethod?: string
-  apiRoutePath?: string | ((path: string) => string)
-}
-```
-
-其中最关键的是 `remote.packages`。
-
-### `jsonSchema`
-
-`jsonSchema` 是 `useJsonSchema()` 的全局扩展入口。
-
-```ts
-jsonSchema?: {
-  adaptors?: IJsonAdaptor[]
-  components?: Record<string, Component> | Component[]
-}
-```
-
-其中最常用的是 `jsonSchema.components`，用于注册 JSON Schema 渲染时可按名称直接使用的组件。
-
-## `remote.packages` 怎么理解
-
-远程页面不是和你本地源码一起打包的，所以它运行时能用哪些包，需要你显式告诉加载器。
-
-DVHA 底层会把 `remote.packages` 合并进 `vue3-sfc-loader` 的 `moduleCache`。也就是说，远程文件里只要写了：
+比如你的远程页面里写了：
 
 ```ts
 import { NButton } from 'naive-ui'
-import { DuxCard } from '@duxweb/dvha-pro'
 ```
 
-那你本地配置里就要先注册这些包：
+那你就必须先把 `naive-ui` 注册到 `remote.packages` 中。
+
+### 为什么要配
+
+因为远程页面不是和你当前项目一起本地打包的。
+
+所以 DVHA 不知道远程页面要用哪些包，你需要手动告诉它：“这些包可以给远程页面使用”。
+
+### 怎么配置
 
 ```ts
 import * as DuxNaiveUI from '@duxweb/dvha-naiveui'
@@ -104,19 +60,25 @@ const config: IConfig = {
 }
 ```
 
+### 这几个字段是什么意思
+
+| 字段 | 说明 |
+| --- | --- |
+| `packages` | 远程页面允许使用的包 |
+| `apiMethod` | 拉取远程文件时使用的请求方法，默认是 `POST` |
+| `apiRoutePath` | 拉取远程文件的接口地址，默认是 `static` |
+
 ### 什么时候放全局，什么时候放管理端
 
-放到全局 `IConfig.remote`：
+放在全局 `IConfig.remote`：
 
-- 多个管理端都要复用同一批远程依赖
-- 远程组件接口统一
-- 想集中维护微前端基础能力
+- 多个管理端都要用
+- 想统一维护一套远程依赖
 
-放到 `IManage.remote`：
+放在 `IManage.remote`：
 
-- 只有某个管理端需要额外远程包
-- 不同管理端的远程接口不一样
-- 某个管理端要覆盖全局 `apiRoutePath`
+- 只有某个管理端要用
+- 某个管理端的远程接口单独不同
 
 ```ts
 const config: IConfig = {
@@ -139,15 +101,50 @@ const config: IConfig = {
 }
 ```
 
-## `jsonSchema.components` 怎么用
+### 你可以怎么判断有没有配对
 
-`jsonSchema.components` 的作用，是把组件预注册到 JSON Schema 渲染器里。
+如果远程页面里：
 
-这样你在 schema 里就可以直接写组件名，而不是每次调用 `useJsonSchema()` 都重新传一遍 `components`。
+- `import 'naive-ui'` 报错
+- `import '@duxweb/dvha-pro'` 报错
 
-### 写法一：对象映射
+通常就是 `remote.packages` 没配，或者包名写错了。
 
-适合少量业务组件，名字可控。
+## 2. 加载三方组件
+
+### 这是什么
+
+“加载三方组件” 指的是：让 **JSON Schema** 在渲染时，能够识别你写的组件名。
+
+比如你在 schema 里写了：
+
+```ts
+const schema = [
+  {
+    tag: 'NInput',
+  },
+  {
+    tag: 'DuxFormItem',
+  },
+]
+```
+
+那你就要先把这些组件注册到 `jsonSchema.components`。
+
+### 为什么要配
+
+因为 JSON Schema 只是一份配置，它不知道 `NInput`、`DuxFormItem` 到底对应哪个 Vue 组件。
+
+所以你要先告诉它：
+
+- `NInput` 对应哪个组件
+- `DuxFormItem` 对应哪个组件
+
+### 怎么配置
+
+#### 方式一：少量组件，直接写对象
+
+适合业务组件比较少的场景。
 
 ```ts
 import UserProfileCard from './components/UserProfileCard.vue'
@@ -163,7 +160,7 @@ const config: IConfig = {
 }
 ```
 
-Schema 中可直接这样写：
+这样你在 schema 里就能直接写：
 
 ```ts
 const schema = [
@@ -176,9 +173,9 @@ const schema = [
 ]
 ```
 
-### 写法二：组件数组
+#### 方式二：组件很多，用数组批量注册
 
-适合批量注册一整套组件库。DVHA 会尝试从组件的 `name` 或 `__name` 推导注册名。
+适合把一整个组件库注册进去。
 
 ```ts
 import * as DuxNaiveUI from '@duxweb/dvha-naiveui'
@@ -201,14 +198,14 @@ const config: IConfig = {
 }
 ```
 
-Schema 中可直接写：
+这样 schema 里就可以直接写：
 
 ```ts
 const schema = [
   {
     tag: 'NInput',
     attrs: {
-      placeholder: '请输入名称',
+      placeholder: '请输入标题',
     },
   },
   {
@@ -220,9 +217,79 @@ const schema = [
 ]
 ```
 
-## 推荐目录组织
+### 什么时候放全局，什么时候放管理端
 
-如果你的项目扩展开始变多，建议不要把所有配置都堆在 `main.ts` 里，可以拆成独立目录：
+放在全局 `IConfig.jsonSchema`：
+
+- 多个管理端都能用到这些组件
+- 想统一维护一套 JSON Schema 组件
+
+放在 `IManage.jsonSchema`：
+
+- 只有某个管理端会用到
+- 某个管理端有自己专属的组件
+
+### 你可以怎么判断有没有配对
+
+如果 schema 里：
+
+- 写了 `NInput` 但是不渲染
+- 写了 `DuxFormItem` 但是不识别
+- 写了业务组件名但页面空白
+
+通常就是 `jsonSchema.components` 没注册，或者注册名和 `tag` 不一致。
+
+## 3. 添加自定义配置
+
+### 这是什么
+
+“自定义配置” 指的是：你自己项目里的业务参数。
+
+它和远程组件、JSON Schema 没有直接关系，纯粹是给你自己的页面和组件读取的。
+
+### 适合放什么
+
+比如这些都适合放到 `extends`：
+
+- 埋点开关
+- 上传大小限制
+- 第三方服务地址
+- 业务常量
+- 某些页面功能开关
+
+### 怎么配置
+
+```ts
+const config: IConfig = {
+  extends: {
+    analytics: {
+      enabled: true,
+      trackingId: 'GA-XXXXXX',
+    },
+    upload: {
+      maxSize: 10 * 1024 * 1024,
+      accept: ['image/png', 'image/jpeg'],
+    },
+  },
+}
+```
+
+### 怎么读取
+
+```ts
+import { useConfig } from '@duxweb/dvha-core'
+
+const config = useConfig()
+
+console.log(config.extends?.analytics?.enabled)
+console.log(config.extends?.upload?.maxSize)
+```
+
+## 4. 推荐写法
+
+如果项目小，可以直接写在 `main.ts`。
+
+如果项目越来越大，建议拆出去：
 
 ```text
 src/
@@ -233,10 +300,9 @@ src/
   main.ts
 ```
 
-示例：
+### `remote.ts`
 
 ```ts
-// src/extensions/remote.ts
 import * as DuxNaiveUI from '@duxweb/dvha-naiveui'
 import * as DuxPro from '@duxweb/dvha-pro'
 import * as NaiveUI from 'naive-ui'
@@ -252,8 +318,9 @@ export const remoteConfig = {
 }
 ```
 
+### `json-schema.ts`
+
 ```ts
-// src/extensions/json-schema.ts
 import * as DuxNaiveUI from '@duxweb/dvha-naiveui'
 import * as DuxPro from '@duxweb/dvha-pro'
 import * as NaiveUI from 'naive-ui'
@@ -272,8 +339,9 @@ export const jsonSchemaConfig = {
 }
 ```
 
+### `project.ts`
+
 ```ts
-// src/extensions/project.ts
 export const projectExtends = {
   analytics: {
     enabled: true,
@@ -284,8 +352,9 @@ export const projectExtends = {
 }
 ```
 
+### `main.ts`
+
 ```ts
-// src/main.ts
 import { jsonSchemaConfig } from './extensions/json-schema'
 import { projectExtends } from './extensions/project'
 import { remoteConfig } from './extensions/remote'
@@ -303,9 +372,18 @@ const config: IConfig = {
 }
 ```
 
-## 建议
+## 5. 最后记一个最简单的判断方法
 
-- `extends` 放业务参数，不要混进框架运行时依赖
-- `remote.packages` 只注册远程页面真实会用到的包，避免无意义堆大对象
-- `jsonSchema.components` 优先注册稳定复用组件，临时组件可在 `useJsonSchema()` 里局部传入
-- 多管理端场景优先全局复用，只有差异项才放到 `IManage`
+你可以只记下面这三句话：
+
+- 远程页面缺包，看 `remote.packages`
+- JSON Schema 缺组件，看 `jsonSchema.components`
+- 业务自定义参数，看 `extends`
+
+## 相关阅读
+
+- 项目配置：[`/guide/config`](/guide/config)
+- 管理端配置：[`/manage/overview`](/manage/overview)
+- 管理端 Hook：[`/hooks/manage/useManage`](/hooks/manage/useManage)
+- JSON Schema：[`/hooks/advanced/useJson`](/hooks/advanced/useJson)
+- 远程组件教程：[`/pro/course/remote`](/pro/course/remote)
