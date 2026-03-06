@@ -1,3 +1,4 @@
+import type { LocationQueryValue } from 'vue-router'
 import { defineComponent, KeepAlive, Transition, watch } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import { useRouteStore, useTabStore } from '../stores'
@@ -9,6 +10,21 @@ export const DuxTabRouterView = defineComponent({
     const route = useRoute()
     const tabStore = useTabStore()
     const routeStore = useRouteStore()
+
+    const normalizeQueryValue = (value: LocationQueryValue | LocationQueryValue[]) => {
+      if (Array.isArray(value)) {
+        return value.map(item => item ?? '').sort().join(',')
+      }
+      return value ?? ''
+    }
+
+    const getTabKey = () => {
+      const entries = Object.entries(route.query || {})
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([key, value]) => `${key}=${normalizeQueryValue(value)}`)
+
+      return entries.length ? `${route.path}?${entries.join('&')}` : route.path
+    }
 
     // route cache
     const cacheMap = new Map()
@@ -34,7 +50,7 @@ export const DuxTabRouterView = defineComponent({
 
     tabStore.$subscribe((_mutation, state) => {
       cacheMap.forEach((cache) => {
-        if (!state.tabs.some(t => t.path === cache.name)) {
+        if (!state.tabs.some(t => (t.tabKey || t.path) === cache.name)) {
           cacheMap.delete(cache.name)
         }
       })
@@ -52,7 +68,7 @@ export const DuxTabRouterView = defineComponent({
       if (!info) {
         return
       }
-      const item = { label: info.label as string, path: route.path, name: info.name }
+      const item = { label: info.label as string, path: route.path, tabKey: getTabKey(), name: info.name }
       tabStore.addTab(item)
     }, { immediate: true })
 
@@ -60,11 +76,12 @@ export const DuxTabRouterView = defineComponent({
       <RouterView>
         {{
           default: ({ Component }) => {
-            const WrappedComponent = wrap(route.path, Component)
+            const tabKey = getTabKey()
+            const WrappedComponent = wrap(tabKey, Component)
             return (
               <Transition name="tab-fade" mode="out-in" appear>
-                <KeepAlive include={tabStore.tabs.map(t => t.path || '')}>
-                  <WrappedComponent key={route.path} />
+                <KeepAlive include={tabStore.tabs.map(t => t.tabKey || t.path || '')}>
+                  <WrappedComponent key={tabKey} />
                 </KeepAlive>
               </Transition>
             )

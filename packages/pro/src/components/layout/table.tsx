@@ -510,7 +510,7 @@ export const DuxTableLayout = defineComponent({
 
     const tab = useTabStore()
 
-    const tabInfo = tab.tabs.find(v => v.path === tab.current)
+    const tabInfo = tab.tabs.find(v => (v.tabKey || v.path) === tab.current)
 
     const activeTab = computed(() => {
       const values = props.tabs?.map(t => t.value) || []

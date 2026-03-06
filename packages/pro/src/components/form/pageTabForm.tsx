@@ -70,7 +70,7 @@ export const DuxPageTabForm = defineComponent({
         props.onSuccess?.(data)
 
         if (!result.isEdit.value && tab.current) {
-          tab.delTab(tab.current, v => router.push(v.path || ''))
+          tab.delTab(tab.current, v => router.push(v.tabKey || v.path || ''))
         }
         if (props.invalidate) {
           invalidate(props.invalidate)

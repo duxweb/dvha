@@ -62,21 +62,21 @@ export const DuxPageTab = defineComponent({
 
       switch (key) {
         case 'lock':
-          tab.lockTab(currentTab.value?.path || '')
+          tab.lockTab(currentTab.value?.tabKey || currentTab.value?.path || '')
           break
         case 'closeOther':
-          tab.delOther(currentTab.value?.path || '', () => {
-            router.push(currentTab.value?.path || '')
+          tab.delOther(currentTab.value?.tabKey || currentTab.value?.path || '', () => {
+            router.push(currentTab.value?.tabKey || currentTab.value?.path || '')
           })
           break
         case 'closeLeft':
-          tab.delLeft(currentTab.value?.path || '', () => {
-            router.push(currentTab.value?.path || '')
+          tab.delLeft(currentTab.value?.tabKey || currentTab.value?.path || '', () => {
+            router.push(currentTab.value?.tabKey || currentTab.value?.path || '')
           })
           break
         case 'closeRight':
-          tab.delRight(currentTab.value?.path || '', () => {
-            router.push(currentTab.value?.path || '')
+          tab.delRight(currentTab.value?.tabKey || currentTab.value?.path || '', () => {
+            router.push(currentTab.value?.tabKey || currentTab.value?.path || '')
           })
           break
         default:
@@ -95,7 +95,7 @@ export const DuxPageTab = defineComponent({
         >
           {{
             default: () => tabs?.value?.map(tab => (
-              <NTab key={tab.path} name={tab.path || ''} class="shadow-xs my-2">
+              <NTab key={tab.tabKey || tab.path} name={tab.tabKey || tab.path || ''} class="shadow-xs my-2">
                 <div class="flex items-center gap-2 h-36px px-3" onContextmenu={e => handleContextMenu(e, tab)}>
                   <div class="flex-1">
                     {tab.label}
@@ -105,7 +105,7 @@ export const DuxPageTab = defineComponent({
                       ? <div class="i-tabler:pinned size-4" />
                       : (
 
-                          <div onClick={() => tabsProps.value?.onClose?.(tab.path)} class="text-muted hover:text-primary cursor-pointer">
+                          <div onClick={() => tabsProps.value?.onClose?.(tab.tabKey || tab.path)} class="text-muted hover:text-primary cursor-pointer">
                             <div class="i-tabler:x size-4" />
                           </div>
                         )}

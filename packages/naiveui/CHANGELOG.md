@@ -1,5 +1,11 @@
 # @duxweb/dvha-naiveui
 
+## 1.2.4
+
+### Patch Changes
+
+- fix: tab 加入 query 参数
+
 ## 1.2.3
 
 ## 1.2.2

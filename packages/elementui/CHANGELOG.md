@@ -1,5 +1,13 @@
 # @duxweb/dvha-elementui
 
+## 1.2.4
+
+### Patch Changes
+
+- fix: tab 加入 query 参数
+- Updated dependencies
+  - @duxweb/dvha-core@1.2.4
+
 ## 1.2.3
 
 ### Patch Changes

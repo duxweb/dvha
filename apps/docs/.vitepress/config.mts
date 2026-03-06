@@ -9,7 +9,7 @@ function getBase() {
 
 export default withDuxTheme({
   title: 'DVHA',
-  description: '一个基于 Vue 且不含 UI 的中后台框架',
+  description: '一个少编译、更灵活、支持多管理端与动态扩展的 Vue 中后台框架',
   lang: 'zh-CN',
   base: getBase(),
   lastUpdated: true,
@@ -26,7 +26,8 @@ export default withDuxTheme({
         {
           text: 'Pro 版本',
           items: [
-            { text: '产品介绍', link: '/pro/' },
+            { text: '为什么用 Pro', link: '/pro/' },
+            { text: 'Core 和 Pro 怎么选', link: '/pro/choose' },
             { text: '快速开始', link: '/pro/getting-started' },
             { text: '安装指南', link: '/pro/installation' },
             { text: '配置说明', link: '/pro/configuration' },
@@ -110,7 +111,7 @@ export default withDuxTheme({
         {
           text: '指引',
           items: [
-            { text: '概况', link: '/guide/overview' },
+            { text: '为什么 DVHA', link: '/guide/overview' },
             { text: '快速开始', link: '/guide/started' },
             { text: '初始化项目', link: '/guide/init' },
             { text: '项目配置', link: '/guide/config' },

@@ -515,7 +515,7 @@ export const DuxListLayout = defineComponent({
       { deep: true },
     )
 
-    const tabTitle = computed(() => tabStore.tabs.find(v => v.path === tabStore.current)?.label)
+    const tabTitle = computed(() => tabStore.tabs.find(v => (v.tabKey || v.path) === tabStore.current)?.label)
 
     return () => (
       <DuxPage actions={props.actions} scrollbar={false}>

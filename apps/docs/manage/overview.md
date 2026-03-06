@@ -1,16 +1,32 @@
 # 管理端配置
 
-DVHA 框架的核心特性之一是支持多管理端系统，每个管理端可以独立配置认证、数据、路由、菜单和主题等。
+这一页主要讲：**一个项目里如果不止一个后台，DVHA 怎么管理。**
 
-## 功能特点
+很多后台项目做到后面，都会慢慢出现这些角色：
 
-- 🏗️ **多管理端支持** - 支持在同一应用中运行多个管理端
-- 🔐 **独立认证** - 每个管理端可配置独立的认证提供者
-- 📊 **独立数据源** - 每个管理端可配置独立的数据提供者或多重数据提供者
-- 🎨 **独立主题** - 每个管理端可配置独立的主题样式
-- 🚀 **独立路由** - 每个管理端拥有独立的路由配置
-- 📱 **独立菜单** - 每个管理端可配置独立的菜单结构
-- 🔄 **配置继承** - 支持全局配置和管理端配置的继承机制
+- 总后台
+- 商家后台
+- 用户中心
+- 代理后台
+
+如果按传统方式做，通常会越来越麻烦：
+
+- 路由要拆
+- 菜单要拆
+- 登录逻辑要拆
+- 接口前缀要拆
+- 主题和布局也要拆
+
+DVHA 的做法是：**把多管理端当成内建能力来设计。**
+
+所以你可以在同一个项目里，直接配置多个管理端，并让它们各自拥有自己的：
+
+- 路由前缀
+- 菜单
+- 登录方式
+- 数据接口
+- 主题
+- 动态扩展能力
 
 ## 管理端接口定义
 
@@ -54,25 +70,25 @@ interface IManage {
 
 ## 远程与 JSON Schema 扩展
 
-`IManage` 除了常规的路由、菜单、主题配置外，还支持针对当前管理端单独配置 `remote` 与 `jsonSchema`。
+如果你想给某个管理端单独加能力，最常见的就是这两个配置：
 
-### `remote` 字段说明
+- `remote`：给这个管理端的远程页面加包
+- `jsonSchema`：给这个管理端的 JSON Schema 加组件
+
+先记一句最简单的话：
+
+- 当前管理端远程页面缺包，看 `remote.packages`
+- 当前管理端 JSON Schema 缺组件，看 `jsonSchema.components`
+
+### 给当前管理端加载三方包
+
+如果某个管理端里的远程页面写了：
 
 ```ts
-remote?: {
-  packages?: Options
-  apiMethod?: string
-  apiRoutePath?: string | ((path: string) => string)
-}
+import { NButton } from 'naive-ui'
 ```
 
-| 字段 | 类型 | 必需 | 说明 |
-| --- | --- | --- | --- |
-| `packages` | `Options['moduleCache']` | ❌ | 当前管理端远程组件可直接 `import` 的包映射 |
-| `apiMethod` | `string` | ❌ | 当前管理端远程文件拉取请求方法，默认 `POST` |
-| `apiRoutePath` | `string \| (path: string) => string` | ❌ | 当前管理端远程文件接口地址，默认 `static` |
-
-最常用的是 `remote.packages`。它会被远程组件加载器注入到 `vue3-sfc-loader` 的 `moduleCache` 中，因此远程页面里使用到的包，都应该提前在这里注册。
+那你就要在这个管理端的 `remote.packages` 里先注册 `naive-ui`：
 
 ```ts
 import * as DuxPro from '@duxweb/dvha-pro'
@@ -95,21 +111,27 @@ const config: IConfig = {
 }
 ```
 
-### `jsonSchema` 字段说明
+这里几个字段可以这样理解：
+
+| 字段 | 说明 |
+| --- | --- |
+| `packages` | 这个管理端远程页面可以使用的包 |
+| `apiMethod` | 拉取远程文件时使用的请求方法 |
+| `apiRoutePath` | 这个管理端拉取远程文件的接口地址 |
+
+### 给当前管理端加载三方组件
+
+如果某个管理端里的 JSON Schema 写了：
 
 ```ts
-jsonSchema?: {
-  adaptors?: IJsonAdaptor[]
-  components?: Record<string, Component> | Component[]
-}
+const schema = [
+  {
+    tag: 'UserProfileCard',
+  },
+]
 ```
 
-| 字段 | 类型 | 必需 | 说明 |
-| --- | --- | --- | --- |
-| `adaptors` | `IJsonAdaptor[]` | ❌ | 当前管理端专用的 JSON Schema 适配器 |
-| `components` | `Record<string, Component> \| Component[]` | ❌ | 当前管理端预注册的 JSON Schema 组件 |
-
-最常用的是 `jsonSchema.components`。它会在应用初始化时注册到 JSON Schema 组件仓库中，这样当前管理端内调用 `useJsonSchema()` 时，就能直接通过组件名使用这些组件。
+那你就要在这个管理端的 `jsonSchema.components` 里先注册对应组件：
 
 ```ts
 import UserProfileCard from './components/UserProfileCard.vue'
@@ -129,13 +151,17 @@ const config: IConfig = {
 }
 ```
 
-### 合并规则
+### 和全局配置是什么关系
 
-- 全局 `IConfig.remote` 与 `IConfig.jsonSchema` 会先加载
-- 当前管理端的 `IManage.remote` 与 `IManage.jsonSchema` 会继续合并
-- 同名字段以当前管理端配置为准
+这里的配置不会替代全局，而是会和全局一起合并：
 
-如果你还想看更完整的字段说明，可继续参考 [`/guide/config`](/guide/config)；如果想看推荐拆分目录与扩展组织方式，可参考 [`/guide/custom-extension`](/guide/custom-extension)。
+- 全局先加载
+- 当前管理端后加载
+- 如果字段重名，当前管理端优先
+
+所以你可以把“公共能力”放全局，把“当前管理端独有的能力”放这里。
+
+想继续看更完整的入门解释，可以参考 [`/guide/custom-extension`](/guide/custom-extension)。
 
 ## 基础配置
 

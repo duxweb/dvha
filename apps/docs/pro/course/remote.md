@@ -1,35 +1,34 @@
 # 远程组件与微前端
 
-DVHA 支持通过远程组件实现轻量级微前端：页面本体可以不随主应用一起打包，而是在运行时按需拉取、渲染。
+这一页只讲一件事：**怎么让 DVHA 加载远程页面**。
 
-这套能力适合：
+如果你是第一次接触，可以先记住这三句话：
 
-- 服务端动态下发页面
-- 插件式页面扩展
-- 不同团队独立维护页面模块
-- 将表单、看板、运营页按远程资源接入
+- 远程页面要能打开，先配 `remote`
+- 远程页面里要能 `import` 包，先配 `remote.packages`
+- 远程页面如果返回的是 JSON Schema，还要配 `jsonSchema.components`
 
-## 先理解三个角色
+## 1. 最简单的理解方式
 
-在 DVHA 中，远程组件通常由三部分配合：
+DVHA 里的远程页面，意思是：页面代码不是跟着当前项目一起打包，而是在运行时再去接口里拿。
 
-- `remote`：定义远程文件从哪里加载、运行时能用哪些包
-- `components.remote`：定义远程页面由哪个加载器组件来渲染
-- 菜单 `loader: 'remote'`：告诉路由系统当前页面是远程页面
+最常见流程是：
 
-最常见的链路是：
+1. 菜单声明这个页面是远程页面
+2. DVHA 根据配置去请求远程文件
+3. 远程文件拿回来后开始渲染
+4. 如果远程文件里用到了三方包，就从 `remote.packages` 里找
 
-1. 菜单声明 `loader: 'remote'`
-2. 路由进入远程页面加载器
-3. 加载器根据 `remote.apiRoutePath` 请求远程文件内容
-4. 远程文件运行时从 `remote.packages` 中获取依赖
-5. 页面最终在当前管理端中渲染出来
+## 2. 先配置远程页面能用的包
 
-## 基础配置
+比如你的远程页面里写了：
 
-### 1. 注册远程依赖
+```ts
+import { NButton } from 'naive-ui'
+import { DuxCard } from '@duxweb/dvha-pro'
+```
 
-远程页面不会参与当前项目的本地打包，所以它在运行时能 `import` 哪些包，需要提前声明。
+那你就要先注册这些包：
 
 ```ts
 import * as DuxNaiveUI from '@duxweb/dvha-naiveui'
@@ -46,31 +45,16 @@ const config: IConfig = {
     apiMethod: 'POST',
     apiRoutePath: 'static',
   },
-  manages: [
-    {
-      name: 'admin',
-      title: '管理后台',
-      routePrefix: '/admin',
-    },
-  ],
 }
 ```
 
-### 2. 配置远程加载器组件
+这里你只要先记：
 
-DVHA 会根据菜单的 `loader` 类型，自动选择对应的页面加载器。远程页面使用的是 `components.remote`。
+- `packages`：远程页面能用哪些包
+- `apiMethod`：怎么请求远程文件
+- `apiRoutePath`：去哪个接口拿远程文件
 
-```ts
-const config: IConfig = {
-  components: {
-    remote: () => import('@duxweb/dvha-core/components/loader/loader'),
-  },
-}
-```
-
-大多数场景下可以直接使用框架默认的远程加载器，不一定需要手动覆盖；只有你想自定义加载中、错误展示或包裹额外布局时，才需要重写这个组件。
-
-### 3. 菜单声明远程页面
+## 3. 再告诉菜单：这是一个远程页面
 
 ```ts
 const menus = [
@@ -86,11 +70,13 @@ const menus = [
 ]
 ```
 
-这里的关键是 `loader: 'remote'`。进入该菜单时，DVHA 会自动走远程页面加载流程。
+这里最关键的是 `loader: 'remote'`。
 
-## 远程接口约定
+有了它，DVHA 才知道这个菜单进入后，不是本地页面，而是要走远程加载流程。
 
-默认情况下，远程加载器会向 `remote.apiRoutePath` 指定的接口发起请求，请求参数中会携带：
+## 4. 远程接口一般返回什么
+
+默认情况下，请求远程文件时会带上这样的参数：
 
 ```json
 {
@@ -98,9 +84,7 @@ const menus = [
 }
 ```
 
-如果没有显式配置 `apiRoutePath`，默认会请求 `static`；如果没有配置 `apiMethod`，默认使用 `POST`。
-
-远程接口返回的数据至少应包含：
+接口通常至少返回这两个字段：
 
 ```json
 {
@@ -109,149 +93,71 @@ const menus = [
 }
 ```
 
-常见 `type`：
+常见的 `type`：
 
-- `.vue`：远程 Vue SFC 页面
-- `.json`：JSON Schema 页面
-- `.js` / `.ts` / `.jsx` / `.tsx`：会被按模块脚本处理
+- `.vue`：普通远程 Vue 页面
+- `.json`：远程 JSON Schema 页面
+- `.js` / `.ts` / `.jsx` / `.tsx`：远程模块脚本
 
-## 三种常见远程页面形式
+## 5. 如果返回的是 JSON Schema，要再配组件
 
-### 远程 Vue SFC
-
-适合复杂交互页面。
-
-```vue
-<template>
-  <n-card title="远程页面">
-    <n-button type="primary">点击我</n-button>
-  </n-card>
-</template>
-
-<script setup>
-import { NButton, NCard } from 'naive-ui'
-</script>
-```
-
-只要 `naive-ui` 已注册进 `remote.packages`，这类页面就可以直接运行。
-
-### 远程 JSON Schema
-
-适合动态表单、活动页、低代码结构页面。
-
-接口返回：
+如果远程接口返回的是 `.json`，而且内容里写了：
 
 ```json
 {
-  "type": ".json",
-  "content": {
-    "nodes": [
-      {
-        "tag": "NInput",
-        "attrs": {
-          "placeholder": "请输入标题"
-        }
-      },
-      {
-        "tag": "DuxFormItem",
-        "attrs": {
-          "label": "名称"
-        }
-      }
-    ],
-    "data": {}
-  }
-}
-```
-
-这里如果使用了 `NInput`、`DuxFormItem`，同样要求这些组件已经在当前应用中通过 `jsonSchema.components` 或局部 `useJsonSchema({ components })` 注册。
-
-### iframe 页面
-
-如果远程页面不是 Vue 模块，而是已有独立站点，可以使用 `loader: 'iframe'`：
-
-```ts
-const menus = [
-  {
-    name: 'report.external',
-    label: '外部报表',
-    path: 'report/external',
-    loader: 'iframe',
-    meta: {
-      url: 'https://example.com/report',
-    },
-  },
-]
-```
-
-这种方式更像页面嵌入，不共享当前应用的组件运行时。
-
-## 推荐项目组织方式
-
-如果项目里远程页面较多，建议单独拆一组扩展配置：
-
-```text
-src/
-  extensions/
-    remote.ts
-    json-schema.ts
-  main.ts
-```
-
-```ts
-// src/extensions/remote.ts
-import * as DuxNaiveUI from '@duxweb/dvha-naiveui'
-import * as DuxPro from '@duxweb/dvha-pro'
-import * as NaiveUI from 'naive-ui'
-
-export const remoteConfig = {
-  packages: {
-    'naive-ui': NaiveUI,
-    '@duxweb/dvha-pro': DuxPro,
-    '@duxweb/dvha-naiveui': DuxNaiveUI,
-  },
-  apiMethod: 'POST',
-  apiRoutePath: 'static',
-}
-```
-
-```ts
-// src/main.ts
-import { remoteConfig } from './extensions/remote'
-
-const config: IConfig = {
-  remote: remoteConfig,
-  manages: [
+  "nodes": [
     {
-      name: 'admin',
-      title: '管理后台',
+      "tag": "NInput"
     },
-  ],
+    {
+      "tag": "DuxFormItem"
+    }
+  ]
 }
 ```
 
-## 常见问题
+那除了 `remote.packages`，你还要保证这些组件已经注册到 `jsonSchema.components`。
 
-### 为什么远程页面里 `import 'naive-ui'` 报错？
+否则远程 JSON Schema 页面拿到了，也可能渲染不出来。
 
-通常是因为没有在 `remote.packages` 中注册对应包。远程组件加载器不会自动读取你本地 bundler 的依赖图，只会使用它自己的运行时包表。
+## 6. 最常见的报错怎么排查
 
-### 为什么 JSON Schema 远程页面里识别不到 `DuxFormItem`？
+### 远程页面里 `import 'naive-ui'` 报错
 
-通常不是 `remote.packages` 的问题，而是 `jsonSchema.components` 没有提前注册对应组件。远程 `.json` 页面最终还是走 `useJsonSchema()` 渲染。
+先检查：
 
-### 全局配置和管理端配置怎么选？
+- `remote.packages` 里有没有 `naive-ui`
+- 包名有没有写错
 
-建议规则：
+### 远程 JSON Schema 页面不显示组件
 
-- 公共远程依赖放 `IConfig.remote`
-- 某个管理端特有依赖放 `IManage.remote`
-- 公共 JSON Schema 组件放 `IConfig.jsonSchema`
-- 某个管理端专用组件放 `IManage.jsonSchema`
+先检查：
+
+- `jsonSchema.components` 里有没有注册对应组件
+- schema 里的 `tag` 名字和注册名是否一致
+
+### 远程页面接口地址不对
+
+先检查：
+
+- `remote.apiRoutePath`
+- `remote.apiMethod`
+
+## 7. 放全局还是放管理端
+
+多个管理端都要用，就放全局：
+
+- `IConfig.remote`
+- `IConfig.jsonSchema`
+
+只有某个管理端要用，就放当前管理端：
+
+- `IManage.remote`
+- `IManage.jsonSchema`
 
 ## 相关阅读
 
-- 配置总览：[`/guide/config`](/guide/config)
+- 项目配置：[`/guide/config`](/guide/config)
 - 自定义扩展：[`/guide/custom-extension`](/guide/custom-extension)
 - 管理端配置：[`/manage/overview`](/manage/overview)
 - 管理端 Hook：[`/hooks/manage/useManage`](/hooks/manage/useManage)

@@ -40,82 +40,178 @@ const config: IConfig = {
 
 ## 全局配置 (IConfig)
 
-全局配置是整个应用的基础配置，影响所有管理端的行为。
+全局配置可以理解成：**整个项目的默认配置**。
 
-### 基础信息配置
+如果你是第一次接触，先记住下面这几个最常用的：
 
-**用途说明**: 📝 这些配置主要供开发者在组件中调用，通过 `useConfig()` 获取后显示在界面上，如页面标题、页脚版权信息等。
+- `title`：项目名称
+- `defaultManage`：默认进入哪个管理端
+- `manages`：一共有哪几个管理端
+- `dataProvider`：数据请求怎么发
+- `authProvider`：登录校验怎么做
+- `i18nProvider`：多语言怎么处理
+- `components` / `theme`：页面长什么样
 
-| 字段          | 类型     | 必需 | 默认值 | 说明     |
-| ------------- | -------- | ---- | ------ | -------- |
-| `title`       | `string` | ❌   | -      | 应用标题 |
-| `copyright`   | `string` | ❌   | -      | 版权信息 |
-| `description` | `string` | ❌   | -      | 应用描述 |
-| `lang`        | `string` | ❌   | -      | 默认语言 |
+### 1. 项目的基础信息写哪里
 
-### API 配置
-
-**用途说明**: 🔗 API URL 现在通过数据提供者的 `apiUrl` 方法提供，不再在全局配置中直接配置。
-
-> ⚠️ **重要变更**: 在最新版本中，`apiUrl` 字段已从全局配置中移除，所有 API 地址配置都通过数据提供者实现。
-
-### 管理端配置
-
-**用途说明**: 🏗️ 框架内部使用，用于多管理端架构的路由管理、管理端切换和默认管理端选择。
-
-| 字段            | 类型        | 必需 | 默认值 | 说明           |
-| --------------- | ----------- | ---- | ------ | -------------- |
-| `defaultManage` | `string`    | ❌   | -      | 默认管理端名称 |
-| `manages`       | `IManage[]` | ✅   | -      | 管理端配置列表 |
-
-### 提供者配置
-
-**用途说明**: ⚙️ 框架内部使用，为所有 Hooks 提供底层的数据操作、认证和国际化功能。管理端配置中的提供者会覆盖全局提供者。数据提供者支持单一提供者或多重提供者配置。
-
-| 字段           | 类型                                             | 必需 | 默认值 | 说明             |
-| -------------- | ------------------------------------------------ | ---- | ------ | ---------------- |
-| `authProvider` | `IAuthProvider`                                  | ❌   | -      | 全局认证提供者   |
-| `dataProvider` | `IDataProvider \| Record<string, IDataProvider>` | ❌   | -      | 全局数据提供者   |
-| `i18nProvider` | `I18nProvider`                                   | ❌   | -      | 全局国际化提供者 |
-
-### 全局组件配置
-
-**用途说明**: 🎨 框架内部使用，用于路由渲染时自动选择对应的布局组件和错误页面。
-
-| 字段         | 类型               | 必需 | 默认值 | 说明             |
-| ------------ | ------------------ | ---- | ------ | ---------------- |
-| `components` | `IConfigComponent` | ❌   | -      | 全局布局组件配置 |
-| `routes`     | `RouteRecordRaw[]` | ❌   | `[]`   | 全局路由配置     |
-| `theme`      | `IConfigTheme`     | ❌   | -      | 全局主题配置     |
-
-### 远程与 JSON Schema
-
-**用途说明**: 🔌 远程包加载与 JSON Schema 渲染的全局配置，管理端可单独覆盖。
-
-| 字段        | 类型     | 必需 | 默认值 | 说明                     |
-| ----------- | -------- | ---- | ------ | ------------------------ |
-| `remote`    | `object` | ❌   | -      | 远程包加载配置           |
-| `jsonSchema`| `object` | ❌   | -      | JSON Schema 渲染配置     |
-
-#### `remote` 字段说明
-
-`remote` 用于给远程组件加载器提供运行时依赖与拉取配置，对应源码类型：
-
-```ts
-remote?: {
-  packages?: Options
-  apiMethod?: string
-  apiRoutePath?: string | ((path: string) => string)
-}
-```
+如果你想设置项目名称、描述、版权，写在这里：
 
 | 字段 | 类型 | 必需 | 说明 |
 | --- | --- | --- | --- |
-| `packages` | `Options['moduleCache']` | ❌ | 远程 SFC/模块运行时可直接 `import` 的包映射 |
-| `apiMethod` | `string` | ❌ | 拉取远程文件内容时使用的请求方法，默认 `POST` |
-| `apiRoutePath` | `string \| (path: string) => string` | ❌ | 远程文件接口地址，默认 `static` |
+| `title` | `string` | ❌ | 项目标题 |
+| `copyright` | `string` | ❌ | 页脚版权信息 |
+| `description` | `string` | ❌ | 项目描述 |
+| `lang` | `string` | ❌ | 默认语言 |
 
-`remote.packages` 最常用，它会被注入到 `vue3-sfc-loader` 的 `moduleCache` 中。也就是说，远程页面里如果写了 `import { NButton } from 'naive-ui'`，这里必须提前注册 `naive-ui`。
+最常见写法：
+
+```ts
+const config: IConfig = {
+  title: '企业管理系统',
+  description: '一个后台管理项目',
+  copyright: '© 2026 My Company',
+  lang: 'zh-CN',
+}
+```
+
+这些字段大多会在你自己的页面里通过 `useConfig()` 读取。
+
+### 2. 默认进入哪个管理端
+
+如果你的项目有多个管理端，比如：
+
+- `/admin`
+- `/user`
+- `/merchant`
+
+那 `defaultManage` 就表示：用户首次进入项目时，默认先进哪一个。
+
+| 字段 | 类型 | 必需 | 说明 |
+| --- | --- | --- | --- |
+| `defaultManage` | `string` | ❌ | 默认管理端名称 |
+| `manages` | `IManage[]` | ✅ | 管理端列表 |
+
+```ts
+const config: IConfig = {
+  defaultManage: 'admin',
+  manages: [
+    {
+      name: 'admin',
+      title: '管理后台',
+      routePrefix: '/admin',
+    },
+    {
+      name: 'user',
+      title: '用户中心',
+      routePrefix: '/user',
+    },
+  ],
+}
+```
+
+如果你不确定要配什么，先至少保证：
+
+- `manages` 一定要有
+- `defaultManage` 最好指向其中一个已存在的 `name`
+
+### 3. 请求、登录、多语言配哪里
+
+这三个配置是项目最核心的运行能力：
+
+- `dataProvider`：负责请求接口
+- `authProvider`：负责登录、退出、鉴权
+- `i18nProvider`：负责多语言
+
+| 字段 | 类型 | 必需 | 说明 |
+| --- | --- | --- | --- |
+| `authProvider` | `IAuthProvider` | ❌ | 全局登录相关配置 |
+| `dataProvider` | `IDataProvider \| Record<string, IDataProvider>` | ❌ | 全局数据请求配置 |
+| `i18nProvider` | `I18nProvider` | ❌ | 全局国际化配置 |
+
+最简单示例：
+
+```ts
+const dataProvider = simpleDataProvider({
+  apiUrl: 'https://api.example.com',
+})
+
+const config: IConfig = {
+  dataProvider,
+  authProvider: simpleAuthProvider(),
+  i18nProvider: i18nProvider({
+    locale: 'zh-CN',
+    fallbackLocale: 'en-US',
+    messages: {
+      'zh-CN': { welcome: '欢迎' },
+      'en-US': { welcome: 'Welcome' },
+    },
+  }),
+}
+```
+
+> 现在接口地址不再直接写 `apiUrl` 到全局配置里，而是交给 `dataProvider` 去处理。
+
+### 4. 布局、路由、主题配哪里
+
+如果你想控制页面长什么样、用哪个布局、额外加哪些路由，就看这一组：
+
+| 字段 | 类型 | 必需 | 说明 |
+| --- | --- | --- | --- |
+| `components` | `IConfigComponent` | ❌ | 全局布局组件配置 |
+| `routes` | `RouteRecordRaw[]` | ❌ | 全局附加路由 |
+| `theme` | `IConfigTheme` | ❌ | 全局主题配置 |
+
+最简单理解：
+
+- `components`：页面外壳是谁来渲染
+- `routes`：额外补充哪些路由
+- `theme`：Logo、Banner、主题默认值放哪里
+
+例如：
+
+```ts
+const config: IConfig = {
+  components: {
+    authLayout: () => import('./layouts/AuthLayout.vue'),
+    notFound: () => import('./pages/404.vue'),
+  },
+  theme: {
+    logo: '/logo.png',
+    banner: '/banner.jpg',
+  },
+}
+```
+
+### 远程与 JSON Schema
+
+这一组配置主要解决两个问题：
+
+- 远程页面里可以使用哪些包
+- JSON Schema 里可以使用哪些组件
+
+如果你是第一次接触，先记最简单的一句话：
+
+- 远程页面缺包，看 `remote.packages`
+- JSON Schema 缺组件，看 `jsonSchema.components`
+
+| 字段 | 类型 | 必需 | 说明 |
+| --- | --- | --- | --- |
+| `remote` | `object` | ❌ | 远程页面相关配置 |
+| `jsonSchema` | `object` | ❌ | JSON Schema 渲染相关配置 |
+
+#### 1. `remote` 是做什么的
+
+`remote` 用来配置远程页面怎么加载。
+
+最常用的是 `remote.packages`，它表示：**远程页面允许运行时使用哪些包**。
+
+比如远程页面里写了：
+
+```ts
+import { NButton } from 'naive-ui'
+```
+
+那你就要在配置里先注册 `naive-ui`：
 
 ```ts
 import * as DuxNaiveUI from '@duxweb/dvha-naiveui'
@@ -135,28 +231,41 @@ const config: IConfig = {
 }
 ```
 
-如果只想给某个管理端单独扩展远程依赖，可以写在 `IManage.remote` 中；运行时会与全局 `remote` 合并，管理端同名配置优先。
+`remote` 里几个常见字段：
 
-#### `jsonSchema` 字段说明
+| 字段 | 说明 |
+| --- | --- |
+| `packages` | 远程页面可以使用的包 |
+| `apiMethod` | 拉取远程文件时使用的请求方法，默认 `POST` |
+| `apiRoutePath` | 拉取远程文件时请求的接口地址，默认 `static` |
 
-`jsonSchema` 用于配置 JSON Schema 渲染器，对应源码类型：
+如果远程页面里：
+
+- `import 'naive-ui'` 报错
+- `import '@duxweb/dvha-pro'` 报错
+
+通常先检查 `remote.packages` 有没有配、包名有没有写对。
+
+#### 2. `jsonSchema` 是做什么的
+
+`jsonSchema` 用来配置 JSON Schema 渲染时可以使用哪些组件。
+
+最常用的是 `jsonSchema.components`，它表示：**JSON Schema 里写到的组件名，实际对应哪些 Vue 组件**。
+
+比如你在 schema 里写了：
 
 ```ts
-jsonSchema?: {
-  adaptors?: IJsonAdaptor[]
-  components?: Record<string, Component> | Component[]
-}
+const schema = [
+  {
+    tag: 'NInput',
+  },
+  {
+    tag: 'DuxFormItem',
+  },
+]
 ```
 
-| 字段 | 类型 | 必需 | 说明 |
-| --- | --- | --- | --- |
-| `adaptors` | `IJsonAdaptor[]` | ❌ | 自定义节点适配器 |
-| `components` | `Record<string, Component> \| Component[]` | ❌ | 预注册到 JSON Schema 渲染器中的组件映射 |
-
-`jsonSchema.components` 用于让 `useJsonSchema()` 在渲染时能按名称直接找到组件。支持两种写法：
-
-- 对象写法：显式指定组件名，适合少量精确注册。
-- 数组写法：从组件对象的 `name` / `__name` 自动推导名称，适合批量注册。
+那你就要先注册这些组件：
 
 ```ts
 import * as DuxNaiveUI from '@duxweb/dvha-naiveui'
@@ -179,7 +288,7 @@ const config: IConfig = {
 }
 ```
 
-如果你只是注册少量业务组件，也可以这样写：
+如果只是少量业务组件，也可以直接写对象：
 
 ```ts
 import UserProfileCard from './components/UserProfileCard.vue'
@@ -195,157 +304,279 @@ const config: IConfig = {
 }
 ```
 
-更多关于扩展组织方式、推荐目录和组合示例，可继续参考 [`/guide/custom-extension`](/guide/custom-extension)。
+如果 schema 里：
+
+- 写了 `NInput` 但是不渲染
+- 写了 `DuxFormItem` 但是不识别
+- 写了业务组件名但页面空白
+
+通常先检查 `jsonSchema.components` 有没有注册，名字是否和 `tag` 一致。
+
+#### 3. 放全局还是放管理端
+
+如果多个管理端都要用，优先写在全局：
+
+- `IConfig.remote`
+- `IConfig.jsonSchema`
+
+如果只有某个管理端要用，就写在当前管理端：
+
+- `IManage.remote`
+- `IManage.jsonSchema`
+
+管理端配置会在运行时与全局配置合并，同名字段以管理端自己的配置为准。
+
+想看更详细的教程，可以继续看 [`/guide/custom-extension`](/guide/custom-extension)。
 
 ### 扩展配置
 
-**用途说明**: 🔧 完全供开发者自定义使用，可以存储任意项目特定的配置，通过 `useConfig()` 在组件中获取。
+如果上面的配置都不够用，而你又想给项目放一些“自己的业务参数”，就用 `extends`。
 
-| 字段      | 类型                  | 必需 | 默认值 | 说明         |
-| --------- | --------------------- | ---- | ------ | ------------ |
-| `extends` | `Record<string, any>` | ❌   | -      | 扩展配置对象 |
+比如这些都适合放进去：
+
+- 上传大小限制
+- 埋点开关
+- 第三方服务地址
+- 业务常量
+
+| 字段 | 类型 | 必需 | 说明 |
+| --- | --- | --- | --- |
+| `extends` | `Record<string, any>` | ❌ | 你自己的业务配置 |
+
+```ts
+const config: IConfig = {
+  extends: {
+    analytics: {
+      enabled: true,
+    },
+    upload: {
+      maxSize: 10 * 1024 * 1024,
+    },
+  },
+}
+```
+
+读取方式：
+
+```ts
+import { useConfig } from '@duxweb/dvha-core'
+
+const config = useConfig()
+
+console.log(config.extends?.analytics?.enabled)
+```
 
 ## 管理端配置 (IManage)
 
-每个管理端都可以有独立的配置，支持多个管理端同时运行。
+如果全局配置是“整个项目的默认配置”，那管理端配置就是：**某一个管理端自己的配置**。
 
-### 基础信息配置
+比如你可能有：
 
-**用途说明**: 📝 `name` 为框架内部使用的唯一标识；其他字段主要供开发者在组件中调用，用于显示管理端标题、描述等信息。
+- 管理后台
+- 用户中心
+- 商家后台
 
-| 字段          | 类型     | 必需 | 默认值 | 说明           |
-| ------------- | -------- | ---- | ------ | -------------- |
-| `name`        | `string` | ✅   | -      | 管理端唯一标识 |
-| `title`       | `string` | ✅   | -      | 管理端标题     |
-| `copyright`   | `string` | ❌   | -      | 版权信息       |
-| `description` | `string` | ❌   | -      | 管理端描述     |
+它们都可以有不同的：
 
-### 功能开关配置
+- 路由前缀
+- 登录方式
+- 数据接口
+- 菜单
+- 主题
 
-**用途说明**: 🎛️ 供开发者在组件中调用，通过 `useManage()` 获取后判断是否显示注册按钮、忘记密码链接等功能。
+### 1. 每个管理端最少要写什么
 
-| 字段             | 类型      | 必需 | 默认值  | 说明                 |
-| ---------------- | --------- | ---- | ------- | -------------------- |
-| `register`       | `boolean` | ❌   | `false` | 是否启用注册功能     |
-| `forgotPassword` | `boolean` | ❌   | `false` | 是否启用忘记密码功能 |
-| `updatePassword` | `boolean` | ❌   | `false` | 是否启用更新密码功能 |
+每个管理端最少建议先写这三个：
 
-### API 配置
+| 字段 | 类型 | 必需 | 说明 |
+| --- | --- | --- | --- |
+| `name` | `string` | ✅ | 管理端唯一名称 |
+| `title` | `string` | ✅ | 管理端标题 |
+| `routePrefix` | `string` | ❌ | 这个管理端的路由前缀 |
 
-**用途说明**: 🔗 管理端的 API 前缀通过 `apiBasePath` 提供，真正的请求 URL 由数据提供者的 `apiUrl` 方法生成。
+```ts
+const config: IConfig = {
+  manages: [
+    {
+      name: 'admin',
+      title: '管理后台',
+      routePrefix: '/admin',
+    },
+  ],
+}
+```
 
-| 字段           | 类型     | 必需 | 默认值 | 说明              |
-| -------------- | -------- | ---- | ------ | ----------------- |
-| `apiBasePath`  | `string` | ❌   | -      | API 基础路径      |
-| `apiRoutePath` | `string` | ❌   | -      | 远程菜单 API 路径 |
+### 2. 如果这个管理端有自己的登录和接口
 
-> ⚠️ **重要变更**: 在最新版本中，`apiUrl` 字段已从管理端配置中移除，所有 API 地址配置都通过数据提供者实现。
+如果某个管理端要单独使用自己的登录逻辑、自己的接口地址，就在当前管理端里覆盖：
 
-### 路由配置
+| 字段 | 类型 | 必需 | 说明 |
+| --- | --- | --- | --- |
+| `authProvider` | `IAuthProvider` | ❌ | 当前管理端自己的登录配置 |
+| `dataProvider` | `IDataProvider \| Record<string, IDataProvider>` | ❌ | 当前管理端自己的请求配置 |
+| `i18nProvider` | `I18nProvider` | ❌ | 当前管理端自己的多语言配置 |
+| `apiBasePath` | `string` | ❌ | 当前管理端接口前缀 |
+| `apiRoutePath` | `string` | ❌ | 当前管理端远程菜单接口 |
 
-**用途说明**: 🔗 框架内部使用，用于生成管理端的路由结构和页面访问路径。
+### 3. 如果这个管理端有自己的页面和菜单
 
-| 字段          | 类型               | 必需 | 默认值 | 说明                   |
-| ------------- | ------------------ | ---- | ------ | ---------------------- |
-| `routePrefix` | `string`           | ❌   | -      | 路由前缀 (如 `/admin`) |
-| `routes`      | `RouteRecordRaw[]` | ❌   | `[]`   | 自定义路由配置         |
+| 字段 | 类型 | 必需 | 说明 |
+| --- | --- | --- | --- |
+| `routes` | `RouteRecordRaw[]` | ❌ | 当前管理端额外路由 |
+| `menus` | `IMenu[]` | ❌ | 当前管理端菜单 |
+| `components` | `IConfigComponent` | ❌ | 当前管理端布局组件 |
+| `theme` | `IConfigTheme` | ❌ | 当前管理端主题 |
 
-### 菜单配置
+最常见理解：
 
-**用途说明**: 🧭 框架内部使用，用于自动生成侧边栏菜单结构，包括菜单层级、权限控制等。
+- `routes`：补充页面路由
+- `menus`：控制侧边栏显示什么
+- `components`：这个管理端页面外壳是谁
+- `theme`：这个管理端用什么 Logo、Banner
 
-| 字段    | 类型      | 必需 | 默认值 | 说明         |
-| ------- | --------- | ---- | ------ | ------------ |
-| `menus` | `IMenu[]` | ❌   | `[]`   | 菜单配置列表 |
+### 4. 功能开关放哪里
 
-### 提供者配置
+如果你想控制当前管理端是否支持：
 
-**用途说明**: ⚙️ 框架内部使用，为当前管理端提供专用的认证、数据操作和国际化功能，会覆盖全局提供者配置。数据提供者支持单一提供者或多重提供者配置。
+- 注册
+- 忘记密码
+- 修改密码
 
-| 字段           | 类型                                             | 必需 | 默认值 | 说明                   |
-| -------------- | ------------------------------------------------ | ---- | ------ | ---------------------- |
-| `authProvider` | `IAuthProvider`                                  | ❌   | -      | 管理端专用认证提供者   |
-| `dataProvider` | `IDataProvider \| Record<string, IDataProvider>` | ❌   | -      | 管理端专用数据提供者   |
-| `i18nProvider` | `I18nProvider`                                   | ❌   | -      | 管理端专用国际化提供者 |
+就写在这里：
 
-### 组件配置
+| 字段 | 类型 | 必需 | 说明 |
+| --- | --- | --- | --- |
+| `register` | `boolean` | ❌ | 是否启用注册 |
+| `forgotPassword` | `boolean` | ❌ | 是否启用忘记密码 |
+| `updatePassword` | `boolean` | ❌ | 是否启用修改密码 |
 
-**用途说明**: 🎨 框架内部使用，用于当前管理端的布局渲染和主题显示，会与全局配置合并。
+### 5. 远程页面和 JSON Schema 该配哪
 
-| 字段         | 类型               | 必需 | 默认值 | 说明         |
-| ------------ | ------------------ | ---- | ------ | ------------ |
-| `components` | `IConfigComponent` | ❌   | -      | 布局组件配置 |
-| `theme`      | `IConfigTheme`     | ❌   | -      | 主题配置     |
+如果是“这个管理端自己”的远程页面或 JSON Schema 能力，就写在：
 
-### 远程与 JSON Schema
+- `IManage.remote`
+- `IManage.jsonSchema`
 
-**用途说明**: 🔌 管理端级别覆盖全局远程包与 JSON Schema 配置。
+如果是所有管理端都共用，就优先写到全局 `IConfig` 里。
 
-| 字段        | 类型     | 必需 | 默认值 | 说明                     |
-| ----------- | -------- | ---- | ------ | ------------------------ |
-| `remote`    | `object` | ❌   | -      | 远程包加载配置           |
-| `jsonSchema`| `object` | ❌   | -      | JSON Schema 渲染配置     |
+最简单的规则就是：
 
-> `IManage.remote` 与 `IManage.jsonSchema` 的子字段结构与全局配置一致，常见用途是：
->
-> - 某个管理端单独增加 `remote.packages`
-> - 某个管理端单独注册 `jsonSchema.components`
-> - 对指定管理端覆盖 `apiRoutePath`
->
-> 合并规则为“全局配置在前，管理端配置在后”，因此管理端可覆盖同名字段。
+- 公共能力放全局
+- 当前管理端独有能力放当前管理端
 
 ## 组件配置 (IConfigComponent)
 
-**用途说明**: 🎨 框架内部使用，根据路由状态和用户认证状态自动选择对应的布局组件进行渲染。
+这一组配置决定“页面外壳”和“异常页面”由谁来渲染。
 
-用于配置各种布局组件。
+最常见的几个：
 
-| 字段            | 类型             | 必需 | 默认值 | 说明                    |
-| --------------- | ---------------- | ---- | ------ | ----------------------- |
-| `authLayout`    | `RouteComponent` | ❌   | -      | 认证后的主布局组件      |
-| `noAuthLayout`  | `RouteComponent` | ❌   | -      | 未认证时的布局组件      |
-| `notFound`      | `RouteComponent` | ❌   | -      | 404 页面组件            |
-| `notAuthorized` | `RouteComponent` | ❌   | -      | 无权限页面组件          |
-| `error`         | `RouteComponent` | ❌   | -      | 错误页面组件            |
-| `exception`     | `RouteComponent` | ❌   | -      | 异常页面组件（通用）    |
-| `iframe`        | `RouteComponent` | ❌   | -      | iframe 加载器组件       |
-| `remote`        | `RouteComponent` | ❌   | -      | 远程组件加载器          |
+| 字段 | 类型 | 必需 | 说明 |
+| --- | --- | --- | --- |
+| `authLayout` | `RouteComponent` | ❌ | 登录后的主布局 |
+| `noAuthLayout` | `RouteComponent` | ❌ | 未登录时的布局 |
+| `notFound` | `RouteComponent` | ❌ | 404 页面 |
+| `notAuthorized` | `RouteComponent` | ❌ | 无权限页面 |
+| `error` | `RouteComponent` | ❌ | 错误页面 |
+| `exception` | `RouteComponent` | ❌ | 通用异常页面 |
+| `iframe` | `RouteComponent` | ❌ | iframe 页面加载器 |
+| `remote` | `RouteComponent` | ❌ | 远程页面加载器 |
+
+如果你想换掉默认布局，最常改的是：
+
+- `authLayout`
+- `notFound`
+- `remote`
 
 ## 主题配置 (IConfigTheme)
 
-**用途说明**: 🎨 部分框架使用 + 部分开发者调用。Logo 可能被框架自动显示在导航栏，其他字段可通过 `useTheme()` 在组件中获取使用。
+这一组配置决定页面看起来是什么样，最常用的是 Logo 和 Banner。
 
-用于配置应用的视觉主题。
+| 字段 | 类型 | 必需 | 说明 |
+| --- | --- | --- | --- |
+| `logo` | `string` | ❌ | 亮色主题 Logo |
+| `darkLogo` | `string` | ❌ | 暗色主题 Logo |
+| `appLogo` | `string` | ❌ | 应用 Logo（亮色） |
+| `appDarkLogo` | `string` | ❌ | 应用 Logo（暗色） |
+| `banner` | `string` | ❌ | 亮色横幅 |
+| `darkBanner` | `string` | ❌ | 暗色横幅 |
+| `config` | `object` | ❌ | 主题组件配置 |
+| `defaultTheme` | `object` | ❌ | 主题默认状态 |
 
-| 字段            | 类型     | 必需 | 默认值 | 说明                    |
-| --------------- | -------- | ---- | ------ | ----------------------- |
-| `logo`          | `string` | ❌   | -      | 亮色主题 Logo URL       |
-| `darkLogo`      | `string` | ❌   | -      | 暗色主题 Logo URL       |
-| `appLogo`       | `string` | ❌   | -      | 应用 Logo（亮色）       |
-| `appDarkLogo`   | `string` | ❌   | -      | 应用 Logo（暗色）       |
-| `banner`        | `string` | ❌   | -      | 亮色主题横幅 URL        |
-| `darkBanner`    | `string` | ❌   | -      | 暗色主题横幅 URL        |
-| `config`        | `object` | ❌   | -      | 主题组件配置            |
-| `defaultTheme`  | `object` | ❌   | -      | 主题状态默认值          |
+如果你只是想快速换品牌素材，通常先改：
+
+- `logo`
+- `darkLogo`
+- `banner`
+- `darkBanner`
 
 ## 菜单配置 (IMenu)
 
-**用途说明**: 🧭 框架内部使用，用于自动生成和渲染侧边栏菜单，包括菜单排序、层级结构、权限控制和路由跳转。
+菜单配置决定侧边栏显示什么、点进去打开哪个页面。
 
-用于配置侧边栏菜单。
+| 字段 | 类型 | 必需 | 说明 |
+| --- | --- | --- | --- |
+| `name` | `string` | ✅ | 菜单唯一名称 |
+| `label` | `string` | ❌ | 菜单显示文本 |
+| `path` | `string` | ❌ | 菜单路径 |
+| `icon` | `string` | ❌ | 菜单图标 |
+| `sort` | `number` | ❌ | 菜单排序 |
+| `parent` | `string` | ❌ | 父级菜单名称 |
+| `hidden` | `boolean` | ❌ | 是否隐藏 |
+| `loader` | `string` | ❌ | 特殊加载方式，如 `iframe` / `remote` / `link` |
+| `component` | `RouteComponent` | ❌ | 本地页面组件 |
+| `meta` | `Record<string, any>` | ❌ | 菜单附加参数 |
 
-| 字段        | 类型                  | 必需 | 默认值  | 说明                    |
-| ----------- | --------------------- | ---- | ------- | ----------------------- |
-| `name`      | `string`              | ✅   | -       | 菜单唯一标识            |
-| `label`     | `string`              | ❌   | -       | 菜单显示名称            |
-| `path`      | `string`              | ❌   | -       | 菜单路径                |
-| `icon`      | `string`              | ❌   | -       | 菜单图标 (支持 iconify) |
-| `sort`      | `number`              | ❌   | `0`     | 菜单排序                |
-| `parent`    | `string`              | ❌   | -       | 父级菜单标识            |
-| `hidden`    | `boolean`             | ❌   | `false` | 是否隐藏菜单            |
-| `loader`    | `string`              | ❌   | -       | 菜单加载器：`iframe`/`remote`/`link` |
-| `component` | `RouteComponent`      | ❌   | -       | 菜单对应的组件          |
-| `meta`      | `Record<string, any>` | ❌   | -       | 菜单元数据              |
+最常见的理解方式：
+
+- 普通本地页面：配 `path` + `component`
+- 远程页面：配 `path` + `loader: 'remote'`
+- iframe 页面：配 `path` + `loader: 'iframe'`
+
+## 配置怎么读取
+
+有些配置是框架自己会自动用的，比如：
+
+- `manages`
+- `routes`
+- `menus`
+- `components`
+- `theme`
+- `provider`
+
+有些配置则更适合你自己在页面里读取，比如：
+
+- `title`
+- `description`
+- `extends`
+- 某些功能开关
+
+最常见读取方式：
+
+```ts
+import { useConfig } from '@duxweb/dvha-core'
+
+const config = useConfig()
+
+console.log(config.title)
+console.log(config.extends?.analytics?.enabled)
+```
+
+```ts
+import { useManage } from '@duxweb/dvha-core'
+
+const manage = useManage()
+
+console.log(manage.config.title)
+console.log(manage.config.routePrefix)
+```
+
+```ts
+import { useTheme } from '@duxweb/dvha-core'
+
+const theme = useTheme()
+
+console.log(theme.logo)
+```
 
 ## 配置调用方式
 

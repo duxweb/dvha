@@ -7,6 +7,8 @@ export interface IMenu {
   name: string
   // 菜单路径
   path?: string
+  // 标签页唯一标识（默认可使用 fullPath）
+  tabKey?: string
   // 菜单图标
   icon?: string
   // 菜单排序

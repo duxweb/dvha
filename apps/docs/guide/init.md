@@ -541,7 +541,7 @@ const handleSubmit = () => {
   <div class="p-6">
     <div class="mb-6">
       <h1 class="text-2xl font-bold text-gray-900">欢迎使用 DVHA</h1>
-      <p class="text-gray-600">一个基于 Vue 且不含 UI 的中后台框架</p>
+      <p class="text-gray-600">一个少编译、更灵活的 Vue 中后台框架</p>
     </div>
   </div>
 </template>

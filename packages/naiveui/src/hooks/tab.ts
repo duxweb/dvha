@@ -9,18 +9,20 @@ export function useNaiveTab() {
 
   const router = useRouter()
 
+  const getTabTarget = (item: { path?: string } & Record<string, any>) => item.tabKey || item.path || ''
+
   const props = computed(() => {
     return {
       value: current.value,
       defaultValue: current.value || '',
       onClose: (value) => {
         tab.delTab(value, (item) => {
-          router.push(item.path || '')
+          router.push(getTabTarget(item))
         })
       },
       onUpdateValue: (value) => {
         tab.changeTab(value, (item) => {
-          router.push(item.path || '')
+          router.push(getTabTarget(item))
         })
       },
     }

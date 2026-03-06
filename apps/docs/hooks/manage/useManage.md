@@ -77,19 +77,14 @@ const { config } = useManage('admin')
 
 ## `config.remote` 与 `config.jsonSchema`
 
-`useManage()` 返回的 `config` 已经是“全局配置 + 当前管理端配置”合并后的结果，因此这里读取到的 `config.remote`、`config.jsonSchema` 都可以直接用于当前管理端。
+`useManage()` 里拿到的 `config`，已经是“全局配置 + 当前管理端配置”合并后的结果。
 
-### `config.remote`
+所以这里你可以直接这样理解：
 
-```ts
-config.remote?: {
-  packages?: Options
-  apiMethod?: string
-  apiRoutePath?: string | ((path: string) => string)
-}
-```
+- `config.remote`：当前管理端远程页面相关配置
+- `config.jsonSchema`：当前管理端 JSON Schema 相关配置
 
-其中最常见的是 `config.remote.packages`，它用于声明当前管理端远程组件允许运行时直接 `import` 的包。
+### 1. 看当前管理端远程页面能用哪些包
 
 ```ts
 const { config } = useManage()
@@ -98,16 +93,17 @@ console.log(config.remote?.packages)
 console.log(config.remote?.apiRoutePath)
 ```
 
-### `config.jsonSchema`
+最常见的场景是排查：
 
-```ts
-config.jsonSchema?: {
-  adaptors?: IJsonAdaptor[]
-  components?: Record<string, Component> | Component[]
-}
-```
+- 为什么远程页面里 `import 'naive-ui'` 报错
+- 为什么远程页面加载的接口地址不对
 
-其中最常见的是 `config.jsonSchema.components`，它表示当前管理端已预注册到 JSON Schema 渲染器中的组件。
+这时优先检查：
+
+- `config.remote?.packages`
+- `config.remote?.apiRoutePath`
+
+### 2. 看当前管理端 JSON Schema 能用哪些组件
 
 ```ts
 const { config } = useManage()
@@ -116,13 +112,26 @@ console.log(config.jsonSchema?.components)
 console.log(config.jsonSchema?.adaptors)
 ```
 
-### 典型场景
+最常见的场景是排查：
 
-- 读取 `config.remote.apiRoutePath`，调试当前管理端远程组件接口地址
-- 根据 `config.remote.packages` 判断当前管理端已注入哪些远程依赖
-- 读取 `config.jsonSchema.components`，确认某个 JSON Schema 组件是否已在当前管理端注册
+- 为什么 schema 里的 `NInput` 不显示
+- 为什么 schema 里的业务组件名不生效
 
-如果你需要配置这些字段，请参考 [`/guide/config`](/guide/config) 与 [`/guide/custom-extension`](/guide/custom-extension)；如果你需要看 `useJsonSchema()` 如何消费这些配置，请参考 [`/hooks/advanced/useJson`](/hooks/advanced/useJson)。
+这时优先检查：
+
+- `config.jsonSchema?.components`
+- 组件注册名是否和 schema 的 `tag` 一致
+
+### 3. 什么时候会看这里
+
+一般你会在这几种场景下用到 `useManage()`：
+
+- 调试当前管理端到底合并了哪些配置
+- 判断当前管理端是否已经注册了某个远程依赖
+- 判断当前管理端是否已经注册了某个 JSON Schema 组件
+
+如果你是要“配置”这些字段，请看 [`/guide/config`](/guide/config) 和 [`/guide/custom-extension`](/guide/custom-extension)。
+如果你是要看 JSON Schema 怎么消费这些组件，请看 [`/hooks/advanced/useJson`](/hooks/advanced/useJson)。
 
 ## 参数说明
 

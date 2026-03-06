@@ -6,14 +6,14 @@ import { inject, nextTick, ref } from 'vue'
 export interface TabStoreState {
   current: Ref<string | undefined>
   tabs: Ref<IMenu[]>
-  isTab: (path: string) => boolean
+  isTab: (key: string) => boolean
   addTab: (item: IMenu, cb?: (item: IMenu) => void) => void
-  delTab: (path: string, cb?: (item: IMenu) => void) => void
-  changeTab: (path: string, cb?: (item: IMenu) => void) => void
-  delOther: (path: string, cb?: () => void) => void
-  delLeft: (path: string, cb?: () => void) => void
-  delRight: (path: string, cb?: () => void) => void
-  lockTab: (path: string) => void
+  delTab: (key: string, cb?: (item: IMenu) => void) => void
+  changeTab: (key: string, cb?: (item: IMenu) => void) => void
+  delOther: (key: string, cb?: () => void) => void
+  delLeft: (key: string, cb?: () => void) => void
+  delRight: (key: string, cb?: () => void) => void
+  lockTab: (key: string) => void
   clearTab: () => void
 }
 
@@ -37,32 +37,38 @@ export function createTabStore(manageName: string) {
     const previousTab = ref<IMenu>()
     const tabs = ref<IMenu[]>([])
 
-    const isTab = (path: string) => {
-      return tabs.value.some(tag => tag.path === path)
+    const getTabKey = (item: Pick<IMenu, 'tabKey' | 'path'>) => item.tabKey || item.path || ''
+
+    const isTab = (key: string) => {
+      return tabs.value.some(tag => getTabKey(tag) === key)
     }
 
     const addTab = (item: IMenu, cb?: (item: IMenu) => void) => {
-      if (!item.path) {
+      const key = getTabKey(item)
+      if (!key) {
         return
       }
-      if (!tabs.value.some(tag => tag.path === item.path)) {
+      if (!item.tabKey) {
+        item.tabKey = key
+      }
+      if (!tabs.value.some(tag => getTabKey(tag) === key)) {
         if (current.value) {
-          previousTab.value = tabs.value.find(t => t.path === current.value)
+          previousTab.value = tabs.value.find(t => getTabKey(t) === current.value)
         }
         tabs.value.push(item)
         cb?.(item)
-        current.value = item.path as string
+        current.value = key
       }
       else {
-        if (current.value && current.value !== item.path) {
-          previousTab.value = tabs.value.find(t => t.path === current.value)
+        if (current.value && current.value !== key) {
+          previousTab.value = tabs.value.find(t => getTabKey(t) === current.value)
         }
-        current.value = item.path as string
+        current.value = key
       }
     }
 
-    const delTab = (path: string, cb?: (item: IMenu) => void) => {
-      const index = tabs.value.findIndex(t => t.path === path)
+    const delTab = (key: string, cb?: (item: IMenu) => void) => {
+      const index = tabs.value.findIndex(t => getTabKey(t) === key)
       if (index === -1 || tabs.value.length <= 1) {
         return
       }
@@ -73,8 +79,9 @@ export function createTabStore(manageName: string) {
       }
 
       let targetTab: IMenu | undefined
-      if (path === current.value && previousTab.value) {
-        targetTab = tabs.value.find(t => t.path === previousTab.value?.path && t.path !== path)
+      if (key === current.value && previousTab.value) {
+        const previousKey = getTabKey(previousTab.value)
+        targetTab = tabs.value.find(t => getTabKey(t) === previousKey && getTabKey(t) !== key)
       }
 
       if (!targetTab) {
@@ -87,13 +94,13 @@ export function createTabStore(manageName: string) {
       cb?.(targetTab)
     }
 
-    const delOther = (path: string, cb?: () => void) => {
-      tabs.value = tabs.value.filter(t => t.path === path || t.meta?.lock)
+    const delOther = (key: string, cb?: () => void) => {
+      tabs.value = tabs.value.filter(t => getTabKey(t) === key || t.meta?.lock)
       cb?.()
     }
 
-    const delLeft = (path: string, cb?: () => void) => {
-      const index = tabs.value.findIndex(t => t.path === path)
+    const delLeft = (key: string, cb?: () => void) => {
+      const index = tabs.value.findIndex(t => getTabKey(t) === key)
       if (index <= 0) {
         return
       }
@@ -104,8 +111,8 @@ export function createTabStore(manageName: string) {
       })
     }
 
-    const delRight = (path: string, cb?: () => void) => {
-      const index = tabs.value.findIndex(t => t.path === path)
+    const delRight = (key: string, cb?: () => void) => {
+      const index = tabs.value.findIndex(t => getTabKey(t) === key)
       if (index === -1 || index === tabs.value.length - 1) {
         return
       }
@@ -115,8 +122,8 @@ export function createTabStore(manageName: string) {
       })
     }
 
-    const lockTab = (path: string) => {
-      const index = tabs.value.findIndex(t => t.path === path)
+    const lockTab = (key: string) => {
+      const index = tabs.value.findIndex(t => getTabKey(t) === key)
       if (index !== -1 && tabs.value[index]) {
         if (!tabs.value[index].meta) {
           tabs.value[index].meta = {}
@@ -125,13 +132,13 @@ export function createTabStore(manageName: string) {
       }
     }
 
-    const changeTab = (path: string, cb?: (item: IMenu) => void) => {
-      const info = tabs.value.find(t => t.path === path)
+    const changeTab = (key: string, cb?: (item: IMenu) => void) => {
+      const info = tabs.value.find(t => getTabKey(t) === key)
       if (info) {
-        if (current.value && current.value !== path) {
-          previousTab.value = tabs.value.find(t => t.path === current.value)
+        if (current.value && current.value !== key) {
+          previousTab.value = tabs.value.find(t => getTabKey(t) === current.value)
         }
-        current.value = path
+        current.value = key
         cb?.(info)
       }
     }

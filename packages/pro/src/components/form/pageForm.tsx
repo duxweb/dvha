@@ -74,7 +74,7 @@ export const DuxPageForm = defineComponent({
         props.onSuccess?.(data)
 
         if (!result.isEdit.value && tab.current) {
-          tab.delTab(tab.current, v => router.push(v.path || ''))
+          tab.delTab(tab.current, v => router.push(v.tabKey || v.path || ''))
         }
         if (props.invalidate) {
           invalidate(props.invalidate)
@@ -82,7 +82,7 @@ export const DuxPageForm = defineComponent({
       },
     })
 
-    const tabInfo = tab.tabs.find(v => v.path === tab.current)
+    const tabInfo = tab.tabs.find(v => (v.tabKey || v.path) === tab.current)
 
     return () => (
       <DuxPage card={false} scrollbar={false}>
