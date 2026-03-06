@@ -2,106 +2,186 @@
 
 # DVHA
 
-</div>
-
-<div align="center">
-
 ![DVHA Logo](https://img.shields.io/badge/DVHA-Vue%203-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
 
-**🚀 轻松搭建中后台管理系统的前端解决方案**
+**少编译、更灵活的 Vue 中后台框架**
 
-_一个基于 Vue 3 的无头（Headless）中后台框架_
+_适合页面多、角色多、管理端多、需要动态扩展的后台项目_
 
 [![npm version](https://img.shields.io/npm/v/@duxweb/dvha-core.svg)](https://www.npmjs.com/package/@duxweb/dvha-core)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
 
-📖 **[查看完整文档](https://dvha.docs.dux.plus/)** | 🌟 **[UI集成演示](https://duxweb.github.io/dvha/start)** | 🎯 **[快速开始](#快速开始)** | 🇺🇸 **[English](./README.en.md)**
+📖 **[查看完整文档](https://dvha.docs.dux.plus/)** | 🌟 **[UI 集成演示](https://duxweb.github.io/dvha/start)** | 🚀 **[快速开始](#快速开始)** | 🇺🇸 **[English](./README.en.md)**
 
 </div>
 
 ---
 
-## 📖 项目介绍
+![DVHA Preview](./apps/docs/public/images/hero.png)
 
-DVHA (Dux Vue Headless Admin) 是一款基于 Vue 3 的无头（Headless）中后台前端开发框架。通过将业务逻辑与 UI 表现层解耦，专注于前端的多管理端、认证、权限、CRUD、I18n等业务逻辑处理，可以搭配任何 Vue 生态的 UI 框架，使开发者专注于业务实现而不必关注 UI 框架的选择与整合。
+## 什么是 DVHA？
 
-## ✨ 主要特性
+**DVHA 是一个更适合中后台开发的 Vue 框架。**
 
-- 🎨 **UI 框架无关** - 可与任何 Vue 生态 UI 框架集成（Element Plus、Ant Design Vue、Naive UI 等）
-- 🏢 **企业级多租户** - 内置多管理端支持，支持主后台、子应用后台、商户后台等多租户架构
-- 🔑 **统一身份认证** - 完整的认证流程和权限管理，支持多种认证方式和细粒度权限控制
-- 🚀 **开箱即用的 CRUD** - 提供丰富的 hooks 和工具函数，自动化数据处理和状态管理
-- 🌐 **国际化支持** - 内置 I18n 支持，轻松实现多语言应用和全球化业务
-- 📘 **完整 TypeScript** - 100% TypeScript 开发，提供完整类型提示和更好的开发体验
+它最核心的特点不是“组件多”，而是：
 
-## 🏗️ 架构设计
+- **很多场景下不用反复编译**
+- **天然支持多管理端**
+- **支持远程页面、异步菜单、JSON Schema**
+- **不把 UI 方案绑死**
+
+很多传统前端后台方案，做着做着会越来越重：
+
+- 改一个页面就要等编译
+- 多个后台要拆很多套结构
+- 动态页面、远程页面接入麻烦
+- 想扩展时改动范围越来越大
+
+DVHA 想解决的就是这些问题。
+
+## 为什么是 DVHA
+
+### 1. 很多场景下少编译
+
+DVHA 支持：
+
+- 远程页面
+- 异步菜单
+- JSON Schema 动态渲染
+- 多管理端配置驱动
+
+这意味着很多内容不一定要全部写死在本地代码里再重新打包，后台开发会更轻。
+
+### 2. 多管理端是内建能力
+
+DVHA 从一开始就把多管理端当成内建能力来设计。
+
+一个项目里可以同时有：
+
+- `/admin`
+- `/merchant`
+- `/user`
+- `/agent`
+
+并且它们可以拥有各自独立的：
+
+- 路由前缀
+- 菜单
+- 登录方式
+- 接口前缀
+- 主题
+- 动态扩展能力
+
+### 3. 不绑死 UI 库
+
+DVHA 采用 Headless 思路，不强绑某个 UI 组件库。
+
+你可以按项目需要组合：
+
+- Naive UI
+- Element Plus
+- 自己的业务组件
+- Pro 组件包
+
+### 4. 更适合中后台日常开发
+
+DVHA 更偏向解决中后台里反复出现的问题：
+
+- 登录
+- 权限
+- 路由
+- 菜单
+- 列表
+- 表单
+- 详情
+- 动态页面
+- 多角色后台
+
+## 核心特点
+
+- 🎯 **少编译，更轻地做后台**
+- 🏢 **多管理端内建**
+- 🧩 **不绑死 UI，组合更自由**
+- ☁️ **支持远程页面与异步菜单**
+- 🧱 **支持 JSON Schema 动态渲染**
+- 🔐 **内置认证、权限、路由、数据基础能力**
+- 📘 **完整 TypeScript 支持**
+
+## DVHA 适合怎么开发
 
 ```mermaid
-flowchart TD
-    subgraph 应用层["🏢 应用层(多租户)"]
-        主管理端["🎯 主管理端"]
-        其他管理端["🔧 其他管理端"]
-    end
-
-    subgraph 核心层["⚡ @duxweb/dvha-core 核心层"]
-        路由["🧭 路由管理"]
-        状态管理["💾 状态管理"]
-        用户认证["🔐 用户认证"]
-        数据处理["📊 数据处理"]
-        配置中心["⚙️ 配置中心"]
-        通用组件["🧩 通用组件"]
-        UIHook["📺 UI Hook"]
-    end
-
-    subgraph UI框架层["🎨 UI 框架层 (随意搭配)"]
-        Element["Element Plus"]
-        Ant["Antd Design"]
-        Naive["Naive UI"]
-        其他["其他UI框架"]
-    end
-
-    应用层 --> 核心层
-    核心层 --> UI框架层
-
-    style 应用层 fill:#e1f5fe
-    style 核心层 fill:#f3e5f5
-    style UI框架层 fill:#e8f5e8
+flowchart LR
+    A[路由与菜单] --> B[多管理端]
+    B --> C[认证与权限]
+    C --> D[列表与表单]
+    D --> E[远程页面 / JSON Schema]
+    E --> F[更轻的后台开发体验]
 ```
 
-## 📦 核心包 @duxweb/dvha-core
+你可以把 DVHA 的开发方式理解成：
 
-`@duxweb/dvha-core` 是 DVHA 的核心包，提供了框架的基础功能：
+- 先把后台基础能力搭好
+- 再按管理端组织页面
+- 再按业务接表单、列表、权限、远程页面
+- 需要扩展时，不必总是回到“重搭一套后台”
 
-### 🔧 核心组件
+## Core 和 Pro 怎么选
 
-|    组件模块     | 功能描述                                           |
-| :-------------: | :------------------------------------------------- |
-| 🧭 **路由管理** | 基于 Vue Router 的路由管理，支持权限控制和路由守卫 |
-| 💾 **状态管理** | 基于 Pinia 的状态管理，支持持久化存储              |
-| 🔐 **认证模块** | 完整的用户认证流程，包括登录、注册、权限验证等     |
-| 📊 **数据处理** | 提供数据 CRUD 相关的 hooks 和工具函数              |
-| ⚙️ **配置中心** | 统一的应用配置管理                                 |
-| 📺 **UI Hook**  | 针对部分 UI 库提供 hook 功能来轻松整合数据交互     |
+### 选 `@duxweb/dvha-core`
 
-## 🚀 快速开始
+适合你：
 
-### 安装
+- 更在意灵活度
+- 已经有自己的 UI / 设计体系
+- 想自己搭页面层
+- 只想要后台基础能力骨架
+
+### 选 `@duxweb/dvha-pro`
+
+适合你：
+
+- 想更快把后台做出来
+- 不想重复搭登录页、布局页、错误页
+- 想直接拿到更完整的后台页面和组件能力
+- 希望把时间放在业务，而不是重复搭基础设施
+
+最简单理解：
+
+- `Core` 是骨架
+- `Pro` 是更完整的后台界面能力
+
+### Core / Pro 对比表
+
+| 对比项 | Core | Pro |
+| --- | --- | --- |
+| 定位 | 后台基础能力层 | 后台增强与落地层 |
+| 上手方式 | 更灵活，自己拼装更多 | 更快，开箱即用更多 |
+| UI 层 | 更自由 | 更完整 |
+| 后台基础页面 | 需要自己补更多 | 已提供更多现成能力 |
+| 适合谁 | 注重灵活度的团队 | 注重交付效率的团队 |
+| 多管理端 | ✅ | ✅ |
+| 远程页面 / JSON Schema | ✅ | ✅ |
+| 推荐场景 | 已有设计体系、想深度自定义 | 想快速做出完整后台 |
+
+## 快速开始
+
+### 安装 Core
 
 ```bash
-# 使用 npm
+# npm
 npm install @duxweb/dvha-core
 
-# 使用 yarn
+# yarn
 yarn add @duxweb/dvha-core
 
-# 使用 pnpm
+# pnpm
 pnpm add @duxweb/dvha-core
 ```
 
-### 基础使用
+### 最小示例
 
-```typescript
+```ts
 import type { IConfig } from '@duxweb/dvha-core'
 import { createDux, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
 import { createApp } from 'vue'
@@ -116,18 +196,12 @@ const config: IConfig = {
       name: 'admin',
       title: 'DVHA 后台管理系统',
       routePrefix: '/admin',
-      components: {
-        authLayout: () => import('./pages/layout.vue'),
-        notFound: () => import('./pages/404.vue'),
-      },
       routes: [
         {
           name: 'admin.login',
           path: 'login',
           component: () => import('./pages/login.vue'),
-          meta: {
-            authorization: false,
-          }
+          meta: { authorization: false },
         },
       ],
       menus: [
@@ -138,25 +212,11 @@ const config: IConfig = {
           label: '首页',
           component: () => import('./pages/home.vue'),
         },
-        {
-          name: 'users',
-          path: 'users',
-          icon: 'i-tabler:users',
-          label: '用户管理',
-          component: () => import('./pages/home.vue'),
-        },
-        {
-          name: 'settings',
-          path: 'settings',
-          icon: 'i-tabler:settings',
-          label: '系统设置',
-          component: () => import('./pages/home.vue'),
-        },
-      ]
+      ],
     },
   ],
   dataProvider: simpleDataProvider({
-    apiUrl: 'https://api.example.com' // 替换为你的 API 地址
+    apiUrl: 'https://api.example.com',
   }),
   authProvider: simpleAuthProvider(),
 }
@@ -165,159 +225,44 @@ app.use(createDux(config))
 app.mount('#app')
 ```
 
-### 多数据源配置
+## 如果你想更快落地
 
-```typescript
-import type { IConfig } from '@duxweb/dvha-core'
-import { simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
+如果你想少写很多后台基础页面，建议直接看 `DVHA Pro`：
 
-const config: IConfig = {
-  title: '企业管理平台',
-  defaultManage: 'admin',
+- 更完整的后台布局
+- 登录页
+- 错误页
+- 表格 / 表单 / 弹窗 / 抽屉等高频组件
+- 更适合直接开始做业务页面
 
-  // 全局多数据源配置
-  dataProvider: {
-    default: simpleDataProvider({
-      apiUrl: 'https://api.example.com'
-    }),
-    analytics: simpleDataProvider({
-      apiUrl: 'https://analytics-api.example.com'
-    }),
-    payment: simpleDataProvider({
-      apiUrl: 'https://payment-api.example.com'
-    }),
-    logistics: simpleDataProvider({
-      apiUrl: 'https://logistics-api.example.com'
-    })
-  },
+文档入口：
 
-  manages: [
-    {
-      name: 'admin',
-      title: '后台管理',
-      routePrefix: '/admin',
+- [为什么用 Pro](https://dvha.docs.dux.plus/pro/)
+- [Core 和 Pro 怎么选](https://dvha.docs.dux.plus/pro/choose)
+- [Pro 快速开始](https://dvha.docs.dux.plus/pro/getting-started)
 
-      // 管理端可以覆盖特定数据源
-      dataProvider: {
-        default: simpleDataProvider({
-          apiUrl: 'https://admin-api.example.com'
-        }),
-        // 其他数据源从全局继承
-      },
+## 适合什么项目
 
-      // 自定义认证配置
-      authProvider: simpleAuthProvider({
-        apiPath: {
-          login: '/admin/login',
-          check: '/admin/check'
-        },
-        routePath: {
-          login: '/admin/login',
-          index: '/admin'
-        }
-      }),
+DVHA 特别适合：
 
-      routes: [
-        {
-          name: 'admin.login',
-          path: 'login',
-          component: () => import('./pages/admin/Login.vue'),
-          meta: { authorization: false }
-        }
-      ],
+- 管理后台
+- 商家后台
+- 运营后台
+- 多角色后台
+- 页面多、角色多、管理端多的中后台项目
+- 需要远程页面、动态页面、配置化页面的项目
 
-      menus: [
-        {
-          name: 'dashboard',
-          path: 'dashboard',
-          icon: 'i-tabler:dashboard',
-          label: '仪表板',
-          component: () => import('./pages/Dashboard.vue')
-        }
-      ]
-    }
-  ],
+## 文档入口
 
-  authProvider: simpleAuthProvider(),
-}
-```
+- [为什么 DVHA](https://dvha.docs.dux.plus/guide/overview)
+- [快速开始](https://dvha.docs.dux.plus/guide/started)
+- [项目配置](https://dvha.docs.dux.plus/guide/config)
+- [自定义扩展](https://dvha.docs.dux.plus/guide/custom-extension)
+- [远程组件与微前端](https://dvha.docs.dux.plus/pro/course/remote)
+- [JSON Schema](https://dvha.docs.dux.plus/hooks/advanced/useJson)
 
-### 更多示例
+## 一句话总结
 
-查看 [完整文档](https://dvha.docs.dux.plus/) 获取更多使用示例和高级配置。
+**DVHA 适合用 Vue 做中后台，而且特别适合“页面多、角色多、管理端多、动态扩展多”的项目。**
 
-## 📚 相关包
-
-| 包名                     | 包描述                                     |                                                        最新版本                                                         |
-| :----------------------- | :----------------------------------------- | :---------------------------------------------------------------------------------------------------------------------: |
-| `@duxweb/dvha-core`      | 🎯 核心功能包 - 提供框架基础能力           |      [![npm](https://img.shields.io/npm/v/@duxweb/dvha-core.svg)](https://www.npmjs.com/package/@duxweb/dvha-core)      |
-| `@duxweb/dvha-naiveui`   | 🎨 Naive UI 增强包 - 集成 Naive UI         |   [![npm](https://img.shields.io/npm/v/@duxweb/dvha-naiveui.svg)](https://www.npmjs.com/package/@duxweb/dvha-naiveui)   |
-| `@duxweb/dvha-elementui` | 🎨 Element Plus 增强包 - 集成 Element Plus | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-elementui.svg)](https://www.npmjs.com/package/@duxweb/dvha-elementui) |
-
-## AI 开发
-
-本项目已索引 LLM 数据：
-
-- [@duxweb/dvha-core](https://github.com/duxweb/dvha/raw/refs/heads/main/packages/core/llms-full.txt) - 核心功能包
-- [@duxweb/dvha-pro](https://github.com/duxweb/dvha/raw/refs/heads/main/packages/pro/llms-full.txt) - 专业版组件包
-- [@duxweb/dvha-naiveui](https://github.com/duxweb/dvha/raw/refs/heads/main/packages/naiveui/llms-full.txt) - Naive UI 集成包
-- [完整项目](https://github.com/duxweb/dvha/raw/refs/heads/main/llms-full.txt) - 整个项目的完整索引
-
-## 💬 加入社区
-
-### 微信交流群
-
-扫描下方二维码加入 DVHA 微信交流群，与更多开发者一起交流技术、分享经验：
-
-<div align="center">
-  <img src="./docs/images/wechat-qrcode.png" alt="DVHA 微信交流群" width="200" />
-  <p><em>微信扫码加入交流群</em></p>
-</div>
-
-> 如果二维码过期，请添加微信号：`deak100` 备注「DVHA」拉你入群
-
-## 📊 项目数据
-
-### 🌟 项目趋势
-
-[![Star History Chart](https://api.star-history.com/svg?repos=duxweb/dvha&type=Date)](https://star-history.com/#duxweb/dvha&Date)
-
-### 💻 贡献者
-
-感谢所有为 DVHA 做出贡献的开发者们！
-
-<div align="center">
-
-[![Contributors](https://contrib.rocks/image?repo=duxweb/dvha)](https://github.com/duxweb/dvha/graphs/contributors)
-
-</div>
-
-## 🤝 贡献
-
-我们欢迎所有的贡献！请查看 [贡献指南](https://dvha.docs.dux.plus/contributing) 了解如何开始。
-
-## 📄 开源协议
-
-本项目基于 [MIT](https://opensource.org/licenses/MIT) 协议开源。
-
----
-
-<div align="center">
-
-**🎉 感谢使用 DVHA！**
-
-如果这个项目对你有帮助，请给我们一个 ⭐️
-
-[📖 文档](https://dvha.docs.dux.plus/) • [🐛 报告问题](https://github.com/duxweb/dvha/issues) • [💡 功能建议](https://github.com/duxweb/dvha/discussions)
-
-</div>
-
-<div align="center">
-
-[本项目 CDN 加速及安全防护由 Tencent EdgeOne 赞助](https://edgeone.ai/zh?from=github)
-
-<a href="https://edgeone.ai/zh?from=github">
-<img src="./docs/images/edge-one.png" alt="EdgeOne" width="200" />
-</a>
-
-</div>
+它最大的优势不是某一个组件，而是：**把中后台里最麻烦、最重复、最容易越做越重的部分，尽量变轻。**

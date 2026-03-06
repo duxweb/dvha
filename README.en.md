@@ -2,106 +2,186 @@
 
 # DVHA
 
-</div>
-
-<div align="center">
-
 ![DVHA Logo](https://img.shields.io/badge/DVHA-Vue%203-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
 
-**🚀 Frontend solution for easily building admin management systems**
+**A lighter, less-build Vue admin framework**
 
-_A Vue 3-based headless admin framework_
+_Built for admin projects with many pages, many roles, multiple back offices, and dynamic extension needs_
 
 [![npm version](https://img.shields.io/npm/v/@duxweb/dvha-core.svg)](https://www.npmjs.com/package/@duxweb/dvha-core)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
 
-📖 **[Full Documentation](https://duxweb.dux.plus/dvha/)** | 🌟 **[UI Live Demo](https://duxweb.github.io/dvha/start/)** | 🎯 **[Quick Start](#quick-start)** | 🇨🇳 **[中文文档](./README.md)**
+📖 **[Documentation](https://dvha.docs.dux.plus/)** | 🌟 **[UI Demo](https://duxweb.github.io/dvha/start)** | 🚀 **[Quick Start](#quick-start)** | 🇨🇳 **[中文](./README.md)**
 
 </div>
 
 ---
 
-## 📖 Introduction
+![DVHA Preview](./apps/docs/public/images/hero.png)
 
-DVHA (Dux Vue Headless Admin) is a Vue 3-based headless admin frontend development framework. By decoupling business logic from the UI presentation layer, it focuses on frontend multi-tenant management, authentication, permissions, CRUD, I18n and other business logic processing. It can be combined with any Vue ecosystem UI framework, allowing developers to focus on business implementation without worrying about UI framework selection and integration.
+## What is DVHA?
 
-## ✨ Key Features
+**DVHA is a Vue framework built for admin applications.**
 
-- 🎨 **UI Framework Agnostic** - Seamlessly integrate with any Vue ecosystem UI framework (Element Plus, Ant Design Vue, Naive UI, etc.)
-- 🏢 **Enterprise Multi-tenant** - Built-in multiple admin support for main backend, sub-application backend, merchant backend and multi-tenant architecture
-- 🔑 **Unified Authentication** - Complete authentication process and permission management with multiple authentication methods and fine-grained permission control
-- 🚀 **Out-of-the-box CRUD** - Rich hooks and utility functions for automatic data processing and state management
-- 🌐 **Internationalization** - Built-in I18n support for easy multi-language applications and global business
-- 📘 **Full TypeScript** - 100% TypeScript development with complete type hints and better development experience
+Its biggest advantage is not just “more components”, but this:
 
-## 🏗️ Architecture Design
+- **less rebuild in many real-world admin scenarios**
+- **multi-admin is built in**
+- **remote pages, async menus, and JSON Schema are first-class citizens**
+- **it does not lock you into one UI library**
+
+Many traditional frontend admin solutions become heavier over time:
+
+- change a page, wait for rebuilds
+- split multiple admin apps by hand
+- remote pages and dynamic pages are hard to plug in
+- extensions become expensive as the project grows
+
+DVHA is designed to make those parts lighter.
+
+## Why DVHA
+
+### 1. Less rebuild in many scenarios
+
+DVHA supports:
+
+- remote pages
+- async menus
+- JSON Schema rendering
+- multi-admin configuration-driven architecture
+
+That means many parts do not have to be hardcoded and rebuilt every time.
+
+### 2. Multi-admin is built in
+
+DVHA treats multi-admin as a built-in capability from day one.
+
+A single project can host multiple admin areas such as:
+
+- `/admin`
+- `/merchant`
+- `/user`
+- `/agent`
+
+And each one can have its own:
+
+- route prefix
+- menus
+- auth flow
+- API prefix
+- theme
+- dynamic extensions
+
+### 3. UI-agnostic by design
+
+DVHA follows a headless approach and does not force one UI library.
+
+You can combine it with:
+
+- Naive UI
+- Element Plus
+- your own business components
+- the Pro package
+
+### 4. Better fit for day-to-day admin work
+
+DVHA is focused on the repetitive parts of admin systems:
+
+- authentication
+- permissions
+- routing
+- menus
+- lists
+- forms
+- detail pages
+- dynamic pages
+- multi-role admin apps
+
+## Key features
+
+- 🎯 **Less build, lighter admin development**
+- 🏢 **Built-in multi-admin architecture**
+- 🧩 **UI-agnostic and flexible**
+- ☁️ **Remote pages and async menus**
+- 🧱 **JSON Schema rendering support**
+- 🔐 **Auth, permissions, routing, and data foundations included**
+- 📘 **Full TypeScript support**
+
+## How DVHA fits admin development
 
 ```mermaid
-flowchart TD
-    subgraph AppLayer["🏢 Application Layer (Multi-tenant)"]
-        MainAdmin["🎯 Main Admin"]
-        OtherAdmin["🔧 Other Admin"]
-    end
-
-    subgraph CoreLayer["⚡ @duxweb/dvha-core Core Layer"]
-        Router["🧭 Router Management"]
-        StateManagement["💾 State Management"]
-        UserAuth["🔐 User Authentication"]
-        DataProcessing["📊 Data Processing"]
-        ConfigCenter["⚙️ Config Center"]
-        CommonComponents["🧩 Common Components"]
-        UIHook["📺 UI Hook"]
-    end
-
-    subgraph UILayer["🎨 UI Framework Layer (Mix & Match)"]
-        Element["Element Plus"]
-        Ant["Antd Design"]
-        Naive["Naive UI"]
-        Others["Other UI Frameworks"]
-    end
-
-    AppLayer --> CoreLayer
-    CoreLayer --> UILayer
-
-    style AppLayer fill:#e1f5fe
-    style CoreLayer fill:#f3e5f5
-    style UILayer fill:#e8f5e8
+flowchart LR
+    A[Routing & Menus] --> B[Multi Admin]
+    B --> C[Auth & Permissions]
+    C --> D[Lists & Forms]
+    D --> E[Remote Pages / JSON Schema]
+    E --> F[Lighter Admin Development]
 ```
 
-## 📦 Core Package @duxweb/dvha-core
+A simple way to think about DVHA:
 
-`@duxweb/dvha-core` is the core package of DVHA, providing the basic functionality of the framework:
+- build the admin foundation first
+- organize pages by admin area
+- connect business flows on top of lists, forms, permissions, and remote pages
+- extend the project without rebuilding the whole admin structure every time
 
-### 🔧 Core Components
+## Core vs Pro
 
-|       Component Module       | Feature Description                                                                               |
-| :--------------------------: | :------------------------------------------------------------------------------------------------ |
-|   🧭 **Router Management**   | Vue Router-based routing management with permission control and route guards                      |
-|   💾 **State Management**    | Pinia-based state management with persistent storage support                                      |
-| 🔐 **Authentication Module** | Complete user authentication process including login, registration, permission verification, etc. |
-|    📊 **Data Processing**    | Provides data CRUD related hooks and utility functions                                            |
-|     ⚙️ **Config Center**     | Unified application configuration management                                                      |
-|        📺 **UI Hook**        | Hook functions for some UI libraries to easily integrate data interaction                         |
+### Choose `@duxweb/dvha-core`
 
-## 🚀 Quick Start
+Best when you:
 
-### Installation
+- want more flexibility
+- already have your own design system or UI kit
+- prefer building the page layer yourself
+- only need the admin foundation layer
+
+### Choose `@duxweb/dvha-pro`
+
+Best when you:
+
+- want to ship admin projects faster
+- do not want to rebuild login pages, layouts, and error pages again
+- want a more complete admin UI layer out of the box
+- want to spend more time on business features than scaffolding
+
+The simplest way to think about it:
+
+- `Core` is the foundation
+- `Pro` is the more complete admin UI layer on top of it
+
+### Core / Pro comparison
+
+| Comparison | Core | Pro |
+| --- | --- | --- |
+| Positioning | Admin foundation layer | Admin enhancement and delivery layer |
+| Getting started | More flexible, more assembly by yourself | Faster, more ready out of the box |
+| UI layer | More freedom | More complete |
+| Base admin pages | You build more yourself | More ready-made pages included |
+| Best for | Teams prioritizing flexibility | Teams prioritizing delivery speed |
+| Multi-admin | ✅ | ✅ |
+| Remote pages / JSON Schema | ✅ | ✅ |
+| Recommended when | You already have your own design system | You want a complete admin faster |
+
+## Quick Start
+
+### Install Core
 
 ```bash
-# Using npm
+# npm
 npm install @duxweb/dvha-core
 
-# Using yarn
+# yarn
 yarn add @duxweb/dvha-core
 
-# Using pnpm
+# pnpm
 pnpm add @duxweb/dvha-core
 ```
 
-### Basic Usage
+### Minimal example
 
-```typescript
+```ts
 import type { IConfig } from '@duxweb/dvha-core'
 import { createDux, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
 import { createApp } from 'vue'
@@ -114,20 +194,14 @@ const config: IConfig = {
   manages: [
     {
       name: 'admin',
-      title: 'DVHA Admin Management System',
+      title: 'DVHA Admin System',
       routePrefix: '/admin',
-      components: {
-        authLayout: () => import('./pages/layout.vue'),
-        notFound: () => import('./pages/404.vue'),
-      },
       routes: [
         {
           name: 'admin.login',
           path: 'login',
           component: () => import('./pages/login.vue'),
-          meta: {
-            authorization: false,
-          }
+          meta: { authorization: false },
         },
       ],
       menus: [
@@ -138,25 +212,11 @@ const config: IConfig = {
           label: 'Home',
           component: () => import('./pages/home.vue'),
         },
-        {
-          name: 'users',
-          path: 'users',
-          icon: 'i-tabler:users',
-          label: 'User Management',
-          component: () => import('./pages/home.vue'),
-        },
-        {
-          name: 'settings',
-          path: 'settings',
-          icon: 'i-tabler:settings',
-          label: 'System Settings',
-          component: () => import('./pages/home.vue'),
-        },
-      ]
+      ],
     },
   ],
   dataProvider: simpleDataProvider({
-    apiUrl: 'https://api.example.com' // Replace with your API address
+    apiUrl: 'https://api.example.com',
   }),
   authProvider: simpleAuthProvider(),
 }
@@ -165,290 +225,44 @@ app.use(createDux(config))
 app.mount('#app')
 ```
 
-### Advanced Example (Multi-tenant)
+## If you want to move faster
 
-```typescript
-import type { IConfig } from '@duxweb/dvha-core'
-import { createDux, simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
-import { createApp } from 'vue'
-import App from './App.vue'
+If you want to avoid rebuilding common admin pages, go straight to `DVHA Pro`:
 
-const app = createApp(App)
+- complete admin layouts
+- login page
+- error pages
+- high-frequency components such as tables, forms, dialogs, and drawers
+- a better starting point for real business pages
 
-const config: IConfig = {
-  // Global configuration
-  title: 'Enterprise Admin Platform',
-  copyright: '© 2024 Enterprise Corp',
+Docs:
 
-  defaultManage: 'admin',
+- [Why Pro](https://dvha.docs.dux.plus/pro/)
+- [Core vs Pro](https://dvha.docs.dux.plus/pro/choose)
+- [Pro Getting Started](https://dvha.docs.dux.plus/pro/getting-started)
 
-  manages: [
-    // System management
-    {
-      name: 'admin',
-      title: 'System Management',
-      routePrefix: '/admin',
+## Best fit projects
 
-      // Feature toggles
-      register: false,
-      forgotPassword: true,
-      updatePassword: true,
+DVHA is especially suitable for:
 
-      // Remote menu loading
-      apiRoutePath: '/admin/menus',
+- admin panels
+- merchant back offices
+- operations dashboards
+- multi-role admin systems
+- admin projects with many pages and many roles
+- projects that need remote pages, dynamic pages, or configuration-driven pages
 
-      // Layout components
-      components: {
-        authLayout: () => import('./layouts/AdminLayout.vue'),
-        noAuthLayout: () => import('./layouts/LoginLayout.vue'),
-        notFound: () => import('./pages/404.vue'),
-        notAuthorized: () => import('./pages/403.vue')
-      },
+## Documentation
 
-      // Authentication routes
-      routes: [
-        {
-          name: 'admin.login',
-          path: 'login',
-          component: () => import('./pages/admin/Login.vue'),
-          meta: { authorization: false }
-        },
-        {
-          name: 'admin.register',
-          path: 'register',
-          component: () => import('./pages/admin/Register.vue'),
-          meta: { authorization: false }
-        }
-      ],
+- [Why DVHA](https://dvha.docs.dux.plus/guide/overview)
+- [Quick Start](https://dvha.docs.dux.plus/guide/started)
+- [Project Configuration](https://dvha.docs.dux.plus/guide/config)
+- [Custom Extensions](https://dvha.docs.dux.plus/guide/custom-extension)
+- [Remote Components & Micro Frontends](https://dvha.docs.dux.plus/pro/course/remote)
+- [JSON Schema](https://dvha.docs.dux.plus/hooks/advanced/useJson)
 
-      // Local menus
-      menus: [
-        {
-          name: 'dashboard',
-          path: 'dashboard',
-          icon: 'i-tabler:dashboard',
-          label: 'Dashboard',
-          component: () => import('./pages/admin/Dashboard.vue')
-        },
-        {
-          name: 'users',
-          path: 'users',
-          icon: 'i-tabler:users',
-          label: 'User Management',
-          component: () => import('./pages/admin/Users.vue'),
-          meta: { permissions: ['user.read'] }
-        },
-        {
-          name: 'system',
-          path: 'system',
-          icon: 'i-tabler:settings',
-          label: 'System Settings',
-          component: () => import('./pages/admin/System.vue')
-        }
-      ],
+## One-line summary
 
-      // Theme configuration
-      theme: {
-        logo: '/admin-logo.png',
-        banner: '/admin-banner.jpg'
-      }
-    },
+**DVHA is a strong fit for Vue admin projects with many pages, many roles, multiple admin areas, and dynamic extension requirements.**
 
-    // User center
-    {
-      name: 'user',
-      title: 'User Center',
-      routePrefix: '/user',
-
-      // Enable user registration
-      register: true,
-      forgotPassword: true,
-
-      components: {
-        authLayout: () => import('./layouts/UserLayout.vue'),
-        noAuthLayout: () => import('./layouts/UserLoginLayout.vue')
-      },
-
-      routes: [
-        {
-          name: 'user.login',
-          path: 'login',
-          component: () => import('./pages/user/Login.vue'),
-          meta: { authorization: false }
-        }
-      ],
-
-      menus: [
-        {
-          name: 'profile',
-          path: 'profile',
-          icon: 'i-tabler:user',
-          label: 'My Profile',
-          component: () => import('./pages/user/Profile.vue')
-        },
-        {
-          name: 'orders',
-          path: 'orders',
-          icon: 'i-tabler:shopping-cart',
-          label: 'My Orders',
-          component: () => import('./pages/user/Orders.vue')
-        }
-      ]
-    }
-  ],
-
-  // Global providers
-  dataProvider: simpleDataProvider({
-    apiUrl: 'https://api.enterprise.com'
-  }),
-  authProvider: simpleAuthProvider(),
-}
-
-app.use(createDux(config))
-app.mount('#app')
-```
-
-### Multi-Data Source Configuration
-
-```typescript
-import type { IConfig } from '@duxweb/dvha-core'
-import { simpleAuthProvider, simpleDataProvider } from '@duxweb/dvha-core'
-
-const config: IConfig = {
-  title: 'Enterprise Management Platform',
-  defaultManage: 'admin',
-
-  // Global multi-data source configuration
-  dataProvider: {
-    default: simpleDataProvider({
-      apiUrl: 'https://api.example.com'
-    }),
-    analytics: simpleDataProvider({
-      apiUrl: 'https://analytics-api.example.com'
-    }),
-    payment: simpleDataProvider({
-      apiUrl: 'https://payment-api.example.com'
-    }),
-    logistics: simpleDataProvider({
-      apiUrl: 'https://logistics-api.example.com'
-    })
-  },
-
-  manages: [
-    {
-      name: 'admin',
-      title: 'Admin Management',
-      routePrefix: '/admin',
-
-      // Admin can override specific data sources
-      dataProvider: {
-        default: simpleDataProvider({
-          apiUrl: 'https://admin-api.example.com'
-        }),
-        // Other data sources inherit from global
-      },
-
-      // Custom authentication configuration
-      authProvider: simpleAuthProvider({
-        apiPath: {
-          login: '/admin/login',
-          check: '/admin/check'
-        },
-        routePath: {
-          login: '/admin/login',
-          index: '/admin'
-        }
-      }),
-
-      routes: [
-        {
-          name: 'admin.login',
-          path: 'login',
-          component: () => import('./pages/admin/Login.vue'),
-          meta: { authorization: false }
-        }
-      ],
-
-      menus: [
-        {
-          name: 'dashboard',
-          path: 'dashboard',
-          icon: 'i-tabler:dashboard',
-          label: 'Dashboard',
-          component: () => import('./pages/Dashboard.vue')
-        }
-      ]
-    }
-  ],
-
-  authProvider: simpleAuthProvider(),
-}
-```
-
-### More Examples
-
-Check out the [Full Documentation](https://duxweb.dux.plus/dvha/) for more usage examples and advanced configurations.
-
-## 📚 Related Packages
-
-| Package Name             | Package Description                                                   |                                                     Latest Version                                                      |
-| :----------------------- | :-------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------: |
-| `@duxweb/dvha-core`      | 🎯 Core functionality package - Provides framework basic capabilities |      [![npm](https://img.shields.io/npm/v/@duxweb/dvha-core.svg)](https://www.npmjs.com/package/@duxweb/dvha-core)      |
-| `@duxweb/dvha-naiveui`   | 🎨 Naive UI enhancement package - Integrates Naive UI                 |   [![npm](https://img.shields.io/npm/v/@duxweb/dvha-naiveui.svg)](https://www.npmjs.com/package/@duxweb/dvha-naiveui)   |
-| `@duxweb/dvha-elementui` | 🎨 Element Plus enhancement package - Integrates Element Plus         | [![npm](https://img.shields.io/npm/v/@duxweb/dvha-elementui.svg)](https://www.npmjs.com/package/@duxweb/dvha-elementui) |
-
-## 📊 Project Statistics
-
-### 🌟 Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=duxweb/dvha&type=Date)](https://star-history.com/#duxweb/dvha&Date)
-
-### 💻 Contributors
-
-Thanks to all the developers who contributed to DVHA!
-
-<div align="center">
-
-[![Contributors](https://contrib.rocks/image?repo=duxweb/dvha)](https://github.com/duxweb/dvha/graphs/contributors)
-
-</div>
-
-## 🤝 Contributing
-
-We welcome all contributions! Please check out the [Contributing Guide](https://duxweb.dux.plus/dvha/contributing) to learn how to get started.
-
-### Development Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/duxweb/dvha.git
-cd dvha
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Run tests
-npm run test
-
-# Build for production
-npm run build
-```
-
-## 📄 License
-
-This project is licensed under the [MIT](https://opensource.org/licenses/MIT) License.
-
----
-
-<div align="center">
-
-**🎉 Thank you for using DVHA!**
-
-If this project helps you, please give us a ⭐️
-
-[📖 Documentation](https://duxweb.dux.plus/dvha/) • [🐛 Report Issues](https://github.com/duxweb/dvha/issues) • [💡 Feature Requests](https://github.com/duxweb/dvha/discussions)
-
-</div>
+Its biggest strength is not one single component, but that it makes the heaviest, most repetitive parts of admin development lighter.
