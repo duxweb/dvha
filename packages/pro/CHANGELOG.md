@@ -1,5 +1,13 @@
 # @duxweb/dvha-pro
 
+## 1.2.5
+
+### Patch Changes
+
+- feat: 增加编辑器工具栏扩展接口
+  - @duxweb/dvha-core@1.2.5
+  - @duxweb/dvha-naiveui@1.2.5
+
 ## 1.2.4
 
 ### Patch Changes

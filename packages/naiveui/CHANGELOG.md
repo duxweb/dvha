@@ -1,5 +1,7 @@
 # @duxweb/dvha-naiveui
 
+## 1.2.5
+
 ## 1.2.4
 
 ### Patch Changes

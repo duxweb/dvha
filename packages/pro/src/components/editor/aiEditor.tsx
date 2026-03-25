@@ -28,6 +28,10 @@ export const DuxAiEditor = defineComponent({
       type: String as PropType<'all' | 'image' | 'media' | 'docs' | string>,
       default: 'all',
     },
+    toolbarExtend: {
+      type: Array as PropType<Array<string | Record<string, any>>>,
+      default: () => [],
+    },
     height: {
       type: String,
       default: '500px',
@@ -313,6 +317,7 @@ export const DuxAiEditor = defineComponent({
                 },
               }]
             : []),
+          ...(props.toolbarExtend || []),
           'image',
           'video',
           'attachment',
