@@ -2,10 +2,12 @@ import type { DropdownOption } from 'naive-ui'
 import type { VNodeChild } from 'vue'
 import { useGetAuth, useI18n, useLogout, useManage, useTheme } from '@duxweb/dvha-core'
 import { NDropdown } from 'naive-ui'
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, markRaw } from 'vue'
 import { useRouter } from 'vue-router'
+import { useModal } from '../../hooks'
 import { DuxAvatar } from '../../components'
 import DuxMenuButton from './button'
+import DuxRemoteMenuModal from './remoteMenuModal'
 
 export default defineComponent({
   name: 'DuxMenuAvatar',
@@ -30,6 +32,7 @@ export default defineComponent({
     const { config, getRoutePath } = useManage()
     const { mutate: logout } = useLogout()
     const { mode, primaryColors, neutralColors, colorMapping, setColor, setMode } = useTheme()
+    const modal = useModal()
 
     const labelCheckRender = (inner: VNodeChild, checked?: boolean) => {
       return (
@@ -47,14 +50,15 @@ export default defineComponent({
     }
 
     const userMenu = computed(() => {
-      const menu = config.userMenus?.map(item => ({
+      const menu = (config.userMenus || []).map(item => ({
+        ...item,
         label: t(item.label || '', {}, item.label),
         key: item.key,
         icon: () => iconRender(item.icon),
         path: item.path,
       }))
 
-      return menu?.length > 0
+      return menu.length > 0
         ? [
             ...menu,
             {
@@ -175,6 +179,17 @@ export default defineComponent({
       const [prefix, suffix] = lastDotIndex === -1
         ? [key, '']
         : [key.substring(0, lastDotIndex), key.substring(lastDotIndex + 1)]
+      const menuItem = item as Record<string, any>
+      const menuType = String(
+        menuItem?.type
+          || (typeof menuItem?.callback === 'function'
+            ? 'callback'
+            : menuItem?.loader
+              ? 'modal'
+              : menuItem?.url
+                ? 'link'
+                : 'route'),
+      )
 
       switch (prefix) {
         case 'locale':
@@ -193,10 +208,38 @@ export default defineComponent({
           logout()
           break
         default:
-          if (!item?.path) {
+          if (menuType === 'callback') {
+            menuItem?.callback?.()
             return
           }
-          router.push(getRoutePath(item.path as string))
+          if (menuType === 'modal') {
+            if (!menuItem?.loader) {
+              return
+            }
+            modal.show({
+              title: menuItem?.title || String(menuItem?.label || ''),
+              width: menuItem?.width,
+              draggable: menuItem?.draggable,
+              component: markRaw(DuxRemoteMenuModal),
+              componentProps: {
+                loader: String(menuItem.loader),
+                componentProps: menuItem?.componentProps,
+              },
+            }).catch(() => {})
+            return
+          }
+          if (menuType === 'link') {
+            const targetUrl = String(menuItem?.url || menuItem?.path || '')
+            if (!targetUrl) {
+              return
+            }
+            window.open(targetUrl, '_blank')
+            return
+          }
+          if (!menuItem?.path) {
+            return
+          }
+          router.push(getRoutePath(menuItem.path as string))
       }
     }
 

@@ -19,16 +19,16 @@ export const DuxAppProvider = defineComponent({
     const config = useConfig()
     const router = useRouter()
 
-    router.beforeEach(async (to, _from, next) => {
+    router.beforeEach(async (to, _from) => {
       const manageName = to.meta.manageName as string
       const noAuth = to.meta.authorization === false
 
       if (!manageName) {
         const defaultManage = config.defaultManage || config.manages?.[0]?.name || ''
-        return next({
+        return {
           path: `/${defaultManage}`,
           replace: true,
-        })
+        }
       }
 
       if (manageRef) {
@@ -59,13 +59,13 @@ export const DuxAppProvider = defineComponent({
       // unlogin handle
       if (!authStore.isLogin()) {
         if (noAuth) {
-          return next()
+          return true
         }
 
-        return next({
+        return {
           path: manage.getRoutePath(`login`),
           replace: true,
-        })
+        }
       }
 
       const formatMenus = (menus: IMenu[]) => {
@@ -182,12 +182,12 @@ export const DuxAppProvider = defineComponent({
         })
 
         // reload route
-        return next({
+        return {
           path: to.redirectedFrom?.path || to.path,
           query: to.redirectedFrom?.query || to.query,
           hash: to.redirectedFrom?.hash || to.hash,
           replace: true,
-        })
+        }
       }
 
       const pathMatch = [
@@ -204,24 +204,24 @@ export const DuxAppProvider = defineComponent({
         // if index route is not found
         if (!indexRoute?.path || pathMatch.includes(indexRoute?.path)) {
           console.warn(`[Dux] index route not found, skip redirect`)
-          return next()
+          return true
         }
 
-        return next({
+        return {
           path: indexRoute?.path || '/',
           replace: true,
-        })
+        }
       }
 
       const can = useCan(manageName)
 
       if ((to.meta?.can === undefined || to.meta?.can === true) && !can(to.name as string)) {
-        return next({
+        return {
           name: `${manageName}.notAuthorized`,
-        })
+        }
       }
 
-      return next()
+      return true
     })
 
     return () => (

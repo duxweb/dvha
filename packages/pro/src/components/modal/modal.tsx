@@ -33,6 +33,7 @@ export const DuxModal = defineComponent({
 
     const params = props?.componentProps || {}
     params.title = props.title
+    params.draggable = props.draggable
     params.onConfirm = confirm
     params.onClose = cancel
 

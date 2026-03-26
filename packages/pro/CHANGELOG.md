@@ -1,5 +1,14 @@
 # @duxweb/dvha-pro
 
+## 1.2.6
+
+### Patch Changes
+
+- feat: 增加菜单接口
+- Updated dependencies
+  - @duxweb/dvha-core@1.2.6
+  - @duxweb/dvha-naiveui@1.2.6
+
 ## 1.2.5
 
 ### Patch Changes

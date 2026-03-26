@@ -1,4 +1,4 @@
-import type { PropType } from 'vue'
+import type { PropType, Ref } from 'vue'
 import type { FlowData, FlowEditorConfig, FlowNodeCategory, FlowNodeRegistry } from './types'
 import { useI18n, useTheme } from '@duxweb/dvha-core'
 import { Background } from '@vue-flow/background'
@@ -107,7 +107,7 @@ export const DuxFlowEditor = defineComponent({
       passive: true,
       deep: true,
       defaultValue: createEmptyFlowData(),
-    })
+    }) as unknown as Ref<FlowData>
 
     // 全局设置状态
     const globalSettings = ref<Record<string, any>>(flowState.value?.globalSettings || {})

@@ -34,8 +34,30 @@ export function createDuxPro() {
 interface ITool {
   label: string
   icon: string
+  type?: 'route' | 'link' | 'modal' | 'callback'
   path?: string
   url?: string
+  loader?: string
+  title?: string
+  width?: number | string
+  draggable?: boolean
+  componentProps?: Record<string, any>
+  callback?: () => void
+  [key: string]: any
+}
+
+interface IUserMenu {
+  key: string
+  label: string
+  icon: string
+  path?: string
+  url?: string
+  loader?: string
+  type?: 'route' | 'link' | 'modal' | 'callback'
+  title?: string
+  width?: number | string
+  draggable?: boolean
+  componentProps?: Record<string, any>
   callback?: () => void
   [key: string]: any
 }
@@ -69,6 +91,9 @@ declare module '@duxweb/dvha-core' {
     }
     // 工具配置
     tools?: ITool[]
+
+    // 用户菜单
+    userMenus?: IUserMenu[]
 
     // Map config (e.g. Baidu Map)
     map?: {
