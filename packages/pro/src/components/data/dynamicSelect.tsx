@@ -75,7 +75,7 @@ export const DuxDynamicSelect = defineComponent({
         columns={props.columns}
         onCreate={() => {
           modal.show({
-            component: () => import('./selectModal'),
+            component: () => import('./selectModal.lazy'),
             componentProps: {
               path: props.path,
               columns: props.filterColumns,

@@ -9,6 +9,24 @@ import { bold, cyan, green, red, yellow } from 'kolorist'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+function getUiConfigsDir() {
+  return path.resolve(__dirname, '..', 'template', 'ui-configs')
+}
+
+export function getAvailableUIs() {
+  return fs.readdirSync(getUiConfigsDir())
+    .filter(file => file.endsWith('.json'))
+    .map((file) => {
+      const config = fs.readJsonSync(path.join(getUiConfigsDir(), file))
+      return {
+        name: config.name,
+        display: config.display,
+        description: config.description,
+        value: config.name,
+      }
+    })
+}
+
 // 获取版本号
 function getVersion() {
   const packagePath = path.resolve(__dirname, '..', 'package.json')
@@ -19,10 +37,12 @@ function getVersion() {
   return '1.0.0'
 }
 
-async function createProject(projectName) {
-  console.log()
-  console.log(bold(cyan('欢迎使用 DVHA 项目创建工具！ / Welcome to DVHA Project Creator!')))
-  console.log()
+export async function createProject(projectName, options = {}) {
+  const log = options.silent ? () => {} : console.log
+
+  log()
+  log(bold(cyan('欢迎使用 DVHA 项目创建工具！ / Welcome to DVHA Project Creator!')))
+  log()
 
   let targetDir = projectName
 
@@ -34,20 +54,20 @@ async function createProject(projectName) {
   }
 
   if (!targetDir) {
-    console.log(red('✖ 项目名称不能为空 / Project name cannot be empty'))
+    log(red('✖ 项目名称不能为空 / Project name cannot be empty'))
     process.exit(1)
   }
 
   const root = path.resolve(targetDir)
 
   if (fs.existsSync(root)) {
-    const overwrite = await confirm({
+    const overwrite = options.overwrite ?? await confirm({
       message: `目录 ${targetDir} 已存在，是否覆盖？ / Directory ${targetDir} already exists, overwrite?`,
       default: false,
     })
 
     if (!overwrite) {
-      console.log(yellow('✖ 操作已取消 / Operation cancelled'))
+      log(yellow('✖ 操作已取消 / Operation cancelled'))
       process.exit(1)
     }
 
@@ -55,25 +75,9 @@ async function createProject(projectName) {
   }
 
   // 读取可用的UI配置
-  const uiConfigsDir = path.resolve(__dirname, '..', 'template', 'ui-configs')
-  const availableUIs = fs.readdirSync(uiConfigsDir)
-    .filter(dir => fs.statSync(path.join(uiConfigsDir, dir)).isDirectory())
-    .map((dir) => {
-      const configPath = path.join(uiConfigsDir, `${dir}.json`)
-      if (fs.existsSync(configPath)) {
-        const config = fs.readJsonSync(configPath)
-        return {
-          name: config.name,
-          display: config.display,
-          description: config.description,
-          value: config.name,
-        }
-      }
-      return null
-    })
-    .filter(Boolean)
+  const availableUIs = getAvailableUIs()
 
-  const template = await select({
+  const template = options.template ?? await select({
     message: '请选择一个模板 / Please select a template:',
     choices: availableUIs.map(ui => ({
       name: `${ui.display} - ${ui.description}`,
@@ -83,24 +87,30 @@ async function createProject(projectName) {
   })
 
   if (!template) {
-    console.log(red('✖ 请选择一个模板 / Please select a template'))
+    log(red('✖ 请选择一个模板 / Please select a template'))
     process.exit(1)
   }
 
-  console.log(yellow(`\n正在创建项目 / Creating project: ${targetDir}...`))
+  if (!availableUIs.some(ui => ui.value === template)) {
+    log(red(`✖ UI配置 ${template} 不存在 / UI config ${template} does not exist`))
+    process.exit(1)
+  }
+
+  log(yellow(`\n正在创建项目 / Creating project: ${targetDir}...`))
 
   // 基础模板目录
   const baseTemplateDir = path.resolve(__dirname, '..', 'template', 'base')
-  const uiConfigPath = path.resolve(__dirname, '..', 'template', 'ui-configs', `${template}.json`)
-  const uiPagesDir = path.resolve(__dirname, '..', 'template', 'ui-configs', template, 'pages')
+  const uiConfigsDir = getUiConfigsDir()
+  const uiConfigPath = path.resolve(uiConfigsDir, `${template}.json`)
+  const uiPagesDir = path.resolve(uiConfigsDir, template, 'pages')
 
   if (!fs.existsSync(baseTemplateDir)) {
-    console.log(red(`✖ 基础模板不存在 / Base template does not exist`))
+    log(red(`✖ 基础模板不存在 / Base template does not exist`))
     process.exit(1)
   }
 
   if (!fs.existsSync(uiConfigPath)) {
-    console.log(red(`✖ UI配置 ${template} 不存在 / UI config ${template} does not exist`))
+    log(red(`✖ UI配置 ${template} 不存在 / UI config ${template} does not exist`))
     process.exit(1)
   }
 
@@ -231,19 +241,21 @@ async function createProject(projectName) {
     fs.writeFileSync(mainTsPath, mainTsContent)
   }
 
-  console.log(green('\n✓ 项目创建成功！ / Project created successfully!'))
-  console.log()
-  console.log(bold('下一步 / Next steps:'))
-  console.log(cyan(`  cd ${targetDir}`))
-  console.log(cyan('  bun install'))
-  console.log(cyan('  bun run dev'))
-  console.log()
-  console.log(bold('或者使用 npm / Or use npm:'))
-  console.log(cyan(`  cd ${targetDir}`))
-  console.log(cyan('  npm install'))
-  console.log(cyan('  npm run dev'))
-  console.log()
-  console.log(green('🎉 开始你的 Dux Vue 之旅吧！ / Start your Dux Vue journey!'))
+  log(green('\n✓ 项目创建成功！ / Project created successfully!'))
+  log()
+  log(bold('下一步 / Next steps:'))
+  log(cyan(`  cd ${targetDir}`))
+  log(cyan('  bun install'))
+  log(cyan('  bun run dev'))
+  log()
+  log(bold('或者使用 npm / Or use npm:'))
+  log(cyan(`  cd ${targetDir}`))
+  log(cyan('  npm install'))
+  log(cyan('  npm run dev'))
+  log()
+  log(green('🎉 开始你的 Dux Vue 之旅吧！ / Start your Dux Vue journey!'))
+
+  return root
 }
 
 // 主程序
@@ -287,4 +299,6 @@ program
     console.log()
   })
 
-program.parse()
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  program.parse()
+}

@@ -334,7 +334,7 @@ export const DuxVideoUpload = defineComponent({
                     modal.show({
                       title: t('components.upload.title'),
                       width: '800px',
-                      component: () => import('./manager'),
+                      component: () => import('./manager.lazy'),
                       componentProps: {
                         path: managePath.value,
                         type: 'media',

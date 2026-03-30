@@ -130,8 +130,8 @@ importers:
   apps/docs:
     dependencies:
       '@duxweb/vitepress-theme':
-        specifier: ^1.1.6
-        version: 1.1.6(mermaid@11.12.2)(tailwindcss@4.1.18)(typescript@6.0.2)(vitepress@1.6.4(@algolia/client-search@5.50.0)(@types/node@25.5.0)(async-validator@4.2.5)(axios@1.13.6)(change-case@5.4.4)(lightningcss@1.32.0)(postcss@8.5.8)(sass-embedded@1.98.0)(sass@1.98.0)(search-insights@2.17.3)(typescript@6.0.2))
+        specifier: ^1.1.9
+        version: 1.1.9(mermaid@11.12.2)(tailwindcss@4.1.18)(typescript@6.0.2)(vitepress@1.6.4(@algolia/client-search@5.50.0)(@types/node@25.5.0)(async-validator@4.2.5)(axios@1.13.6)(change-case@5.4.4)(lightningcss@1.32.0)(postcss@8.5.8)(sass-embedded@1.98.0)(sass@1.98.0)(search-insights@2.17.3)(typescript@6.0.2))
     devDependencies:
       vitepress:
         specifier: ^1.6.4
@@ -956,8 +956,8 @@ packages:
   '@duxweb/dvha-core@1.2.5':
     resolution: {integrity: sha512-e0ioFBhLw0qdYfxaRQSa6aqxVhHQkIVVC6PfbCz3OaWvQ0leO6NFC/8twgJERZirgOgpfI1syiAMZOxE1B02Tw==}
 
-  '@duxweb/vitepress-theme@1.1.6':
-    resolution: {integrity: sha512-j4aRrKxTCdSjLVg4p3jS6wns1EpRWE8ZnTiYGTp6uqtYOSZPHNvS3qs5FkXZ8X74zsrrwUqa43n9GVmCo6azmA==}
+  '@duxweb/vitepress-theme@1.1.9':
+    resolution: {integrity: sha512-FuwBvU/tQuaLOhARfVdty1oan0QVYzWOp83r8dOyG+ViO1Qf5xbNzzsw8S+48V0yG9s68WueN6wkP50cSxvZhw==}
     peerDependencies:
       vitepress: ^1.6.4
 
@@ -7354,10 +7354,11 @@ snapshots:
       - walrus
       - whiskers
 
-  '@duxweb/vitepress-theme@1.1.6(mermaid@11.12.2)(tailwindcss@4.1.18)(typescript@6.0.2)(vitepress@1.6.4(@algolia/client-search@5.50.0)(@types/node@25.5.0)(async-validator@4.2.5)(axios@1.13.6)(change-case@5.4.4)(lightningcss@1.32.0)(postcss@8.5.8)(sass-embedded@1.98.0)(sass@1.98.0)(search-insights@2.17.3)(typescript@6.0.2))':
+  '@duxweb/vitepress-theme@1.1.9(mermaid@11.12.2)(tailwindcss@4.1.18)(typescript@6.0.2)(vitepress@1.6.4(@algolia/client-search@5.50.0)(@types/node@25.5.0)(async-validator@4.2.5)(axios@1.13.6)(change-case@5.4.4)(lightningcss@1.32.0)(postcss@8.5.8)(sass-embedded@1.98.0)(sass@1.98.0)(search-insights@2.17.3)(typescript@6.0.2))':
     dependencies:
       '@iconify/tailwind4': 1.2.3(tailwindcss@4.1.18)
       '@vueuse/core': 11.3.0(vue@3.5.31(typescript@6.0.2))
+      dayjs: 1.11.20
       minisearch: 7.2.0
       vitepress: 1.6.4(@algolia/client-search@5.50.0)(@types/node@25.5.0)(async-validator@4.2.5)(axios@1.13.6)(change-case@5.4.4)(lightningcss@1.32.0)(postcss@8.5.8)(sass-embedded@1.98.0)(sass@1.98.0)(search-insights@2.17.3)(typescript@6.0.2)
       vitepress-mermaid-renderer: 1.1.19(mermaid@11.12.2)(vue@3.5.31(typescript@6.0.2))

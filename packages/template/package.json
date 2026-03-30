@@ -37,7 +37,9 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "test": "./scripts/test.sh",
+    "test": "node --test test/*.test.js",
+    "test:quick": "./scripts/test.sh",
+    "test:smoke": "node scripts/smoke.js",
     "push": "./scripts/publish.sh",
     "dev": "node bin/index.js",
     "changeset": "changeset",

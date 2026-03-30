@@ -225,7 +225,7 @@ export const DuxAiEditor = defineComponent({
                     .show({
                       title: t('components.uploadManage.title') || t('components.upload.fileManager'),
                       width: '800px',
-                      component: () => import('../upload/manager'),
+                      component: () => import('../upload/manager.lazy'),
                       componentProps: {
                         path: managePath.value,
                         type: props.fileManagerType || 'all',

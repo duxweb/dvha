@@ -21,6 +21,8 @@
     "docs:build": "pnpm --filter docs build",
     "docs:preview": "pnpm --filter docs preview",
     "tpl:test": "pnpm --filter @duxweb/dvha-template test",
+    "tpl:test:quick": "pnpm --filter @duxweb/dvha-template test:quick",
+    "tpl:test:smoke": "pnpm --filter @duxweb/dvha-template test:smoke",
     "tpl:dev": "pnpm --filter @duxweb/dvha-template dev",
     "changeset": "changeset",
     "changeset:version": "changeset version",
