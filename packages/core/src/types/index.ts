@@ -1,5 +1,6 @@
 export * from './config'
 export * from './manage'
+export * from './remote'
 export * from './theme'
 export * from './auth'
 export * from './data'

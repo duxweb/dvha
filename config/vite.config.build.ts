@@ -38,16 +38,28 @@ export function createSharedViteConfig(options: SharedConfigOptions): UserConfig
     ...additionalExternal,
   ]
 
-  const isExternal = (id: string) => {
-    if (id.startsWith('.') || id.startsWith('/') || id.includes('\\')) {
+  const isBareImport = (id: string) => {
+    if (!id || id.startsWith('.') || id.startsWith('/') || id.includes('\\')) {
       return false
     }
 
-    if (external.some(ext => id === ext || id.startsWith(`${ext}/`))) {
-      return true
+    if (id.startsWith('\0') || id.startsWith('virtual:')) {
+      return false
     }
 
     return true
+  }
+
+  const isExternal = (id: string) => {
+    if (!isBareImport(id)) {
+      return false
+    }
+
+    if (id.startsWith('node:')) {
+      return true
+    }
+
+    return external.some(ext => id === ext || id.startsWith(`${ext}/`))
   }
 
   const entryPath = path.resolve(packageDir, entry)

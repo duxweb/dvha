@@ -4,6 +4,7 @@ import type { UserConfigDefaults } from '@unocss/core'
 import type { App } from 'vue'
 import initUnocssRuntime from '@unocss/runtime'
 import VueECharts from 'vue-echarts'
+import * as vueDraggablePlus from 'vue-draggable-plus'
 import component from './component'
 
 import { initVeeValidate } from './config'
@@ -14,6 +15,10 @@ import 'aieditor/dist/style.css'
 import '@vue-flow/core/dist/style.css'
 import '@vue-flow/core/dist/theme-default.css'
 import './theme/style.scss'
+
+export const duxProRemotePackages = {
+  'vue-draggable-plus': vueDraggablePlus,
+}
 
 export function createDuxPro() {
   initVeeValidate()
