@@ -1,5 +1,23 @@
 # @duxweb/dvha-pro
 
+## 1.2.8
+
+### Patch Changes
+
+- fix: ver
+- Updated dependencies
+  - @duxweb/dvha-naiveui@1.2.8
+  - @duxweb/dvha-core@1.2.8
+
+## 1.2.7
+
+### Patch Changes
+
+- fix: ver
+- Updated dependencies
+  - @duxweb/dvha-naiveui@1.2.7
+  - @duxweb/dvha-core@1.2.7
+
 ## 1.2.6
 
 ### Patch Changes

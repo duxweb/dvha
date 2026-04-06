@@ -9,8 +9,6 @@
     ],
     "moduleDetection": "force",
     "useDefineForClassFields": true,
-    "baseUrl": ".",
-    "ignoreDeprecations": "6.0",
     "rootDir": "src",
     "module": "ESNext",
     "moduleResolution": "bundler",

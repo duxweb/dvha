@@ -1,5 +1,13 @@
 # @duxweb/dvha-template
 
+## 1.2.8
+
+### Patch Changes
+
+- fix: ver
+
+## 1.2.7
+
 ## 1.2.6
 
 ## 1.2.5
