@@ -2,13 +2,12 @@ import type { MenuOption } from 'naive-ui'
 import { DuxLogoIcon, useI18n, useManage, useMenu } from '@duxweb/dvha-core'
 import { cloneDeep } from 'lodash-es'
 import { NButton, NMenu, NScrollbar, NTag, NTooltip } from 'naive-ui'
-import { computed, defineComponent, h, markRaw, onMounted, Transition } from 'vue'
+import { computed, defineComponent, h, onMounted, Transition } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
-import { useModal, useUI } from '../../hooks'
+import { useUI } from '../../hooks'
 import DuxMenuAvatar from './avatar'
 import DuxMenuDark from './dark'
 import DuxMenuNotice from './notice'
-import DuxRemoteMenuModal from './remoteMenuModal'
 
 export const DuxMenuApp = defineComponent({
   name: 'DuxMenuApp',
@@ -23,7 +22,6 @@ export const DuxMenuApp = defineComponent({
     const { config } = useManage()
     const { t } = useI18n()
     const router = useRouter()
-    const modal = useModal()
 
     const { mainMenu, subMenu, appActive, subActive, isSubMenu } = useMenu({
       doubleMenu: true,
@@ -124,34 +122,8 @@ export const DuxMenuApp = defineComponent({
                       <NButton
                         quaternary
                         onClick={() => {
-                          const itemType = String(
-                            item?.type
-                              || (typeof item?.callback === 'function'
-                                ? 'callback'
-                                : item?.loader
-                                  ? 'modal'
-                                  : item?.url
-                                    ? 'link'
-                                    : 'route'),
-                          )
                           if (item.callback) {
                             item.callback()
-                            return
-                          }
-                          if (itemType === 'modal') {
-                            if (!item?.loader) {
-                              return
-                            }
-                            modal.show({
-                              title: item?.title || item.label,
-                              width: item?.width,
-                              draggable: item?.draggable,
-                              component: markRaw(DuxRemoteMenuModal),
-                              componentProps: {
-                                loader: String(item.loader),
-                                componentProps: item?.componentProps,
-                              },
-                            }).catch(() => {})
                             return
                           }
                           if (item.path) {

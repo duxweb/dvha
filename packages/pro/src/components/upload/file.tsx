@@ -203,7 +203,7 @@ export const DuxFileUpload = defineComponent<IUploadProps>({
                 modal.show({
                   title: t('components.upload.title'),
                   width: 800,
-                  component: () => import('./manager.lazy'),
+                  component: () => import('./manager'),
                   componentProps: {
                     path: managePath.value,
                     multiple: props.multiple,

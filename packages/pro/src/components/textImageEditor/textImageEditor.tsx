@@ -183,7 +183,7 @@ export const DuxTextImageEditor = defineComponent({
       const res = await modal.show({
         title: t('components.uploadManage.title') || t('components.upload.fileManager') || '文件管理器',
         width: '800px',
-        component: () => import('../upload/manager.lazy'),
+        component: () => import('../upload/manager'),
         componentProps: {
           path: managePath.value,
           type: props.fileManagerType || 'image',

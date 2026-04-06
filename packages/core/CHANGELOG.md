@@ -1,18 +1,10 @@
 # @duxweb/dvha-core
 
-## 1.2.8
+## 1.2.5
 
 ### Patch Changes
 
-- fix: ver
-
-## 1.2.7
-
-## 1.2.6
-
-### Patch Changes
-
-- feat: 增加菜单接口
+- fix: var
 
 ## 1.2.5
 

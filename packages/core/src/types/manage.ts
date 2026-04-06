@@ -1,4 +1,5 @@
 import type { Component } from 'vue'
+import type { Options } from 'vue3-sfc-loader'
 import type { RouteRecordRaw } from 'vue-router'
 import type { IJsonAdaptor } from '../hooks'
 import type { IAuthProvider } from './auth'
@@ -6,7 +7,6 @@ import type { IConfigComponent } from './config'
 import type { IDataProvider } from './data'
 import type { I18nProvider } from './i18n'
 import type { IMenu } from './menu'
-import type { IRemotePackages } from './remote'
 import type { IConfigTheme } from './theme'
 
 /**
@@ -42,7 +42,7 @@ export interface IManage {
 
   // 全局包配置
   remote?: {
-    packages?: IRemotePackages
+    packages?: Options
     apiMethod?: string
     apiRoutePath?: string | ((path: string) => string)
   }

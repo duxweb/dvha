@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-naiveui",
   "type": "module",
-  "version": "1.2.8",
+  "version": "1.2.9",
   "author": "DuxWeb",
   "license": "MIT",
   "exports": {
@@ -35,8 +35,8 @@
   },
   "devDependencies": {
     "@duxweb/dvha-core": "workspace:*",
-    "@vueuse/core": "^14.2.1",
-    "lodash-es": "^4.17.23",
+    "@vueuse/core": "^14.0.0",
+    "lodash-es": "^4.17.21",
     "naive-ui": "^2.44.1",
     "pinia": "^3.0.4",
     "vue": "^3.5.31",

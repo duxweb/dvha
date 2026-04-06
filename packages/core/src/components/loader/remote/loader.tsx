@@ -41,7 +41,6 @@ export function sfcLoader(path: string) {
       'crypto-js': crypto,
       'mime': mime,
       'math': math,
-      'mathjs': math,
       'mitt': mitt,
       'lodash-es': _,
       'pinia': pinia,

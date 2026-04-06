@@ -9,6 +9,7 @@
     ],
     "moduleDetection": "force",
     "useDefineForClassFields": true,
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "rootDir": "src",
     "module": "ESNext",

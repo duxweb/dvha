@@ -4,7 +4,6 @@ import type { UserConfigDefaults } from '@unocss/core'
 import type { App } from 'vue'
 import initUnocssRuntime from '@unocss/runtime'
 import VueECharts from 'vue-echarts'
-import * as vueDraggablePlus from 'vue-draggable-plus'
 import component from './component'
 
 import { initVeeValidate } from './config'
@@ -15,10 +14,6 @@ import 'aieditor/dist/style.css'
 import '@vue-flow/core/dist/style.css'
 import '@vue-flow/core/dist/theme-default.css'
 import './theme/style.scss'
-
-export const duxProRemotePackages = {
-  'vue-draggable-plus': vueDraggablePlus,
-}
 
 export function createDuxPro() {
   initVeeValidate()
@@ -39,30 +34,8 @@ export function createDuxPro() {
 interface ITool {
   label: string
   icon: string
-  type?: 'route' | 'link' | 'modal' | 'callback'
   path?: string
   url?: string
-  loader?: string
-  title?: string
-  width?: number | string
-  draggable?: boolean
-  componentProps?: Record<string, any>
-  callback?: () => void
-  [key: string]: any
-}
-
-interface IUserMenu {
-  key: string
-  label: string
-  icon: string
-  path?: string
-  url?: string
-  loader?: string
-  type?: 'route' | 'link' | 'modal' | 'callback'
-  title?: string
-  width?: number | string
-  draggable?: boolean
-  componentProps?: Record<string, any>
   callback?: () => void
   [key: string]: any
 }
@@ -96,9 +69,6 @@ declare module '@duxweb/dvha-core' {
     }
     // 工具配置
     tools?: ITool[]
-
-    // 用户菜单
-    userMenus?: IUserMenu[]
 
     // Map config (e.g. Baidu Map)
     map?: {

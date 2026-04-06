@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-elementui",
   "type": "module",
-  "version": "1.2.8",
+  "version": "1.2.5",
   "author": "DuxWeb",
   "license": "MIT",
   "exports": {
@@ -34,7 +34,7 @@
     "@duxweb/dvha-core": "workspace:*"
   },
   "devDependencies": {
-    "@duxweb/dvha-core": "^1.2.8",
+    "@duxweb/dvha-core": "^1.2.5",
     "element-plus": "^2.13.6",
     "vue": "^3.5.31",
     "vue-router": "^5.0.4"

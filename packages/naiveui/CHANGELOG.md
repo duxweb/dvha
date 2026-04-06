@@ -1,18 +1,10 @@
 # @duxweb/dvha-naiveui
 
-## 1.2.8
+## 1.2.5
 
 ### Patch Changes
 
-- fix: ver
-
-## 1.2.7
-
-### Patch Changes
-
-- fix: ver
-
-## 1.2.6
+- fix: var
 
 ## 1.2.5
 

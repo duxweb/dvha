@@ -208,7 +208,7 @@ export const DuxImageUpload = defineComponent({
                     modal.show({
                       title: t('components.upload.title'),
                       width: '800px',
-                      component: () => import('./manager.lazy'),
+                      component: () => import('./manager'),
                       componentProps: {
                         path: managePath.value,
                         type: 'image',
