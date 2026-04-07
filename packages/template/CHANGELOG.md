@@ -1,5 +1,7 @@
 # @duxweb/dvha-template
 
+## 1.2.10
+
 ## 1.2.5
 
 ## 1.2.8

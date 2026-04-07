@@ -11,6 +11,14 @@
     "useDefineForClassFields": true,
     "ignoreDeprecations": "6.0",
     "baseUrl": ".",
+    "paths": {
+      "@duxweb/dvha-core": [
+        "../core/dist/types/index.d.ts"
+      ],
+      "@duxweb/dvha-naiveui": [
+        "../naiveui/dist/types/index.d.ts"
+      ]
+    },
     "rootDir": "src",
     "module": "ESNext",
     "moduleResolution": "bundler",

@@ -1,5 +1,11 @@
 # @duxweb/dvha-naiveui
 
+## 1.2.10
+
+### Patch Changes
+
+- fix: 修正 vite8 版本依赖
+
 ## 1.2.5
 
 ### Patch Changes

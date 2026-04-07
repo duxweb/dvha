@@ -1,7 +1,7 @@
 {
   "name": "@duxweb/dvha-pro",
   "type": "module",
-  "version": "1.2.9",
+  "version": "1.2.10",
   "author": "DuxWeb",
   "license": "MIT",
   "repository": {
@@ -33,9 +33,9 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "build": "pnpm run clean && vue-tsc --noEmit && pnpm run build:uno && vite build && pnpm run build:types",
-    "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/types",
-    "build:uno": "unocss -c uno.config.ts './src/**/*' -o ./src/theme/uno.css",
+    "build": "pnpm run clean && pnpm exec vue-tsc --noEmit && pnpm run build:uno && node ../../node_modules/vite/bin/vite.js build && pnpm run build:types",
+    "build:types": "pnpm exec vue-tsc --declaration --emitDeclarationOnly --outDir dist/types",
+    "build:uno": "pnpm exec unocss -c uno.config.ts './src/**/*' -o ./src/theme/uno.css",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
